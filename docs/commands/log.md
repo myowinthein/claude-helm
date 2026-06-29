@@ -14,8 +14,8 @@ flowchart TD
   Exists -->|yes, no hash| Mode1
   Exists -->|yes, with hash| Gap{Gap significance<br/>since last review?}
 
-  Gap -->|small or moderate| Mode2[Ask: gap update (default),<br/>full scan, or skip?]
-  Gap -->|large or significant| Mode3[Ask: full scan (default),<br/>gap update, or skip?]
+  Gap -->|small or moderate| Mode2["Ask: gap update (default),<br/>full scan, or skip?"]
+  Gap -->|large or significant| Mode3["Ask: full scan (default),<br/>gap update, or skip?"]
 
   Mode1 -->|skip| Skip[/Exit: no update needed/]
   Mode1 -->|full| Full
