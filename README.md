@@ -44,8 +44,10 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 | Rule | What it does |
 |---|---|
-| `git.md` | Defines team mode and **Solo Mode**. Activate Solo Mode by setting `git-solo: true` in your `CLAUDE.md` Project Config section to commit straight to `main`, no feature branches, no PRs. |
-| `safety.md` | Operational safety scan: deployment risk, git exposure, secret handling, destructive operations. Run during project bootstrap to surface what should never be automated. |
+| [`git.md`](docs/rules/git.md) | Git workflow rules: Solo Mode for direct-to-main, GitHub Flow for feature branches and PRs. |
+| [`safety.md`](docs/rules/safety.md) | Operational safety scan covering deployment, git, secrets, and destructive operations. |
+
+> *Click a rule name to open its detail page.*
 
 ## Using the rules
 
