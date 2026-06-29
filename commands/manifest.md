@@ -1,10 +1,10 @@
-# update-readme
+# manifest
 
 Before doing anything, check current branch.
 Only proceed if on `main` or `master`.
 If on any other branch, stop and inform the user:
 
-"update-readme must be run on main or master.
+"manifest must be run on main or master.
 Current branch is {branch}. Please switch and re-run."
 
 ---
