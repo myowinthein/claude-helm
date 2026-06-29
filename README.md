@@ -9,7 +9,18 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 ```bash
 /plugin marketplace add myowinthein/claude-helm
 /plugin install helm@claude-helm
+/reload-plugins
 ```
+
+Useful commands for managing the plugin:
+
+| Command | What it does |
+|---|---|
+| `/plugin marketplace add myowinthein/claude-helm` | Register this repo as a marketplace on your machine. Runs once. |
+| `/plugin install helm@claude-helm` | Install the helm plugin from the registered marketplace. |
+| `/reload-plugins` | Apply changes after install, update, or uninstall. |
+| `/plugin update helm@claude-helm` | Pull the latest version from GitHub when a new release ships. |
+| `/plugin uninstall helm@claude-helm` | Remove the plugin from your machine. |
 
 ## What's inside
 
