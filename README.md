@@ -17,12 +17,14 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 | Command | What it does |
 |---|---|
-| `/ship` | Versioned release flow. Calculates the next version from Conventional Commits, runs tests, tags, and promotes to environment branches if present. |
-| `/refactor` | Branch off, run a targeted refactor by category (architecture, code quality, tests, dependencies), then merge or open a PR. |
-| `/test` | Detect test framework, assess coverage, prioritize gaps, write tests for changes or full project. |
-| `/legal` | Generate GDPR-aware privacy, terms, and conditional legal pages (cookies, disclaimers) based on a project scan. |
-| `/update-claude` | Keep `CLAUDE.md` in sync with the codebase. Full scan on first run, gap update on subsequent runs. |
-| `/update-readme` | Keep `README.md` in sync with the codebase. Follows the Standard Readme spec. |
+| `/helm:ship` | Versioned release flow. Calculates the next version from Conventional Commits, runs tests, tags, and promotes to environment branches if present. |
+| `/helm:refactor` | Branch off, run a targeted refactor by category (architecture, code quality, tests, dependencies), then merge or open a PR. |
+| `/helm:test` | Detect test framework, assess coverage, prioritize gaps, write tests for changes or full project. |
+| `/helm:legal` | Generate GDPR-aware privacy, terms, and conditional legal pages (cookies, disclaimers) based on a project scan. |
+| `/helm:log` | Keep `CLAUDE.md` in sync with the codebase. The captain's record of the voyage. Full scan on first run, gap update on subsequent runs. |
+| `/helm:manifest` | Keep `README.md` in sync with the codebase. The vessel's public listing of what is aboard. Follows the Standard Readme spec. |
+
+All plugin commands are namespaced under `/helm:` so they never collide with project-level commands of the same name. If your project has its own `.claude/commands/ship.md`, that runs as `/ship` while the plugin version runs as `/helm:ship`. Both coexist.
 
 ### Rules
 
@@ -84,7 +86,7 @@ To activate, add this under a `## Project Config` section in your `CLAUDE.md`:
 - `git-solo: true`
 ```
 
-The rules in `git.md` adjust accordingly: no PR flow, direct commits to `main`, version tags from the `/ship` command.
+The rules in `git.md` adjust accordingly: no PR flow, direct commits to `main`, version tags from the `/helm:ship` command.
 
 ## Versioning
 

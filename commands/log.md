@@ -1,10 +1,10 @@
-# update-claude
+# log
 
 Before doing anything, check current branch.
 Only proceed if on `main` or `master`.
 If on any other branch, stop and inform the user:
 
-"update-claude must be run on main or master.
+"log must be run on main or master.
 Current branch is {branch}. Please switch and re-run."
 
 ---
