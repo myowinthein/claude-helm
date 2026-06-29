@@ -1,6 +1,6 @@
 {
   "name": "claude-helm",
-  "description": "A self-hosted marketplace for the helm plugin: slash commands and rules for solo developers using Claude Code.",
+  "description": "A Claude Code plugin pack for solo developers. Slash commands and rules to ship, refactor, test, and document your own work.",
   "owner": {
     "name": "Myo Win Thein",
     "url": "https://github.com/myowinthein"
@@ -9,7 +9,7 @@
     {
       "name": "helm",
       "source": "./",
-      "description": "Take the helm. A Claude Code plugin pack for solo developers."
+      "description": "A Claude Code plugin pack for solo developers. Slash commands and rules to ship, refactor, test, and document your own work."
     }
   ]
 }
