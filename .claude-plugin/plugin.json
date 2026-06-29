@@ -1,6 +1,6 @@
 {
   "name": "helm",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Take the helm. A Claude Code plugin pack for solo developers. Ships slash commands and rule files for shipping, refactoring, testing, and documenting your own work.",
   "author": {
     "name": "Myo Win Thein",
