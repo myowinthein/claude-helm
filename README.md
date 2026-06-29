@@ -2,9 +2,11 @@
 
 Take the helm.
 
-A Claude Code plugin pack for solo developers. Ships slash commands and rule files for shipping, refactoring, testing, and documenting your own work. A growing collection that gains new commands and rules as workflows mature.
+![claude-helm](/assets/images/banner.png)
 
-## Plugin management
+A Claude Code plugin pack for solo developers. Ships slash commands and rule files for shipping, refactoring, testing, and documenting your own work.
+
+## Install
 
 ```bash
 # Register this repo as a marketplace on your machine. Runs once.
@@ -23,20 +25,20 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 /plugin uninstall helm@claude-helm
 ```
 
-## What's inside
+## Usage
 
 ### Commands
 
 | Command | What it does |
 |---|---|
-| `/helm:ship` | Versioned release flow. Calculates the next version from Conventional Commits, runs tests, tags, and promotes to environment branches if present. |
-| `/helm:refactor` | Branch off, run a targeted refactor by category (architecture, code quality, tests, dependencies), then merge or open a PR. |
-| `/helm:test` | Detect test framework, assess coverage, prioritize gaps, write tests for changes or full project. |
-| `/helm:legal` | Generate GDPR-aware privacy, terms, and conditional legal pages (cookies, disclaimers) based on a project scan. |
-| `/helm:log` | Keep `CLAUDE.md` in sync with the codebase. The captain's record of the voyage. Full scan on first run, gap update on subsequent runs. |
-| `/helm:manifest` | Keep `README.md` in sync with the codebase. The vessel's public listing of what is aboard. Follows the Standard Readme spec. |
+| [`/helm:ship`](docs/commands/ship.md) | Cut a release: calculate version, test, tag, push. |
+| [`/helm:refactor`](docs/commands/refactor.md) | Run a project-wide refactor on a dedicated branch. |
+| [`/helm:test`](docs/commands/test.md) | Assess coverage and write missing tests. |
+| [`/helm:legal`](docs/commands/legal.md) | Generate GDPR-aware legal documents from a project scan. |
+| [`/helm:log`](docs/commands/log.md) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
+| [`/helm:manifest`](docs/commands/manifest.md) | Sync `README.md` to the current codebase. The vessel's manifest. |
 
-All plugin commands are namespaced under `/helm:` so they never collide with project-level commands of the same name. If your project has its own `.claude/commands/ship.md`, that runs as `/ship` while the plugin version runs as `/helm:ship`. Both coexist.
+> *Click a command name to open its detail page with the full walkthrough and flow diagram.*
 
 ### Rules
 
