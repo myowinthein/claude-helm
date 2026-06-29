@@ -11,7 +11,7 @@ flowchart TD
   Branch -->|yes| ExistingCheck{Existing<br/>refactor/* branch?}
 
   ExistingCheck -->|yes| Pick[Ask: continue on existing<br/>or create fresh?]
-  ExistingCheck -->|no| Create[Create refactor/{timestamp}]
+  ExistingCheck -->|no| Create["Create refactor/{timestamp}"]
   Pick --> Create
 
   Create --> Scan[Scan project<br/>skip vendor, node_modules,<br/>generated files]
