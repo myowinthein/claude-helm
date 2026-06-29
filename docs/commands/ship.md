@@ -42,7 +42,7 @@ Only on `main`. Discovers remote environment branches via `git branch -r`, filte
 
 ### 3. Calculate version
 
-Only on `main`. Scans the last 20 commits for Conventional Commits patterns. If detected, walks commits since the last tag and proposes the next version: `BREAKING CHANGE` or `feat!` bumps major, `feat` bumps minor, `fix` bumps patch, `chore` and `docs` are ignored. The user confirms or enters a custom version. If Conventional Commits are not in use, the command asks the human for the version directly.
+Only on `main`. Versions follow [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Scans the last 20 commits for Conventional Commits patterns. If detected, walks commits since the last tag and proposes the next version: `BREAKING CHANGE` or `feat!` bumps major, `feat` bumps minor, `fix` bumps patch, `chore` and `docs` are ignored. The user confirms or enters a custom version. If Conventional Commits are not in use, the command asks the human for the version directly.
 
 ### 4. Run tests
 

@@ -38,7 +38,15 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 | [`/helm:log`](docs/commands/log.md) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
 | [`/helm:manifest`](docs/commands/manifest.md) | Sync `README.md` to the current codebase. The vessel's manifest. |
 
-> *Click a command name to open its detail page with the full walkthrough and flow diagram.*
+> *Click a command name to open its detail page.*
+
+### Setup
+
+| Command | What it does |
+|---|---|
+| [`/helm:adopt`](docs/commands/adopt.md) | Install or update the helm rules in the current project. Choose copy or reference mode. |
+
+> *Setup helpers configure helm within a project, not the project itself.*
 
 ### Rules
 
@@ -51,62 +59,12 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 ## Using the rules
 
-Slash commands work everywhere on your machine the moment you install the plugin. Rule files are different. Claude Code does not auto-load rules from a plugin into every project, so you opt them into a specific project in one of two ways.
+Claude Code does not auto-load a plugin's rule files into projects. Use [`/helm:adopt`](docs/commands/adopt.md) to install [`git.md`](docs/rules/git.md) and [`safety.md`](docs/rules/safety.md) into the current project. Two modes:
 
-### Option A: copy the rule into the project (simplest)
+- **Copy**: writes the rules into `.claude/rules/`. Self-contained, committed with the repo.
+- **Reference** (live rules): adds a `## Rules` section to `CLAUDE.md` pointing at the installed plugin path. Updates with `/plugin update`.
 
-From inside the project where you want the rule active:
-
-```bash
-mkdir -p .claude/rules
-cp ~/.claude/plugins/claude-helm/helm/rules/git.md   .claude/rules/git.md
-cp ~/.claude/plugins/claude-helm/helm/rules/safety.md .claude/rules/safety.md
-```
-
-Now `git.md` and `safety.md` live alongside the project, get committed with it, and apply automatically. Update the project's `CLAUDE.md` if needed to reference them.
-
-The plugin install path follows the pattern `~/.claude/plugins/<marketplace-name>/<plugin-name>/`. Adjust the source path if your install location differs.
-
-### Option B: reference them from CLAUDE.md (no copy, no commit)
-
-In the project's `CLAUDE.md`, add a section pointing at the installed plugin:
-
-```markdown
-## Rules
-
-This project follows the rules shipped in [claude-helm](https://github.com/myowinthein/claude-helm):
-
-- `~/.claude/plugins/claude-helm/helm/rules/git.md`
-- `~/.claude/plugins/claude-helm/helm/rules/safety.md`
-```
-
-The rules stay in the plugin install path. Pros: updates with `/plugin update`. Cons: every collaborator needs the plugin installed at the same path, so this option suits solo work better than shared repos.
-
-### Activating Solo Mode
-
-Once `git.md` is in place by either method, add this under a `## Project Config` section in your `CLAUDE.md`:
-
-```
-- `git-solo: true`
-```
-
-`git.md` reads that flag and switches its behavior. Without the flag, the default team workflow (feature branches, PRs) applies.
-
-## Solo Mode
-
-The defining flavor of this pack. Most Claude Code workflows assume team conventions: feature branches, pull requests, code review. Solo Mode flips that for indie developers shipping their own products. You stay disciplined where it matters (Conventional Commits, semver, real tests) and skip the ceremony that has no value when you are the only reviewer.
-
-To activate, add this under a `## Project Config` section in your `CLAUDE.md`:
-
-```
-- `git-solo: true`
-```
-
-The rules in `git.md` adjust accordingly: no PR flow, direct commits to `main`, version tags from the `/helm:ship` command.
-
-## Versioning
-
-Releases follow [Semantic Versioning](https://semver.org/). Version bumps follow [Conventional Commits](https://www.conventionalcommits.org/): `feat` triggers a minor bump, `fix` triggers a patch bump, `BREAKING CHANGE` triggers a major bump. Tagged releases live at [github.com/myowinthein/claude-helm/tags](https://github.com/myowinthein/claude-helm/tags).
+> *Click a rule name to open its detail page.*
 
 ## Contributing
 
