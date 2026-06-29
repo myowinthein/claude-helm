@@ -40,14 +40,6 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 > *Click a command name to open its detail page.*
 
-### Setup
-
-| Command | What it does |
-|---|---|
-| [`/helm:adopt`](docs/commands/adopt.md) | Install or update the helm rules in the current project. Choose copy or reference mode. |
-
-> *Setup helpers configure helm within a project, not the project itself.*
-
 ### Rules
 
 | Rule | What it does |
@@ -55,16 +47,12 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 | [`git.md`](docs/rules/git.md) | Git workflow rules: Solo Mode for direct-to-main, GitHub Flow for feature branches and PRs. |
 | [`safety.md`](docs/rules/safety.md) | Operational safety scan covering deployment, git, secrets, and destructive operations. |
 
-> *Click a rule name to open its detail page.*
-
 ## Using the rules
 
 Claude Code does not auto-load a plugin's rule files into projects. Use [`/helm:adopt`](docs/commands/adopt.md) to install [`git.md`](docs/rules/git.md) and [`safety.md`](docs/rules/safety.md) into the current project. Two modes:
 
 - **Copy**: writes the rules into `.claude/rules/`. Self-contained, committed with the repo.
 - **Reference** (live rules): adds a `## Rules` section to `CLAUDE.md` pointing at the installed plugin path. Updates with `/plugin update`.
-
-> *Click a rule name to open its detail page.*
 
 ## Contributing
 
