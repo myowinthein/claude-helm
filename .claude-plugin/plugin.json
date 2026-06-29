@@ -1,0 +1,22 @@
+{
+  "name": "helm",
+  "version": "0.1.0",
+  "description": "Take the helm. A Claude Code plugin pack for solo developers. Ships slash commands and rule files for shipping, refactoring, testing, and documenting your own work.",
+  "author": {
+    "name": "Myo Win Thein",
+    "email": "mwt.creative@gmail.com",
+    "url": "https://github.com/myowinthein"
+  },
+  "homepage": "https://github.com/myowinthein/claude-helm",
+  "repository": "https://github.com/myowinthein/claude-helm",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "solo-developer",
+    "workflow",
+    "conventional-commits",
+    "ship",
+    "refactor"
+  ]
+}
