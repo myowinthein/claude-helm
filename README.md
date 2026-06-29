@@ -38,8 +38,6 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 | [`/helm:log`](docs/commands/log.md) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
 | [`/helm:manifest`](docs/commands/manifest.md) | Sync `README.md` to the current codebase. The vessel's manifest. |
 
-> *Click a command name to open its detail page.*
-
 ### Rules
 
 | Rule | What it does |
