@@ -15,7 +15,7 @@ flowchart TD
   Determine --> Confirm[Ask: generate the<br/>proposed document set?]
   Confirm -->|cancel| Cancel[/Exit: nothing generated/]
   Confirm -->|generate| Write[Write each doc to legal/<br/>plain English, GDPR<br/>also write legal/README.md]
-  Write --> Commit[Commit:<br/>docs legal generate for v{version}]
+  Write --> Commit["Commit:<br/>docs legal generate for v{version}"]
   Commit --> Done([Report: docs generated])
 ```
 
