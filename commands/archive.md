@@ -1,8 +1,6 @@
 # archive
 
-Archive an old project for long-term storage and future recovery.
-
-Execute the steps below in order. After each step, stop and wait for explicit approval before continuing to the next.
+Run `ls -la` to confirm the current directory, then immediately begin Step 1 below without waiting for further instruction.
 
 ---
 
