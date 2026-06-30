@@ -31,6 +31,7 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 | Command | What it does |
 |---|---|
+| [`/helm:archive`](docs/commands/archive.md) | Archive an old project for long-term storage and future recovery. |
 | [`/helm:ship`](docs/commands/ship.md) | Cut a release: calculate version, test, tag, push. |
 | [`/helm:refactor`](docs/commands/refactor.md) | Run a project-wide refactor on a dedicated branch. |
 | [`/helm:test`](docs/commands/test.md) | Assess coverage and write missing tests. |
