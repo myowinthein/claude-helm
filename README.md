@@ -15,14 +15,14 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 # Install the helm plugin from the registered marketplace.
 /plugin install helm@claude-helm
 
-# Apply changes after install, update, or uninstall.
-/reload-plugins
-
 # Pull the latest version from GitHub when a new release ships.
 /plugin update helm@claude-helm
 
 # Remove the plugin from your machine.
 /plugin uninstall helm@claude-helm
+
+# Apply changes after install, update, or uninstall.
+/reload-plugins
 ```
 
 ## Usage
