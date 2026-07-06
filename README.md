@@ -61,3 +61,5 @@ Issues and pull requests are welcome at [github.com/myowinthein/claude-helm/issu
 ## License
 
 [MIT](LICENSE)
+
+<!-- last-reviewed: 211af6a615fb64b29dd5b0460ffc6d27115ceb79 -->
