@@ -1,3 +1,7 @@
+---
+description: Bump version, run tests, tag release, and promote to deployment environments
+---
+
 # ship
 
 ## Step 1 — Branch check

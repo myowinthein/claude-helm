@@ -1,3 +1,7 @@
+---
+description: Install or update helm rule files (git.md, safety.md) into the current project
+---
+
 # adopt
 
 Install or update the helm rule files (`git.md`, `safety.md`) into the current project. Setup helper, not a workflow command.

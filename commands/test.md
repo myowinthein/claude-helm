@@ -1,3 +1,7 @@
+---
+description: Detect test framework and write missing tests for recent changes or full project
+---
+
 # test
 
 ## Step 1 — Detect test framework

@@ -1,3 +1,7 @@
+---
+description: Scan codebase for refactoring opportunities and apply selected categories
+---
+
 # refactor
 
 Full project scan to identify and apply refactoring opportunities.

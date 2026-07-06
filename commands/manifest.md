@@ -1,3 +1,7 @@
+---
+description: Update README.md with a full scan or gap update since last review
+---
+
 # manifest
 
 Before doing anything, check current branch.

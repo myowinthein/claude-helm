@@ -1,3 +1,7 @@
+---
+description: Explore, restore, containerize, document, and seal a project for long-term archive recovery
+---
+
 # archive
 
 Run `ls -la` to confirm the current directory, then immediately begin Step 1 below without waiting for further instruction.

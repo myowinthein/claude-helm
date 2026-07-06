@@ -1,3 +1,7 @@
+---
+description: Update CLAUDE.md with a full scan or gap update since last review
+---
+
 # log
 
 Before doing anything, check current branch.
