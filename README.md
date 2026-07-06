@@ -2,7 +2,7 @@
 
 Take the helm.
 
-<img src="docs/images/banner.png" alt="claude-helm" width="400">
+<img src="docs/images/banner.png" alt="claude-helm" width="600">
 
 A Claude Code plugin pack for solo developers. Ships slash commands and rule files for shipping, refactoring, testing, and documenting your own work.
 
