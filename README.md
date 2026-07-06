@@ -2,7 +2,7 @@
 
 Take the helm.
 
-![claude-helm](/docs/images/banner.png)
+![claude-helm](docs/images/banner.png)
 
 A Claude Code plugin pack for solo developers. Ships slash commands and rule files for shipping, refactoring, testing, and documenting your own work.
 
@@ -31,13 +31,14 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 | Command | What it does |
 |---|---|
-| [`/helm:archive`](docs/commands/archive.md) | Archive an old project for long-term storage and future recovery. |
 | [`/helm:ship`](docs/commands/ship.md) | Cut a release: calculate version, test, tag, push. |
-| [`/helm:refactor`](docs/commands/refactor.md) | Run a project-wide refactor on a dedicated branch. |
 | [`/helm:test`](docs/commands/test.md) | Assess coverage and write missing tests. |
-| [`/helm:legal`](docs/commands/legal.md) | Generate GDPR-aware legal documents from a project scan. |
+| [`/helm:refactor`](docs/commands/refactor.md) | Run a project-wide refactor on a dedicated branch. |
 | [`/helm:log`](docs/commands/log.md) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
 | [`/helm:manifest`](docs/commands/manifest.md) | Sync `README.md` to the current codebase. The vessel's manifest. |
+| [`/helm:legal`](docs/commands/legal.md) | Generate GDPR-aware legal documents from a project scan. |
+| [`/helm:normalize`](docs/commands/normalize.md) | Rewrite non-conventional commit messages across full repo history. |
+| [`/helm:archive`](docs/commands/archive.md) | Archive an old project for long-term storage and future recovery. |
 
 ### Rules
 
