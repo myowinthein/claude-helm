@@ -42,7 +42,7 @@ Compute the overall state:
 - Any Helm-marked, none Foreign → state = UPDATE
 - Any Foreign → state = CONFLICT
 
-Read the currently installed helm version from `~/.claude/plugins/claude-helm/.claude-plugin/plugin.json` (or wherever the plugin install path resolves to). Record as `current_version`.
+Read the currently installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json`. Record as `current_version`.
 
 ## Step 3 — Show the scan summary
 

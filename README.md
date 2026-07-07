@@ -14,6 +14,12 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 [Documentation site](https://myowinthein.github.io/claude-helm)
 
+## Prerequisites
+
+- [Claude Code](https://claude.ai/code) with plugin support
+- `git`
+- `gh` (GitHub CLI) — optional, required only for creating GitHub Releases via `/helm:ship`
+
 ## Install
 
 ```bash
@@ -47,6 +53,7 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 | [`/helm:legal`](docs/commands/legal.md) | Generate GDPR-aware legal documents from a project scan. |
 | [`/helm:normalize`](docs/commands/normalize.md) | Rewrite non-conventional commit messages across full repo history. |
 | [`/helm:archive`](docs/commands/archive.md) | Archive an old project for long-term storage and future recovery. |
+| [`/helm:adopt`](docs/commands/adopt.md) | Install or update helm rule files into the current project. |
 
 ### Rules
 
