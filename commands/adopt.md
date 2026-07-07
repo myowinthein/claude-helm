@@ -118,7 +118,7 @@ Wait for response.
 
 - Create `.claude/rules/` if it does not exist.
 - For each of `git.md`, `safety.md`:
-  - Read the source from `~/.claude/plugins/claude-helm/helm/rules/{name}`.
+  - Read the source from `~/.claude/plugins/marketplaces/claude-helm/rules/{name}`.
   - Prepend a marker line: `<!-- helm-rule: claude-helm@v{current_version} -->`
   - Write to `.claude/rules/{name}`.
 - If switching from reference mode (REFERENCED → copy): also remove the helm reference lines from CLAUDE.md. If the `## Rules` section becomes empty after removal, remove the section heading too.
