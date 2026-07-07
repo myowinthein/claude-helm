@@ -62,7 +62,7 @@ Claude Code does not auto-load a plugin's rule files into projects. Use [`/helm:
 - **Copy**: writes the rules into `.claude/rules/`. Self-contained and committed with the repo.
 - **Reference**: adds a `## Rules` section to `CLAUDE.md` pointing at the installed plugin path.
 
-To update the rules after `/plugin update helm@claude-helm`: re-run `/helm:adopt` in copy mode to pull the latest files. Reference mode updates automatically — no action needed.
+After updating the plugin, copy mode requires re-running `/helm:adopt` to pull the latest files. Reference mode updates automatically.
 
 ## Contributing
 
