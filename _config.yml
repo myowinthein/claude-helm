@@ -28,4 +28,3 @@ exclude:
   - commands/
   - rules/
   - steps/
-  - README.md
