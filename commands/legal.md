@@ -75,16 +75,31 @@ Generate if Chrome extension, desktop app, or downloadable software:
 Generate if financial, health, legal advice or AI recommendations detected:
 - disclaimer.md
 
-Use AskUserQuestion to confirm before generating:
+Use AskUserQuestion (multi-select) listing every possible document. Mark each one
+that matches the scan findings with "(Recommended)". Always mark privacy-policy.md
+and terms.md as Recommended:
+
   AskUserQuestion:
-    question: "Ready to generate the following legal pages?\n- privacy-policy.md (always required)\n- terms.md (always required)\n- {any conditional documents}\n\nJurisdiction: GDPR · Tone: plain English"
-    header:   "Confirm"
-    multiSelect: false
+    question: "Which legal documents should be generated? (Jurisdiction: GDPR · Tone: plain English)"
+    header:   "Documents"
+    multiSelect: true
     options:
-      - label: "Generate (Recommended)"
-        description: "Write the legal documents"
-      - label: "Cancel"
-        description: "Exit without generating anything"
+      - label: "privacy-policy.md (Recommended)"
+        description: "Always required — explains what data is collected and how it is handled"
+      - label: "terms.md (Recommended)"
+        description: "Always required — acceptable use, IP ownership, liability, governing law"
+      - label: "cookie-policy.md (Recommended if analytics detected)"
+        description: "Required if non-essential cookies or analytics tools are present"
+      - label: "refund-policy.md (Recommended if payments detected)"
+        description: "Required if payment processing is present"
+      - label: "eula.md (Recommended if downloadable software)"
+        description: "Required for plugins, desktop apps, Chrome extensions, or any installable software"
+      - label: "disclaimer.md (Recommended if AI content or advice detected)"
+        description: "Required if the project generates AI content, legal docs, financial or health advice"
+
+  Only include "(Recommended)" on labels that match scan findings.
+  The user may deselect any document or add ones the scan did not flag.
+  If nothing is selected, exit without generating anything.
 
 Wait for response before proceeding.
 
@@ -100,15 +115,25 @@ Write to legal/ folder.
   (comma, semicolon, colon, or a new sentence) works as well.
   When in doubt, restructure the sentence instead.
 
+**Date format:** Use `YYYY-MM-DD` (e.g. `2026-07-07`) for all "Last updated" dates.
+
+**Contact section (all documents):** End every document with a `## Contact` section using this exact wording:
+
+  For questions about this {Document Title}, open an issue at {repo issues URL}.
+
+  Where {Document Title} is the document's heading title (e.g. "Privacy Policy", "Terms of Use",
+  "End User License Agreement", "Disclaimer"). Infer the repo issues URL from the project's
+  `package.json`, `composer.json`, or git remote. If not found, use a placeholder and note it.
+
 **privacy-policy.md must cover:**
 - What data is collected and why
 - How data is stored and protected
 - Whether data is shared with third parties (name them)
 - User rights under GDPR (access, rectification, erasure, portability)
 - Data retention periods
-- Contact information for data requests
 - Cookie usage (if applicable)
-- Last updated date
+- Last updated date (YYYY-MM-DD)
+- Contact section
 
 **terms.md must cover:**
 - What the service is and what it does
@@ -117,20 +142,23 @@ Write to legal/ folder.
 - Liability limitations
 - Termination conditions
 - Governing law
-- Contact information
-- Last updated date
+- Last updated date (YYYY-MM-DD)
+- Contact section
 
 **cookie-policy.md must cover:**
 - What cookies are used and why
 - Which are essential vs non-essential
 - How users can control cookies
 - Third party cookies (name them)
+- Last updated date (YYYY-MM-DD)
+- Contact section
 
 **refund-policy.md must cover:**
 - Refund eligibility conditions
 - Refund request process and timeframe
 - Non-refundable items or conditions
-- Contact information for refund requests
+- Last updated date (YYYY-MM-DD)
+- Contact section
 
 **eula.md must cover:**
 - License grant — what users are permitted to do
@@ -139,6 +167,8 @@ Write to legal/ folder.
 - Disclaimer of warranties
 - Limitation of liability
 - Termination conditions
+- Last updated date (YYYY-MM-DD)
+- Contact section
 
 **disclaimer.md must cover:**
 - Nature of the information provided
@@ -146,6 +176,8 @@ Write to legal/ folder.
 - Accuracy limitations
 - User responsibility for decisions made
 - AI-generated content disclaimer if applicable
+- Last updated date (YYYY-MM-DD)
+- Contact section
 
 ---
 
