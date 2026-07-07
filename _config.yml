@@ -4,8 +4,6 @@ url: "https://myowinthein.github.io"
 baseurl: "/claude-helm"
 
 remote_theme: just-the-docs/just-the-docs@v0.10.0
-color_scheme: helm
-
 nav_sort: order
 nav_external_links:
   - title: GitHub
