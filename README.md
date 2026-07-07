@@ -12,6 +12,8 @@ Take the helm.
 
 A Claude Code plugin pack for solo developers. Ships slash commands and rule files for shipping, refactoring, testing, and documenting your own work.
 
+Full documentation: [myowinthein.github.io/claude-helm](https://myowinthein.github.io/claude-helm)
+
 ## Install
 
 ```bash
@@ -37,7 +39,7 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 | Command | What it does |
 |---|---|
-| [`/helm:ship`](docs/commands/ship.md) | Cut a release: calculate version, test, tag, push. |
+| [`/helm:ship`](docs/commands/ship.md) | Cut a release: calculate version, test, tag, push, and create a GitHub Release. |
 | [`/helm:test`](docs/commands/test.md) | Assess coverage and write missing tests. |
 | [`/helm:refactor`](docs/commands/refactor.md) | Run a project-wide refactor on a dedicated branch. |
 | [`/helm:log`](docs/commands/log.md) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
@@ -68,4 +70,4 @@ Issues and pull requests are welcome at [github.com/myowinthein/claude-helm/issu
 
 [MIT](LICENSE)
 
-<!-- last-reviewed: 211af6a615fb64b29dd5b0460ffc6d27115ceb79 -->
+<!-- last-reviewed: afd1b7a2fcfedbf01e87148b285bfbccd8765fc5 -->
