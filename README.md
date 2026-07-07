@@ -12,7 +12,7 @@ Take the helm.
 
 A Claude Code plugin pack for solo developers. Ships slash commands and rule files for shipping, refactoring, testing, and documenting your own work.
 
-Full documentation: [myowinthein.github.io/claude-helm](https://myowinthein.github.io/claude-helm)
+[Documentation site](https://myowinthein.github.io/claude-helm)
 
 ## Install
 
