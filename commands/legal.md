@@ -51,9 +51,42 @@ Scan the codebase to understand the project's legal profile:
 - Does the app use AI to generate recommendations presented as facts?
 - Does it use a BYOK model (user provides their own API key)?
 
+**Framework and output detection**
+
+Detect the project's web framework or static site generator by scanning for these
+indicators in priority order:
+
+| Detected | Indicator files | Format | Output path |
+|---|---|---|---|
+| Jekyll | `_config.yml` + (`Gemfile` or `gemspec`) | `.md` | `docs/legal/` |
+| Hugo | `hugo.toml` or `config.toml` with `baseURL` | `.md` | `content/legal/` |
+| Gatsby | `gatsby-config.*` or `"gatsby"` in package.json | `.md` | `src/pages/legal/` |
+| Astro | `astro.config.*` | `.mdx` | `src/pages/legal/` |
+| Next.js (App Router) | `next.config.*` + `app/` directory | `.mdx` | `app/legal/[slug]/page.mdx` |
+| Next.js (Pages Router) | `next.config.*` + `pages/` directory | `.mdx` | `pages/legal/` |
+| Nuxt | `nuxt.config.*` | `.md` | `content/legal/` |
+| Vite / React SPA / Vue SPA | `vite.config.*` or framework in package.json, no SSG | `.html` | `public/legal/` |
+| Plain HTML site | `index.html` at root, no framework | `.html` | `legal/` |
+| No framework detected | none of the above | ask user (see below) | ask user |
+
+If no framework is detected, use AskUserQuestion before proceeding:
+  AskUserQuestion:
+    question: "No web framework detected. Where should legal documents be written?"
+    header:   "Output"
+    multiSelect: false
+    options:
+      - label: "legal/ as Markdown (Recommended)"
+        description: "Standard location for repos and GitHub Pages without a site generator"
+      - label: "legal/ as HTML"
+        description: "Bare semantic HTML with no styles — suitable for plain HTML sites"
+      - label: "Custom path"
+        description: "Specify a path manually"
+
+Record the resolved format and output path before proceeding.
+
 **Existing legal documents**
-- Check whether a `legal/` folder exists
-- List which documents are already present (privacy-policy.md, terms.md, etc.)
+- Check whether the resolved output path exists
+- List which documents are already present using the resolved file extension
 - Note existing files — the user will choose whether to regenerate them
 
 Record all findings before proceeding.
@@ -104,7 +137,7 @@ and terms.md as Recommended. For documents that already exist in legal/, append
         description: "Required if the project generates AI content, legal docs, financial or health advice"
 
   Only include "(Recommended)" on labels that match scan findings.
-  Only include "(exists)" on labels where the file already exists in legal/.
+  Only include "(exists)" on labels where the file already exists in the resolved output path.
   The user may deselect any document or add ones the scan did not flag.
   If nothing is selected, exit without generating anything.
   Selected documents that already exist will be overwritten.
@@ -116,7 +149,21 @@ Wait for response before proceeding.
 ## Step 4 — Generate documents
 
 Generate each selected document in plain English, GDPR compliant.
-Write to legal/ folder. Overwrite if the file already exists.
+Write to the resolved output path using the resolved format. Overwrite if the file already exists.
+
+**Format rules**
+
+For Markdown (`.md`) and MDX (`.mdx`):
+- Use standard markdown headings (`#`, `##`)
+- No HTML wrapper
+- The site's template handles rendering
+
+For HTML (`.html`):
+- Write a complete standalone page: `<!DOCTYPE html>`, `<html>`, `<head>`, `<body>`
+- Use semantic HTML elements: `<h1>`, `<h2>`, `<p>`, `<ul>`, `<li>`
+- No inline styles, no `<style>` blocks, no JavaScript — the site's stylesheet handles rendering
+- Include `<meta charset="UTF-8">` and `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
+- Set `<title>` to the document title (e.g. "Privacy Policy")
 
 **Writing style**
 - Use em-dashes sparingly. Only use one when no other punctuation
@@ -260,6 +307,9 @@ Required sections in order:
 Commit all generated documents:
   docs(legal): generate legal documents for v{version}
 
+Include the resolved output path and format in the commit body if they differ from
+the default (`legal/` Markdown), so future runs have context.
+
 ---
 
 ## Step 6 — Confirm completion
@@ -270,7 +320,8 @@ LEGAL COMPLETE
 Generated:
 - {list of documents generated}
 
-Location:     legal/
+Location:     {resolved output path}
+Format:       {Markdown / MDX / HTML}
 Jurisdiction: GDPR
 Tone:         plain English
 Committed:    yes
