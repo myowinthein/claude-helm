@@ -1,3 +1,9 @@
+---
+title: /helm:manifest
+parent: Commands
+nav_order: 3
+---
+
 # /helm:manifest
 
 Keep `README.md` in sync with the codebase, following the Standard Readme spec. Acts as the vessel's manifest: the public-facing listing of what is aboard. Full scan on first run, gap update on subsequent runs.

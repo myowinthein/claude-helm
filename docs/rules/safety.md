@@ -1,3 +1,9 @@
+---
+title: safety.md
+parent: Rules
+nav_order: 2
+---
+
 # safety.md
 
 The operational safety reference for a project. Defines which actions always need explicit confirmation, what to scan when bootstrapping a new project, and how to document risk categories so future agents read the same constraints.

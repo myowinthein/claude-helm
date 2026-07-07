@@ -1,3 +1,9 @@
+---
+title: /helm:refactor
+parent: Commands
+nav_order: 5
+---
+
 # /helm:refactor
 
 Branch off `main`, run a full project scan to identify refactoring opportunities by category, apply selected categories one at a time with tests passing after each, then merge, open a PR, or leave the branch for review.

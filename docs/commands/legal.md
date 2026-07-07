@@ -1,3 +1,9 @@
+---
+title: /helm:legal
+parent: Commands
+nav_order: 8
+---
+
 # /helm:legal
 
 Scan the project's legal profile (app type, data collection, third parties, monetization, content model, AI features), generate the legal documents that actually apply, and commit them to `legal/`.

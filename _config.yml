@@ -1,0 +1,32 @@
+title: claude-helm
+description: A Claude Code plugin pack for solo developers.
+url: "https://myowinthein.github.io"
+baseurl: "/claude-helm"
+
+remote_theme: just-the-docs/just-the-docs@v0.10.0
+color_scheme: helm
+
+nav_sort: order
+nav_external_links:
+  - title: GitHub
+    url: https://github.com/myowinthein/claude-helm
+    hide_icon: false
+
+footer_content: "claude-helm &mdash; MIT License"
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-remote-theme
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - CLAUDE.md
+  - LICENSE
+  - .gitignore
+  - .DS_Store
+  - .claude/
+  - .claude-plugin/
+  - commands/
+  - rules/
+  - steps/

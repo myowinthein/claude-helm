@@ -1,3 +1,9 @@
+---
+title: git.md
+parent: Rules
+nav_order: 1
+---
+
 # git.md
 
 The git workflow rules for a project. Defines two modes (Solo and GitHub Flow), the universal rules that apply in both, the Conventional Commits format used for every commit, code-quality gates before pushing, and optional environment-branch promotion.

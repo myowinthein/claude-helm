@@ -1,3 +1,9 @@
+---
+title: /helm:normalize
+parent: Commands
+nav_order: 6
+---
+
 # /helm:normalize
 
 Rewrites every non-conventional commit message in the repository's history to follow [Conventional Commits](https://www.conventionalcommits.org/) format. Two confirmation gates stand between the user and any destructive action: a plain-language risk warning, then a full scan showing exactly how many commits will change and a sample of the rewrites before anything is touched.

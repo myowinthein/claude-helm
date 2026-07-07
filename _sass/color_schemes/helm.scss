@@ -1,0 +1,24 @@
+// Helm — dark slate with amber gold, decisive and mechanical
+
+$helm-slate:      #1c2333;
+$helm-slate-dk:   #131929;
+$helm-amber:      #d97706;
+$helm-amber-dim:  #fef3c7;
+$helm-bg:         #f9f7f4;
+$helm-surface:    #ffffff;
+$helm-text:       #1c2333;
+$helm-muted:      #64748b;
+
+$link-color:                    $helm-amber !default;
+$btn-primary-color:             $helm-amber !default;
+$base-button-color:             $helm-amber-dim !default;
+$sidebar-color:                 $helm-slate !default;
+$feedback-color:                $helm-slate-dk !default;
+$body-background-color:         $helm-bg !default;
+$search-background-color:       $helm-surface !default;
+$table-background-color:        $helm-surface !default;
+$code-background-color:         #f1f0ee !default;
+$body-heading-color:            $helm-slate !default;
+$body-text-color:               $helm-text !default;
+$nav-child-link-color:          $helm-amber !default;
+$search-result-preview-color:   $helm-muted !default;

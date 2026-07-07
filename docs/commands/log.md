@@ -1,3 +1,9 @@
+---
+title: /helm:log
+parent: Commands
+nav_order: 2
+---
+
 # /helm:log
 
 Keep `CLAUDE.md` in sync with the codebase. Acts as the captain's log of the project: durable, distilled knowledge about architecture, conventions, domain rules, and traps. Full scan on first run, gap update on subsequent runs.

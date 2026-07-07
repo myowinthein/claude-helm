@@ -1,3 +1,9 @@
+---
+title: /helm:archive
+parent: Commands
+nav_order: 9
+---
+
 # /helm:archive
 
 The archival command. Runs a five-step workflow to restore an old project, freeze its environment with Docker, generate a Postman collection, write recovery documentation, and push everything to a private archive remote — so the project can be recovered years later from a clean machine.

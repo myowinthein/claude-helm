@@ -1,3 +1,9 @@
+---
+title: /helm:ship
+parent: Commands
+nav_order: 1
+---
+
 # /helm:ship
 
 The release command. Reads the commits since the last tag, calculates the next version using Conventional Commits, runs the test suite, tags the release, and optionally promotes `main` to one or more environment branches.

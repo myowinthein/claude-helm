@@ -1,3 +1,9 @@
+---
+title: /helm:test
+parent: Commands
+nav_order: 4
+---
+
 # /helm:test
 
 Detect the test framework, assess existing coverage and recent activity, then write tests scoped to recent changes or the full project. Commits per scope with `test({scope}):` messages.

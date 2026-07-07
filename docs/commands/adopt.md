@@ -1,3 +1,9 @@
+---
+title: /helm:adopt
+parent: Commands
+nav_order: 7
+---
+
 # /helm:adopt
 
 Setup helper. Installs or updates the helm rule files into the current project, choosing between a copy-in or a reference-from-CLAUDE.md install. Detects whether existing rules came from helm (via a version marker) or were authored manually, and adapts the prompt accordingly.
