@@ -99,7 +99,8 @@ If non_compliant_count is 0 → inform user "All commits already follow Conventi
 
 ## Step 5 — Rewrite commit messages
 
-Use git filter-branch to rewrite messages without touching the working tree or file contents:
+Use git filter-branch to rewrite messages without touching the working tree or file contents.
+(git filter-branch is deprecated since Git 2.36 — prefer `git filter-repo` if installed: `pip install git-filter-repo`)
 
 ```
 git filter-branch -f --msg-filter '
