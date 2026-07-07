@@ -14,12 +14,6 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 [Documentation site](https://myowinthein.github.io/claude-helm)
 
-## Prerequisites
-
-- [Claude Code](https://claude.ai/code) with plugin support
-- `git`
-- `gh` (GitHub CLI) — optional, required only for creating GitHub Releases via `/helm:ship`
-
 ## Install
 
 ```bash
