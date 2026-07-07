@@ -1,3 +1,8 @@
+---
+title: Disclaimer
+nav_exclude: true
+---
+
 # Disclaimer
 
 **Last updated:** 2026-07-07

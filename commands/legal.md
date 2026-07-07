@@ -58,11 +58,10 @@ manifests, folder structure, and any other available signals to decide:
 
   Static site generator (Jekyll, Hugo, Eleventy, and similar):
   - Format: `.md`
-  - Output path: `legal/` at the repo root
-  - Rationale: SSGs are typically used for documentation or blogs. Legal docs are
-    secondary and do not need to be rendered as site pages. Root `legal/` keeps them
-    out of the site's content directory; GitHub renders the markdown natively and
-    they can be linked to directly.
+  - Output path: the generator's content or docs directory, under a `legal/` subfolder
+  - Detect the correct content directory from the generator's config
+  - Add `nav_exclude: true` to the YAML frontmatter of each file so they are
+    rendered at a URL but excluded from the site's navigation
 
   JS framework with SSR or SSG (Next.js, Astro, Nuxt, SvelteKit, and similar):
   - Format: `.mdx`
@@ -190,15 +189,14 @@ Write to the resolved output path using the resolved format. Overwrite if the fi
 
 **Format rules**
 
-For Markdown (`.md`) at repo root (SSG projects):
+For Markdown (`.md`) in an SSG content directory:
+- Add YAML frontmatter with `title:` and `nav_exclude: true`
 - Use standard markdown headings (`#`, `##`)
-- No YAML frontmatter — these files are not site pages
-- No HTML wrapper
+- No HTML wrapper — the site's template handles rendering
 
 For MDX (`.mdx`) in a JS framework's pages directory:
 - Use standard markdown headings (`#`, `##`)
-- No HTML wrapper
-- The framework's layout handles rendering
+- No HTML wrapper — the framework's layout handles rendering
 
 For HTML (`.html`):
 - Write each document to its own subfolder as `index.html` for clean URLs:

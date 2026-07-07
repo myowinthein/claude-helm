@@ -1,3 +1,8 @@
+---
+title: Terms of Service
+nav_exclude: true
+---
+
 # Terms of Service
 
 **Last updated:** 2026-07-07

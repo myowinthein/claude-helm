@@ -1,3 +1,8 @@
+---
+title: End User License Agreement
+nav_exclude: true
+---
+
 # End User License Agreement
 
 **Last updated:** 2026-07-07
