@@ -118,35 +118,22 @@ Then write CLAUDE.md using the seven-section schema:
 6. Hard Safety Rules (invariants, never-do list — keep brief, detail in .claude/rules/safety.md)
 7. Known Traps (initially empty or inferred from README warnings)
 
-Before writing the Project Config section, ask two questions.
+Before writing the Project Config section, ask a single multi-select question
+covering all known flags. All flags are pre-selected as recommended defaults
+for solo indie developers:
 
-First, use AskUserQuestion to set git mode:
   AskUserQuestion:
-    question: "Which git workflow does this project use?"
-    header:   "Git mode"
-    multiSelect: false
+    question: "Which project config flags should be enabled? (All recommended for solo developers)"
+    header:   "Project Config"
+    multiSelect: true
     options:
-      - label: "Solo (Recommended)"
+      - label: "git-solo: true"
         description: "Commit direct to main; no feature branches, no PRs"
-      - label: "GitHub Flow"
-        description: "Feature branches and PRs into main"
-
-  If Solo selected → write `git-solo: true` under Project Config.
-  If GitHub Flow selected → leave Project Config without a git-solo entry (GitHub Flow is the default).
-
-Then use AskUserQuestion to set auto-commit:
-  AskUserQuestion:
-    question: "Should Claude commit automatically after completing a task, without asking for confirmation?"
-    header:   "Auto-commit"
-    multiSelect: false
-    options:
-      - label: "Yes — commit automatically (Recommended)"
+      - label: "git-auto-commit: true"
         description: "Claude commits after each task without prompting; push still requires confirmation"
-      - label: "No — ask before each commit"
-        description: "Claude proposes a commit message and waits for confirmation"
 
-  If Yes selected → write `git-auto-commit: true` under Project Config.
-  If No selected → leave Project Config without a git-auto-commit entry (ask is the default).
+  Write each selected flag under Project Config.
+  Omit any flag not selected — absence means the feature is off.
 
 CLAUDE.md is not: a README, a file listing, a code walkthrough,
 a technical spec, or a changelog. Only include information a future
@@ -166,27 +153,27 @@ Write directly — no approval needed.
 ## Gap — Changes Since Last Review
 
 Before reviewing commits, check the Project Config section of CLAUDE.md for missing
-known flags. Known flags and their recommended defaults for solo indie developers:
+known flags. Known flags:
 
   - `git-solo: true` — commit direct to main; no branches, no PRs
   - `git-auto-commit: true` — commit after each task without prompting
 
-For each flag not present in Project Config, ask using AskUserQuestion:
+If any flags are missing, ask a single multi-select question listing only the missing ones.
+All missing flags are pre-selected as recommended defaults for solo indie developers:
+
   AskUserQuestion:
-    question: "Project Config is missing {flag}. Enable it? (Recommended for solo developers)"
+    question: "Project Config is missing some flags. Which should be enabled? (All recommended for solo developers)"
     header:   "Project Config"
-    multiSelect: false
-    options:
-      - label: "Yes (Recommended)"
-        description: "{one line explaining what the flag does}"
-      - label: "No"
-        description: "Leave it out — absence means the feature is off"
+    multiSelect: true
+    options: one entry per missing flag, e.g.:
+      - label: "git-solo: true"
+        description: "Commit direct to main; no feature branches, no PRs"
+      - label: "git-auto-commit: true"
+        description: "Claude commits after each task without prompting; push still requires confirmation"
 
-  If Yes → add the flag to the Project Config section immediately.
-  If No → leave absent; do not ask again on future gap runs unless the user removes a flag
-  that was previously set (absence after deliberate no is indistinguishable — just skip).
-
-Ask once per missing flag. If all flags are already present, skip this block silently.
+  Write each selected flag into the Project Config section immediately.
+  Omit any flag not selected — absence means the feature is off.
+  If all flags are already present, skip this block silently.
 
 Read commit messages first to get the shape of what changed.
 Then read file changes only for significant commits — skip: bug fixes,

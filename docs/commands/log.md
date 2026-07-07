@@ -67,10 +67,7 @@ Four modes, with the default depending on assessment:
 
 ### 4. Full scan
 
-Investigates the project from scratch: business purpose, modules and workflows, stack and versions, architectural patterns (from implementation, not folder names), conventions, domain rules, operational context. Reviews any existing docs and `.claude/rules`. Before writing, asks two config questions with solo-optimized defaults:
-
-- **Git mode**: Solo recommended (`git-solo: true`) or GitHub Flow
-- **Auto-commit**: Yes recommended (`git-auto-commit: true`); push still requires confirmation either way
+Investigates the project from scratch: business purpose, modules and workflows, stack and versions, architectural patterns (from implementation, not folder names), conventions, domain rules, operational context. Reviews any existing docs and `.claude/rules`. Before writing, asks a single multi-select question covering all known Project Config flags — all pre-selected as recommended defaults for solo developers.
 
 Then writes `CLAUDE.md` using a seven-section schema:
 
@@ -86,7 +83,7 @@ Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
 
 ### 5. Gap update
 
-Before reviewing commits, checks the Project Config section for missing known flags (`git-solo`, `git-auto-commit`). For each missing flag, asks once with the recommended default set to `true` (optimized for solo indie developers). If the user confirms, the flag is written into Project Config immediately. If all flags are already present, this check is silent.
+Before reviewing commits, checks the Project Config section for missing known flags (`git-solo`, `git-auto-commit`). If any are missing, asks a single multi-select question listing only the absent flags — all pre-selected as recommended defaults for solo developers. Writes confirmed flags immediately. If all flags are already present, this check is silent.
 
 Then reads commit messages to get the shape of what changed. Reads file changes only for significant commits. Focuses on architectural changes, new modules, new conventions, domain rule changes, new operational knowledge, and newly discovered traps.
 
