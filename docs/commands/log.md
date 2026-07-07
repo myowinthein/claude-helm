@@ -67,10 +67,10 @@ Four modes, with the default depending on assessment:
 
 ### 4. Full scan
 
-Investigates the project from scratch: business purpose, modules and workflows, stack and versions, architectural patterns (from implementation, not folder names), conventions, domain rules, operational context. Reviews any existing docs and `.claude/rules`. Before writing, asks two config questions:
+Investigates the project from scratch: business purpose, modules and workflows, stack and versions, architectural patterns (from implementation, not folder names), conventions, domain rules, operational context. Reviews any existing docs and `.claude/rules`. Before writing, asks two config questions with solo-optimized defaults:
 
-- **Git mode**: GitHub Flow (default) or Solo (`git-solo: true`)
-- **Auto-commit**: whether Claude should commit after each task without prompting (`git-auto-commit: true`); push still requires confirmation either way
+- **Git mode**: Solo recommended (`git-solo: true`) or GitHub Flow
+- **Auto-commit**: Yes recommended (`git-auto-commit: true`); push still requires confirmation either way
 
 Then writes `CLAUDE.md` using a seven-section schema:
 
@@ -86,7 +86,9 @@ Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
 
 ### 5. Gap update
 
-Reads commit messages first to get the shape of what changed. Reads file changes only for significant commits. Focuses on architectural changes, new modules, new conventions, domain rule changes, new operational knowledge, and newly discovered traps.
+Before reviewing commits, checks the Project Config section for missing known flags (`git-solo`, `git-auto-commit`). For each missing flag, asks once with the recommended default set to `true` (optimized for solo indie developers). If the user confirms, the flag is written into Project Config immediately. If all flags are already present, this check is silent.
+
+Then reads commit messages to get the shape of what changed. Reads file changes only for significant commits. Focuses on architectural changes, new modules, new conventions, domain rule changes, new operational knowledge, and newly discovered traps.
 
 Applies a three-question filter to each candidate change:
 

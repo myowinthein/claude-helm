@@ -126,10 +126,10 @@ First, use AskUserQuestion to set git mode:
     header:   "Git mode"
     multiSelect: false
     options:
-      - label: "GitHub Flow"
-        description: "Feature branches and PRs into main (default in .claude/rules/git.md)"
-      - label: "Solo"
+      - label: "Solo (Recommended)"
         description: "Commit direct to main; no feature branches, no PRs"
+      - label: "GitHub Flow"
+        description: "Feature branches and PRs into main"
 
   If Solo selected → write `git-solo: true` under Project Config.
   If GitHub Flow selected → leave Project Config without a git-solo entry (GitHub Flow is the default).
@@ -140,10 +140,10 @@ Then use AskUserQuestion to set auto-commit:
     header:   "Auto-commit"
     multiSelect: false
     options:
-      - label: "No — ask before each commit"
-        description: "Claude proposes a commit message and waits for confirmation (default)"
-      - label: "Yes — commit automatically"
+      - label: "Yes — commit automatically (Recommended)"
         description: "Claude commits after each task without prompting; push still requires confirmation"
+      - label: "No — ask before each commit"
+        description: "Claude proposes a commit message and waits for confirmation"
 
   If Yes selected → write `git-auto-commit: true` under Project Config.
   If No selected → leave Project Config without a git-auto-commit entry (ask is the default).
@@ -164,6 +164,29 @@ Write directly — no approval needed.
 ---
 
 ## Gap — Changes Since Last Review
+
+Before reviewing commits, check the Project Config section of CLAUDE.md for missing
+known flags. Known flags and their recommended defaults for solo indie developers:
+
+  - `git-solo: true` — commit direct to main; no branches, no PRs
+  - `git-auto-commit: true` — commit after each task without prompting
+
+For each flag not present in Project Config, ask using AskUserQuestion:
+  AskUserQuestion:
+    question: "Project Config is missing {flag}. Enable it? (Recommended for solo developers)"
+    header:   "Project Config"
+    multiSelect: false
+    options:
+      - label: "Yes (Recommended)"
+        description: "{one line explaining what the flag does}"
+      - label: "No"
+        description: "Leave it out — absence means the feature is off"
+
+  If Yes → add the flag to the Project Config section immediately.
+  If No → leave absent; do not ask again on future gap runs unless the user removes a flag
+  that was previously set (absence after deliberate no is indistinguishable — just skip).
+
+Ask once per missing flag. If all flags are already present, skip this block silently.
 
 Read commit messages first to get the shape of what changed.
 Then read file changes only for significant commits — skip: bug fixes,
