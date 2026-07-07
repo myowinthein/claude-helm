@@ -46,6 +46,4 @@ We may update these terms from time to time. Continued use of the plugin after c
 
 ## Contact
 
-**Myo Win Thein**
-GitHub: [github.com/myowinthein](https://github.com/myowinthein)
-Issues: [github.com/myowinthein/claude-helm/issues](https://github.com/myowinthein/claude-helm/issues)
+For questions about these Terms of Use, open an issue at [github.com/myowinthein/claude-helm/issues](https://github.com/myowinthein/claude-helm/issues).

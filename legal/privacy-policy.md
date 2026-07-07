@@ -40,6 +40,4 @@ Because we collect no personal data, there is no data held about you for us to a
 
 ## Contact
 
-**Myo Win Thein**
-GitHub: [github.com/myowinthein](https://github.com/myowinthein)
-Issues: [github.com/myowinthein/claude-helm/issues](https://github.com/myowinthein/claude-helm/issues)
+For questions about this Privacy Policy, open an issue at [github.com/myowinthein/claude-helm/issues](https://github.com/myowinthein/claude-helm/issues).

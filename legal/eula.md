@@ -50,6 +50,4 @@ This license terminates automatically if you breach its terms. On termination, y
 
 ## Contact
 
-**Myo Win Thein**
-GitHub: [github.com/myowinthein](https://github.com/myowinthein)
-Issues: [github.com/myowinthein/claude-helm/issues](https://github.com/myowinthein/claude-helm/issues)
+For questions about this End User License Agreement, open an issue at [github.com/myowinthein/claude-helm/issues](https://github.com/myowinthein/claude-helm/issues).
