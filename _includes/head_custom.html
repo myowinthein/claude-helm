@@ -1,3 +1,9 @@
+<script>
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    jtd.setTheme('dark');
+  }
+</script>
+
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'loose' });
