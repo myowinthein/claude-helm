@@ -57,10 +57,10 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 ## Using the rules
 
-Claude Code does not auto-load a plugin's rule files into projects. Use [`/helm:adopt`](docs/commands/adopt.md) to install [`git.md`](docs/rules/git.md) and [`safety.md`](docs/rules/safety.md) into the current project. Two modes:
+Claude Code does not auto-load a plugin's rule files into projects. Use [`/helm:adopt`](docs/commands/adopt.md) to install the rules into the current project. Two modes:
 
 - **Copy**: writes the rules into `.claude/rules/`. Self-contained, committed with the repo.
-- **Reference** (live rules): adds a `## Rules` section to `CLAUDE.md` pointing at the installed plugin path. Updates with `/plugin update`.
+- **Reference**: adds a `## Rules` section to `CLAUDE.md` pointing at the installed plugin path. Updates with `/plugin update`.
 
 ## Contributing
 
