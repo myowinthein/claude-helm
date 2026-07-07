@@ -29,12 +29,16 @@ If Cancel → exit.
 ## Step 2 — Scan existing rules
 
 For each of `.claude/rules/git.md` and `.claude/rules/safety.md`, record one of:
-- **Absent** — file does not exist
+- **Absent** — file does not exist and not referenced in CLAUDE.md
 - **Helm-marked** — file exists and starts with `<!-- helm-rule: claude-helm@v{X.Y.Z} -->`; record version
 - **Foreign** — file exists but does not contain the helm marker
+- **Referenced** — file does not exist but a matching `~/.claude/plugins/marketplaces/claude-helm/rules/{name}` path is present in CLAUDE.md
+
+To detect Referenced: check whether CLAUDE.md contains a line with `marketplaces/claude-helm/rules/git.md` (or `safety.md`).
 
 Compute the overall state:
 - All Absent → state = FRESH
+- Any Referenced, none Helm-marked, none Foreign → state = REFERENCED
 - Any Helm-marked, none Foreign → state = UPDATE
 - Any Foreign → state = CONFLICT
 
@@ -45,14 +49,27 @@ Read the currently installed helm version from `~/.claude/plugins/claude-helm/.c
 Display:
 
 ```
-.claude/rules/git.md     {Absent / Helm v{X.Y.Z} / Foreign}
-.claude/rules/safety.md  {Absent / Helm v{X.Y.Z} / Foreign}
+.claude/rules/git.md     {Absent / Helm v{X.Y.Z} / Foreign / Referenced in CLAUDE.md}
+.claude/rules/safety.md  {Absent / Helm v{X.Y.Z} / Foreign / Referenced in CLAUDE.md}
 Installed helm version:  v{current_version}
 ```
 
 ## Step 4 — Choose install mode
 
 Choose the question and labels based on state.
+
+If state = REFERENCED:
+  AskUserQuestion:
+    question: "Helm rules are already referenced in CLAUDE.md (reference mode). What would you like to do?"
+    header:   "Already installed"
+    multiSelect: false
+    options:
+      - label: "Keep references (no change)"
+        description: "References point to the marketplaces path and stay current after /plugin update."
+      - label: "Switch to copy mode"
+        description: "Copy versioned rule files into .claude/rules/ and remove the CLAUDE.md references."
+      - label: "Cancel"
+        description: "Exit without changes."
 
 If state = FRESH:
   AskUserQuestion:
@@ -104,6 +121,7 @@ Wait for response.
   - Read the source from `~/.claude/plugins/claude-helm/helm/rules/{name}`.
   - Prepend a marker line: `<!-- helm-rule: claude-helm@v{current_version} -->`
   - Write to `.claude/rules/{name}`.
+- If switching from reference mode (REFERENCED → copy): also remove the helm reference lines from CLAUDE.md. If the `## Rules` section becomes empty after removal, remove the section heading too.
 - For the CONFLICT/Review path: for each Foreign file, use AskUserQuestion with options: Overwrite, Skip, Show diff. Loop the prompt after Show diff so the user can still pick Overwrite or Skip.
 
 ### Reference path

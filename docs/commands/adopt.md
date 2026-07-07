@@ -20,18 +20,22 @@ flowchart TD
   AskContinue -->|continue| Scan
   Sanity -->|yes| Scan
 
-  Scan[Scan .claude/rules/<br/>read helm-rule markers<br/>resolve installed helm version] --> State{Existing<br/>state?}
+  Scan[Scan .claude/rules/ and CLAUDE.md<br/>read helm-rule markers and references<br/>resolve installed helm version] --> State{Existing<br/>state?}
 
   State -->|all absent| Fresh[Ask: copy, reference, or cancel?]
+  State -->|referenced in CLAUDE.md| Referenced[Ask: keep references,<br/>switch to copy, or cancel?]
   State -->|helm-marked files| Update[Ask: update, switch to reference,<br/>or cancel?]
   State -->|foreign content| Conflict[Ask: review per file,<br/>reference, or cancel?]
 
   Fresh -->|cancel| Cancel
+  Referenced -->|cancel| Cancel
   Update -->|cancel| Cancel
   Conflict -->|cancel| Cancel
 
   Fresh -->|copy| Copy
   Fresh -->|reference| Reference
+  Referenced -->|keep references| Done
+  Referenced -->|switch to copy| Copy
   Update -->|update| Copy
   Update -->|switch to reference| Reference
   Conflict -->|review per file| PerFile[Per file:<br/>overwrite, skip, or diff]
@@ -52,11 +56,12 @@ Looks for `.git/`, `CLAUDE.md`, or a recognised manifest (`package.json`, `compo
 
 ### 2. Scan existing rules
 
-Reads `.claude/rules/git.md` and `.claude/rules/safety.md`. For each file, classifies as:
+Reads `.claude/rules/git.md` and `.claude/rules/safety.md`, then checks `CLAUDE.md` for reference-mode entries. For each file, classifies as:
 
-- **Absent**: the file does not exist.
+- **Absent**: the file does not exist and is not referenced in CLAUDE.md.
 - **Helm-marked**: file exists and starts with `<!-- helm-rule: claude-helm@v{X.Y.Z} -->`. The version is recorded.
 - **Foreign**: file exists but does not carry the helm marker. Authored manually or by another tool.
+- **Referenced**: the file does not exist as a physical copy, but a matching `marketplaces/claude-helm/rules/{name}` path is present in CLAUDE.md (reference-mode install).
 
 Then reads the installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json` so the prompt can show users which version they would adopt.
 
@@ -68,13 +73,14 @@ Prints a small status table so the user knows what is on disk before picking an 
 
 Question and labels adapt to the detected state:
 
-- **FRESH** (no existing files): Copy into `.claude/rules/` is the recommended option; Reference and Cancel are also available.
-- **UPDATE** (helm-marked files present): Update is the recommended option; Switch to reference and Cancel are also available.
-- **CONFLICT** (foreign files present): Review per file is the recommended option; Reference and Cancel are also available.
+- **FRESH** (no existing files, no CLAUDE.md references): Copy into `.claude/rules/` is the recommended option; Reference and Cancel are also available.
+- **REFERENCED** (rules referenced in CLAUDE.md, no physical files): Keep references is the recommended option; Switch to copy mode and Cancel are also available.
+- **UPDATE** (helm-marked physical files present): Update is the recommended option; Switch to reference and Cancel are also available.
+- **CONFLICT** (foreign physical files present): Review per file is the recommended option; Reference and Cancel are also available.
 
 ### 5. Execute
 
-**Copy or Update**: ensures `.claude/rules/` exists, then writes `git.md` and `safety.md` from the installed plugin source. Each file gets a leading `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker so a future `/helm:adopt` run can detect them as helm-managed.
+**Copy or Update**: ensures `.claude/rules/` exists, then writes `git.md` and `safety.md` from the installed plugin source. Each file gets a leading `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker so a future `/helm:adopt` run can detect them as helm-managed. When switching from reference mode, the helm reference lines are also removed from `CLAUDE.md`; if the `## Rules` section becomes empty, the heading is removed too.
 
 **Conflict / Review per file**: for each foreign file, asks Overwrite, Skip, or Show diff. Showing the diff loops back to the same prompt so the user can pick after seeing the changes.
 
