@@ -17,6 +17,23 @@ When active:
 
 ---
 
+## Auto-Commit
+
+Activate by declaring in CLAUDE.md (Project Config section):
+  git-auto-commit: true
+
+When active:
+- After completing a task, commit without asking for confirmation
+- Stage only the files changed for the task. Never use `git add -A` blindly
+- Derive the commit message from the work done; follow Conventional Commits
+- Push still requires confirmation (covered in .claude/rules/safety.md)
+- If the task spans multiple logical units, commit each unit separately before moving to the next
+
+When not active (default):
+- Ask for confirmation before committing
+
+---
+
 ## Universal Rules
 
 These apply regardless of mode.

@@ -1,6 +1,6 @@
 # Operational Safety Rules
 
-Perform this scan during bootstrap (/update-claude Mode 1).
+Perform this scan during project bootstrap, as part of /helm:log Full scan mode.
 Update when deployment, infrastructure, or environment configuration changes.
 Only document risks supported by evidence in the repository — not assumptions.
 

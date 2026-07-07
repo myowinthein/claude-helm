@@ -22,15 +22,15 @@ Current branch is {branch}. Please switch and re-run."
 
 Before doing anything else, present this warning using AskUserQuestion:
 
-AskUserQuestion:
-  question: "This command rewrites git history. Understand the consequences before continuing:\n\n- Every rewritten commit gets a new SHA — history is permanently altered\n- Any remote copies (GitHub, GitLab, etc.) require a force push to sync\n- Tags pointing at rewritten commits become orphaned — they will be re-created\n- Anyone else who has cloned this repo will have a broken history\n\nThis is safe for solo developers on private repos with no active collaborators."
-  header:   "Risk"
-  multiSelect: false
-  options:
-    - label: "I understand — continue"
-      description: "Proceed to scan commit history"
-    - label: "Cancel"
-      description: "Exit without making any changes"
+  AskUserQuestion:
+    question: "This command rewrites git history. Understand the consequences before continuing:\n\n- Every rewritten commit gets a new SHA — history is permanently altered\n- Any remote copies (GitHub, GitLab, etc.) require a force push to sync\n- Tags pointing at rewritten commits become orphaned — they will be re-created\n- Anyone else who has cloned this repo will have a broken history\n\nThis is safe for solo developers on private repos with no active collaborators."
+    header:   "Risk"
+    multiSelect: false
+    options:
+      - label: "I understand — continue"
+        description: "Proceed to scan commit history"
+      - label: "Cancel"
+        description: "Exit without making any changes"
 
 If Cancel → exit silently.
 
@@ -82,15 +82,15 @@ Build a rewrite plan: a list of {sha, original_message, proposed_message} for ev
 
 Present the plan using AskUserQuestion:
 
-AskUserQuestion:
-  question: "Scan complete.\n\nTotal commits: {total}\nAlready compliant: {compliant_count}\nTo be rewritten: {non_compliant_count}\n\nSample rewrites:\n{show up to 5 examples in format: '{original}' → '{proposed}'}\n\nProceeding will rewrite {non_compliant_count} commits and force-push to remote."
-  header:   "Confirm rewrite"
-  multiSelect: false
-  options:
-    - label: "Rewrite {non_compliant_count} commits (Recommended)"
-      description: "Apply all rewrites and re-create orphaned tags"
-    - label: "Cancel"
-      description: "Exit without making any changes"
+  AskUserQuestion:
+    question: "Scan complete.\n\nTotal commits: {total}\nAlready compliant: {compliant_count}\nTo be rewritten: {non_compliant_count}\n\nSample rewrites:\n{show up to 5 examples in format: '{original}' → '{proposed}'}\n\nProceeding will rewrite {non_compliant_count} commits and force-push to remote."
+    header:   "Confirm rewrite"
+    multiSelect: false
+    options:
+      - label: "Rewrite {non_compliant_count} commits (Recommended)"
+        description: "Apply all rewrites and re-create orphaned tags"
+      - label: "Cancel"
+        description: "Exit without making any changes"
 
 If Cancel → exit silently.
 If non_compliant_count is 0 → inform user "All commits already follow Conventional Commits. Nothing to do." and exit.
@@ -144,15 +144,15 @@ If no tags are orphaned: skip silently.
 
 ## Step 7 — Force push
 
-AskUserQuestion:
-  question: "Rewrite complete. Ready to force push to remote?\n\nThis will overwrite the remote history at origin/{branch}. This cannot be undone on the remote."
-  header:   "Force push"
-  multiSelect: false
-  options:
-    - label: "Force push to origin (Recommended)"
-      description: "Sync the rewritten history to remote"
-    - label: "Skip — push manually"
-      description: "Leave remote as-is. Run: git push origin {branch} --force --tags"
+  AskUserQuestion:
+    question: "Rewrite complete. Ready to force push to remote?\n\nThis will overwrite the remote history at origin/{branch}. This cannot be undone on the remote."
+    header:   "Force push"
+    multiSelect: false
+    options:
+      - label: "Force push to origin (Recommended)"
+        description: "Sync the rewritten history to remote"
+      - label: "Skip — push manually"
+        description: "Leave remote as-is. Run: git push origin {branch} --force --tags"
 
 If force push selected:
 ```
