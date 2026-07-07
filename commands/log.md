@@ -97,6 +97,32 @@ If CLAUDE.md exists with a saved commit hash and schema is intact:
 
 ---
 
+## Project Config Check
+
+Known flags and their recommended defaults for solo indie developers:
+
+  - `git-solo: true` — commit direct to main; no feature branches, no PRs
+  - `git-auto-commit: true` — commit after each task without prompting; push still requires confirmation
+
+**Full scan:** always ask about all known flags.
+**Gap update:** ask only about flags missing from the existing Project Config section.
+  If all flags are already present, skip this block silently.
+
+  AskUserQuestion:
+    question: "Which project config flags should be enabled? (All recommended for solo developers)"
+    header:   "Project Config"
+    multiSelect: true
+    options: one entry per flag being asked (all flags for Full; missing flags only for Gap):
+      - label: "git-solo: true"
+        description: "Commit direct to main; no feature branches, no PRs"
+      - label: "git-auto-commit: true"
+        description: "Claude commits after each task without prompting; push still requires confirmation"
+
+  Write each selected flag under Project Config.
+  Omit any flag not selected — absence means the feature is off.
+
+---
+
 ## Full — Full Project Scan
 
 Before writing anything, investigate in this order:
@@ -118,22 +144,7 @@ Then write CLAUDE.md using the seven-section schema:
 6. Hard Safety Rules (invariants, never-do list — keep brief, detail in .claude/rules/safety.md)
 7. Known Traps (initially empty or inferred from README warnings)
 
-Before writing the Project Config section, ask a single multi-select question
-covering all known flags. All flags are pre-selected as recommended defaults
-for solo indie developers:
-
-  AskUserQuestion:
-    question: "Which project config flags should be enabled? (All recommended for solo developers)"
-    header:   "Project Config"
-    multiSelect: true
-    options:
-      - label: "git-solo: true"
-        description: "Commit direct to main; no feature branches, no PRs"
-      - label: "git-auto-commit: true"
-        description: "Claude commits after each task without prompting; push still requires confirmation"
-
-  Write each selected flag under Project Config.
-  Omit any flag not selected — absence means the feature is off.
+Before writing the Project Config section, run Project Config Check.
 
 CLAUDE.md is not: a README, a file listing, a code walkthrough,
 a technical spec, or a changelog. Only include information a future
@@ -152,28 +163,7 @@ Write directly — no approval needed.
 
 ## Gap — Changes Since Last Review
 
-Before reviewing commits, check the Project Config section of CLAUDE.md for missing
-known flags. Known flags:
-
-  - `git-solo: true` — commit direct to main; no branches, no PRs
-  - `git-auto-commit: true` — commit after each task without prompting
-
-If any flags are missing, ask a single multi-select question listing only the missing ones.
-All missing flags are pre-selected as recommended defaults for solo indie developers:
-
-  AskUserQuestion:
-    question: "Project Config is missing some flags. Which should be enabled? (All recommended for solo developers)"
-    header:   "Project Config"
-    multiSelect: true
-    options: one entry per missing flag, e.g.:
-      - label: "git-solo: true"
-        description: "Commit direct to main; no feature branches, no PRs"
-      - label: "git-auto-commit: true"
-        description: "Claude commits after each task without prompting; push still requires confirmation"
-
-  Write each selected flag into the Project Config section immediately.
-  Omit any flag not selected — absence means the feature is off.
-  If all flags are already present, skip this block silently.
+Before reviewing commits, run Project Config Check.
 
 Read commit messages first to get the shape of what changed.
 Then read file changes only for significant commits — skip: bug fixes,
