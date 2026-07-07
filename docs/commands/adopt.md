@@ -58,7 +58,7 @@ Reads `.claude/rules/git.md` and `.claude/rules/safety.md`. For each file, class
 - **Helm-marked**: file exists and starts with `<!-- helm-rule: claude-helm@v{X.Y.Z} -->`. The version is recorded.
 - **Foreign**: file exists but does not carry the helm marker. Authored manually or by another tool.
 
-Then reads the installed helm version from `~/.claude/plugins/claude-helm/.claude-plugin/plugin.json` so the prompt can show users which version they would adopt.
+Then reads the installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json` so the prompt can show users which version they would adopt.
 
 ### 3. Show the scan summary
 
@@ -78,7 +78,7 @@ Question and labels adapt to the detected state:
 
 **Conflict / Review per file**: for each foreign file, asks Overwrite, Skip, or Show diff. Showing the diff loops back to the same prompt so the user can pick after seeing the changes.
 
-**Reference**: resolves the plugin's absolute install path and appends a `## Rules` section to `CLAUDE.md` pointing at the source files. If `CLAUDE.md` does not exist, prints the snippet to the chat so the user can place it manually.
+**Reference**: appends a `## Rules` section to `CLAUDE.md` pointing at `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`. If `CLAUDE.md` does not exist, prints the snippet to the chat so the user can place it manually.
 
 ### 6. Report
 
