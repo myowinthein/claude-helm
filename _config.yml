@@ -5,7 +5,6 @@ baseurl: "/claude-helm"
 
 remote_theme: just-the-docs/just-the-docs@v0.10.0
 color_scheme: helm
-dark_color_scheme: helm-dark
 
 nav_sort: order
 nav_external_links:
