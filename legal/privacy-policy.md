@@ -1,8 +1,3 @@
----
-title: Privacy Policy
-nav_exclude: true
----
-
 # Privacy Policy
 
 **Last updated:** 2026-07-07
