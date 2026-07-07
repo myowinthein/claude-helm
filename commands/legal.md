@@ -104,6 +104,23 @@ are applied globally or scoped:
 
 Record the resolved format and output path before proceeding.
 
+**Confirm output location**
+
+After resolving the format and path, confirm with the user before continuing:
+
+  AskUserQuestion:
+    question: "Legal docs will be written to {resolved-path} as {Format} files. Confirm or choose a different location."
+    header:   "Output location"
+    multiSelect: false
+    options:
+      - label: "Use {resolved-path} (Recommended)"
+        description: "{Format} — detected from {framework/scenario name}"
+      - label: "Custom path"
+        description: "Specify a different output path and format"
+
+  If Custom path selected → ask the user to type the path and preferred format before proceeding.
+  If confirmed → proceed with the resolved path and format.
+
 **Existing legal documents**
 - Check whether the resolved output path exists
 - List which documents are already present using the resolved file extension

@@ -20,9 +20,10 @@ flowchart TD
 
   Framework --> CSS{HTML output?}
   CSS -->|yes| CSSDetect[Detect CSS scope:<br/>global → bare HTML<br/>scoped/utility → bare HTML + TODO comment<br/>unknown → add TODO comment]
-  CSS -->|no| Existing
-  CSSDetect --> Existing[Check existing docs<br/>in resolved output path]
+  CSS -->|no| Confirm
+  CSSDetect --> Confirm[Confirm output location:<br/>show resolved path + format<br/>user confirms or overrides]
 
+  Confirm --> Existing[Check existing docs<br/>in resolved output path]
   Existing --> Q1["Question 1 — Core documents (multi-select):<br/>privacy-policy, terms, eula, disclaimer"]
   Q1 --> Q2{Cookie or refund<br/>applicable?}
   Q2 -->|yes| Q2ask["Question 2 — Conditional documents (multi-select):<br/>cookie-policy, refund-policy"]
@@ -66,6 +67,8 @@ Reads the codebase to build a legal profile:
 - Global CSS (element/class selectors site-wide) → bare semantic HTML, no comment.
 - Scoped or utility-first CSS (Tailwind, CSS Modules, etc.) → bare semantic HTML + a `<!-- TODO: wrap this content … -->` comment inside `<body>`.
 - Cannot determine → add the TODO comment as a safe default.
+
+**Output location confirmation** — after detection, the resolved path and format are shown to the user before anything is written. The user can confirm or override with a custom path and format.
 
 **Existing documents** — checks the resolved output path for already-present files. Existing files are labelled `(exists)` in the selection step so the user knows they will be overwritten.
 
