@@ -18,7 +18,10 @@ flowchart TD
 
   Exists -->|no| Mode1[Ask: full scan or skip?]
   Exists -->|yes, no hash| Mode1
-  Exists -->|yes, with hash| Gap{Gap significance<br/>since last review?}
+  Exists -->|yes, with hash| Schema{All 7 sections<br/>present?}
+
+  Schema -->|no| Mode4["Ask: full scan (default),<br/>gap update, or skip?<br/>(names missing sections)"]
+  Schema -->|yes| Gap{Gap significance<br/>since last review?}
 
   Gap -->|small or moderate| Mode2["Ask: gap update (default),<br/>full scan, or skip?"]
   Gap -->|large or significant| Mode3["Ask: full scan (default),<br/>gap update, or skip?"]
@@ -31,6 +34,9 @@ flowchart TD
   Mode3 -->|skip| Skip
   Mode3 -->|full| Full
   Mode3 -->|gap| GapPath
+  Mode4 -->|skip| Skip
+  Mode4 -->|full| Full
+  Mode4 -->|gap| GapPath
 
   Full[Investigate project<br/>ask git mode + auto-commit<br/>write 7-section CLAUDE.md<br/>append last-reviewed hash] --> Done
   GapPath[Review commits since hash<br/>apply 3-question filter<br/>update sections or report<br/>no change, bump hash] --> Done
@@ -48,13 +54,16 @@ Only runs from `main` or `master`. Halts on any other branch.
 
 Reads the current `CLAUDE.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, runs `git log {hash}..HEAD --oneline` to measure the gap. Categorizes the gap as small/moderate or large/significant, ignoring noise commits (bug fixes, styling, dependency updates, routine CRUD).
 
+Also checks whether all seven required sections are present (`## Project Identity`, `## Project Config`, `## Dev Commands`, `## Architecture Pointers`, `## Behavior Rules`, `## Hard Safety Rules`, `## Known Traps`). A missing section means the schema is broken, regardless of gap size.
+
 ### 3. Pick mode
 
-Three modes, with the default depending on assessment:
+Four modes, with the default depending on assessment:
 
 - **No file or no hash**: Full scan or skip.
-- **Small to moderate gap**: Gap update (recommended), full scan, or skip.
-- **Large gap**: Full scan (recommended), gap update, or skip.
+- **Schema broken** (any required section missing): Full scan recommended regardless of gap size; names the missing sections.
+- **Small to moderate gap, schema intact**: Gap update (recommended), full scan, or skip.
+- **Large gap, schema intact**: Full scan (recommended), gap update, or skip.
 
 ### 4. Full scan
 

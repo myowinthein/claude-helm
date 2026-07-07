@@ -21,6 +21,11 @@ Check CLAUDE.md:
 - Is there a saved commit hash? (look for `<!-- last-reviewed: {hash} -->`)
 - If hash exists, run `git log {hash}..HEAD --oneline` to see the gap
 - How significant is the gap? (ignore: bug fixes, styling, dependency updates, routine CRUD)
+- If the file exists and has content, check whether all seven required sections are present:
+  `## Project Identity`, `## Project Config`, `## Dev Commands`,
+  `## Architecture Pointers`, `## Behavior Rules`, `## Hard Safety Rules`, `## Known Traps`
+
+Schema is intact if all seven headings are found. Schema is broken if any are missing.
 
 Based on current state, use AskUserQuestion (single-select) to present options:
 
@@ -46,7 +51,21 @@ If CLAUDE.md exists but has no saved commit hash:
       - label: "Skip"
         description: "No update needed"
 
-If CLAUDE.md exists with a saved commit hash:
+If CLAUDE.md exists with a saved commit hash and schema is broken (any required section missing):
+  Regardless of gap size, recommend Full scan. State which sections are missing.
+  AskUserQuestion:
+    question: "{one sentence stating which sections are missing and why full scan is recommended}"
+    header:   "Update mode"
+    multiSelect: false
+    options:
+      - label: "Full scan (Recommended)"
+        description: "Rewrite CLAUDE.md from a complete project scan to restore missing sections"
+      - label: "Gap update"
+        description: "Update only commits since last review — missing sections will not be added"
+      - label: "Skip"
+        description: "No update needed"
+
+If CLAUDE.md exists with a saved commit hash and schema is intact:
   Form a recommendation (Full or Gap) based on gap significance.
   Put the recommended option first.
 
