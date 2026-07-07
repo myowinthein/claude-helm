@@ -53,62 +53,54 @@ Scan the codebase to understand the project's legal profile:
 
 **Framework and output detection**
 
-Detect the project's web framework or static site generator by scanning for these
-indicators in priority order:
+Scan the project to determine which scenario applies. Use config files, package
+manifests, folder structure, and any other available signals to decide:
 
-| Detected | Indicator files | Format | Output path |
-|---|---|---|---|
-| Jekyll | `_config.yml` + (`Gemfile` or `gemspec`) | `.md` | `docs/legal/` |
-| Hugo | `hugo.toml` or `config.toml` with `baseURL` | `.md` | `content/legal/` |
-| Gatsby | `gatsby-config.*` or `"gatsby"` in package.json | `.md` | `src/pages/legal/` |
-| Astro | `astro.config.*` | `.mdx` | `src/pages/legal/` |
-| Next.js (App Router) | `next.config.*` + `app/` directory | `.mdx` | `app/legal/[slug]/page.mdx` |
-| Next.js (Pages Router) | `next.config.*` + `pages/` directory | `.mdx` | `pages/legal/` |
-| Nuxt | `nuxt.config.*` | `.md` | `content/legal/` |
-| Vite / React SPA / Vue SPA | `vite.config.*` or framework in package.json, no SSG | `.html` | `public/legal/` |
-| Plain HTML site | `index.html` at root, no framework | `.html` | `legal/` |
-| No framework detected | none of the above | ask user (see below) | ask user |
+  Static site generator (Jekyll, Hugo, Eleventy, and similar):
+  - Format: `.md`
+  - Output path: the generator's content or docs directory, under a `legal/` subfolder
+  - Detect the correct content directory from the generator's config
 
-If no framework is detected, use AskUserQuestion before proceeding:
+  JS framework with SSR or SSG (Next.js, Astro, Nuxt, SvelteKit, and similar):
+  - Format: `.mdx`
+  - Output path: the framework's pages or content directory, under a `legal/` subfolder
+  - Detect the correct pages directory from the framework's config and folder structure
+
+  SPA or plain HTML site (no server-side rendering, no static site generator):
+  - Format: `.html` with subfolder structure (`legal/privacy-policy/index.html`, etc.)
+  - Output path: the directory that is served as the web root (e.g. `public/`, `dist/`, or root)
+
+  No web project detected (pure library, CLI tool, or non-web repo):
   AskUserQuestion:
     question: "No web framework detected. Where should legal documents be written?"
     header:   "Output"
     multiSelect: false
     options:
       - label: "legal/ as Markdown (Recommended)"
-        description: "Standard location for repos and GitHub Pages without a site generator"
+        description: "Standard location for repos without a web front end"
       - label: "legal/ as HTML"
-        description: "Bare semantic HTML with no styles — suitable for plain HTML sites"
+        description: "Bare semantic HTML — suitable for plain HTML sites"
       - label: "Custom path"
         description: "Specify a path manually"
 
 **CSS style detection (HTML output only)**
 
-When the resolved format is `.html`, also detect whether the project uses globally-scoped
-or scoped/utility-first CSS:
+When the resolved format is `.html`, scan the project to determine whether styles
+are applied globally or scoped:
 
-  Global CSS (bare semantic HTML works):
-  - Plain CSS files (`*.css`) with element or class selectors
-  - Sass/SCSS (`*.scss`) with element selectors
-  - Bootstrap (detected via package.json or CDN link in HTML files)
-  - Any CSS framework that styles semantic elements globally
+  Global CSS (element and class selectors that apply site-wide):
+  → Output bare semantic HTML. The site's stylesheet handles rendering.
 
-  Scoped or utility-first CSS (bare HTML gets no visual treatment):
-  - Tailwind CSS (detected via `tailwind.config.*` or `"tailwindcss"` in package.json)
-  - CSS Modules (detected via `*.module.css` files)
-  - styled-components or Emotion (detected via package.json)
-  - Any framework where styles are component-scoped
+  Scoped or utility-first CSS (styles tied to components or utility classes,
+  where unstyled semantic HTML receives no visual treatment):
+  → Output bare semantic HTML AND prepend this comment inside `<body>`:
 
-If global CSS detected → output bare semantic HTML.
+    <!-- TODO: wrap this content in your site's prose or layout container.
+         Styles are scoped or utility-first — bare semantic HTML will not
+         inherit your site's visual design without a wrapper. -->
 
-If scoped/utility-first CSS detected → output bare semantic HTML AND prepend this
-comment directly inside `<body>`, before any content:
-
-  <!-- TODO: wrap this content in your site's prose or layout container.
-       Styles are scoped/utility-first — unstyled semantic HTML will not
-       inherit your site's visual design without a wrapper. -->
-
-If CSS approach cannot be determined → add the comment anyway as a safe default.
+  Cannot determine:
+  → Add the comment as a safe default.
 
 Record the resolved format and output path before proceeding.
 
