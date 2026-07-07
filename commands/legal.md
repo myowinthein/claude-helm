@@ -159,6 +159,8 @@ For Markdown (`.md`) and MDX (`.mdx`):
 - The site's template handles rendering
 
 For HTML (`.html`):
+- Write each document to its own subfolder as `index.html` for clean URLs:
+  `{output-path}/privacy-policy/index.html`, `{output-path}/terms/index.html`, etc.
 - Write a complete standalone page: `<!DOCTYPE html>`, `<html>`, `<head>`, `<body>`
 - Use semantic HTML elements: `<h1>`, `<h2>`, `<p>`, `<ul>`, `<li>`
 - No inline styles, no `<style>` blocks, no JavaScript — the site's stylesheet handles rendering
