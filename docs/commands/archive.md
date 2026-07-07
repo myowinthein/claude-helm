@@ -2,6 +2,7 @@
 title: /helm:archive
 parent: Commands
 nav_order: 9
+has_children: true
 ---
 
 # /helm:archive
@@ -93,6 +94,14 @@ The command stops and waits for explicit approval at seven points:
 5. After Step 4 — before proceeding to finalize
 6. Before branch deletion in Step 5
 7. Before asset moves in Step 5 if referenced files are found
+
+## Step details
+
+- [Step 1 — Explore](archive/1-explore.md)
+- [Step 2 — Restore and Freeze](archive/2-restore-and-freeze.md)
+- [Step 3 — Postman Collection](archive/3-postman.md)
+- [Step 4 — Documentation](archive/4-documentation.md)
+- [Step 5 — Finalize](archive/5-finalize.md)
 
 ## See also
 
