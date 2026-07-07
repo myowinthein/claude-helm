@@ -115,54 +115,51 @@ Record all findings before proceeding.
 
 ## Step 3 — Determine which documents to generate
 
-Based on scan findings:
+Based on scan findings, mark each document as Recommended if it applies:
 
-Always generate:
-- privacy-policy.md
-- terms.md
+- privacy-policy.md — always Recommended
+- terms.md — always Recommended
+- cookie-policy.md — Recommended if non-essential cookies or analytics detected
+- refund-policy.md — Recommended if payment processing detected
+- eula.md — Recommended if Chrome extension, desktop app, or downloadable software detected
+- disclaimer.md — Recommended if financial, health, legal advice or AI recommendations detected
 
-Generate if non-essential cookies or analytics detected:
-- cookie-policy.md
+AskUserQuestion supports a maximum of 4 options. Split into two questions:
 
-Generate if payment processing detected:
-- refund-policy.md
-
-Generate if Chrome extension, desktop app, or downloadable software:
-- eula.md
-
-Generate if financial, health, legal advice or AI recommendations detected:
-- disclaimer.md
-
-Use AskUserQuestion (multi-select) listing every possible document. Mark each one
-that matches the scan findings with "(Recommended)". Always mark privacy-policy.md
-and terms.md as Recommended. For documents that already exist in legal/, append
-"(exists)" to the label so the user knows it will be overwritten:
-
+Question 1 — core documents:
   AskUserQuestion:
-    question: "Which legal documents should be generated? (Jurisdiction: GDPR · Tone: plain English)"
-    header:   "Documents"
+    question: "Which core legal documents should be generated? (Jurisdiction: GDPR · Tone: plain English)"
+    header:   "Core documents"
     multiSelect: true
     options:
-      - label: "privacy-policy.md (Recommended)"           ← append "(exists)" if file present
-        description: "Always required — explains what data is collected and how it is handled"
-      - label: "terms.md (Recommended)"                    ← append "(exists)" if file present
-        description: "Always required — acceptable use, IP ownership, liability, governing law"
-      - label: "cookie-policy.md"                          ← append "(Recommended)" if analytics detected; "(exists)" if file present
+      - label: "privacy-policy.md (Recommended)"    ← append "(exists)" if file already present
+        description: "Explains what data is collected and how it is handled"
+      - label: "terms.md (Recommended)"             ← append "(exists)" if file already present
+        description: "Acceptable use, IP ownership, liability, governing law"
+      - label: "eula.md"                            ← append "(Recommended)" if downloadable software; "(exists)" if file present
+        description: "License grant, restrictions, and liability for installable software"
+      - label: "disclaimer.md"                      ← append "(Recommended)" if AI content or advice; "(exists)" if file present
+        description: "No-professional-advice notice and AI-generated content warning"
+
+Question 2 — conditional documents (only ask if applicable based on scan findings):
+  AskUserQuestion:
+    question: "Any additional legal documents needed?"
+    header:   "Additional documents"
+    multiSelect: true
+    options:
+      - label: "cookie-policy.md"                   ← append "(Recommended)" if analytics detected; "(exists)" if file present
         description: "Required if non-essential cookies or analytics tools are present"
-      - label: "refund-policy.md"                          ← append "(Recommended)" if payments detected; "(exists)" if file present
+      - label: "refund-policy.md"                   ← append "(Recommended)" if payments detected; "(exists)" if file present
         description: "Required if payment processing is present"
-      - label: "eula.md"                                   ← append "(Recommended)" if downloadable software; "(exists)" if file present
-        description: "Required for plugins, desktop apps, Chrome extensions, or any installable software"
-      - label: "disclaimer.md"                             ← append "(Recommended)" if AI content or advice detected; "(exists)" if file present
-        description: "Required if the project generates AI content, legal docs, financial or health advice"
 
-  Only include "(Recommended)" on labels that match scan findings.
-  Only include "(exists)" on labels where the file already exists in the resolved output path.
-  The user may deselect any document or add ones the scan did not flag.
-  If nothing is selected, exit without generating anything.
-  Selected documents that already exist will be overwritten.
+  Skip Question 2 entirely if neither cookie-policy nor refund-policy is applicable
+  based on scan findings (no analytics, no payments detected).
 
-Wait for response before proceeding.
+Generate only the documents selected across both questions.
+If nothing is selected, exit without generating anything.
+Selected documents that already exist will be overwritten.
+
+Wait for both responses before proceeding.
 
 ---
 
