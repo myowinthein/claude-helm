@@ -28,3 +28,4 @@ exclude:
   - commands/
   - rules/
   - steps/
+  - docs/legal/
