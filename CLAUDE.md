@@ -10,6 +10,7 @@
 ## Project Config
 
 git-solo: true
+git-auto-commit: true
 
 ## Dev Commands
 
