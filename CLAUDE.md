@@ -3,7 +3,7 @@
 ## Project Identity
 
 **Name:** claude-helm (plugin name: `helm`)
-**Stack:** Pure markdown — no runtime, no framework, no dependencies
+**Stack:** Plugin is pure markdown (no runtime, no framework, no dependencies); a Jekyll + just-the-docs GitHub Pages site lives alongside it in the same repo
 **Purpose:** A Claude Code plugin pack for solo developers. Slash commands and rule files for shipping, refactoring, testing, and documenting your own work.
 **Blast radius:** Changes to command files affect every user who has the plugin installed. Changes to `rules/` affect every project that adopted them via `/helm:adopt`.
 
@@ -15,7 +15,7 @@ git-solo: true
 
 No install, build, or test step — the project is markdown files.
 
-Release: `/helm:ship` (handles version bump, tag, and push)
+Release: `/helm:ship` (handles version bump, tag, push, and GitHub Release creation)
 Reload locally: `/reload-plugins` after any change
 
 ## Architecture Pointers
@@ -27,6 +27,7 @@ Reload locally: `/reload-plugins` after any change
 - `docs/commands/` — human-readable detail pages per command (separate from command definitions)
 - `.claude-plugin/plugin.json` — the only version file; bump this on every release
 - `.claude-plugin/marketplace.json` — Claude Code marketplace registration metadata
+- `_config.yml` + `Gemfile` + `_sass/` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
 
 ## Behavior Rules
 
@@ -44,7 +45,7 @@ Reload locally: `/reload-plugins` after any change
 
 - **Plugin cache is stale after releases.** `/plugin update` + `/reload-plugins` does not invalidate `~/.claude/plugins/cache/`. After each release, command files must be manually copied from `~/.claude/plugins/marketplaces/claude-helm/commands/` into the active cache version directory, then `/reload-plugins` must be run again.
 - **`steps/` directory is intentional.** Files in `steps/archive/` are not commands — they are sub-steps for `/helm:archive`. Do not move them to `commands/`.
-- **`docs/commands/` is not the command source.** The slash command definitions live in `commands/`. The `docs/commands/` files are detail pages linked from README — editing them does not change command behavior.
+- **`docs/commands/` is not the command source.** The slash command definitions live in `commands/`. The `docs/commands/` files are detail pages that serve as Jekyll site content and link from README — editing them does not change command behavior.
 
 ## Rules
 
@@ -52,4 +53,4 @@ This project follows the rules shipped in claude-helm:
 - /Users/myowinthein/.claude/plugins/marketplaces/claude-helm/rules/git.md
 - /Users/myowinthein/.claude/plugins/marketplaces/claude-helm/rules/safety.md
 
-<!-- last-reviewed: 211af6a615fb64b29dd5b0460ffc6d27115ceb79 -->
+<!-- last-reviewed: 216cea2f3695b4b1930dce053998687e2f252e0e -->
