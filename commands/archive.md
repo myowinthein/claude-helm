@@ -8,7 +8,7 @@ Run `ls -la` to confirm the current directory, then immediately begin Step 1 bel
 
 ---
 
-# Step 1 — Explore
+## Step 1 — Explore
 
 Analyze this project in read-only mode.
 
@@ -48,50 +48,50 @@ Guidance:
 
 Output the report in this format:
 
-## Overview
+### Overview
 Project name, purpose, and business domain. One short paragraph.
 
-## Technology Stack
+### Technology Stack
 Framework, language, runtime versions, package manager, database type.
 
-## Architecture
+### Architecture
 Key modules, layers, and how the project is structured. Keep it brief.
 
-## Data & Database
+### Data & Database
 Database type and where credentials live. Available restoration sources in priority order (dumps → seeders → migrations → none). Demo accounts or demo data if found.
 
-## External Integrations
+### External Integrations
 Third-party services the project depends on. Note which are required for basic operation vs optional.
 
-## Existing Documentation
+### Existing Documentation
 List documentation files found. For each: what it covers and whether it appears current or outdated.
 
-## Git & Repository Safety
+### Git & Repository Safety
 Remotes and their URLs. Branch list. Any safety concerns (production remotes, CI/CD that auto-deploys on push, sensitive history).
 
-## Setup & Restoration Approach
+### Setup & Restoration Approach
 Runtime versions required. Package manager. Whether Docker is needed. Recommended restoration strategy and why.
 
-## Archive Assets
+### Archive Assets
 Postman files, screenshots, videos, sample exports, or other assets worth preserving. Large or binary files worth noting.
 
-## Credentials Risk
+### Credentials Risk
 All env files scanned (.env, .env.staging, .env.production, config files, Docker files). For each credential found: file path, variable name, redacted value, and whether it appears still-active or likely expired. If none found, state that explicitly.
 
-## Risks & Unknowns
+### Risks & Unknowns
 Blockers, missing dependencies, unclear areas. Be specific.
 
-## Restoration Complexity
+### Restoration Complexity
 Rate as: Easy / Medium / Complex / Blocked — one sentence explaining why.
 
-## Recommended Next Step
+### Recommended Next Step
 What to watch out for or resolve before proceeding to Step 2.
 
 Do not make any changes. Output the report and stop. Wait for approval before continuing to Step 2.
 
 ---
 
-# Step 2 — Restore and Freeze
+## Step 2 — Restore and Freeze
 
 Restore this project and freeze its environment for long-term archive recovery.
 
@@ -99,7 +99,7 @@ Use all relevant outputs from previous steps as context.
 
 Goal: Get the project running locally, containerize it with pinned image versions, and export the built images to tarballs so the environment can be recovered years later without depending on external registries.
 
-## Rules
+### Rules
 
 - Preserve the original project as much as possible. Prefer compatibility fixes over upgrades, restoration over modernization.
 - Record every file created, modified, or deleted with the reason.
@@ -109,7 +109,7 @@ Goal: Get the project running locally, containerize it with pinned image version
 - Do not change Git state — no commit, push, pull, fetch, checkout, reset, rebase, merge, or history rewrite.
 - Work only within the current repository. If another repository appears required, report it and stop for approval.
 
-## Restoration Philosophy
+### Restoration Philosophy
 
 The primary goal is not just to run the project today — it is to freeze the environment so it can be recovered 5–10 years from now, regardless of what runtimes, package versions, or registries are available at that time.
 
@@ -117,7 +117,7 @@ Docker is the preferred environment freeze mechanism. Base image tags and regist
 
 For project types where Docker does not apply, document exact runtime versions, SDK versions, and toolchain versions in `docs/setup.md` as the freeze mechanism instead.
 
-## Restoration Strategy
+### Restoration Strategy
 
 Use Step 1's findings to select the approach. Docker is the primary choice for most project types.
 
@@ -144,7 +144,7 @@ By project type:
 - **Browser extension**: document exact browser version and extension API versions used.
 - **Library / package**: Docker for the test environment; document the published package version.
 
-## Data Restoration
+### Data Restoration
 
 Discover all available data sources in the repository. Assess each for completeness and suitability.
 
@@ -161,7 +161,7 @@ If no data source exists and the project requires one: report the gap and explai
 
 If restoration requires a network, VPN-accessible, or cloud database: report why and stop for approval.
 
-## Image Export
+### Image Export
 
 After the project is verified as running:
 
@@ -183,7 +183,7 @@ docker load < recovery/docker/db.tar.gz
 docker-compose up
 ```
 
-## Tasks
+### Tasks
 
 1. Select restoration strategy using Step 1 context
 2. Configure the local environment
@@ -198,37 +198,37 @@ docker-compose up
 
 Output the report in this format:
 
-## Restoration Strategy
+### Restoration Strategy
 Chosen approach and why. Whether Docker was created or already existed. What was tried first if the first choice failed.
 
-## Docker Setup
+### Docker Setup
 Base images used with exact pinned versions. Services defined. Whether Dockerfile and docker-compose.yml were created or already existed.
 
-## Image Exports
+### Image Exports
 Images exported to `recovery/docker/`. Size of each tarball. Recovery commands.
 
-## Data & Database
+### Data & Database
 Data source selected and why. How data was restored. Demo accounts or sample data available if any.
 
-## Changes Made
+### Changes Made
 Every file created or modified: path, what changed, and why it was necessary.
 
-## Environment Variables
+### Environment Variables
 Any variables added or changed from the original.
 
-## Commands Used
+### Commands Used
 Exact commands run in order.
 
-## Access Points
+### Access Points
 How to access or run the project locally (URLs and ports for web projects, commands for CLI tools, entry points for scripts or notebooks). State "not applicable" if the project type has no access point.
 
-## Verification Results
+### Verification Results
 What was tested and what the results were. Any critical errors found.
 
-## Restoration Outcome
+### Restoration Outcome
 One of: Fully Restored / Partially Restored / Buildable But Not Runnable / Blocked / Cannot Be Restored Without Missing Dependencies — one sentence explaining why.
 
-## Remaining Blockers
+### Remaining Blockers
 Anything that prevented full restoration or needs attention before proceeding to Step 3.
 
 Do not commit or push. Output the report and stop.
@@ -239,7 +239,7 @@ If Restoration Outcome is anything other than Fully Restored: clearly state that
 
 ---
 
-# Step 3 — Postman Collection
+## Step 3 — Postman Collection
 
 Generate a Postman collection for this project if it exposes an API.
 
@@ -247,7 +247,7 @@ Use all relevant outputs from previous steps as context.
 
 Goal: Create reusable Postman files that future me can use to understand, test, troubleshoot, and demonstrate the project's API years later.
 
-## Applicability
+### Applicability
 
 Generate a collection if the project exposes an API it owns — REST, GraphQL, or similar.
 
@@ -259,7 +259,7 @@ If skipping: explain why, output the report, and stop.
 
 If an existing Postman collection is found (from Step 1): use it as the starting point — update, verify, and expand rather than generating from scratch.
 
-## Rules
+### Rules
 
 - Discover endpoints from source code, route definitions, or OpenAPI/Swagger specs. Do not speculate.
 - Avoid deprecated, disabled, or commented-out endpoints.
@@ -268,13 +268,13 @@ If an existing Postman collection is found (from Step 1): use it as the starting
 - If the local application is not running: fall back to source-code discovery only and mark all requests as unverified.
 - Do not commit or push.
 
-## Verification
+### Verification
 
 Verify representative requests where safe — GET requests, health endpoints, authentication flows, and local demo workflows.
 
 Do not verify endpoints that may delete data, send emails or SMS, trigger webhooks, process payments, or perform bulk actions without explicit approval. Mark those as unverified with a note explaining why.
 
-## Output Files
+### Output Files
 
 Use the project name from Step 1 for the filenames:
 
@@ -283,7 +283,7 @@ Use the project name from Step 1 for the filenames:
 
 Organize requests by functional area (Authentication, Users, Admin, Products, Orders, etc.). Use collection variables, environment variables, request descriptions, and authentication notes. Use localhost URLs and placeholder values. Avoid duplicate endpoints.
 
-## Tasks
+### Tasks
 
 1. Determine whether a Postman collection is applicable for this project
 2. Check for existing Postman files from Step 1 — use as starting point if found
@@ -296,35 +296,35 @@ Organize requests by functional area (Authentication, Users, Admin, Products, Or
 
 Output the report in this format:
 
-## Applicability
+### Applicability
 Whether a collection was generated or skipped and why.
 
-## Existing Collection
+### Existing Collection
 Whether an existing Postman collection was found and how it was used.
 
-## Endpoints Discovered
+### Endpoints Discovered
 Total endpoints found. How they were discovered (routes, OpenAPI spec, source code). Any endpoints excluded and why.
 
-## Authentication
+### Authentication
 Auth method used. How it is configured in the collection.
 
-## Files Created or Updated
+### Files Created or Updated
 File paths and what changed if updating an existing collection.
 
-## Verified Requests
+### Verified Requests
 Requests that were tested against the running app and their results.
 
-## Unverified Requests
+### Unverified Requests
 Requests that could not be safely verified. Reason for each.
 
-## Known Limitations
+### Known Limitations
 Endpoints that could not be covered, external dependencies, or gaps in coverage.
 
 Do not commit or push. Output the report and stop. Wait for approval before continuing to Step 4.
 
 ---
 
-# Step 4 — Documentation
+## Step 4 — Documentation
 
 Create project documentation for long-term archive recovery and future demonstration.
 
@@ -332,7 +332,7 @@ Use all relevant outputs from previous steps as context.
 
 Goal: Make future me able to understand, restore, run, troubleshoot, and demonstrate this project years later.
 
-## Rules
+### Rules
 
 - Read all existing documentation before making any changes.
 - Preserve useful historical information. Clearly distinguish it from verified current information.
@@ -342,7 +342,7 @@ Goal: Make future me able to understand, restore, run, troubleshoot, and demonst
 - Keep README.md concise — link to docs/ rather than repeating content.
 - Do not commit or push.
 
-## Consolidation
+### Consolidation
 
 For every existing documentation file, decide: Keep, Update, Merge, Archive, or Remove. Provide a reason for each.
 
@@ -362,16 +362,16 @@ Use this to guide the decision:
 
 Consolidate duplicates into a single authoritative source. Do not leave orphaned files — every active document must be reachable through README.md or another active document.
 
-## Required Files
+### Required Files
 
-### README.md
+#### README.md
 Always write a fresh archive-focused README regardless of whether one already exists.
 
 Before writing: read the existing README if present. Extract any historically valuable content — business context, domain knowledge, why the project was built — and move it to `docs/historical-notes.md`. Do not carry outdated instructions, contributor guides, or public-facing content into the new README.
 
 Write a clean README containing: project name, one-paragraph purpose, tech stack summary, restoration complexity rating from Step 1, and links to `docs/setup.md` and `docs/archive-metadata.md`. Keep it short — this is an index for future-you, not a public-facing document.
 
-### docs/setup.md
+#### docs/setup.md
 
 The single reference for everything needed to restore, run, and demonstrate this project. Write the following sections, skipping any that are not applicable to this project type:
 
@@ -404,7 +404,7 @@ Every fix applied in Step 2: what was changed, why it was necessary, and whether
 **Known Limitations**
 Anything that could not be restored, features that require unavailable services, or constraints the developer should know before demonstrating.
 
-### docs/archive-metadata.md
+#### docs/archive-metadata.md
 Structured snapshot for quick inventory across archived projects:
 - Repository name and archive date
 - Project purpose (one line)
@@ -417,11 +417,11 @@ Structured snapshot for quick inventory across archived projects:
 - Recovery complexity rating from Step 1
 - Known limitations (brief)
 
-## Optional File
+### Optional File
 
 **docs/historical-notes.md** — create only if significant historical documentation was found that has archival value but would clutter current docs. Clearly label all content as historical.
 
-## Tasks
+### Tasks
 
 1. Read all existing documentation
 2. Decide Keep / Update / Merge / Archive / Remove for each existing file
@@ -445,29 +445,29 @@ Structured snapshot for quick inventory across archived projects:
 
 Output the report in this format:
 
-## Consolidation Summary
+### Consolidation Summary
 For every existing documentation file reviewed: action taken (Keep / Update / Merge / Archive / Remove) and reason.
 
-## Files Created
+### Files Created
 New files written and what each covers.
 
-## Files Updated
+### Files Updated
 Existing files updated and what changed.
 
-## Files Removed
+### Files Removed
 Files removed and why.
 
-## Navigation
+### Navigation
 Confirm every active file is reachable from README.md.
 
-## Gaps
+### Gaps
 Anything that could not be documented due to missing or unverified information from previous steps.
 
 Do not commit or push. Output the report and stop. Wait for approval before continuing to Step 5.
 
 ---
 
-# Step 5 — Finalize
+## Step 5 — Finalize
 
 Prepare the repository for final archival, clean up remotes and branches, and push to the private archive remote.
 
@@ -475,14 +475,14 @@ Use all relevant outputs from previous steps as context.
 
 Goal: Seal the archive — ensure the repository is clean, safe, and pushed to the correct private remote.
 
-## Rules
+### Rules
 
 - Present a plan and wait for explicit approval before any destructive operation.
 - Do not delete branches without explicit approval.
 - Do not push until origin is confirmed as the private archive remote.
 - Do not commit until all cleanup tasks are complete.
 
-## Task 1 — Remote Verification
+### Task 1 — Remote Verification
 
 List all configured remotes and their URLs. Present them to the developer:
 
@@ -501,7 +501,7 @@ Remove all non-personal remotes. Set origin to the provided private GitLab URL.
 
 Do not proceed to any other task until origin is confirmed as the private archive remote.
 
-## Task 2 — Branch Cleanup
+### Task 2 — Branch Cleanup
 
 List all local and remote branches. Identify main or master as the single branch to keep.
 
@@ -521,7 +521,7 @@ Once approved:
 - Verify local main/master is in sync with remote
 - If local and remote have diverged: report the divergence and stop for approval before resolving
 
-## Task 3 — Git LFS for Large Files
+### Task 3 — Git LFS for Large Files
 
 Scan for files larger than 100 MB — both tracked and untracked.
 
@@ -534,7 +534,7 @@ If large files exist:
 
 If no large files exist: skip silently.
 
-## Task 4 — Asset Consolidation
+### Task 4 — Asset Consolidation
 
 Identify archive-worthy assets scattered across the project: screenshots, videos, audio files, sample exports, database dumps, demo files, and other binary or media assets that are not part of the application source code.
 
@@ -550,7 +550,7 @@ For referenced assets: report the file, what references it, and why moving would
 
 If no assets worth consolidating are found: skip silently.
 
-## Task 5 — Stop Services
+### Task 5 — Stop Services
 
 Identify all running services started by this project: Docker containers, Node dev servers, PHP built-in servers, Python servers, or any other processes tied to this project.
 
@@ -567,7 +567,7 @@ Once approved, stop all listed services.
 
 If no running services are found: skip silently.
 
-## Task 6 — Final Commit and Push
+### Task 6 — Final Commit and Push
 
 Show git status — all staged and unstaged changes accumulated across the full workflow.
 
@@ -586,28 +586,28 @@ Confirm the push was successful.
 
 Output the report in this format:
 
-## Remote Changes
+### Remote Changes
 Previous remote(s) removed. New origin confirmed as private archive remote.
 
-## Branch Cleanup
+### Branch Cleanup
 Branches deleted locally and remotely. Confirmation that local and remote main/master are in sync.
 
-## Git LFS
+### Git LFS
 Files tracked with LFS and `.gitattributes` changes. If none: state no large files were found.
 
-## Asset Consolidation
+### Asset Consolidation
 Assets moved to `recovery/assets/`. Assets that could not be moved due to code references and why. If none: state no assets were consolidated.
 
-## Services Stopped
+### Services Stopped
 Services identified and stopped. If none: state no running services were found.
 
-## Final Commit
+### Final Commit
 Commit hash and summary of what was committed.
 
-## Push
+### Push
 Remote URL. Confirmation of success.
 
-## Archive Complete
+### Archive Complete
 
 Archive date, GitLab URL, and restoration complexity from Step 1.
 
