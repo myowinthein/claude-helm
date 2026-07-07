@@ -1,6 +1,6 @@
 {
   "name": "helm",
-  "version": "2.11.0",
+  "version": "2.12.0",
   "description": "A Claude Code plugin pack for solo developers. Slash commands and rules to ship, refactor, test, and document your own work.",
   "author": {
     "name": "Myo Win Thein",
