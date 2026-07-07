@@ -82,6 +82,34 @@ If no framework is detected, use AskUserQuestion before proceeding:
       - label: "Custom path"
         description: "Specify a path manually"
 
+**CSS style detection (HTML output only)**
+
+When the resolved format is `.html`, also detect whether the project uses globally-scoped
+or scoped/utility-first CSS:
+
+  Global CSS (bare semantic HTML works):
+  - Plain CSS files (`*.css`) with element or class selectors
+  - Sass/SCSS (`*.scss`) with element selectors
+  - Bootstrap (detected via package.json or CDN link in HTML files)
+  - Any CSS framework that styles semantic elements globally
+
+  Scoped or utility-first CSS (bare HTML gets no visual treatment):
+  - Tailwind CSS (detected via `tailwind.config.*` or `"tailwindcss"` in package.json)
+  - CSS Modules (detected via `*.module.css` files)
+  - styled-components or Emotion (detected via package.json)
+  - Any framework where styles are component-scoped
+
+If global CSS detected → output bare semantic HTML.
+
+If scoped/utility-first CSS detected → output bare semantic HTML AND prepend this
+comment directly inside `<body>`, before any content:
+
+  <!-- TODO: wrap this content in your site's prose or layout container.
+       Styles are scoped/utility-first — unstyled semantic HTML will not
+       inherit your site's visual design without a wrapper. -->
+
+If CSS approach cannot be determined → add the comment anyway as a safe default.
+
 Record the resolved format and output path before proceeding.
 
 **Existing legal documents**
