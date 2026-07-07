@@ -181,27 +181,14 @@ Write to legal/ folder.
 
 ---
 
-## Step 5 — Generate legal/README.md
-
-Create legal/README.md with the following content:
-- A title: "Legal Documents"
-- A table listing each generated document with columns: Document, Purpose, Last reviewed
-- A line stating the jurisdiction: GDPR
-- A line advising when to regenerate: "Regenerate with /legal when significant features are added."
-
-Only include rows for documents that were actually generated.
-Use current date for Last reviewed column.
-
----
-
-## Step 6 — Commit
+## Step 5 — Commit
 
 Commit all generated documents:
   docs(legal): generate legal documents for v{version}
 
 ---
 
-## Step 7 — Confirm completion
+## Step 6 — Confirm completion
 
 Report:
 
