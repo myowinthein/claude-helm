@@ -46,4 +46,10 @@ Reload locally: `/reload-plugins` after any change
 - **`steps/` directory is intentional.** Files in `steps/archive/` are not commands — they are sub-steps for `/helm:archive`. Do not move them to `commands/`.
 - **`docs/commands/` is not the command source.** The slash command definitions live in `commands/`. The `docs/commands/` files are detail pages linked from README — editing them does not change command behavior.
 
+## Rules
+
+This project follows the rules shipped in claude-helm:
+- /Users/myowinthein/.claude/plugins/marketplaces/claude-helm/rules/git.md
+- /Users/myowinthein/.claude/plugins/marketplaces/claude-helm/rules/safety.md
+
 <!-- last-reviewed: 211af6a615fb64b29dd5b0460ffc6d27115ceb79 -->
