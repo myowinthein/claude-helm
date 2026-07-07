@@ -108,7 +108,7 @@ Wait for response.
 
 ### Reference path
 
-- Resolve the plugin install path (typically `~/.claude/plugins/claude-helm/helm/rules/`).
+- Use the marketplaces install path: `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`.
 - If `CLAUDE.md` exists:
   - Detect or create a `## Rules` section.
   - Append a list of absolute paths:
@@ -116,8 +116,8 @@ Wait for response.
     ## Rules
 
     This project follows the rules shipped in claude-helm:
-    - {absolute path}/rules/git.md
-    - {absolute path}/rules/safety.md
+    - ~/.claude/plugins/marketplaces/claude-helm/rules/git.md
+    - ~/.claude/plugins/marketplaces/claude-helm/rules/safety.md
     ```
   - Ask for confirmation before writing.
 - If `CLAUDE.md` does not exist:
