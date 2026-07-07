@@ -1,3 +1,9 @@
+---
+title: Home
+nav_order: 1
+permalink: /
+---
+
 # claude-helm
 
 Take the helm.
@@ -15,7 +21,7 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 # Install the helm plugin from the registered marketplace.
 /plugin install helm@claude-helm
 
-# Pull the latest version from GitHub when a new release ships.
+# Pull the latest version when a new release ships.
 /plugin update helm@claude-helm
 
 # Remove the plugin from your machine.
@@ -61,5 +67,3 @@ Issues and pull requests are welcome at [github.com/myowinthein/claude-helm/issu
 ## License
 
 [MIT](LICENSE)
-
-<!-- last-reviewed: 211af6a615fb64b29dd5b0460ffc6d27115ceb79 -->
