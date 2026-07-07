@@ -51,7 +51,12 @@ Scan the codebase to understand the project's legal profile:
 - Does the app use AI to generate recommendations presented as facts?
 - Does it use a BYOK model (user provides their own API key)?
 
-Record findings before proceeding to document generation.
+**Existing legal documents**
+- Check whether a `legal/` folder exists
+- List which documents are already present (privacy-policy.md, terms.md, etc.)
+- Note existing files — the user will choose whether to regenerate them
+
+Record all findings before proceeding.
 
 ---
 
@@ -77,29 +82,32 @@ Generate if financial, health, legal advice or AI recommendations detected:
 
 Use AskUserQuestion (multi-select) listing every possible document. Mark each one
 that matches the scan findings with "(Recommended)". Always mark privacy-policy.md
-and terms.md as Recommended:
+and terms.md as Recommended. For documents that already exist in legal/, append
+"(exists)" to the label so the user knows it will be overwritten:
 
   AskUserQuestion:
     question: "Which legal documents should be generated? (Jurisdiction: GDPR · Tone: plain English)"
     header:   "Documents"
     multiSelect: true
     options:
-      - label: "privacy-policy.md (Recommended)"
+      - label: "privacy-policy.md (Recommended)"           ← append "(exists)" if file present
         description: "Always required — explains what data is collected and how it is handled"
-      - label: "terms.md (Recommended)"
+      - label: "terms.md (Recommended)"                    ← append "(exists)" if file present
         description: "Always required — acceptable use, IP ownership, liability, governing law"
-      - label: "cookie-policy.md (Recommended if analytics detected)"
+      - label: "cookie-policy.md"                          ← append "(Recommended)" if analytics detected; "(exists)" if file present
         description: "Required if non-essential cookies or analytics tools are present"
-      - label: "refund-policy.md (Recommended if payments detected)"
+      - label: "refund-policy.md"                          ← append "(Recommended)" if payments detected; "(exists)" if file present
         description: "Required if payment processing is present"
-      - label: "eula.md (Recommended if downloadable software)"
+      - label: "eula.md"                                   ← append "(Recommended)" if downloadable software; "(exists)" if file present
         description: "Required for plugins, desktop apps, Chrome extensions, or any installable software"
-      - label: "disclaimer.md (Recommended if AI content or advice detected)"
+      - label: "disclaimer.md"                             ← append "(Recommended)" if AI content or advice detected; "(exists)" if file present
         description: "Required if the project generates AI content, legal docs, financial or health advice"
 
   Only include "(Recommended)" on labels that match scan findings.
+  Only include "(exists)" on labels where the file already exists in legal/.
   The user may deselect any document or add ones the scan did not flag.
   If nothing is selected, exit without generating anything.
+  Selected documents that already exist will be overwritten.
 
 Wait for response before proceeding.
 
@@ -107,8 +115,8 @@ Wait for response before proceeding.
 
 ## Step 4 — Generate documents
 
-Generate each document in plain English, GDPR compliant.
-Write to legal/ folder.
+Generate each selected document in plain English, GDPR compliant.
+Write to legal/ folder. Overwrite if the file already exists.
 
 **Writing style**
 - Use em-dashes sparingly. Only use one when no other punctuation
@@ -117,67 +125,133 @@ Write to legal/ folder.
 
 **Date format:** Use `YYYY-MM-DD` (e.g. `2026-07-07`) for all "Last updated" dates.
 
-**Contact section (all documents):** End every document with a `## Contact` section using this exact wording:
+**Contact section (all documents):** End every document with a `## Contact` section
+using this exact wording:
 
   For questions about this {Document Title}, open an issue at {repo issues URL}.
 
-  Where {Document Title} is the document's heading title (e.g. "Privacy Policy", "Terms of Use",
-  "End User License Agreement", "Disclaimer"). Infer the repo issues URL from the project's
-  `package.json`, `composer.json`, or git remote. If not found, use a placeholder and note it.
+  Infer the repo issues URL from `package.json`, `composer.json`, or git remote.
+  If not found, use a placeholder and note it.
 
-**privacy-policy.md must cover:**
-- What data is collected and why
-- How data is stored and protected
-- Whether data is shared with third parties (name them)
-- User rights under GDPR (access, rectification, erasure, portability)
-- Data retention periods
-- Cookie usage (if applicable)
-- Last updated date (YYYY-MM-DD)
-- Contact section
+---
 
-**terms.md must cover:**
-- What the service is and what it does
-- Acceptable use — what users can and cannot do
-- IP ownership — who owns the content and the software
-- Liability limitations
-- Termination conditions
-- Governing law
-- Last updated date (YYYY-MM-DD)
-- Contact section
+### privacy-policy.md
 
-**cookie-policy.md must cover:**
-- What cookies are used and why
-- Which are essential vs non-essential
-- How users can control cookies
-- Third party cookies (name them)
-- Last updated date (YYYY-MM-DD)
-- Contact section
+Title: `# Privacy Policy`
 
-**refund-policy.md must cover:**
-- Refund eligibility conditions
-- Refund request process and timeframe
-- Non-refundable items or conditions
-- Last updated date (YYYY-MM-DD)
-- Contact section
+Required sections in order:
 
-**eula.md must cover:**
-- License grant — what users are permitted to do
-- Restrictions — what users cannot do
-- IP ownership
-- Disclaimer of warranties
-- Limitation of liability
-- Termination conditions
-- Last updated date (YYYY-MM-DD)
-- Contact section
+1. `## Who We Are` — one paragraph identifying the project, its purpose, and its owner
+2. `## What Data We Collect` — list every category of data collected; if none, state that explicitly
+3. `## How We Use Your Data` — for each purpose, state the GDPR legal basis (Art. 6); mandatory
+4. `## Data Sharing and Third Parties` — name every third party that receives data; if none, state that
+5. `## International Data Transfers` — state whether data leaves the EEA and under what safeguards; omit only if no data is collected at all
+6. `## Data Retention` — how long each category of data is kept and why
+7. `## Your Rights` — cover all GDPR Art. 15–21 rights: access, rectification, erasure, restriction, portability, objection; mandatory
+8. `## Cookies` — include if cookies are used; omit if not applicable
+9. `## Children's Privacy` — state whether the service is directed at children and any age restrictions
+10. `## Supervisory Authority` — inform users of their right to lodge a complaint with a data protection authority (GDPR Art. 77); mandatory
+11. `## Changes to This Policy` — how and when users are notified of updates
+12. `## Contact` — standard contact wording
+13. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
 
-**disclaimer.md must cover:**
-- Nature of the information provided
-- No professional advice claim
-- Accuracy limitations
-- User responsibility for decisions made
-- AI-generated content disclaimer if applicable
-- Last updated date (YYYY-MM-DD)
-- Contact section
+---
+
+### terms.md
+
+Title: `# Terms of Service`
+
+Required sections in order:
+
+1. `## Acceptance of Terms` — by using the service, users accept these terms
+2. `## Description of Service` — what the service is and what it does
+3. `## User Accounts and Eligibility` — age requirements, account responsibilities; omit if no accounts
+4. `## Acceptable Use` — what users may do
+5. `## Prohibited Conduct` — what users may not do; be specific
+6. `## Intellectual Property` — who owns the software; who owns user-generated content if any
+7. `## Disclaimer of Warranties` — service provided as-is; no guarantees
+8. `## Limitation of Liability` — cap on damages; exclude consequential damages
+9. `## Indemnification` — user agrees to hold the owner harmless for their misuse
+10. `## Termination` — conditions under which access can be revoked
+11. `## Governing Law and Dispute Resolution` — jurisdiction and how disputes are handled
+12. `## Changes to These Terms` — how users are notified of updates
+13. `## Contact` — standard contact wording
+14. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
+
+---
+
+### cookie-policy.md
+
+Title: `# Cookie Policy`
+
+Required sections in order:
+
+1. `## What Are Cookies` — brief plain-English explanation
+2. `## How We Use Cookies` — overview of cookie usage on this site/app
+3. `## Categories of Cookies` — list each category with its legal basis under GDPR/ePrivacy:
+   - Necessary (no consent required)
+   - Functional (consent required)
+   - Analytics (consent required)
+   - Marketing (consent required)
+   Only include categories that actually apply; omit the rest.
+4. `## Third-Party Cookies` — name each third party that sets cookies; link to their policies
+5. `## Your Consent and How to Withdraw It` — how consent was obtained and how to withdraw it; withdrawal must be as easy as giving consent; mandatory under ePrivacy Directive
+6. `## Managing Cookies in Your Browser` — link or instructions for browser cookie controls
+7. `## Contact` — standard contact wording
+8. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
+
+---
+
+### refund-policy.md
+
+Title: `# Refund Policy`
+
+Required sections in order:
+
+1. `## Overview` — what this policy covers and which products or plans it applies to
+2. `## Eligibility for Refunds` — conditions that must be met to qualify
+3. `## Refund Window` — how many days after purchase a refund can be requested
+4. `## How to Request a Refund` — step-by-step process
+5. `## How Refunds Are Issued` — method (original payment method, credit, etc.) and timeline
+6. `## Non-Refundable Items` — what is explicitly excluded
+7. `## Contact` — standard contact wording
+8. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
+
+---
+
+### eula.md
+
+Title: `# End User License Agreement`
+
+Required sections in order:
+
+1. `## Grant of License` — what rights the user is granted (scope, number of devices, personal vs commercial)
+2. `## License Restrictions` — what the user may not do (reverse engineer, redistribute, sublicense, etc.)
+3. `## Intellectual Property Ownership` — all IP belongs to the owner; no transfer of ownership
+4. `## Updates and Modifications` — owner may update the software; user's continued use implies acceptance
+5. `## No Warranty` — software provided as-is; all implied warranties disclaimed
+6. `## Limitation of Liability` — cap on damages; exclude consequential and indirect damages
+7. `## Termination` — conditions for termination; what happens on termination (cease use, delete copies)
+8. `## Governing Law` — jurisdiction
+9. `## Contact` — standard contact wording
+10. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
+
+---
+
+### disclaimer.md
+
+Title: `# Disclaimer`
+
+Required sections in order:
+
+1. `## No Professional Advice` — nothing in the output constitutes legal, financial, or medical advice; name all three categories explicitly
+2. `## AI-Generated Content` — output is produced by an AI model; AI can make mistakes, omit details, or misread context; always review before use
+3. `## Accuracy and Completeness` — information may be incomplete, outdated, or incorrect; no guarantee of accuracy
+4. `## External Links` — if the project links to third-party sites, disclaim responsibility for their content; omit if not applicable
+5. `## Limitation of Liability` — owner is not liable for decisions made based on the output
+6. `## Changes to This Disclaimer` — owner may update this disclaimer; continued use implies acceptance
+7. `## Contact` — standard contact wording
+8. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
 
 ---
 
