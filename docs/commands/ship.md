@@ -23,7 +23,12 @@ flowchart TD
 
   Tests[Run test suite] -->|fail| TestStop[/Stop: fix tests first/]
   Tests -->|pass| Release[Bump version file<br/>Commit, tag, push<br/>Promote to selected envs]
-  Release --> MainDone([Report: tagged + promoted])
+  Release --> GHCheck{Remote is<br/>github.com?}
+  GHCheck -->|no| MainDone
+  GHCheck -->|yes| GHConfirm[Ask: create GitHub Release?]
+  GHConfirm -->|skip| MainDone
+  GHConfirm -->|create| GHRelease[gh release create<br/>--generate-notes]
+  GHRelease --> MainDone([Report: tagged + promoted + release])
 
   EnvNext -->|staging → production| EnvPush[Push current branch]
   EnvNext -->|already on production| EnvStop[/Stop: nothing to promote/]
@@ -52,13 +57,17 @@ Runs the full test suite using the project's detected test framework. Halts on f
 
 Only on `main`. Bumps the version in the detected version file (`package.json`, `composer.json`, or `VERSION`), updates any inline version references in the README, commits as `chore(release): bump version to {version}`, creates an annotated tag `v{version}`, and pushes both the commit and tag. For each selected environment branch, merges `main` in with a `--no-ff` deploy commit and pushes.
 
+After pushing, checks whether the remote origin URL contains `github.com`. If not, this sub-step is skipped silently. If yes, asks whether to create a GitHub Release. On confirmation, runs `gh release create v{version} --title "v{version}" --generate-notes`, which publishes a release on GitHub with auto-generated notes from commits since the previous tag.
+
+**Prerequisite:** `gh release create` requires the GitHub CLI to be authenticated. Run `gh auth login` once before using this feature. If `gh` is not authenticated, the command will fail with an auth error and the ship command will surface the manual fix rather than silently failing.
+
 ### 6. Promotion path
 
 Only on an environment branch. Pushes the current branch so CI/CD can deploy. Determines the next environment in the chain (`staging → production`) and stops if already on the final environment.
 
 ### 7. Report
 
-Closes with a summary: version tagged, README updated yes or no, environments promoted, deployment triggered.
+Closes with a summary: version tagged, README updated yes or no, environments promoted, GitHub Release created or skipped or not applicable, deployment triggered.
 
 ## Stop conditions
 

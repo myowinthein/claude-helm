@@ -146,6 +146,29 @@ For each selected environment branch:
 - git push origin {environment}
 - git checkout main
 
+Then check whether this repo is hosted on GitHub:
+- Run: git remote get-url origin
+- If the URL does not contain `github.com` → skip the rest of this step silently
+
+If hosted on GitHub, use AskUserQuestion:
+  AskUserQuestion:
+    question: "Create a GitHub Release for v{version}?"
+    header:   "GitHub Release"
+    multiSelect: false
+    options:
+      - label: "Create release (Recommended)"
+        description: "Run gh release create with auto-generated notes"
+      - label: "Skip"
+        description: "No GitHub Release for this version"
+
+  If Skip selected → skip silently.
+
+  If Create release selected:
+  - Run: gh release create v{version} --title "v{version}" --generate-notes
+  - If the command fails with an auth error, inform human:
+    "gh is not authenticated. Run: gh auth login
+    Then re-run /helm:ship or create the release manually."
+
 ---
 
 ## Step 6 — Execute promotion on environment branch
@@ -175,6 +198,7 @@ If on main or master:
   - Tag pushed:            yes
   - README updated:        yes/no
   - Environments promoted: {list or none}
+  - GitHub Release:        created / skipped / not GitHub
   - Deployment triggered:  yes/no (based on CI/CD presence)
 
 If on environment branch:
