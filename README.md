@@ -52,7 +52,7 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 | Rule | What it does |
 |---|---|
-| [`git.md`](docs/rules/git.md) | Git workflow rules: Solo Mode for direct-to-main, GitHub Flow for feature branches and PRs. |
+| [`git.md`](docs/rules/git.md) | Git workflow rules covering branching strategy, commit conventions, code quality gates, and environment promotion. |
 | [`safety.md`](docs/rules/safety.md) | Operational safety scan covering deployment, git, secrets, and destructive operations. |
 
 ## Using the rules
