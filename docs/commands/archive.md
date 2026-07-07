@@ -47,23 +47,23 @@ flowchart TD
 
 ## Steps
 
-### 1. Explore
+### [1. Explore](archive/1-explore.md)
 
 Read-only reconnaissance. Scans the project structure, stack, runtime versions, database sources, external integrations, existing documentation, and Git remotes. Flags any active credentials found in env files. Produces a structured report and assigns a restoration complexity rating (Easy / Medium / Complex / Blocked) so the developer can decide whether to proceed before anything is touched.
 
-### 2. Restore and Freeze
+### [2. Restore and Freeze](archive/2-restore-and-freeze.md)
 
 Gets the project running locally and freezes its environment for long-term recovery. Creates a `Dockerfile` and `docker-compose.yml` if none exist, with all base image versions specifically pinned. Restores available data from the best source found (dumps → seeders → migrations). After successful verification, exports all Docker images as gzipped tarballs to `recovery/docker/` — stored locally alongside the repo, gitignored, never committed. Recovery then requires only Docker and the tarballs with no internet or registry dependency. For project types where Docker does not apply (mobile, browser extensions), documents exact SDK and toolchain versions in `docs/setup.md` as the freeze mechanism instead.
 
-### 3. Postman Collection
+### [3. Postman Collection](archive/3-postman.md)
 
 Generates a Postman collection if the project exposes an API it owns. Discovers endpoints from route definitions, source code, or OpenAPI specs. Verifies safe requests (GET, health endpoints, auth flows) against the running local app. Saves the collection and environment files to `recovery/postman/` using the project name. Skips silently for projects with no API surface.
 
-### 4. Documentation
+### [4. Documentation](archive/4-documentation.md)
 
 Writes fresh, archive-focused documentation using verified information from all previous steps. Reads all existing documentation first and presents a consolidation plan (Keep / Update / Merge / Archive / Remove per file) for explicit approval before touching anything. Always writes a fresh `README.md` — extracts any historically valuable content from the old one into `docs/historical-notes.md` first. Writes `docs/setup.md` as the single recovery reference: environment, Docker restore commands, recovery priority, demo workflow, API notes, and restoration fixes. Writes `docs/archive-metadata.md` as a structured snapshot for quick inventory across archived projects.
 
-### 5. Finalize
+### [5. Finalize](archive/5-finalize.md)
 
 Prepares and seals the archive. Verifies and switches the Git remote to the private archive URL — stops if origin still points to a company or client repository. Deletes all branches except main or master locally and remotely after explicit approval. Sets up Git LFS for any files over 100 MB. Consolidates archive-worthy assets scattered across the project into `recovery/assets/`, checking for code references before moving anything. Stops all running project services (Docker containers, dev servers). Commits everything accumulated across the full workflow with a single `chore(archive): seal project archive` commit and pushes to the private remote.
 
@@ -94,14 +94,6 @@ The command stops and waits for explicit approval at seven points:
 5. After Step 4 — before proceeding to finalize
 6. Before branch deletion in Step 5
 7. Before asset moves in Step 5 if referenced files are found
-
-## Step details
-
-- [Step 1 — Explore](archive/1-explore.md)
-- [Step 2 — Restore and Freeze](archive/2-restore-and-freeze.md)
-- [Step 3 — Postman Collection](archive/3-postman.md)
-- [Step 4 — Documentation](archive/4-documentation.md)
-- [Step 5 — Finalize](archive/5-finalize.md)
 
 ## See also
 
