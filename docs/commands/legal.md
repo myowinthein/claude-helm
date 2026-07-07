@@ -58,7 +58,7 @@ Reads the codebase to build a legal profile:
 
 | Scenario | Format | Output path |
 |---|---|---|
-| Static site generator (Jekyll, Hugo, Eleventy, …) | `.md` | Generator's content/docs directory, under `legal/` (with `nav_exclude: true`) |
+| Static site generator (Jekyll, Hugo, Eleventy, …) | `.md` | Generator's content/docs directory, under `legal/` |
 | JS framework with SSR/SSG (Next.js, Astro, Nuxt, SvelteKit, …) | `.mdx` | Framework's pages/content directory, under `legal/` |
 | SPA or plain HTML (no SSR, no SSG) | `.html` | Web root (`public/`, `dist/`, or root), clean URL subfolders |
 | No web project detected | ask user | User chooses: `legal/` Markdown, `legal/` HTML, or custom path |
