@@ -32,7 +32,7 @@ flowchart TD
   Mode3 -->|full| Full
   Mode3 -->|gap| GapPath
 
-  Full[Investigate project<br/>write 7-section CLAUDE.md<br/>append last-reviewed hash] --> Done
+  Full[Investigate project<br/>ask git mode + auto-commit<br/>write 7-section CLAUDE.md<br/>append last-reviewed hash] --> Done
   GapPath[Review commits since hash<br/>apply 3-question filter<br/>update sections or report<br/>no change, bump hash] --> Done
 
   Done([Updated CLAUDE.md])
@@ -58,10 +58,15 @@ Three modes, with the default depending on assessment:
 
 ### 4. Full scan
 
-Investigates the project from scratch: business purpose, modules and workflows, stack and versions, architectural patterns (from implementation, not folder names), conventions, domain rules, operational context. Reviews any existing docs and `.claude/rules`. Asks once whether the project is GitHub Flow or Solo, then writes `CLAUDE.md` using a seven-section schema:
+Investigates the project from scratch: business purpose, modules and workflows, stack and versions, architectural patterns (from implementation, not folder names), conventions, domain rules, operational context. Reviews any existing docs and `.claude/rules`. Before writing, asks two config questions:
+
+- **Git mode**: GitHub Flow (default) or Solo (`git-solo: true`)
+- **Auto-commit**: whether Claude should commit after each task without prompting (`git-auto-commit: true`); push still requires confirmation either way
+
+Then writes `CLAUDE.md` using a seven-section schema:
 
 1. Project Identity
-2. Project Config (e.g. `git-solo: true` if solo)
+2. Project Config (e.g. `git-solo: true`, `git-auto-commit: true`)
 3. Dev Commands
 4. Architecture Pointers
 5. Behavior Rules

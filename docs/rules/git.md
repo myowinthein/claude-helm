@@ -20,7 +20,7 @@ flowchart TD
   Flow --> Sections2[Apply:<br/>Universal, Conventional Commits,<br/>Code Quality, GitHub Flow, Branch Naming,<br/>optional Environment Branches]
 ```
 
-The flag lives in `CLAUDE.md` under a `## Project Config` section as `- git-solo: true`. Absence of the flag means GitHub Flow.
+The `git-solo: true` flag lives in `CLAUDE.md` under `## Project Config`. Absence means GitHub Flow. The `git-auto-commit: true` flag is independent of mode and controls whether Claude commits without prompting.
 
 ## Solo Mode
 
@@ -34,6 +34,20 @@ Activate by declaring `git-solo: true` in `CLAUDE.md`. When active:
 - Code quality checks still run before every push.
 
 Use this mode for solo work where peer review and branch protection have no audience. Switch to GitHub Flow the moment you have collaborators.
+
+## Auto-Commit
+
+Activate by declaring `git-auto-commit: true` in `CLAUDE.md`. Independent of git mode — works with both Solo and GitHub Flow.
+
+When active:
+
+- After completing a task, commit without asking for confirmation.
+- Stage only the files changed for the task. Never use `git add -A` blindly.
+- Derive the commit message from the work done; follow Conventional Commits.
+- If the task spans multiple logical units, commit each unit separately before moving on.
+- Push still requires confirmation (cross-references `safety.md`).
+
+When not active (default): ask for confirmation before every commit.
 
 ## Universal Rules
 

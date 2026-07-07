@@ -92,14 +92,16 @@ Before writing anything, investigate in this order:
 
 Then write CLAUDE.md using the seven-section schema:
 1. Project Identity (name, stack, purpose, blast radius)
-2. Project Config (flag-style declarations read by .claude/rules, e.g. `git-solo: true`; keep heading even if empty)
+2. Project Config (flag-style declarations read by .claude/rules, e.g. `git-solo: true`, `git-auto-commit: true`; keep heading even if empty)
 3. Dev Commands (install, run, test single file, migrate, logs)
 4. Architecture Pointers (key files with one-line why, not summaries)
 5. Behavior Rules (autonomy model, confirmation gates, test requirements)
 6. Hard Safety Rules (invariants, never-do list — keep brief, detail in .claude/rules/safety.md)
 7. Known Traps (initially empty or inferred from README warnings)
 
-Before writing the Project Config section, use AskUserQuestion to set git mode:
+Before writing the Project Config section, ask two questions.
+
+First, use AskUserQuestion to set git mode:
   AskUserQuestion:
     question: "Which git workflow does this project use?"
     header:   "Git mode"
@@ -111,7 +113,21 @@ Before writing the Project Config section, use AskUserQuestion to set git mode:
         description: "Commit direct to main; no feature branches, no PRs"
 
   If Solo selected → write `git-solo: true` under Project Config.
-  If GitHub Flow selected → leave Project Config empty (GitHub Flow is the default).
+  If GitHub Flow selected → leave Project Config without a git-solo entry (GitHub Flow is the default).
+
+Then use AskUserQuestion to set auto-commit:
+  AskUserQuestion:
+    question: "Should Claude commit automatically after completing a task, without asking for confirmation?"
+    header:   "Auto-commit"
+    multiSelect: false
+    options:
+      - label: "No — ask before each commit"
+        description: "Claude proposes a commit message and waits for confirmation (default)"
+      - label: "Yes — commit automatically"
+        description: "Claude commits after each task without prompting; push still requires confirmation"
+
+  If Yes selected → write `git-auto-commit: true` under Project Config.
+  If No selected → leave Project Config without a git-auto-commit entry (ask is the default).
 
 CLAUDE.md is not: a README, a file listing, a code walkthrough,
 a technical spec, or a changelog. Only include information a future
