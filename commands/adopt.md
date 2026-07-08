@@ -139,8 +139,25 @@ Wait for response.
     ```
   - Ask for confirmation before writing.
 - If `CLAUDE.md` does not exist:
-  - Print the snippet to the chat so the user can place it manually.
-  - Inform the user that helm references work best with a CLAUDE.md present.
+  - Ask for confirmation before creating it:
+    AskUserQuestion:
+      question: "CLAUDE.md does not exist. Create it with just the helm rule references?"
+      header:   "Create CLAUDE.md"
+      multiSelect: false
+      options:
+        - label: "Create CLAUDE.md (Recommended)"
+          description: "Creates a minimal CLAUDE.md containing only the helm rules section."
+        - label: "Skip"
+          description: "Print the snippet to chat instead so you can place it manually."
+  - If Create: write a new `CLAUDE.md` containing only the rules snippet:
+    ```
+    ## Rules
+
+    This project follows the rules shipped in claude-helm:
+    - ~/.claude/plugins/marketplaces/claude-helm/rules/git.md
+    - ~/.claude/plugins/marketplaces/claude-helm/rules/safety.md
+    ```
+  - If Skip: print the snippet to the chat so the user can place it manually.
 
 ### Cancel path
 
