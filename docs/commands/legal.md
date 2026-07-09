@@ -109,7 +109,7 @@ Each selected document is written in plain English, GDPR compliant, to the resol
 **Contact section:** every document ends with a `## Contact` section using:
 > For questions about this {Document Title}, open an issue at {repo issues URL}.
 
-**Document specs** — each document has a defined title and required sections:
+**Document specs** — summary of titles and key sections. The command specification is the canonical source for full section lists and content rules:
 
 | Document | Title | Key required sections |
 |---|---|---|
