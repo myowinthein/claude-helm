@@ -6,7 +6,7 @@ nav_order: 6
 
 # /helm:normalize
 
-Rewrites every non-conventional commit message in the repository's history to follow [Conventional Commits](https://www.conventionalcommits.org/) format. Two confirmation gates stand between the user and any destructive action: a plain-language risk warning, then a full scan showing exactly how many commits will change and a sample of the rewrites before anything is touched.
+Rewrites every non-conventional commit message in the repository's history to follow [Conventional Commits](https://www.conventionalcommits.org/) format. Three confirmation gates stand between the user and any destructive action: a plain-language risk warning, a full scan showing exactly how many commits will change and a sample of the rewrites before anything is touched, and a final force-push confirmation before the remote is touched.
 
 ## Flow
 
@@ -80,9 +80,9 @@ If the non-compliant count is zero, the command exits here with a "nothing to do
 
 ### 5. Rewrite
 
-Uses `git filter-branch --msg-filter` with a pre-built JSON rewrite map. Claude builds the full `{original: proposed}` map during the scan phase, then passes it to a Python one-liner inside the filter. This runs in a single pass — no interactive prompts per commit, no partial rewrites. Messages not in the map pass through unchanged.
+Uses `git filter-repo --message-callback` (preferred) with a pre-built JSON rewrite map, falling back to `git filter-branch --msg-filter` if `git filter-repo` is not installed. Claude builds the full `{original: proposed}` map during the scan phase and applies it in a single pass — no interactive prompts per commit, no partial rewrites. Messages not in the map pass through unchanged.
 
-Verifies the result with `git log --oneline -10` before continuing.
+Verifies the result by sampling the first 20, last 20, and total count of commits before continuing.
 
 ### 6. Re-create orphaned tags
 

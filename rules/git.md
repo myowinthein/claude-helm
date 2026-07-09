@@ -26,7 +26,7 @@ When active:
 - After completing a task, commit without asking for confirmation
 - Stage only the files changed for the task. Never use `git add -A` blindly
 - Derive the commit message from the work done; follow Conventional Commits
-- Push still requires confirmation (covered in .claude/rules/safety.md)
+- Push still requires confirmation (covered in safety.md)
 - If the task spans multiple logical units, commit each unit separately before moving to the next
 
 When not active (default):
@@ -52,7 +52,7 @@ These apply regardless of mode.
 - Use squash merge when merging feature branches into main
 
 **Safety**
-- Never push to any branch without confirmation (covered in .claude/rules/safety.md)
+- Never push to any branch without confirmation (covered in safety.md)
 
 ---
 
@@ -97,7 +97,7 @@ After all work for a prompt is complete, before pushing:
 - Scan for lint and formatter config files and detect tool
 - Run lint and formatter — fix all errors before pushing
 - Include formatting changes in last logical commit
-- Skip silently if not configured — never push with lint errors
+- Skip the lint step if no linter is configured — but if a linter is configured, never push with lint errors
 
 **Tests**
 - Detect test framework from project files
@@ -112,10 +112,15 @@ Active when git-solo is not declared in CLAUDE.md.
 
 **Branch structure:**
   main
-  feature/*
+  feature/*  (or feat/*)
   fix/*
   chore/*
   refactor/*
+  docs/*
+  test/*
+  perf/*
+  ci/*
+  build/*
 
 **Rules:**
 - All branches base from main

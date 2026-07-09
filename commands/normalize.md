@@ -99,27 +99,45 @@ If non_compliant_count is 0 → inform user "All commits already follow Conventi
 
 ## Step 5 — Rewrite commit messages
 
-Use git filter-branch to rewrite messages without touching the working tree or file contents.
-(git filter-branch is deprecated since Git 2.36 — prefer `git filter-repo` if installed: `pip install git-filter-repo`)
+Build the rewrite map as a JSON object: `{ "original_message": "conventional_message", ... }`
+Include only non-compliant commits. Messages not in the map pass through unchanged.
 
+**Preferred: git filter-repo** (immutable, no backup refs left behind)
+
+First check if available:
+```
+git filter-repo --version
+```
+
+If available, write the rewrite map to a temp file and use the `--message-callback` option:
+```
+git filter-repo --message-callback '
+import json
+rewrite_map = {json_map_here}
+decoded = message.decode("utf-8").strip()
+return rewrite_map.get(decoded, decoded).encode("utf-8")
+'
+```
+
+**Fallback: git filter-branch** (deprecated since Git 2.36, but still functional)
+
+Only use if `git filter-repo` is not installed:
 ```
 git filter-branch -f --msg-filter '
 python3 -c "
 import sys, json
-
 rewrite_map = {json_map_here}
-
 msg = sys.stdin.read().strip()
 print(rewrite_map.get(msg, msg))
 "' -- --all
 ```
 
-Build the rewrite_map as a JSON object: { "original_message": "conventional_message", ... }
-Include only non-compliant commits in the map.
-Messages not in the map pass through unchanged.
-
-After filter-branch completes, run: git log --oneline -10
-Verify the rewrite applied correctly.
+After rewrite completes, verify a representative sample across the full history:
+```
+git log --oneline | head -20
+git log --oneline | tail -20
+git log --oneline | wc -l  # confirm total commit count is unchanged
+```
 
 ---
 

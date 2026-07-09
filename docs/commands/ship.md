@@ -85,6 +85,6 @@ The command refuses to proceed in three cases:
 
 ## See also
 
-- [`/helm:test`](test.md) - the test framework setup and coverage flow that pairs with this command
-- [`/helm:log`](log.md) - sync `CLAUDE.md` to reflect the release
-- [`/helm:manifest`](manifest.md) - sync `README.md` to reflect the release
+- [`/helm:test`](test.md) — the test framework setup and coverage flow that pairs with this command
+- [`/helm:log`](log.md) — sync `CLAUDE.md` to reflect the release
+- [`/helm:manifest`](manifest.md) — sync `README.md` to reflect the release

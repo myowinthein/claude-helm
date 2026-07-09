@@ -120,7 +120,9 @@ Run full test suite using detected test framework.
 If tests fail, stop and inform human:
 "Tests failed. Fix before releasing."
 Do not proceed until tests pass.
-Skip silently if no test framework detected.
+If no test framework detected, inform human:
+"No test framework detected — releasing without test validation. Continue?"
+Wait for confirmation before proceeding.
 
 ---
 
@@ -134,7 +136,8 @@ Scan README.md for version references (badges, inline mentions).
 If found, update to {version}. Skip silently if none found.
 
 Commit, tag, and push:
-- git add -A
+- git add {version_file}
+- git add README.md  (only if README was updated in the step above)
 - git commit -m "chore(release): bump version to {version}"
 - git tag -a v{version} -m "Release v{version}"
 - git push origin HEAD
@@ -164,7 +167,9 @@ If hosted on GitHub, use AskUserQuestion:
   If Skip selected → skip silently.
 
   If Create release selected:
-  - Run: gh release create v{version} --title "v{version}" --generate-notes
+  - Build release notes from git log:
+    git log v{last_tag}..HEAD --pretty=format:"- %s" | grep -E "^- (feat|fix)"
+  - Run: gh release create v{version} --title "v{version}" --notes "{extracted_notes}"
   - If the command fails with an auth error, inform human:
     "gh is not authenticated. Run: gh auth login
     Then re-run /helm:ship or create the release manually."

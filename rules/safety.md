@@ -10,11 +10,12 @@ Review for operational risks:
 - CLAUDE.md, .claude/rules, README files, project documentation
 - CI/CD pipelines, GitHub Actions, GitLab CI, deployment scripts
 - Composer scripts, package scripts, Makefiles, shell scripts
-- Docker, Lando, Laravel Sail configuration
+- Docker, Dev Containers, Podman, Lando, Laravel Sail configuration
 - Git remotes, branch structure, protected branches
 - .env.example, credential files, service account files, private keys
 - Queue config, scheduler config, background job definitions
-- Cloud/infrastructure config (AWS, DO, Cloudflare, Elasticsearch, Redis, etc)
+- Deployment platforms (Fly.io, Railway, Render, Heroku, or similar)
+- Cloud/infrastructure config (AWS, GCP, Azure, DO, Cloudflare, Supabase, Vercel, Neon, Elasticsearch, Redis, etc)
 
 ## Agent Execution Boundaries
 

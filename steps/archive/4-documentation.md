@@ -27,7 +27,7 @@ For every existing documentation file, decide: Keep, Update, Merge, Archive, or 
 Use this to guide the decision:
 
 | Existing doc type | Action |
-|---|---|
+| --- | --- |
 | Accurate, has recovery or demonstration value | Keep — link from README |
 | Accurate but duplicates docs/setup.md content | Merge into docs/setup.md, remove original |
 | Outdated instructions that affect restoration | Update |

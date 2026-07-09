@@ -85,7 +85,7 @@ After the project is verified as running:
 Export all Docker images to `recovery/docker/` as gzipped tarballs:
 
 ```
-docker save {image_name} | gzip > recovery/docker/{service}.tar.gz
+docker save {service} | gzip > recovery/docker/{service}.tar.gz
 ```
 
 Export one tarball per service (web, database, cache, etc.).
@@ -154,8 +154,6 @@ Anything that prevented full restoration or needs attention before proceeding to
 
 ---
 
-Do not commit or push. Output the report and stop.
+Do not commit or push. Output the report and stop. Wait for explicit approval before proceeding to Step 3.
 
-If Restoration Outcome is Fully Restored: proceed to Step 3 when approved.
-
-If Restoration Outcome is anything other than Fully Restored: clearly state that proceeding to Step 3 is not recommended until blockers are resolved. List what needs to be fixed. Wait for explicit approval before continuing.
+If Restoration Outcome is anything other than Fully Restored: clearly state that proceeding to Step 3 is not recommended until blockers are resolved. List what needs to be fixed.

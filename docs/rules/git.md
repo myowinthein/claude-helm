@@ -113,7 +113,7 @@ Run before pushing, regardless of mode:
 - Detect lint and formatter config in the project.
 - Run lint and formatter; fix all errors before pushing.
 - Include formatting changes in the last logical commit.
-- Skip silently if not configured. Never push with lint errors.
+- Skip the lint step if no linter is configured. If a linter is configured, never push with lint errors.
 
 **Tests**
 

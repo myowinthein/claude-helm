@@ -30,9 +30,9 @@ upstream    https://gitlab.com/client/project.git
 
 Ask:
 - Which of these point to company, client, or external repositories?
-- What is the private GitLab URL for this archive? (The repository must already exist on GitLab before proceeding — remind the developer to create it if needed.)
+- What is the private archive remote URL? This can be any Git host — GitHub, GitLab, Gitea, Forgejo, or self-hosted. The repository must already exist before proceeding; remind the developer to create it if needed.
 
-Remove all non-personal remotes. Set origin to the provided private GitLab URL.
+Remove all non-personal remotes. Set origin to the provided private archive remote URL.
 
 Do not proceed to any other task until origin is confirmed as the private archive remote.
 
@@ -116,9 +116,10 @@ If no running services are found: skip silently.
 
 Show git status — all staged and unstaged changes accumulated across the full workflow.
 
-Commit all changes:
+Commit all changes. Stage all tracked and new files explicitly — do not use `git add -A` blindly. Check `git status` first and stage only the files accumulated during this workflow:
 ```
-git add -A
+git add -u                                  # stage all tracked modifications
+git add recovery/ docs/ README.md .gitignore  # stage new files created this session
 git commit -m "chore(archive): seal project archive"
 ```
 
