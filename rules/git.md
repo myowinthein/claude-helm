@@ -91,7 +91,7 @@ All commits must follow this format:
 
 ## Code Quality
 
-After all work for a prompt is complete, before pushing:
+Run before pushing, regardless of mode:
 
 **Lint and Formatting**
 - Scan for lint and formatter config files and detect tool
