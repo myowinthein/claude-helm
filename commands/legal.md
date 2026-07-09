@@ -7,8 +7,6 @@ description: Scan project and generate GDPR-compliant legal documents based on w
 Scan the project and generate legal documents based on what the
 project actually does. Only generate documents that apply.
 
----
-
 ## Step 1 — Branch check
 
 Only proceed if on main or master.
