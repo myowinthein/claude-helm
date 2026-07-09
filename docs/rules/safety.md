@@ -101,6 +101,8 @@ This block answers the question "if I push here, what breaks for whom?" before t
 
 When stating what the project enforces, infer only from actual CI/hooks/pipelines. Do not claim a check exists unless the project actually runs it.
 
+Before completing this checklist, verify you have inspected: CI config files, pre-commit hook configs, and test/lint scripts in `package.json`, `Makefile`, or `composer.json`. List the files that informed each check.
+
 Examples: unit tests, feature tests, linting, static analysis, frontend build, generated file verification, pre-commit hooks.
 
 ## See also

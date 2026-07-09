@@ -88,6 +88,8 @@ Question and labels adapt to the detected state:
 
 ### 6. Report
 
+For Copy or Update installs, verifies the written files before reporting: reads `.claude/rules/git.md` and `.claude/rules/safety.md` and confirms each exists and contains the `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker. If a file is missing or the marker is absent, reports the error instead of success.
+
 Final summary line per file describing what was written, updated, skipped, or referenced, and which helm version was recorded in the marker.
 
 ## Stop conditions

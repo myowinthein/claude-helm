@@ -26,6 +26,7 @@ The `git-solo: true` flag lives in `CLAUDE.md` under `## Project Config`. Absenc
 
 Activate by declaring `git-solo: true` in `CLAUDE.md`. When active:
 
+- After reading `CLAUDE.md`, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active (no git-solo declaration found)."
 - Commit directly to `main`. No feature branches required.
 - No PR required.
 - Skip Branch Naming and GitHub Flow sections entirely.

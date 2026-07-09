@@ -122,6 +122,8 @@ Each selected document is written in plain English, GDPR compliant, to the resol
 
 ### 5. Commit
 
+Presents the list of generated files for review and waits for confirmation before committing.
+
 Single commit: `docs(legal): generate legal documents for v{version}`.
 
 If the output path or format differs from the default (`legal/` Markdown), the commit body notes it for future runs.

@@ -68,6 +68,8 @@ Delete:   fix/payment-bug     (local + remote)
 
 If local and remote main/master have diverged, the step stops for approval before resolving the divergence.
 
+After deletion, runs `git ls-remote --heads origin` to confirm the deleted branches no longer appear on the remote.
+
 ## Task 3 — Git LFS
 
 Scans for files larger than 100 MB (tracked and untracked). If found, Git LFS is set up and large files are tracked with appropriate patterns in `.gitattributes`. Skips silently if no large files exist.
