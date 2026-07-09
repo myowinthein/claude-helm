@@ -10,7 +10,6 @@
 ## Project Config
 
 git-solo: true
-git-auto-commit: true
 
 ## Dev Commands
 
@@ -25,7 +24,7 @@ Reload locally: `/reload-plugins` after any change
 - `rules/git.md` — git workflow rules shipped to projects; covers Solo Mode and GitHub Flow
 - `rules/safety.md` — operational safety rules shipped to projects
 - `steps/archive/` — step files for `/helm:archive` kept here intentionally to avoid appearing as slash commands in the menu
-- `docs/commands/` — human-readable detail pages per command (separate from command definitions)
+- `docs/commands/` — human-readable detail pages per command (not command source); `docs/rules/` covers the two rule files
 - `.claude-plugin/plugin.json` — the version file; bump this on every release
 - `.claude-plugin/marketplace.json` — Claude Code marketplace registration metadata
 - `_config.yml` + `Gemfile` + `_sass/` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
@@ -58,4 +57,4 @@ This project follows the rules shipped in claude-helm:
 - rules/git.md
 - rules/safety.md
 
-<!-- last-reviewed: 216cea2f3695b4b1930dce053998687e2f252e0e -->
+<!-- last-reviewed: 5f2c87f6c880718db038747e25f876ca8cd801cc -->
