@@ -33,7 +33,7 @@ If an existing Postman collection is found (from Step 1): use it as the starting
 
 ## Verification
 
-Verify representative requests where safe — GET requests, health endpoints, authentication flows, and local demo workflows.
+Verify representative requests where safe — GET requests, health endpoints, authentication flows, and local demo workflows. Verify at minimum one GET request per functional area and the primary authentication flow. If fewer than half of all endpoints have been verified, note this explicitly in Known Limitations.
 
 Do not verify endpoints that may delete data, send emails or SMS, trigger webhooks, process payments, or perform bulk actions without explicit approval. Mark those as unverified with a note explaining why.
 
