@@ -88,6 +88,13 @@ Export all Docker images to `recovery/docker/` as gzipped tarballs:
 docker save {service} | gzip > recovery/docker/{service}.tar.gz
 ```
 
+After each export, verify the file is not empty:
+```
+[ -s recovery/docker/{service}.tar.gz ] || echo "ERROR: tarball is empty — re-export before proceeding"
+```
+
+The shell pipe may silently produce an empty file if `docker save` fails; this check catches silent failures.
+
 Export one tarball per service (web, database, cache, etc.).
 
 After exporting each tarball, validate it by running:
