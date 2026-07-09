@@ -30,11 +30,11 @@
       "file": "commands/log.md",
       "line": "7",
       "description": "Branch check is inline prose without a labeled '## Step 1 \u2014 Branch check' heading, unlike every other command.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-003",
@@ -46,11 +46,11 @@
       "file": "commands/manifest.md",
       "line": "7",
       "description": "Branch check is inline prose without a labeled '## Step 1 \u2014 Branch check' heading, unlike every other command.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-004",
@@ -62,11 +62,11 @@
       "file": "commands/test.md",
       "line": "1",
       "description": "No branch check step at all; every other write-capable command guards on main/master before doing any work.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-005",
@@ -78,11 +78,11 @@
       "file": "commands/adopt.md",
       "line": "1",
       "description": "No branch check step even though it writes files (.claude/rules/, CLAUDE.md) that should only be committed from main.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-006",
@@ -94,11 +94,11 @@
       "file": "commands/test.md",
       "line": "1",
       "description": "Uses free-form section headings instead of the '## Step N \u2014 Name' pattern used by all other commands.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-007",
@@ -110,11 +110,11 @@
       "file": ".claude-plugin/marketplace.json",
       "line": "11",
       "description": "Uses 'source': './' with no explicit include/files list; every file added to the repo root is silently bundled into the plugin distribution.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-008",
@@ -126,11 +126,11 @@
       "file": "rules/safety.md",
       "line": "1",
       "description": "Bootstrap procedure instruction ('Perform this scan during project bootstrap') is mixed with standing operational rules, causing agents to potentially re-execute it on every load.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-009",
@@ -158,11 +158,11 @@
       "file": "steps/archive/4-documentation.md",
       "line": "112",
       "description": "Approval gate in Task 3 is buried mid-list rather than called out as a hard stop, risking agents treating it as optional prose.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-011",
@@ -190,11 +190,11 @@
       "file": "_config.yml",
       "line": "19",
       "description": "Jekyll exclude list manually enumerates directories; every new top-level directory must be manually added or it will be included in the site build.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-013",
@@ -206,11 +206,11 @@
       "file": "commands/archive.md",
       "line": "1",
       "description": "No branch check step even though it commits in Step 5 Task 6, diverging from every other file-writing command.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-014",
@@ -222,11 +222,11 @@
       "file": "commands/log.md",
       "line": "1",
       "description": "Uses free-form section headings ('Assessment', 'Full', 'Gap') instead of '## Step N \u2014 Name' pattern.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-015",
@@ -238,11 +238,11 @@
       "file": "commands/manifest.md",
       "line": "1",
       "description": "Uses free-form section headings ('Assessment', 'Full', 'Gap') instead of '## Step N \u2014 Name' pattern.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-016",
@@ -256,11 +256,11 @@
       "file": "docs/rules/safety.md",
       "line": "11",
       "description": "The docs page clarifies 'the file is not procedural' but the shipped rules/safety.md has no equivalent \u2014 agents read the rule file, not the doc.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-017",
@@ -466,11 +466,11 @@
       "file": "docs/commands/archive/2-restore-and-freeze.md",
       "line": "n/a",
       "description": "Docs page omits the 'Document versions instead of containerizing' guidance block (mobile, desktop, browser-extension, library cases) present in the step file.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6fe899",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-030",
@@ -642,11 +642,11 @@
       "file": "docs/commands/archive/1-explore.md",
       "line": "n/a",
       "description": "Docs page omits 'Demo accounts or demo data' and 'Recommended restoration approach' items that appear in the step file scan list.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6fe899",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-041",
@@ -658,11 +658,11 @@
       "file": "docs/commands/archive/3-postman.md",
       "line": "n/a",
       "description": "Docs page omits the report output format section entirely (eight sections defined in the step file), unlike every other archive docs page.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6fe899",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-042",
@@ -820,11 +820,11 @@
       "file": "steps/archive/4-documentation.md",
       "line": "29",
       "description": "'Archive' action value present in step file consolidation table but omitted from the corresponding docs page.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6fe899",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-052",
