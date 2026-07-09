@@ -263,7 +263,7 @@ Wait for response before proceeding.
 
 ## Step 7 — Apply refactoring
 
-Apply selected categories one at a time. Within each category, follow this sequence:
+Apply selected categories one at a time. Complete steps 7.1–7.4 fully for each category before starting the next. Do not batch changes from multiple categories into a single commit.
 
 ### 7.1 Order the work
 
@@ -295,11 +295,13 @@ Apply selected categories one at a time. Within each category, follow this seque
 
 ### 7.4 Test, lint, commit
 
-- Run tests — stop and inform if tests fail. Do not proceed to next category if tests fail; inform the human and wait for resolution before continuing.
+After all clusters in this category are applied:
+- Run tests — stop and inform if tests fail. Do not proceed to the next category if tests fail; inform the human and wait for resolution before continuing.
 - Run lint and formatter.
-- Commit with conventional message:
+- Commit everything from this category in one commit:
   refactor({category}): {brief summary of changes}
 - Update the corresponding ledger entries: `status` to `fixed` (or `skipped-by-user` per 7.3), with `resolved_commit` and `resolved_date` set for fixed ones.
+- Then begin the next selected category from step 7.1.
 
 For any finding in this category the user did not select this run at the category level (Step 6), leave its ledger `status` as `open`.
 
