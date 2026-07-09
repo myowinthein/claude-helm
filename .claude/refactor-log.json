@@ -498,11 +498,11 @@
       "file": "README.md",
       "line": "42",
       "description": "Commands table links to docs/commands/*.md with no indication that actual command logic lives in commands/*.md \u2014 the distinction is invisible at point of discovery.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6a7973b",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-032",
@@ -706,11 +706,11 @@
       "file": "CLAUDE.md",
       "line": "29",
       "description": "Claim that plugin.json is 'the only version file' is not enforced and will become stale if a secondary version reference is added elsewhere.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6a7973b",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-045",
