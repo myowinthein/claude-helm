@@ -101,27 +101,39 @@ If CLAUDE.md exists with a saved commit hash and schema is intact:
 
 ## Step 3 — Project Config Check
 
-Known flags and their recommended defaults for solo indie developers:
+**Full scan:** always ask both questions below.
+**Gap update:** ask only the question(s) for flags missing from the existing Project Config section.
+  If both flags are already present, skip this step silently.
 
-  - `git-solo: true` — commit direct to main; no feature branches, no PRs
-  - `git-auto-commit: true` — commit after each task without prompting; push still requires confirmation
-
-**Full scan:** always ask about all known flags.
-**Gap update:** ask only about flags missing from the existing Project Config section.
-  If all flags are already present, skip this block silently.
+**Question 1 — Branching strategy** (ask if `git-solo` is absent, or on full scan):
 
   AskUserQuestion:
-    question: "Which project config flags should be enabled? (All recommended for solo developers)"
-    header:   "Project Config"
-    multiSelect: true
-    options: one entry per flag being asked (all flags for Full; missing flags only for Gap):
-      - label: "git-solo: true"
-        description: "Commit direct to main; no feature branches, no PRs"
-      - label: "git-auto-commit: true"
-        description: "Claude commits after each task without prompting; push still requires confirmation"
+    question: "Which git branching strategy should this project use?"
+    header:   "Branching strategy"
+    multiSelect: false
+    options:
+      - label: "Solo Mode"
+        description: "Commit directly to main — no feature branches, no PRs. Intended for solo work with no collaborators."
+      - label: "GitHub Flow"
+        description: "Branch off main for every change, open a PR to merge back. Intended for teams or projects with peer review."
 
-  Write each selected flag under Project Config.
-  Omit any flag not selected — absence means the feature is off.
+  Solo Mode selected → write `git-solo: true` under Project Config.
+  GitHub Flow selected → omit `git-solo` from Project Config (absence means GitHub Flow).
+
+**Question 2 — Auto-commit** (ask if `git-auto-commit` is absent, or on full scan):
+
+  AskUserQuestion:
+    question: "Should Claude commit automatically after completing each task?"
+    header:   "Auto-commit"
+    multiSelect: false
+    options:
+      - label: "Yes — commit automatically"
+        description: "Claude commits after each task without prompting. Push still requires confirmation."
+      - label: "No — ask before committing"
+        description: "Claude asks for confirmation before every commit."
+
+  Yes selected → write `git-auto-commit: true` under Project Config.
+  No selected → omit `git-auto-commit` from Project Config.
 
 ---
 
