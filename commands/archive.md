@@ -129,9 +129,9 @@ Use Step 1's findings to select the approach. Docker is the primary choice for m
 
 **Containerize with Docker (primary for most projects):**
 
-If a Docker or Docker Compose setup already exists: use it, but verify all image tags are pinned to specific versions (e.g. `node:18.17.1-alpine`, not `node:18` or `node:latest`). Update any unpinned tags before building.
+If a Docker or Docker Compose setup already exists: use it, but verify all image tags are pinned to specific versions (e.g. `node:18.17.1-alpine`, not `node:18` or `node:latest`). Update any unpinned tags before building. For maximum long-term recovery reliability, prefer immutable digest references alongside version tags — e.g. `node:18.17.1-alpine@sha256:<digest>` — since version tags can be overwritten by the registry.
 
-If no Docker setup exists: create a `Dockerfile` and `docker-compose.yml` appropriate for the project's stack and runtime. Pin all base image versions specifically.
+If no Docker setup exists: create a `Dockerfile` and `docker-compose.yml` appropriate for the project's stack and runtime. Pin all base image versions specifically, using digest references where possible (`image:tag@sha256:<digest>`).
 
 By project type:
 
