@@ -40,6 +40,7 @@ The step reads source code, configuration files, manifests, env files, and any e
 - Database type and where credentials live
 - Available restoration sources in priority order: dumps, seeders, migrations, or none
 - Demo accounts or demo data if found
+- Recommended restoration approach (local or Docker)
 
 **External integrations**
 - Third-party services the project depends on

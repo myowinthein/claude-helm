@@ -61,6 +61,15 @@ Docker is the preferred freeze mechanism for most project types. Base image tags
 | Browser extension | Document browser version and extension API versions |
 | Library / package | Docker for the test environment |
 
+## When Docker does not apply
+
+For project types where Docker cannot meaningfully freeze the build environment, document exact versions in `docs/setup.md` instead:
+
+- **Mobile** (React Native, Flutter, iOS, Android): Document exact SDK version, toolchain version, target platform version, and any required IDE version.
+- **Desktop** (Electron, Tauri, etc.): Prefer Docker for the build step if possible; otherwise document exact Node or Rust version.
+- **Browser extension**: Document the exact browser version and extension API versions used.
+- **Library / package**: Use Docker for the test environment; document the published package version.
+
 ## Data restoration priority
 
 The best available source is used in this order:

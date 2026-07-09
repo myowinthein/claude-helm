@@ -79,3 +79,16 @@ Saved to `recovery/postman/` using the project name from Step 1:
 - `{project-name}.postman_environment.json`
 
 Requests are organized by functional area (Authentication, Users, Admin, Products, Orders, etc.) with collection variables, environment variables, request descriptions, and authentication notes.
+
+## Output
+
+The step produces a report with the following sections:
+
+- **Applicability** — whether a collection was generated or skipped and why
+- **Existing Collection** — whether an existing Postman collection was found and how it was used
+- **Endpoints Discovered** — total endpoints found, how they were discovered, and any excluded
+- **Authentication** — auth method used and how it is configured in the collection
+- **Files Created or Updated** — file paths and what changed
+- **Verified Requests** — requests tested against the running app and their results
+- **Unverified Requests** — requests that could not be safely verified and the reason for each
+- **Known Limitations** — endpoints not covered, external dependencies, or gaps in coverage

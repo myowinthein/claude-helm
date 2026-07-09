@@ -31,9 +31,9 @@ Use this to guide the decision:
 | Accurate, has recovery or demonstration value | Keep — link from README |
 | Accurate but duplicates docs/setup.md content | Merge into docs/setup.md, remove original |
 | Outdated instructions that affect restoration | Update |
-| Historical context, domain knowledge, business background | Move to docs/historical-notes.md |
+| Historical context, domain knowledge, business background | Archive — move to docs/historical-notes.md |
 | Contributor guides, pull request templates, code of conduct | Remove — irrelevant for private archive |
-| Changelogs and release notes | Move to docs/historical-notes.md if they provide context; otherwise remove |
+| Changelogs and release notes | Archive — move to docs/historical-notes.md if they provide context; otherwise remove |
 | CI/CD documentation, deployment runbooks | Remove — no recovery value |
 | Auto-generated documentation | Remove — regenerate if needed |
 | Outdated and no recovery or historical value | Remove |
