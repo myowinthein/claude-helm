@@ -19,23 +19,11 @@ Current branch is {branch}. Please switch and re-run."
 
 ---
 
-## Step 2 — Create refactor branch
+## Step 2 — Check for existing refactor branch
 
-Create a dedicated branch for refactoring changes:
-  refactor/{YYYYMMDD-HHMMSS}
+Run `git branch --list 'refactor/*'` to check for any existing refactor branch.
 
-If an existing refactor/* branch is detected, use AskUserQuestion:
-  AskUserQuestion:
-    question: "An existing refactor branch was found: {branch}. Continue on it or start fresh?"
-    header:   "Branch"
-    multiSelect: false
-    options:
-      - label: "Continue on {branch} (Recommended)"
-        description: "Switch to the existing branch and continue refactoring"
-      - label: "Create new branch"
-        description: "Start a new refactor/{YYYYMMDD-HHMMSS} branch"
-
-On selection, create or switch to refactor branch and proceed.
+If one is found, record its name — it will be offered to the user after they choose a mode in Step 4. Do not create or switch branches here.
 
 ---
 
@@ -111,7 +99,21 @@ Inform user:
 
 "No refactor history found — running Deep Mode to build a baseline."
 
-Proceed directly to Step 5, Deep Mode.
+Then create the refactor branch:
+- If an existing refactor/* branch was found in Step 2, ask:
+  AskUserQuestion:
+    question: "An existing refactor branch was found: {branch}. Continue on it or start fresh?"
+    header:   "Branch"
+    multiSelect: false
+    options:
+      - label: "Continue on {branch} (Recommended)"
+        description: "Switch to the existing branch and continue refactoring"
+      - label: "Create new branch"
+        description: "Start a new refactor/{YYYYMMDD-HHMMSS} branch"
+  Then switch to the chosen branch, or create and switch to the new one.
+- If no existing refactor branch was found: create and switch to refactor/{YYYYMMDD-HHMMSS}.
+
+Proceed to Step 5, Deep Mode.
 
 ### 4.3 Later runs — ledger found
 
@@ -140,7 +142,21 @@ Only include the Fix Backlog option if `open_count > 0`:
       - label: "Fix Backlog{recommended tag if applicable}"  (only include if open_count > 0)
         description: "Skip scanning — {open_count} known issues waiting to be fixed. {reason if recommended, e.g. 'No new commits since last scan.'}"
 
-Wait for response before proceeding to Step 5.
+After the user confirms a mode, create the refactor branch:
+- If an existing refactor/* branch was found in Step 2, ask:
+  AskUserQuestion:
+    question: "An existing refactor branch was found: {branch}. Continue on it or start fresh?"
+    header:   "Branch"
+    multiSelect: false
+    options:
+      - label: "Continue on {branch} (Recommended)"
+        description: "Switch to the existing branch and continue refactoring"
+      - label: "Create new branch"
+        description: "Start a new refactor/{YYYYMMDD-HHMMSS} branch"
+  Then switch to the chosen branch, or create and switch to the new one.
+- If no existing refactor branch was found: create and switch to refactor/{YYYYMMDD-HHMMSS}.
+
+Proceed to Step 5.
 
 ---
 
