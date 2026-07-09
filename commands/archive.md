@@ -14,10 +14,6 @@ Current branch is {branch}. Please switch and re-run."
 
 ---
 
-Run `ls -la` to confirm the current directory, then immediately begin Step 1 below without waiting for further instruction.
-
----
-
 ## Step 1 — Explore
 
 Analyze this project in read-only mode.
