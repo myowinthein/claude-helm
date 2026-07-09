@@ -382,7 +382,7 @@ Report:
 REFACTORING COMPLETE
 ─────────────────────────────────
 Branch:   refactor/{timestamp}
-Mode:     {Deep/Quick}
+Mode:     {Deep/Quick/Fix Backlog}
 Applied:
 - Architecture: {N} changes
 - Code Quality: {N} changes
