@@ -578,11 +578,11 @@
       "file": "rules/git.md",
       "line": "94",
       "description": "Code Quality section scoping language ('after all work for a prompt is complete') differs from docs version ('run before pushing, regardless of mode').",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7dbc7d2",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-037",
