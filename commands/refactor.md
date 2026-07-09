@@ -118,12 +118,15 @@ Proceed directly to Step 5, Deep Mode.
 Compute, since `last_scanned_commit`:
 - number of commits on the current branch
 - number of days since `last_scan_date`
+- `open_count` — number of findings in the ledger with `status: open`
 
 Decide which mode to recommend using this logic:
-- Recommend **Deep Mode** if: 40+ commits since last scan, OR 60+ days since last scan, OR `consecutive_quick_count` is 2 or more (old untouched code is overdue for a fresh look).
+- If `open_count > 0` AND zero commits since `last_scanned_commit`: recommend **Fix Backlog** — there's nothing new to scan for.
+- Otherwise recommend **Deep Mode** if: 40+ commits since last scan, OR 60+ days since last scan, OR `consecutive_quick_count` is 2 or more.
 - Otherwise recommend **Quick Mode**.
 
-Ask with AskUserQuestion, filling in the reason in the description:
+Ask with AskUserQuestion, filling in the reason in the description.
+Only include the Fix Backlog option if `open_count > 0`:
 
   AskUserQuestion:
     question: "Which scan mode would you like to run?"
@@ -134,6 +137,8 @@ Ask with AskUserQuestion, filling in the reason in the description:
         description: "Full codebase re-scan using multiple agents. {reason, e.g. '45 commits and 70 days since last full scan — old code may have drifted.'}"
       - label: "Quick Mode{recommended tag if applicable}"
         description: "Only checks files changed since the last scan, plus re-validates past findings. {reason, e.g. 'Only 8 commits since last scan — a quick check should cover it.'}"
+      - label: "Fix Backlog{recommended tag if applicable}"  (only include if open_count > 0)
+        description: "Skip scanning — {open_count} known issues waiting to be fixed. {reason if recommended, e.g. 'No new commits since last scan.'}"
 
 Wait for response before proceeding to Step 5.
 
@@ -189,11 +194,20 @@ Wait for response before proceeding to Step 5.
    git commit -m "chore(refactor): update ledger after quick scan"
    ```
 
+### 5C. Fix Backlog
+
+1. Skip scanning entirely — no file reads, no git diff, no sub-agents.
+2. Load every finding from the ledger with `status: open`. These are the only items in scope this run.
+3. Do not modify `last_scanned_commit`, `last_mode`, or `consecutive_quick_count` — no scan happened, so this run leaves scan metadata untouched.
+4. Proceed directly to Step 6 using only this open-findings list.
+
 ---
 
 ## Step 6 — Present findings
 
-Group by category, prioritize within each. Split into three sections so the user can see real progress instead of a flat repeated list:
+If this run used Fix Backlog mode, no scan occurred, so the report only ever shows the Still Open section — omit New and Auto-Resolved from the summary counts and category breakdowns entirely, and label the report header `REFACTORING REPORT (mode: Fix Backlog — no scan performed)`.
+
+Otherwise, group by category, prioritize within each. Split into three sections so the user can see real progress instead of a flat repeated list:
 
 - **New** — found for the first time this run
 - **Still Open** — found in a previous run, not yet fixed, still valid
