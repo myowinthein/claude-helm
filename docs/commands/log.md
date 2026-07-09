@@ -38,7 +38,7 @@ flowchart TD
   Mode4 -->|full| Full
   Mode4 -->|gap| GapPath
 
-  Full[Investigate project<br/>ask git mode + auto-commit<br/>write 7-section CLAUDE.md<br/>append last-reviewed hash] --> Done
+  Full["Investigate project<br/>Q1: Solo Mode or GitHub Flow?<br/>Q2: auto-commit yes or no?<br/>write 7-section CLAUDE.md<br/>append last-reviewed hash"] --> Done
   GapPath[Review commits since hash<br/>apply 3-question filter<br/>update sections or report<br/>no change, bump hash] --> Done
 
   Done([Updated CLAUDE.md])
@@ -67,7 +67,10 @@ Four modes, with the default depending on assessment:
 
 ### 4. Full scan
 
-Investigates the project from scratch: business purpose, modules and workflows, stack and versions, architectural patterns (from implementation, not folder names), conventions, domain rules, operational context. Reviews any existing docs and `.claude/rules`. Before writing, runs the shared Project Config Check (all flags).
+Investigates the project from scratch: business purpose, modules and workflows, stack and versions, architectural patterns (from implementation, not folder names), conventions, domain rules, operational context. Reviews any existing docs and `.claude/rules`. Before writing, runs the Project Config Check — two single-select questions:
+
+1. **Branching strategy** — Solo Mode (commit directly to `main`, no PRs) or GitHub Flow (branch per change, PR to merge).
+2. **Auto-commit** — yes (Claude commits after each task without prompting) or no (ask before every commit).
 
 Then writes `CLAUDE.md` using a seven-section schema:
 
@@ -83,7 +86,7 @@ Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
 
 ### 5. Gap update
 
-Before reviewing commits, runs the shared Project Config Check (missing flags only — silent if all present).
+Before reviewing commits, runs the Project Config Check for any flags missing from the existing Project Config section — skipped silently if both are already present. Each question is asked independently: branching strategy if `git-solo` is absent, auto-commit if `git-auto-commit` is absent.
 
 Then reads commit messages to get the shape of what changed. Reads file changes only for significant commits. Focuses on architectural changes, new modules, new conventions, domain rule changes, new operational knowledge, and newly discovered traps.
 
