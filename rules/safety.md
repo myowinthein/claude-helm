@@ -1,5 +1,9 @@
 # Operational Safety Rules
 
+This file is not procedural — it does not run on every session. It is loaded as context so agents respect the same operational guardrails throughout the project.
+
+## When to Run a Safety Scan
+
 Perform this scan during project bootstrap, as part of /helm:log Full scan mode.
 Update when deployment, infrastructure, or environment configuration changes.
 Only document risks supported by evidence in the repository — not assumptions.

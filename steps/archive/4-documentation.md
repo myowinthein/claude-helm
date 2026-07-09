@@ -109,7 +109,7 @@ Structured snapshot for quick inventory across archived projects:
 
 1. Read all existing documentation
 2. Decide Keep / Update / Merge / Archive / Remove for each existing file
-3. Present the consolidation plan and wait for approval before making any changes:
+3. Present the consolidation plan:
 
    ```
    CONSOLIDATION PLAN
@@ -119,7 +119,7 @@ Structured snapshot for quick inventory across archived projects:
    ...
    ```
 
-   Do not proceed until the developer explicitly approves.
+   **Stop.** Do not make any changes until the developer explicitly approves this plan.
 
 4. Extract historically valuable content from existing README into docs/historical-notes.md
 5. Write a fresh README.md

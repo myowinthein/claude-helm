@@ -16,6 +16,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-remote-theme
 
+# Every new top-level directory must be added here manually or Jekyll will include it in the site build.
 exclude:
   - Gemfile
   - Gemfile.lock

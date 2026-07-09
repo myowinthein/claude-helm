@@ -4,6 +4,16 @@ description: Explore, restore, containerize, document, and seal a project for lo
 
 # archive
 
+## Step 0 — Branch check
+
+Only proceed if on `main` or `master`.
+If on any other branch, stop and inform the user:
+
+"archive must be run on main or master.
+Current branch is {branch}. Please switch and re-run."
+
+---
+
 Run `ls -la` to confirm the current directory, then immediately begin Step 1 below without waiting for further instruction.
 
 ---
