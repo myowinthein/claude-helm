@@ -2,8 +2,6 @@ title: claude-helm
 description: A Claude Code plugin pack for solo developers.
 url: "https://myowinthein.github.io"
 baseurl: "/claude-helm"
-image: https://myowinthein.github.io/claude-helm/docs/images/banner.jpg
-
 remote_theme: just-the-docs/just-the-docs@v0.12.0
 nav_sort: order
 nav_external_links:
