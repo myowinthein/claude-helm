@@ -47,19 +47,10 @@ flowchart TD
 
 Docker is the preferred freeze mechanism for most project types. Base image tags and registries can disappear over time, so images are exported as tarballs after a successful build.
 
-| Project type | Approach |
+| Category | Approach |
 |---|---|
-| Web backend / API | Docker Compose: app + database + required services |
-| CMS (WordPress, Drupal, etc.) | Docker Compose: web server + database |
-| Web frontend (React, Vue, etc.) | Docker: build environment + static server |
-| Static site (Jekyll, Hugo, etc.) | Docker: build environment only |
-| Full-stack / monorepo | Docker Compose: minimum services for a working demo |
-| Data science / ML | Docker: pinned base image with all dependencies |
-| CLI tool or script | Docker: pinned runtime image |
-| Mobile (React Native, Flutter, iOS, Android) | Document exact SDK and toolchain versions instead |
-| Desktop (Electron, Tauri) | Docker for build step if possible; otherwise document versions |
-| Browser extension | Document browser version and extension API versions |
-| Library / package | Docker for the test environment |
+| Web apps, APIs, CLIs, static sites, data science, libraries | Docker or Docker Compose with pinned image versions |
+| Mobile, desktop, browser extensions | Document exact SDK, toolchain, and platform versions instead |
 
 ## When Docker does not apply
 

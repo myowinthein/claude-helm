@@ -81,4 +81,4 @@ What to watch out for or resolve before proceeding to Step 2.
 
 ---
 
-Do not make any changes. Output the report and stop. Wait for explicit approval before proceeding to Step 2.
+Output the report and stop. Wait for explicit approval before proceeding to Step 2.
