@@ -43,7 +43,6 @@ When writing content for `CLAUDE.md`, `README.md`, or any generated document:
 
 ## Hard Safety Rules
 
-- Never push without running `/helm:ship` — raw `git push` skips the version bump
 - Never delete or rewrite published tags — users pin to specific versions
 - Never commit secrets, credentials, or real user data (none expected in this repo)
 
