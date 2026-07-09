@@ -7,6 +7,8 @@
 Activate by declaring in CLAUDE.md (Project Config section):
   git-solo: true
 
+After reading CLAUDE.md, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active (no git-solo declaration found)."
+
 When active:
 - Commit directly to main — no feature branches required
 - No PR required

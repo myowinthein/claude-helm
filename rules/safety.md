@@ -88,3 +88,5 @@ For each known environment (local/staging/UAT/production/preview/etc) document:
 Infer from actual CI/hooks/pipelines — only checks the project enforces.
 Examples: unit tests, feature tests, linting, static analysis, frontend build,
 generated file verification, pre-commit hooks.
+
+Before completing this checklist, verify you have inspected: CI config files (`.github/workflows/`, `.gitlab-ci.yml`, etc.), pre-commit hook configs (`.husky/`, `.pre-commit-config.yaml`), and test/lint scripts in `package.json`, `Makefile`, or `composer.json`. List the files that informed each check.
