@@ -14,11 +14,11 @@
       "file": "CLAUDE.md",
       "line": "54",
       "description": "Rules section references rules via absolute local filesystem paths that are machine-specific and will break on any other machine or CI environment.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-002",
@@ -29,7 +29,7 @@
       "depends_on": [],
       "file": "commands/log.md",
       "line": "7",
-      "description": "Branch check is inline prose without a labeled '## Step 1 — Branch check' heading, unlike every other command.",
+      "description": "Branch check is inline prose without a labeled '## Step 1 \u2014 Branch check' heading, unlike every other command.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -45,7 +45,7 @@
       "depends_on": [],
       "file": "commands/manifest.md",
       "line": "7",
-      "description": "Branch check is inline prose without a labeled '## Step 1 — Branch check' heading, unlike every other command.",
+      "description": "Branch check is inline prose without a labeled '## Step 1 \u2014 Branch check' heading, unlike every other command.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -93,7 +93,7 @@
       "depends_on": [],
       "file": "commands/test.md",
       "line": "1",
-      "description": "Uses free-form section headings instead of the '## Step N — Name' pattern used by all other commands.",
+      "description": "Uses free-form section headings instead of the '## Step N \u2014 Name' pattern used by all other commands.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -142,11 +142,11 @@
       "file": "docs/commands/archive.md",
       "line": "25",
       "description": "Mermaid flow diagram shows approval nodes with only |yes| branches; none have a |no|/stop path even though the command halts on decline.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-010",
@@ -174,11 +174,11 @@
       "file": "steps/archive/2-restore-and-freeze.md",
       "line": "159",
       "description": "Conditional self-advance ('proceed to Step 3 when approved') conflicts with the explicit stop-and-wait gate pattern used in Steps 4 and 5.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-012",
@@ -221,7 +221,7 @@
       "depends_on": [],
       "file": "commands/log.md",
       "line": "1",
-      "description": "Uses free-form section headings ('Assessment', 'Full', 'Gap') instead of '## Step N — Name' pattern.",
+      "description": "Uses free-form section headings ('Assessment', 'Full', 'Gap') instead of '## Step N \u2014 Name' pattern.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -237,7 +237,7 @@
       "depends_on": [],
       "file": "commands/manifest.md",
       "line": "1",
-      "description": "Uses free-form section headings ('Assessment', 'Full', 'Gap') instead of '## Step N — Name' pattern.",
+      "description": "Uses free-form section headings ('Assessment', 'Full', 'Gap') instead of '## Step N \u2014 Name' pattern.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -250,10 +250,12 @@
       "priority": "low",
       "risk": "safe",
       "cluster_id": "c-011",
-      "depends_on": ["f-008"],
+      "depends_on": [
+        "f-008"
+      ],
       "file": "docs/rules/safety.md",
       "line": "11",
-      "description": "The docs page clarifies 'the file is not procedural' but the shipped rules/safety.md has no equivalent — agents read the rule file, not the doc.",
+      "description": "The docs page clarifies 'the file is not procedural' but the shipped rules/safety.md has no equivalent \u2014 agents read the rule file, not the doc.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -270,11 +272,11 @@
       "file": "docs/rules/index.md",
       "line": "10",
       "description": "Rules index page is a stub with no child-file links, no summary of what each rule covers, and no guidance on when to use which.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-018",
@@ -286,11 +288,11 @@
       "file": "docs/commands/archive.md",
       "line": "n/a",
       "description": "No '## Stop conditions' section; uses '## Approval gates' instead, breaking the structural template every other command page follows.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-019",
@@ -302,11 +304,11 @@
       "file": "docs/commands/refactor.md",
       "line": "135",
       "description": "Scoped verification pass is numbered '8.5' in the doc but '7.5' in the command definition, creating a numbering mismatch.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-020",
@@ -317,12 +319,12 @@
       "depends_on": [],
       "file": "docs/commands/ship.md",
       "line": "88",
-      "description": "See also entries use ' - ' (hyphen) as separator; majority of other command docs use ' — ' (em-dash).",
-      "status": "open",
+      "description": "See also entries use ' - ' (hyphen) as separator; majority of other command docs use ' \u2014 ' (em-dash).",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-021",
@@ -333,12 +335,12 @@
       "depends_on": [],
       "file": "docs/commands/test.md",
       "line": "86",
-      "description": "See also entries use ' - ' (hyphen) as separator; majority of other command docs use ' — ' (em-dash).",
-      "status": "open",
+      "description": "See also entries use ' - ' (hyphen) as separator; majority of other command docs use ' \u2014 ' (em-dash).",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-022",
@@ -350,11 +352,11 @@
       "file": "steps/archive/5-finalize.md",
       "line": "119",
       "description": "Task 6 uses git add -A, contradicting CLAUDE.md safety rule to prefer adding specific files by name.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-023",
@@ -366,11 +368,11 @@
       "file": "steps/archive/3-postman.md",
       "line": "n/a",
       "description": "No explicit 'wait for approval before Step 4' gate in closing instruction, unlike the uniform gate language in Steps 2, 4, and 5.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-024",
@@ -382,11 +384,11 @@
       "file": "steps/archive/1-explore.md",
       "line": "n/a",
       "description": "No 'wait for approval' closing gate statement analogous to Steps 2, 4, and 5, making the stopping behaviour implicit rather than enforced.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-025",
@@ -397,12 +399,12 @@
       "depends_on": [],
       "file": "commands/adopt.md",
       "line": "189",
-      "description": "Writing style block (em-dash policy) is duplicated verbatim in legal.md, log.md, and manifest.md — four copies that will drift independently.",
-      "status": "open",
+      "description": "Writing style block (em-dash policy) is duplicated verbatim in legal.md, log.md, and manifest.md \u2014 four copies that will drift independently.",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-026",
@@ -414,11 +416,11 @@
       "file": "docs/commands/adopt.md",
       "line": "87",
       "description": "Reference-mode description says 'prints snippet to chat if CLAUDE.md does not exist' but command now prompts to create CLAUDE.md first (commit 3d87e3d).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-027",
@@ -426,15 +428,17 @@
       "priority": "high",
       "risk": "safe",
       "cluster_id": "c-007",
-      "depends_on": ["f-026"],
+      "depends_on": [
+        "f-026"
+      ],
       "file": "docs/commands/adopt.md",
       "line": "96",
-      "description": "Stop condition 'No CLAUDE.md + Reference mode: snippet printed, nothing written' is now only one branch, not the only outcome — stale after commit 3d87e3d.",
-      "status": "open",
+      "description": "Stop condition 'No CLAUDE.md + Reference mode: snippet printed, nothing written' is now only one branch, not the only outcome \u2014 stale after commit 3d87e3d.",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-028",
@@ -446,11 +450,11 @@
       "file": "docs/commands/normalize.md",
       "line": "9",
       "description": "Intro says 'two confirmation gates' but the command has three: risk warning (Step 2), plan confirmation (Step 4), and force-push confirmation (Step 7).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-029",
@@ -478,11 +482,11 @@
       "file": ".claude-plugin/marketplace.json",
       "line": "3",
       "description": "Top-level description field duplicates the identical string already inside plugins[0].description on line 12.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-031",
@@ -493,7 +497,7 @@
       "depends_on": [],
       "file": "README.md",
       "line": "42",
-      "description": "Commands table links to docs/commands/*.md with no indication that actual command logic lives in commands/*.md — the distinction is invisible at point of discovery.",
+      "description": "Commands table links to docs/commands/*.md with no indication that actual command logic lives in commands/*.md \u2014 the distinction is invisible at point of discovery.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -509,12 +513,12 @@
       "depends_on": [],
       "file": "commands/normalize.md",
       "line": "103",
-      "description": "git filter-repo called preferred over filter-branch but the command block uses filter-branch — no filter-repo invocation provided.",
-      "status": "open",
+      "description": "git filter-repo called preferred over filter-branch but the command block uses filter-branch \u2014 no filter-repo invocation provided.",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-033",
@@ -526,11 +530,11 @@
       "file": "commands/ship.md",
       "line": "138",
       "description": "Step 5 uses git add -A, violating CLAUDE.md safety rule to prefer specific file names and risking accidental inclusion of .env files in a tagged release commit.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-034",
@@ -558,11 +562,11 @@
       "file": "rules/git.md",
       "line": "55",
       "description": "Cross-reference to safety.md uses relative filesystem path (.claude/rules/safety.md) that assumes a specific installation location.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-036",
@@ -590,11 +594,11 @@
       "file": "docs/commands/archive.md",
       "line": "88",
       "description": "Approval gates section lists seven points but Step 5 Task 5 (Stop Services) contains an eighth gate not listed.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-038",
@@ -606,11 +610,11 @@
       "file": "docs/commands/refactor.md",
       "line": "105",
       "description": "Deep Mode description says 'all five categories' but never names them; the command explicitly names them.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-039",
@@ -622,11 +626,11 @@
       "file": "docs/commands/refactor.md",
       "line": "122",
       "description": "Step 7 says max 4 options but the command's selection list only names four categories omitting Performance; users will see Performance findings but cannot select it independently.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-040",
@@ -670,11 +674,11 @@
       "file": "steps/archive/4-documentation.md",
       "line": "29",
       "description": "Consolidation decision table is missing a | --- | separator row, making it syntactically inconsistent with all other tables in the project.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-043",
@@ -686,11 +690,11 @@
       "file": "docs/commands/archive.md",
       "line": "68",
       "description": "Step 5 description says 'stops if origin still points to company repo' but the command actually guides reconfiguration interactively rather than halting.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-044",
@@ -717,7 +721,7 @@
       "depends_on": [],
       "file": "commands/legal.md",
       "line": "14",
-      "description": "Step 1 is labeled Branch check but lacks '## Step 1 —' prefix and uses --- separators inconsistently with how other commands structure their steps.",
+      "description": "Step 1 is labeled Branch check but lacks '## Step 1 \u2014' prefix and uses --- separators inconsistently with how other commands structure their steps.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -734,11 +738,11 @@
       "file": "commands/refactor.md",
       "line": "50",
       "description": "Scan exclusion list hard-codes PHP/Laravel paths (vendor/, storage/) with no equivalent exclusions for Python, Ruby, or Go projects.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-047",
@@ -750,11 +754,11 @@
       "file": "rules/git.md",
       "line": "29",
       "description": "Auto-Commit cross-reference wording differs between the shipped rule and the doc page, creating ambiguity about whether it is advisory or prescriptive.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-048",
@@ -765,12 +769,12 @@
       "depends_on": [],
       "file": "rules/git.md",
       "line": "99",
-      "description": "Lint instruction 'Skip silently if not configured — never push with lint errors' is logically contradictory: skip implies no enforcement, never push implies enforcement.",
-      "status": "open",
+      "description": "Lint instruction 'Skip silently if not configured \u2014 never push with lint errors' is logically contradictory: skip implies no enforcement, never push implies enforcement.",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-049",
@@ -778,15 +782,17 @@
       "priority": "low",
       "risk": "safe",
       "cluster_id": "c-019",
-      "depends_on": ["f-048"],
+      "depends_on": [
+        "f-048"
+      ],
       "file": "docs/rules/git.md",
       "line": "116",
       "description": "Docs version of the lint instruction repeats the same logical ambiguity as rules/git.md without resolving it.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-050",
@@ -829,12 +835,12 @@
       "depends_on": [],
       "file": "steps/archive/2-restore-and-freeze.md",
       "line": "86",
-      "description": "docker save command uses bare {image_name} placeholder but the filename uses {service} — inconsistent, undefined variable.",
-      "status": "open",
+      "description": "docker save command uses bare {image_name} placeholder but the filename uses {service} \u2014 inconsistent, undefined variable.",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-053",
@@ -878,11 +884,11 @@
       "file": "rules/git.md",
       "line": "119",
       "description": "Branch structure list (feature/*, fix/*, chore/*, refactor/*) is an incomplete subset of Conventional Commits types; agents enforcing it would reject docs/, test/, perf/, ci/, build/ branches.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-056",
@@ -893,7 +899,7 @@
       "depends_on": [],
       "file": "steps/archive/2-restore-and-freeze.md",
       "line": "1",
-      "description": "Restoration strategy matrix (lines 43–59) is duplicated almost verbatim in the docs page; two near-identical tables will inevitably drift.",
+      "description": "Restoration strategy matrix (lines 43\u201359) is duplicated almost verbatim in the docs page; two near-identical tables will inevitably drift.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -941,7 +947,7 @@
       "depends_on": [],
       "file": "commands/ship.md",
       "line": "64",
-      "description": "Step 3 scans last 20 commits for Conventional Commits detection then separately runs git log for version calculation — two reads when one would serve both.",
+      "description": "Step 3 scans last 20 commits for Conventional Commits detection then separately runs git log for version calculation \u2014 two reads when one would serve both.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -958,11 +964,11 @@
       "file": "commands/refactor.md",
       "line": "143",
       "description": "Deep Mode has no defined maximum chunk size or agent cap; total agent cost is unbounded on large monorepos.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-061",
@@ -973,12 +979,12 @@
       "depends_on": [],
       "file": "rules/safety.md",
       "line": "38",
-      "description": "Scan Targets list includes Laravel Sail — a Laravel-specific tool irrelevant to the majority of non-PHP projects.",
-      "status": "open",
+      "description": "Scan Targets list includes Laravel Sail \u2014 a Laravel-specific tool irrelevant to the majority of non-PHP projects.",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-062",
@@ -1053,12 +1059,12 @@
       "depends_on": [],
       "file": "commands/ship.md",
       "line": "119",
-      "description": "Step 4 silently skips if no test framework detected — ship will tag, push, and create a GitHub Release with zero test validation.",
-      "status": "open",
+      "description": "Step 4 silently skips if no test framework detected \u2014 ship will tag, push, and create a GitHub Release with zero test validation.",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-067",
@@ -1101,7 +1107,7 @@
       "depends_on": [],
       "file": "CLAUDE.md",
       "line": "47",
-      "description": "Known Trap for stale plugin cache has no automated verification or scripted workaround — relies entirely on developer memory each release.",
+      "description": "Known Trap for stale plugin cache has no automated verification or scripted workaround \u2014 relies entirely on developer memory each release.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -1117,7 +1123,7 @@
       "depends_on": [],
       "file": "commands/legal.md",
       "line": "345",
-      "description": "No review gate between generating documents and committing — writes and immediately commits legal documents without asking the user to review.",
+      "description": "No review gate between generating documents and committing \u2014 writes and immediately commits legal documents without asking the user to review.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -1133,7 +1139,7 @@
       "depends_on": [],
       "file": "commands/adopt.md",
       "line": "119",
-      "description": "No post-write verification after copying rule files — command reports written/updated/skipped with no actual content or existence check.",
+      "description": "No post-write verification after copying rule files \u2014 command reports written/updated/skipped with no actual content or existence check.",
       "status": "open",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
@@ -1198,11 +1204,11 @@
       "file": "commands/normalize.md",
       "line": "120",
       "description": "Post-rewrite verification only checks last 10 commits via git log --oneline -10; rewrite failures in older history go undetected.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-076",
@@ -1230,11 +1236,11 @@
       "file": "docs/commands/test.md",
       "line": "78",
       "description": "Stop conditions section does not list 'written tests fail' even though the command says it stops and informs before committing if tests fail.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-078",
@@ -1262,11 +1268,11 @@
       "file": "commands/normalize.md",
       "line": "103",
       "description": "References filter-branch as primary tool and notes it is deprecated since Git 2.36, but provides no concrete filter-repo invocation as the stated preferred alternative.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-080",
@@ -1278,11 +1284,11 @@
       "file": "steps/archive/5-finalize.md",
       "line": "32",
       "description": "Hard-codes GitLab as the private archive remote destination; developers using GitHub, Gitea, or Forgejo will be confused by the GitLab-specific prompts.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-081",
@@ -1309,12 +1315,12 @@
       "depends_on": [],
       "file": "commands/ship.md",
       "line": "167",
-      "description": "--generate-notes flag will produce empty/unhelpful release notes for repos that commit directly to main without PRs — the exact audience of this plugin.",
-      "status": "open",
+      "description": "--generate-notes flag will produce empty/unhelpful release notes for repos that commit directly to main without PRs \u2014 the exact audience of this plugin.",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-083",
@@ -1342,11 +1348,11 @@
       "file": "rules/safety.md",
       "line": "13",
       "description": "Scan Targets list references Docker, Lando, Laravel Sail but omits current tooling (Dev Containers, Podman, Fly.io), giving agents false confidence in infrastructure coverage.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-085",
@@ -1406,11 +1412,11 @@
       "file": "commands/legal.md",
       "line": "348",
       "description": "Commit message template uses {version} placeholder that is never defined or read anywhere in legal.md.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-089",
@@ -1422,11 +1428,11 @@
       "file": "rules/safety.md",
       "line": "17",
       "description": "Cloud/infrastructure scan target lists specific vendors (AWS, DO, Cloudflare) but omits GCP, Azure, Supabase, Vercel, Neon.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-090",
@@ -1438,11 +1444,11 @@
       "file": "docs/legal/eula.md",
       "line": "39",
       "description": "Governing law clause says 'laws of the jurisdiction in which the author resides' without naming the jurisdiction, making it unenforceable.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-091",
@@ -1454,11 +1460,11 @@
       "file": "docs/legal/terms.md",
       "line": "50",
       "description": "Terms of Service governing law clause has the same unnamed-jurisdiction problem as the EULA.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a8135d",
+      "resolved_date": "2026-07-09"
     }
   ]
 }
