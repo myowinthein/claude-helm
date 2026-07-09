@@ -31,6 +31,9 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 # Apply changes after install, update, or uninstall.
 /reload-plugins
+
+# Verify installation: type /helm in the Claude Code prompt.
+# Commands should appear in the picker. If not, see Known Traps in CLAUDE.md.
 ```
 
 ## Usage
