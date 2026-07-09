@@ -1044,11 +1044,11 @@
       "file": "README.md",
       "line": "18",
       "description": "Install section has no verification or smoke-test step to confirm commands appear in the picker after /reload-plugins, leaving silent cache failures undetected.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6589f8b",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-066",
@@ -1076,11 +1076,11 @@
       "file": "steps/archive/2-restore-and-freeze.md",
       "line": "147",
       "description": "No checkpoint requiring docker load validation on exported tarballs; a corrupt export will not be detected until actual recovery years later.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8c27446",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-068",
@@ -1092,11 +1092,11 @@
       "file": "steps/archive/3-postman.md",
       "line": "35",
       "description": "No minimum coverage threshold for 'representative requests'; an agent may verify a single health-check endpoint and mark the entire collection as tested.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3a33c5a",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-069",
@@ -1108,11 +1108,11 @@
       "file": "CLAUDE.md",
       "line": "47",
       "description": "Known Trap for stale plugin cache has no automated verification or scripted workaround \u2014 relies entirely on developer memory each release.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a1d555",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-070",
@@ -1124,11 +1124,11 @@
       "file": "commands/legal.md",
       "line": "345",
       "description": "No review gate between generating documents and committing \u2014 writes and immediately commits legal documents without asking the user to review.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "369854c",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-071",
@@ -1140,11 +1140,11 @@
       "file": "commands/adopt.md",
       "line": "119",
       "description": "No post-write verification after copying rule files \u2014 command reports written/updated/skipped with no actual content or existence check.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "49ad8ab",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-072",
@@ -1156,11 +1156,11 @@
       "file": "rules/safety.md",
       "line": "81",
       "description": "Minimum Evidence Checklist says 'infer from CI/hooks/pipelines' but no self-check instruction tells agents how to verify the risk inventory is complete or current.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "2268a0f",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-073",
@@ -1172,11 +1172,11 @@
       "file": "steps/archive/5-finalize.md",
       "line": "65",
       "description": "No verification step to confirm the remote branch was actually deleted (e.g. git ls-remote --heads origin) before proceeding.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8c27446",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-074",
@@ -1188,11 +1188,11 @@
       "file": "steps/archive/1-explore.md",
       "line": "n/a",
       "description": "No self-check instruction confirming every env file pattern (.env, .env.staging, .env.production, .env.*.local) was searched before declaring credentials risk complete.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3a33c5a",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-075",
@@ -1220,11 +1220,11 @@
       "file": "rules/git.md",
       "line": "n/a",
       "description": "No self-check instruction for agents to verify mode detection (Solo vs GitHub Flow) resolved correctly before proceeding.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "2268a0f",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-077",
@@ -1252,11 +1252,11 @@
       "file": "steps/archive/4-documentation.md",
       "line": "128",
       "description": "Task 8 says 'verify every active document is reachable from README.md' with no concrete link-tracing check; verification is aspirational rather than testable.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "79cd211",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-079",
