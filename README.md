@@ -37,6 +37,8 @@ A Claude Code plugin pack for solo developers. Ships slash commands and rule fil
 
 ### Commands
 
+Links below go to detail pages. Command logic lives in `commands/*.md`.
+
 | Command | What it does |
 |---|---|
 | [`/helm:ship`](docs/commands/ship.md) | Cut a release: calculate version, test, tag, push, and create a GitHub Release. |

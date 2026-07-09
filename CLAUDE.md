@@ -26,7 +26,7 @@ Reload locally: `/reload-plugins` after any change
 - `rules/safety.md` — operational safety rules shipped to projects
 - `steps/archive/` — step files for `/helm:archive` kept here intentionally to avoid appearing as slash commands in the menu
 - `docs/commands/` — human-readable detail pages per command (separate from command definitions)
-- `.claude-plugin/plugin.json` — the only version file; bump this on every release
+- `.claude-plugin/plugin.json` — the version file; bump this on every release
 - `.claude-plugin/marketplace.json` — Claude Code marketplace registration metadata
 - `_config.yml` + `Gemfile` + `_sass/` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
 
