@@ -60,11 +60,14 @@ Read current version from detected file.
 Run: git describe --tags --abbrev=0
 If no tag exists, ask human to confirm base version before proceeding.
 
-**Detect commit style**
-Scan last 20 commits for Conventional Commits pattern (feat/fix/chore format).
+**Detect commit style and calculate version**
+Run: git log {last_tag}..HEAD --oneline
+
+Use this single output for both detection and version calculation:
+- If feat:/fix:/chore:/feat!: patterns are present → Conventional Commits detected
+- If no Conventional Commits patterns → not detected
 
 If Conventional Commits detected:
-  Run: git log {last_tag}..HEAD --oneline
   Read commit messages and scan file changes.
 
   Triage by commit type:
