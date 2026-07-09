@@ -108,22 +108,11 @@ Structured snapshot for quick inventory across archived projects:
 ## Tasks
 
 1. Read all existing documentation
-2. Decide Keep / Update / Merge / Archive / Remove for each existing file
-3. Present the consolidation plan:
-
-   ```
-   CONSOLIDATION PLAN
-
-   {filename}    → {action} ({reason})
-   {filename}    → {action} ({reason})
-   ...
-   ```
-
-   **Stop.** Do not make any changes until the developer explicitly approves this plan.
-
-4. Extract historically valuable content from existing README into docs/historical-notes.md
-5. Write a fresh README.md
-6. Write or update docs/setup.md with all applicable sections
+2. Decide action for each file using the Consolidation table above
+3. Present the consolidation plan and wait for approval before making any changes
+4. Extract historically valuable content into docs/historical-notes.md
+5. Write fresh README.md
+6. Write or update docs/setup.md
 7. Write docs/archive-metadata.md
 8. Verify every active document is reachable from README.md
 
