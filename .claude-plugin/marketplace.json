@@ -7,6 +7,7 @@
   "plugins": [
     {
       "name": "helm",
+      "version": "2.15.0",
       "source": "./",
       "files": [
         "commands/",
