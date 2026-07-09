@@ -337,7 +337,21 @@ Required sections in order:
 
 ## Step 5 — Commit
 
-Commit all generated documents:
+Before committing, present the list of documents written and ask for confirmation:
+
+  AskUserQuestion:
+    question: "The following documents were written to {resolved-path}: {list}. Commit them now?"
+    header:   "Commit"
+    multiSelect: false
+    options:
+      - label: "Commit (Recommended)"
+        description: "docs(legal): generate legal documents"
+      - label: "Cancel"
+        description: "Leave documents written but uncommitted — commit manually when ready"
+
+If Cancel selected → exit without committing.
+
+If Commit selected, commit all generated documents:
   docs(legal): generate legal documents
 
 Include the resolved output path and format in the commit body if they differ from
