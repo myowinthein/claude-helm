@@ -118,12 +118,15 @@ Proceed directly to Step 5, Deep Mode.
 Compute, since `last_scanned_commit`:
 - number of commits on the current branch
 - number of days since `last_scan_date`
+- `open_count` — number of findings in the ledger with `status: open`
 
 Decide which mode to recommend using this logic:
-- Recommend **Deep Mode** if: 40+ commits since last scan, OR 60+ days since last scan, OR `consecutive_quick_count` is 2 or more (old untouched code is overdue for a fresh look).
+- If `open_count > 0` AND zero commits since `last_scanned_commit`: recommend **Fix Backlog** — there's nothing new to scan for.
+- Otherwise recommend **Deep Mode** if: 40+ commits since last scan, OR 60+ days since last scan, OR `consecutive_quick_count` is 2 or more.
 - Otherwise recommend **Quick Mode**.
 
-Ask with AskUserQuestion, filling in the reason in the description:
+Ask with AskUserQuestion, filling in the reason in the description.
+Only include the Fix Backlog option if `open_count > 0`:
 
   AskUserQuestion:
     question: "Which scan mode would you like to run?"
@@ -134,6 +137,8 @@ Ask with AskUserQuestion, filling in the reason in the description:
         description: "Full codebase re-scan using multiple agents. {reason, e.g. '45 commits and 70 days since last full scan — old code may have drifted.'}"
       - label: "Quick Mode{recommended tag if applicable}"
         description: "Only checks files changed since the last scan, plus re-validates past findings. {reason, e.g. 'Only 8 commits since last scan — a quick check should cover it.'}"
+      - label: "Fix Backlog{recommended tag if applicable}"  (only include if open_count > 0)
+        description: "Skip scanning — {open_count} known issues waiting to be fixed. {reason if recommended, e.g. 'No new commits since last scan.'}"
 
 Wait for response before proceeding to Step 5.
 
@@ -181,7 +186,7 @@ Wait for response before proceeding to Step 5.
 4. Re-validate every `open` ledger entry:
    - File deleted or heavily rewritten → mark `auto-resolved`.
    - File untouched → carry forward unchanged, still `open`.
-5. Scan only the changed files (single thread — the list is small, no sub-agents needed) across all categories for new issues. Assign `risk`, `cluster_id`, and `depends_on` to any new findings the same way Deep Mode does.
+5. Scan only the changed files (single thread — the list is small, no sub-agents needed) across all categories for new issues. Before adding any finding, cross-check it against the ledger's existing `open` findings for that same file — if it matches one already there, do not create a duplicate, just leave the existing entry as-is. Only genuinely new issues get added. Assign `risk`, `cluster_id`, and `depends_on` to any new findings the same way Deep Mode does.
 6. Update the ledger: add new findings as `open`, keep carried-forward entries as-is, mark auto-resolved ones. Set `last_scanned_commit` to current HEAD, `last_mode` to `quick`, `last_scan_date` to today, increment `consecutive_quick_count` by 1.
 7. Commit the ledger immediately:
    ```
@@ -189,11 +194,20 @@ Wait for response before proceeding to Step 5.
    git commit -m "chore(refactor): update ledger after quick scan"
    ```
 
+### 5C. Fix Backlog
+
+1. Skip scanning entirely — no file reads, no git diff, no sub-agents.
+2. Load every finding from the ledger with `status: open`. These are the only items in scope this run.
+3. Do not modify `last_scanned_commit`, `last_mode`, or `consecutive_quick_count` — no scan happened, so this run leaves scan metadata untouched.
+4. Proceed directly to Step 6 using only this open-findings list.
+
 ---
 
 ## Step 6 — Present findings
 
-Group by category, prioritize within each. Split into three sections so the user can see real progress instead of a flat repeated list:
+If this run used Fix Backlog mode, no scan occurred, so the report only ever shows the Still Open section — omit New and Auto-Resolved from the summary counts and category breakdowns entirely, and label the report header `REFACTORING REPORT (mode: Fix Backlog — no scan performed)`.
+
+Otherwise, group by category, prioritize within each. Split into three sections so the user can see real progress instead of a flat repeated list:
 
 - **New** — found for the first time this run
 - **Still Open** — found in a previous run, not yet fixed, still valid
@@ -265,21 +279,19 @@ Wait for response before proceeding.
 
 Apply selected categories one at a time. Complete steps 7.1–7.4 fully for each category before starting the next. Do not batch changes from multiple categories into a single commit.
 
-### 7.1 Order the work
+### 7.1 Plan waves within capacity
 
-- Take all findings in this category (across all clusters they belong to).
-- Sort by `depends_on`: a finding cannot be applied before every finding in its `depends_on` list has already been applied.
-- Findings sharing a `cluster_id` are handled together, in one pass, by a single agent — never split a cluster across parallel sub-agents, since they may touch the same file.
-- Clusters with no shared files can be worked through one after another; there's no need to parallelize fixing the way scanning was parallelized — the discovery work is already done, and applying fixes safely matters more than applying them fast.
+- Take all findings in this category, grouped into their clusters.
+- Estimate how many clusters one agent session can safely handle without running low on context (rough budget based on total diff size expected, similar to the capacity math used for Deep Mode chunking).
+- If the category's clusters fit within that budget, it's a single wave. If not, split into sequential waves — each wave a bounded batch of clusters, still processed one at a time, never in parallel.
+- Sort clusters by `depends_on` across the whole category first, then assign to waves in that order, so a cluster never lands in an earlier wave than something it depends on.
 
-### 7.2 Apply safe findings
+### 7.2 Apply one cluster at a time
 
-- For each cluster, apply every finding tagged `risk: safe` in dependency order.
-- No need to pause for user input on these — proceed automatically.
+Work through the current wave's clusters one at a time, in order. For each cluster:
 
-### 7.3 Confirm needs-review findings
-
-- For each finding tagged `risk: needs-review`, present it to the user individually (or batched if several are related) via AskUserQuestion before touching any code:
+- Apply every finding tagged `risk: safe` in the cluster, in dependency order. No need to pause for user input on these.
+- For any `risk: needs-review` finding in the cluster, confirm with the user before touching code:
 
   AskUserQuestion:
     question: "This fix needs a judgment call: {finding description}. Apply it or skip it?"
@@ -291,26 +303,31 @@ Apply selected categories one at a time. Complete steps 7.1–7.4 fully for each
       - label: "Skip"
         description: "Leave this finding open, don't change this code"
 
-- If skipped, set the finding's ledger `status` to `skipped-by-user` (not `open`) so it stops resurfacing every run. Only re-surface a `skipped-by-user` finding if the surrounding code has changed significantly — the original context has shifted enough that the user may want to reconsider.
+  If skipped, this finding's ledger `status` becomes `skipped-by-user` (not `open`), so it stops resurfacing every run. Only re-surface it later if the surrounding code changes enough that the original suggestion may no longer apply.
 
-### 7.4 Test, lint, commit
+- Once the cluster's edits are complete: run tests — stop and inform if tests fail, do not move to the next cluster until resolved. Run lint and formatter. Commit with:
+  refactor({category}): {brief summary of this cluster's changes}
+- Update the ledger immediately for every finding in this cluster: `status` to `fixed` or `skipped-by-user`, with `resolved_commit` and `resolved_date` set.
 
-After all clusters in this category are applied:
-- Run tests — stop and inform if tests fail. Do not proceed to the next category if tests fail; inform the human and wait for resolution before continuing.
-- Run lint and formatter.
-- Commit everything from this category in one commit:
-  refactor({category}): {brief summary of changes}
-- Update the corresponding ledger entries: `status` to `fixed` (or `skipped-by-user` per 7.3), with `resolved_commit` and `resolved_date` set for fixed ones.
-- Then begin the next selected category from step 7.1.
+This is the checkpoint: each cluster is fully tested, committed, and recorded in the ledger before moving to the next one. If the agent stops for any reason after this point, nothing already committed is lost or ambiguous.
 
-For any finding in this category the user did not select this run at the category level (Step 6), leave its ledger `status` as `open`.
+### 7.3 Wave handoff
+
+- When the current wave's clusters are all done, check whether clusters remain in this category.
+- If none remain, the category is complete — proceed to 7.4.
+- If clusters remain, report progress plainly: "Wave {N} complete: clusters {list} fixed. {N} clusters remaining in this category." Continue automatically with a fresh agent session for the next wave; it reads the ledger to see exactly which findings are still open and picks up from there.
+- If capacity runs out mid-wave, stop only at the nearest completed cluster boundary — never leave a cluster half-edited. Report the same way as above and hand the remainder to the next wave.
+
+This replaces "silently completes a few and reports the rest at the end" with "always commits what's done, always states clearly what's left, and always continues from an accurate ledger."
+
+For any finding in this category the user did not select at the category level (Step 6), leave its ledger `status` as `open`.
 
 Example commits:
   refactor(architecture): extract business logic from controllers
   refactor(quality): remove duplicate helper methods
   refactor(tests): update outdated assertions
 
-### 7.5 Scoped verification pass
+### 7.4 Scoped verification pass
 
 After all selected categories have been applied and committed, run one lightweight check — reusing the Quick Mode mechanics (Step 5B), but scoped only to the files touched during this Step 7, not the whole repo:
 
@@ -365,7 +382,7 @@ Report:
 REFACTORING COMPLETE
 ─────────────────────────────────
 Branch:   refactor/{timestamp}
-Mode:     {Deep/Quick}
+Mode:     {Deep/Quick/Fix Backlog}
 Applied:
 - Architecture: {N} changes
 - Code Quality: {N} changes
