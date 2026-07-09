@@ -48,6 +48,8 @@ Use the project name from Step 1 for the filenames:
 
 Organize requests by functional area (Authentication, Users, Admin, Products, Orders, etc.). Use collection variables, environment variables, request descriptions, and authentication notes. Use localhost URLs and placeholder values. Avoid duplicate endpoints.
 
+Use **Postman Collection Format v2.1** (`schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"`). This format is supported by Postman, Bruno, and most modern API clients. Do not use v2.0 — it is not importable by Bruno without conversion.
+
 ---
 
 ## Tasks
