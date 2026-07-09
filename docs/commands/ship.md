@@ -33,7 +33,7 @@ flowchart TD
   GHCheck -->|no| MainDone
   GHCheck -->|yes| GHConfirm[Ask: create GitHub Release?]
   GHConfirm -->|skip| MainDone
-  GHConfirm -->|create| GHRelease[gh release create<br/>--generate-notes]
+  GHConfirm -->|create| GHRelease[gh release create<br/>--notes extracted_notes]
   GHRelease --> MainDone([Report: tagged + promoted + release])
 
   EnvNext -->|staging → production| EnvPush[Push current branch]
@@ -63,7 +63,7 @@ Runs the full test suite using the project's detected test framework. Halts on f
 
 Only on `main`. Bumps the version in the detected version file (`package.json`, `composer.json`, or `VERSION`), updates any inline version references in the README, commits as `chore(release): bump version to {version}`, creates an annotated tag `v{version}`, and pushes both the commit and tag. For each selected environment branch, merges `main` in with a `--no-ff` deploy commit and pushes.
 
-After pushing, checks whether the remote origin URL contains `github.com`. If not, this sub-step is skipped silently. If yes, asks whether to create a GitHub Release. On confirmation, runs `gh release create v{version} --title "v{version}" --generate-notes`, which publishes a release on GitHub with auto-generated notes from commits since the previous tag.
+After pushing, checks whether the remote origin URL contains `github.com`. If not, this sub-step is skipped silently. If yes, asks whether to create a GitHub Release. On confirmation, extracts `feat` and `fix` commits from `git log v{last_tag}..HEAD` and runs `gh release create v{version} --title "v{version}" --notes "{extracted_notes}"`, which publishes a release on GitHub with the curated commit list.
 
 **Prerequisite:** `gh release create` requires the GitHub CLI to be authenticated. Run `gh auth login` once before using this feature. If `gh` is not authenticated, the command will fail with an auth error and the ship command will surface the manual fix rather than silently failing.
 

@@ -157,12 +157,12 @@ Remote URL. Confirmation of success.
 
 ## Archive Complete
 
-Archive date, GitLab URL, and restoration complexity from Step 1.
+Archive date, archive remote URL, and restoration complexity from Step 1.
 
 To restore this project:
 
 ```
-git clone {gitlab_url}
+git clone {archive_remote_url}
 ```
 
 If Docker was used:

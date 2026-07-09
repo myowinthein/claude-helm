@@ -26,7 +26,7 @@ flowchart TD
   Count -->|> 0| ShowPlan[Show total, compliant count,<br/>rewrite count, 5 sample rewrites]
 
   ShowPlan -->|cancel| Cancel
-  ShowPlan -->|confirm| Rewrite[git filter-branch --msg-filter<br/>with pre-built rewrite map]
+  ShowPlan -->|confirm| Rewrite[git filter-repo --message-callback<br/>with pre-built rewrite map]
 
   Rewrite --> Tags[Detect orphaned tags<br/>re-create at new SHAs]
   Tags --> PushGate[Ask: force push or skip?]
