@@ -4,7 +4,17 @@ description: Detect test framework and write missing tests for recent changes or
 
 # test
 
-## Step 1 — Detect test framework
+## Step 1 — Branch check
+
+Only proceed if on `main` or `master`.
+If on any other branch, stop and inform the user:
+
+"test must be run on main or master.
+Current branch is {branch}. Please switch and re-run."
+
+---
+
+## Step 2 — Detect test framework
 
 Scan for test framework configuration files and dependencies.
 
@@ -31,7 +41,7 @@ If framework selected → inform user how to install, then proceed to Assessment
 
 ---
 
-## Assessment
+## Step 3 — Assessment
 
 Check recent git activity and existing test coverage:
 - Run git diff to identify recently changed files
@@ -97,7 +107,7 @@ If existing tests found and recent changes detected:
 
 ---
 
-## Targeted — Recent Changes Only
+## Step 4 — Targeted
 
 Identify recently changed files via git diff against last commit.
 Focus only on files that were added or modified.
@@ -130,7 +140,7 @@ Commit with:
 
 ---
 
-## Full — Full Project Scan
+## Step 5 — Full Project Scan
 
 Scan entire project for untested or undertested code.
 Skip: vendor/, node_modules/, generated files, migration files.

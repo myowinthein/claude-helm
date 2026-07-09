@@ -4,7 +4,13 @@ description: Explore, restore, containerize, document, and seal a project for lo
 
 # archive
 
-Run `ls -la` to confirm the current directory, then immediately begin Step 1 below without waiting for further instruction.
+## Step 0 — Branch check
+
+Only proceed if on `main` or `master`.
+If on any other branch, stop and inform the user:
+
+"archive must be run on main or master.
+Current branch is {branch}. Please switch and re-run."
 
 ---
 
@@ -123,9 +129,9 @@ Use Step 1's findings to select the approach. Docker is the primary choice for m
 
 **Containerize with Docker (primary for most projects):**
 
-If a Docker or Docker Compose setup already exists: use it, but verify all image tags are pinned to specific versions (e.g. `node:18.17.1-alpine`, not `node:18` or `node:latest`). Update any unpinned tags before building.
+If a Docker or Docker Compose setup already exists: use it, but verify all image tags are pinned to specific versions (e.g. `node:18.17.1-alpine`, not `node:18` or `node:latest`). Update any unpinned tags before building. For maximum long-term recovery reliability, prefer immutable digest references alongside version tags — e.g. `node:18.17.1-alpine@sha256:<digest>` — since version tags can be overwritten by the registry.
 
-If no Docker setup exists: create a `Dockerfile` and `docker-compose.yml` appropriate for the project's stack and runtime. Pin all base image versions specifically.
+If no Docker setup exists: create a `Dockerfile` and `docker-compose.yml` appropriate for the project's stack and runtime. Pin all base image versions specifically, using digest references where possible (`image:tag@sha256:<digest>`).
 
 By project type:
 
@@ -353,9 +359,9 @@ Use this to guide the decision:
 | Accurate, has recovery or demonstration value | Keep — link from README |
 | Accurate but duplicates docs/setup.md content | Merge into docs/setup.md, remove original |
 | Outdated instructions that affect restoration | Update |
-| Historical context, domain knowledge, business background | Move to docs/historical-notes.md |
+| Historical context, domain knowledge, business background | Archive — move to docs/historical-notes.md |
 | Contributor guides, pull request templates, code of conduct | Remove — irrelevant for private archive |
-| Changelogs and release notes | Move to docs/historical-notes.md if they provide context; otherwise remove |
+| Changelogs and release notes | Archive — move to docs/historical-notes.md if they provide context; otherwise remove |
 | CI/CD documentation, deployment runbooks | Remove — no recovery value |
 | Auto-generated documentation | Remove — regenerate if needed |
 | Outdated and no recovery or historical value | Remove |
@@ -571,9 +577,15 @@ If no running services are found: skip silently.
 
 Show git status — all staged and unstaged changes accumulated across the full workflow.
 
-Commit all changes:
+Stage all changes made during this archive workflow by explicit path — avoid `git add -A` to prevent accidentally including credentials or untracked files:
+
 ```
-git add -A
+git add docs/ README.md .gitignore
+```
+
+Add any additional files modified during Steps 2–4 (Dockerfile, docker-compose.yml, .gitattributes, etc.) by name. Then commit:
+
+```
 git commit -m "chore(archive): seal project archive"
 ```
 

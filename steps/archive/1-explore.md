@@ -26,7 +26,7 @@ Determine:
 - Large or binary files that could affect Git storage
 - CI/CD configuration — any pipelines that could auto-deploy on push
 - Git remotes, branches, and repository safety concerns
-- Active credentials — API keys, tokens, secrets, and passwords across all env files (.env, .env.staging, .env.production, .env.*.local, config files, Docker files). Flag anything that appears still-active. Redact values.
+- Active credentials — API keys, tokens, secrets, and passwords across all env files (.env, .env.staging, .env.production, .env.*.local, config files, Docker files). Flag anything that appears still-active. Redact values. Before completing the Credentials Risk section, confirm you have searched every file matching these patterns and list the files searched explicitly.
 - Restoration risks and unknowns
 - Recommended restoration approach — local or Docker
 
@@ -81,4 +81,4 @@ What to watch out for or resolve before proceeding to Step 2.
 
 ---
 
-Do not make any changes. Output the report and stop. Wait for explicit approval before proceeding to Step 2.
+Output the report and stop. Wait for explicit approval before proceeding to Step 2.

@@ -26,7 +26,7 @@ Reload locally: `/reload-plugins` after any change
 - `rules/safety.md` — operational safety rules shipped to projects
 - `steps/archive/` — step files for `/helm:archive` kept here intentionally to avoid appearing as slash commands in the menu
 - `docs/commands/` — human-readable detail pages per command (separate from command definitions)
-- `.claude-plugin/plugin.json` — the only version file; bump this on every release
+- `.claude-plugin/plugin.json` — the version file; bump this on every release
 - `.claude-plugin/marketplace.json` — Claude Code marketplace registration metadata
 - `_config.yml` + `Gemfile` + `_sass/` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
 
@@ -43,13 +43,12 @@ When writing content for `CLAUDE.md`, `README.md`, or any generated document:
 
 ## Hard Safety Rules
 
-- Never push without running `/helm:ship` — raw `git push` skips the version bump
 - Never delete or rewrite published tags — users pin to specific versions
 - Never commit secrets, credentials, or real user data (none expected in this repo)
 
 ## Known Traps
 
-- **Plugin cache is stale after releases.** `/plugin update` + `/reload-plugins` does not invalidate `~/.claude/plugins/cache/`. After each release, command files must be manually copied from `~/.claude/plugins/marketplaces/claude-helm/commands/` into the active cache version directory, then `/reload-plugins` must be run again.
+- **Plugin cache is stale after releases.** `/plugin update` + `/reload-plugins` does not invalidate `~/.claude/plugins/cache/`. After each release, command files must be manually copied from `~/.claude/plugins/marketplaces/claude-helm/commands/` into the active cache version directory, then `/reload-plugins` must be run again. Workaround: `cp ~/.claude/plugins/marketplaces/claude-helm/commands/*.md "$(ls -d ~/.claude/plugins/cache/helm@*/commands/ | tail -1)"` then `/reload-plugins`.
 - **`steps/` directory is intentional.** Files in `steps/archive/` are not commands — they are sub-steps for `/helm:archive`. Do not move them to `commands/`.
 - **`docs/commands/` is not the command source.** The slash command definitions live in `commands/`. The `docs/commands/` files are detail pages that serve as Jekyll site content and link from README — editing them does not change command behavior.
 

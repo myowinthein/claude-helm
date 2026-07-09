@@ -7,6 +7,8 @@
 Activate by declaring in CLAUDE.md (Project Config section):
   git-solo: true
 
+After reading CLAUDE.md, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active (no git-solo declaration found)."
+
 When active:
 - Commit directly to main — no feature branches required
 - No PR required
@@ -91,7 +93,7 @@ All commits must follow this format:
 
 ## Code Quality
 
-After all work for a prompt is complete, before pushing:
+Run before pushing, regardless of mode:
 
 **Lint and Formatting**
 - Scan for lint and formatter config files and detect tool
@@ -160,7 +162,7 @@ Use lowercase, hyphens only, no spaces.
 ## Environment Branches (optional)
 
 Independent of strategy. Works with both Solo mode and GitHub Flow.
-Detected automatically via: git branch -r
+Detected automatically from remote branch names.
 
 Environment branches are any long-lived branches that are not main,
 master, or feature branches — e.g. staging, stage, uat, preprod,

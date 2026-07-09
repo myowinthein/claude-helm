@@ -4,6 +4,8 @@ description: Update README.md with a full scan or gap update since last review
 
 # manifest
 
+## Step 1 — Branch check
+
 Before doing anything, check current branch.
 Only proceed if on `main` or `master`.
 If on any other branch, stop and inform the user:
@@ -13,7 +15,7 @@ Current branch is {branch}. Please switch and re-run."
 
 ---
 
-## Assessment
+## Step 2 — Assessment
 
 Check README.md:
 - Does it exist?
@@ -78,7 +80,7 @@ If README.md exists with a saved commit hash:
 
 ---
 
-## Full — Full Project Scan
+## Step 3 — Full Project Scan
 
 Before writing anything, investigate:
 - Business purpose and target audience
@@ -119,7 +121,7 @@ Write directly — no approval needed.
 
 ---
 
-## Gap — Changes Since Last Review
+## Step 4 — Gap Update
 
 Read commit messages first to get the shape of what changed.
 Then read file changes only for significant commits — skip: bug fixes,

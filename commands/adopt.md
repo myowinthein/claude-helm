@@ -6,7 +6,17 @@ description: Install or update helm rule files (git.md, safety.md) into the curr
 
 Install or update the helm rule files (`git.md`, `safety.md`) into the current project. Setup helper, not a workflow command.
 
-## Step 1 — Sanity check
+## Step 1 — Branch check
+
+Only proceed if on `main` or `master`.
+If on any other branch, stop and inform the user:
+
+"adopt must be run on main or master.
+Current branch is {branch}. Please switch and re-run."
+
+---
+
+## Step 2 — Sanity check
 
 Confirm the current directory looks like a project. Check for any of:
 - `.git/`
@@ -26,7 +36,7 @@ If none found, use AskUserQuestion:
 
 If Cancel → exit.
 
-## Step 2 — Scan existing rules
+## Step 3 — Scan existing rules
 
 For each of `.claude/rules/git.md` and `.claude/rules/safety.md`, record one of:
 - **Absent** — file does not exist and not referenced in CLAUDE.md
@@ -44,7 +54,7 @@ Compute the overall state:
 
 Read the currently installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json`. Record as `current_version`.
 
-## Step 3 — Show the scan summary
+## Step 4 — Show the scan summary
 
 Display:
 
@@ -54,7 +64,7 @@ Display:
 Installed helm version:  v{current_version}
 ```
 
-## Step 4 — Choose install mode
+## Step 5 — Choose install mode
 
 Choose the question and labels based on state.
 
@@ -112,7 +122,7 @@ If state = CONFLICT:
 
 Wait for response.
 
-## Step 5 — Execute
+## Step 6 — Execute
 
 ### Copy or Update path
 
@@ -171,7 +181,9 @@ Wait for response.
 
 - Exit silently. No files written.
 
-## Step 6 — Report
+## Step 7 — Report
+
+For Copy/Update, verify the written files before reporting: read `.claude/rules/git.md` and `.claude/rules/safety.md` and confirm each file exists and contains the `<!-- helm-rule: claude-helm@v{current_version} -->` marker. If a file is missing or the marker is absent, report the error instead of ADOPT COMPLETE.
 
 Print outcome.
 

@@ -31,9 +31,9 @@ Use this to guide the decision:
 | Accurate, has recovery or demonstration value | Keep — link from README |
 | Accurate but duplicates docs/setup.md content | Merge into docs/setup.md, remove original |
 | Outdated instructions that affect restoration | Update |
-| Historical context, domain knowledge, business background | Move to docs/historical-notes.md |
+| Historical context, domain knowledge, business background | Archive — move to docs/historical-notes.md |
 | Contributor guides, pull request templates, code of conduct | Remove — irrelevant for private archive |
-| Changelogs and release notes | Move to docs/historical-notes.md if they provide context; otherwise remove |
+| Changelogs and release notes | Archive — move to docs/historical-notes.md if they provide context; otherwise remove |
 | CI/CD documentation, deployment runbooks | Remove — no recovery value |
 | Auto-generated documentation | Remove — regenerate if needed |
 | Outdated and no recovery or historical value | Remove |
@@ -108,24 +108,13 @@ Structured snapshot for quick inventory across archived projects:
 ## Tasks
 
 1. Read all existing documentation
-2. Decide Keep / Update / Merge / Archive / Remove for each existing file
-3. Present the consolidation plan and wait for approval before making any changes:
-
-   ```
-   CONSOLIDATION PLAN
-
-   {filename}    → {action} ({reason})
-   {filename}    → {action} ({reason})
-   ...
-   ```
-
-   Do not proceed until the developer explicitly approves.
-
-4. Extract historically valuable content from existing README into docs/historical-notes.md
-5. Write a fresh README.md
-6. Write or update docs/setup.md with all applicable sections
+2. Decide action for each file using the Consolidation table above
+3. Present the consolidation plan and wait for approval before making any changes
+4. Extract historically valuable content into docs/historical-notes.md
+5. Write fresh README.md
+6. Write or update docs/setup.md
 7. Write docs/archive-metadata.md
-8. Verify every active document is reachable from README.md
+8. Verify every active document is reachable from README.md: read README.md, list every link found, confirm each linked file exists, and report any active file that is not reachable via a link
 
 ---
 

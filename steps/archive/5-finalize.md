@@ -55,6 +55,7 @@ Delete:   chore/cleanup       (local + remote)
 
 Once approved:
 - Delete all branches except main/master locally and remotely
+- Verify deletion: run `git ls-remote --heads origin` and confirm the deleted branches no longer appear
 - Verify local main/master is in sync with remote
 - If local and remote have diverged: report the divergence and stop for approval before resolving
 

@@ -7,7 +7,15 @@
   "plugins": [
     {
       "name": "helm",
+      "version": "2.15.0",
       "source": "./",
+      "files": [
+        "commands/",
+        "rules/",
+        "steps/",
+        ".claude-plugin/",
+        "README.md"
+      ],
       "description": "A Claude Code plugin pack for solo developers. Slash commands and rules to ship, refactor, test, and document your own work."
     }
   ]

@@ -30,11 +30,11 @@
       "file": "commands/log.md",
       "line": "7",
       "description": "Branch check is inline prose without a labeled '## Step 1 \u2014 Branch check' heading, unlike every other command.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-003",
@@ -46,11 +46,11 @@
       "file": "commands/manifest.md",
       "line": "7",
       "description": "Branch check is inline prose without a labeled '## Step 1 \u2014 Branch check' heading, unlike every other command.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-004",
@@ -62,11 +62,11 @@
       "file": "commands/test.md",
       "line": "1",
       "description": "No branch check step at all; every other write-capable command guards on main/master before doing any work.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-005",
@@ -78,11 +78,11 @@
       "file": "commands/adopt.md",
       "line": "1",
       "description": "No branch check step even though it writes files (.claude/rules/, CLAUDE.md) that should only be committed from main.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-006",
@@ -94,11 +94,11 @@
       "file": "commands/test.md",
       "line": "1",
       "description": "Uses free-form section headings instead of the '## Step N \u2014 Name' pattern used by all other commands.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-007",
@@ -110,11 +110,11 @@
       "file": ".claude-plugin/marketplace.json",
       "line": "11",
       "description": "Uses 'source': './' with no explicit include/files list; every file added to the repo root is silently bundled into the plugin distribution.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-008",
@@ -126,11 +126,11 @@
       "file": "rules/safety.md",
       "line": "1",
       "description": "Bootstrap procedure instruction ('Perform this scan during project bootstrap') is mixed with standing operational rules, causing agents to potentially re-execute it on every load.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-009",
@@ -158,11 +158,11 @@
       "file": "steps/archive/4-documentation.md",
       "line": "112",
       "description": "Approval gate in Task 3 is buried mid-list rather than called out as a hard stop, risking agents treating it as optional prose.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-011",
@@ -190,11 +190,11 @@
       "file": "_config.yml",
       "line": "19",
       "description": "Jekyll exclude list manually enumerates directories; every new top-level directory must be manually added or it will be included in the site build.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-013",
@@ -206,11 +206,11 @@
       "file": "commands/archive.md",
       "line": "1",
       "description": "No branch check step even though it commits in Step 5 Task 6, diverging from every other file-writing command.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-014",
@@ -222,11 +222,11 @@
       "file": "commands/log.md",
       "line": "1",
       "description": "Uses free-form section headings ('Assessment', 'Full', 'Gap') instead of '## Step N \u2014 Name' pattern.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-015",
@@ -238,11 +238,11 @@
       "file": "commands/manifest.md",
       "line": "1",
       "description": "Uses free-form section headings ('Assessment', 'Full', 'Gap') instead of '## Step N \u2014 Name' pattern.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-016",
@@ -256,11 +256,11 @@
       "file": "docs/rules/safety.md",
       "line": "11",
       "description": "The docs page clarifies 'the file is not procedural' but the shipped rules/safety.md has no equivalent \u2014 agents read the rule file, not the doc.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "077e8ba",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-017",
@@ -466,11 +466,11 @@
       "file": "docs/commands/archive/2-restore-and-freeze.md",
       "line": "n/a",
       "description": "Docs page omits the 'Document versions instead of containerizing' guidance block (mobile, desktop, browser-extension, library cases) present in the step file.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6fe899",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-030",
@@ -498,11 +498,11 @@
       "file": "README.md",
       "line": "42",
       "description": "Commands table links to docs/commands/*.md with no indication that actual command logic lives in commands/*.md \u2014 the distinction is invisible at point of discovery.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6a7973b",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-032",
@@ -546,11 +546,11 @@
       "file": "commands/archive.md",
       "line": "577",
       "description": "Step 5 Task 6 uses git add -A for the final archive commit, risking accidental inclusion of .env files or credentials in a sealed archive push.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "bee5c05",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-035",
@@ -578,11 +578,11 @@
       "file": "rules/git.md",
       "line": "94",
       "description": "Code Quality section scoping language ('after all work for a prompt is complete') differs from docs version ('run before pushing, regardless of mode').",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7dbc7d2",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-037",
@@ -642,11 +642,11 @@
       "file": "docs/commands/archive/1-explore.md",
       "line": "n/a",
       "description": "Docs page omits 'Demo accounts or demo data' and 'Recommended restoration approach' items that appear in the step file scan list.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6fe899",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-041",
@@ -658,11 +658,11 @@
       "file": "docs/commands/archive/3-postman.md",
       "line": "n/a",
       "description": "Docs page omits the report output format section entirely (eight sections defined in the step file), unlike every other archive docs page.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6fe899",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-042",
@@ -706,11 +706,11 @@
       "file": "CLAUDE.md",
       "line": "29",
       "description": "Claim that plugin.json is 'the only version file' is not enforced and will become stale if a secondary version reference is added elsewhere.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6a7973b",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-045",
@@ -722,11 +722,11 @@
       "file": "commands/legal.md",
       "line": "14",
       "description": "Step 1 is labeled Branch check but lacks '## Step 1 \u2014' prefix and uses --- separators inconsistently with how other commands structure their steps.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7781b10",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-046",
@@ -804,11 +804,11 @@
       "file": "docs/commands/legal.md",
       "line": "116",
       "description": "Document specs table for privacy-policy omits the Cookies section that the command requires as section 8 when cookies are detected.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "84e4472",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-051",
@@ -820,11 +820,11 @@
       "file": "steps/archive/4-documentation.md",
       "line": "29",
       "description": "'Archive' action value present in step file consolidation table but omitted from the corresponding docs page.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a6fe899",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-052",
@@ -852,11 +852,11 @@
       "file": "commands/archive.md",
       "line": "7",
       "description": "Opening instruction runs 'ls -la' unconditionally on invocation with no opt-out; every other command presents a check or confirmation before any action.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3c6c2a5",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-054",
@@ -868,11 +868,11 @@
       "file": "commands/log.md",
       "line": "104",
       "description": "Project Config Check is referenced twice (Full and Gap sections) with the skip condition only described within the block itself, creating a hidden conditional agents must track across non-adjacent sections.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "51d02a5",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-055",
@@ -900,11 +900,11 @@
       "file": "steps/archive/2-restore-and-freeze.md",
       "line": "1",
       "description": "Restoration strategy matrix (lines 43\u201359) is duplicated almost verbatim in the docs page; two near-identical tables will inevitably drift.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d0e8c7c",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-057",
@@ -916,11 +916,11 @@
       "file": "steps/archive/1-explore.md",
       "line": "41",
       "description": "Output format section (nearly half the file) restates rules already covered in the Rules section, inflating token cost and risking agents treating duplicated content as additive constraints.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d0e8c7c",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-058",
@@ -932,11 +932,11 @@
       "file": "CLAUDE.md",
       "line": "39",
       "description": "Hard Safety Rules section repeats constraints already stated in Behavior Rules, adding length without adding safety guarantees.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "586abc2",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-059",
@@ -948,11 +948,11 @@
       "file": "commands/ship.md",
       "line": "64",
       "description": "Step 3 scans last 20 commits for Conventional Commits detection then separately runs git log for version calculation \u2014 two reads when one would serve both.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "2f6280d",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-060",
@@ -996,11 +996,11 @@
       "file": "rules/git.md",
       "line": "159",
       "description": "Environment Branches section embeds git branch -r command inline as prose, coupling the rule to a specific detection mechanism.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "987c8ac",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-063",
@@ -1012,11 +1012,11 @@
       "file": "docs/commands/legal.md",
       "line": "115",
       "description": "Document specs table duplicates structural information already fully specified in the command's per-document sections, creating a second drift surface.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "448244b",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-064",
@@ -1028,11 +1028,11 @@
       "file": "steps/archive/4-documentation.md",
       "line": "109",
       "description": "Tasks list restates content already fully specified in the main body sections (Consolidation, Required Files, Optional File) with no new information.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a783f7c",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-065",
@@ -1044,11 +1044,11 @@
       "file": "README.md",
       "line": "18",
       "description": "Install section has no verification or smoke-test step to confirm commands appear in the picker after /reload-plugins, leaving silent cache failures undetected.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6589f8b",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-066",
@@ -1076,11 +1076,11 @@
       "file": "steps/archive/2-restore-and-freeze.md",
       "line": "147",
       "description": "No checkpoint requiring docker load validation on exported tarballs; a corrupt export will not be detected until actual recovery years later.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8c27446",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-068",
@@ -1092,11 +1092,11 @@
       "file": "steps/archive/3-postman.md",
       "line": "35",
       "description": "No minimum coverage threshold for 'representative requests'; an agent may verify a single health-check endpoint and mark the entire collection as tested.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3a33c5a",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-069",
@@ -1108,11 +1108,11 @@
       "file": "CLAUDE.md",
       "line": "47",
       "description": "Known Trap for stale plugin cache has no automated verification or scripted workaround \u2014 relies entirely on developer memory each release.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0a1d555",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-070",
@@ -1124,11 +1124,11 @@
       "file": "commands/legal.md",
       "line": "345",
       "description": "No review gate between generating documents and committing \u2014 writes and immediately commits legal documents without asking the user to review.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "369854c",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-071",
@@ -1140,11 +1140,11 @@
       "file": "commands/adopt.md",
       "line": "119",
       "description": "No post-write verification after copying rule files \u2014 command reports written/updated/skipped with no actual content or existence check.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "49ad8ab",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-072",
@@ -1156,11 +1156,11 @@
       "file": "rules/safety.md",
       "line": "81",
       "description": "Minimum Evidence Checklist says 'infer from CI/hooks/pipelines' but no self-check instruction tells agents how to verify the risk inventory is complete or current.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "2268a0f",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-073",
@@ -1172,11 +1172,11 @@
       "file": "steps/archive/5-finalize.md",
       "line": "65",
       "description": "No verification step to confirm the remote branch was actually deleted (e.g. git ls-remote --heads origin) before proceeding.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8c27446",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-074",
@@ -1188,11 +1188,11 @@
       "file": "steps/archive/1-explore.md",
       "line": "n/a",
       "description": "No self-check instruction confirming every env file pattern (.env, .env.staging, .env.production, .env.*.local) was searched before declaring credentials risk complete.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3a33c5a",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-075",
@@ -1220,11 +1220,11 @@
       "file": "rules/git.md",
       "line": "n/a",
       "description": "No self-check instruction for agents to verify mode detection (Solo vs GitHub Flow) resolved correctly before proceeding.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "2268a0f",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-077",
@@ -1252,11 +1252,11 @@
       "file": "steps/archive/4-documentation.md",
       "line": "128",
       "description": "Task 8 says 'verify every active document is reachable from README.md' with no concrete link-tracing check; verification is aspirational rather than testable.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "79cd211",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-079",
@@ -1300,11 +1300,11 @@
       "file": ".claude-plugin/plugin.json",
       "line": "2",
       "description": "plugin.json carries a version field but marketplace.json has no version field, making the marketplace registration version-unaware.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "73e5108",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-082",
@@ -1332,11 +1332,11 @@
       "file": "commands/archive.md",
       "line": "131",
       "description": "Docker base image pinning guidance uses mutable tags (node:18.17.1-alpine) instead of immutable digests (@sha256:...), undermining the long-term recovery guarantee.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "4d99975",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-084",
@@ -1364,11 +1364,11 @@
       "file": "steps/archive/2-restore-and-freeze.md",
       "line": "88",
       "description": "docker save | gzip uses a shell pipe that may silently fail or produce an empty file in non-Unix Docker environments (Windows, remote Docker context).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "9f233f0",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-086",
@@ -1380,11 +1380,11 @@
       "file": "steps/archive/3-postman.md",
       "line": "n/a",
       "description": "Does not specify Postman Collection format version (v2.0 vs v2.1) or whether Bruno/Insomnia formats are acceptable; v2.0 is not importable by Bruno without conversion.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b72d154",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-087",
@@ -1396,11 +1396,11 @@
       "file": "_config.yml",
       "line": "6",
       "description": "Jekyll remote theme pinned to just-the-docs@v0.10.0; may not be the latest stable release and could miss security or compatibility patches.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "fb95097",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-088",
