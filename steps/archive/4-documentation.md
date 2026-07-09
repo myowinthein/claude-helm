@@ -114,7 +114,7 @@ Structured snapshot for quick inventory across archived projects:
 5. Write fresh README.md
 6. Write or update docs/setup.md
 7. Write docs/archive-metadata.md
-8. Verify every active document is reachable from README.md
+8. Verify every active document is reachable from README.md: read README.md, list every link found, confirm each linked file exists, and report any active file that is not reachable via a link
 
 ---
 
