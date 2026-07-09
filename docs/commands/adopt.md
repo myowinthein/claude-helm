@@ -84,7 +84,7 @@ Question and labels adapt to the detected state:
 
 **Conflict / Review per file**: for each foreign file, asks Overwrite, Skip, or Show diff. Showing the diff loops back to the same prompt so the user can pick after seeing the changes.
 
-**Reference**: appends a `## Rules` section to `CLAUDE.md` pointing at `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`. If `CLAUDE.md` does not exist, prints the snippet to the chat so the user can place it manually.
+**Reference**: appends a `## Rules` section to `CLAUDE.md` pointing at `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`. If `CLAUDE.md` does not exist, the command offers to create it first (recommended); if the user declines, it prints the snippet to the chat for manual placement.
 
 ### 6. Report
 
@@ -94,7 +94,7 @@ Final summary line per file describing what was written, updated, skipped, or re
 
 - **Directory does not look like a project and user cancels.**
 - **User picks Cancel at any of the install-mode prompts.**
-- **No `CLAUDE.md` and Reference mode chosen**: the snippet is printed but nothing is written; user takes over.
+- **No `CLAUDE.md` and Reference mode chosen, user declines to create it**: the snippet is printed but nothing is written; user takes over.
 
 ## Notes
 

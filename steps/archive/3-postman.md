@@ -91,4 +91,4 @@ Endpoints that could not be covered, external dependencies, or gaps in coverage.
 
 ---
 
-Do not commit or push. Output the report and stop.
+Do not commit or push. Output the report and stop. Wait for explicit approval before proceeding to Step 4.

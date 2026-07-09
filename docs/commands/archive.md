@@ -25,6 +25,7 @@ flowchart TD
   Outcome -->|Fully Restored| A2{Approve?}
   Outcome -->|Blocked or Partial| Warn[/"Warn: resolve blockers\nbefore proceeding"/]
   Warn --> A2
+  A2 -->|no| Exit
   A2 -->|yes| S3
 
   S3["Step 3 — Postman Collection\nDiscover API endpoints · generate\ncollection to recovery/postman/"]
@@ -33,12 +34,15 @@ flowchart TD
   HasAPI -->|yes| GenPost[Generate collection]
   SkipS3 --> A3{Approve?}
   GenPost --> A3
+  A3 -->|no| Exit
   A3 -->|yes| S4
 
   S4["Step 4 — Documentation\nConsolidation plan · fresh README\ndocs/setup.md · docs/archive-metadata.md"]
   S4 --> Plan{Approve\nconsolidation plan?}
+  Plan -->|no| Exit
   Plan -->|yes| WriteDocs[Write docs]
   WriteDocs --> A4{Approve?}
+  A4 -->|no| Exit
   A4 -->|yes| S5
 
   S5["Step 5 — Finalize\nSwitch remote · clean branches\nGit LFS · consolidate assets\nstop services · commit · push"]
@@ -65,7 +69,7 @@ Writes fresh, archive-focused documentation using verified information from all 
 
 ### [5. Finalize](archive/5-finalize.md)
 
-Prepares and seals the archive. Verifies and switches the Git remote to the private archive URL — stops if origin still points to a company or client repository. Deletes all branches except main or master locally and remotely after explicit approval. Sets up Git LFS for any files over 100 MB. Consolidates archive-worthy assets scattered across the project into `recovery/assets/`, checking for code references before moving anything. Stops all running project services (Docker containers, dev servers). Commits everything accumulated across the full workflow with a single `chore(archive): seal project archive` commit and pushes to the private remote.
+Prepares and seals the archive. Verifies the Git remote and guides you through removing non-personal remotes and setting the private archive URL if origin still points to a company or client repository. Deletes all branches except main or master locally and remotely after explicit approval. Sets up Git LFS for any files over 100 MB. Consolidates archive-worthy assets scattered across the project into `recovery/assets/`, checking for code references before moving anything. Stops all running project services (Docker containers, dev servers). Commits everything accumulated across the full workflow with a single `chore(archive): seal project archive` commit and pushes to the private remote.
 
 ## Output
 
@@ -83,9 +87,12 @@ docs/
 README.md         ← fresh archive-focused index
 ```
 
-## Approval gates
+## Stop conditions
 
-The command stops and waits for explicit approval at seven points:
+- **Approve declined at any gate.** The command halts cleanly with no further changes.
+- **Step 1 complexity rated Blocked.** User can still approve to proceed, but is warned.
+
+The command stops and waits for explicit approval at eight points:
 
 1. After Step 1 — before anything is modified
 2. After Step 2 — with a warning if restoration was not fully successful
@@ -93,7 +100,8 @@ The command stops and waits for explicit approval at seven points:
 4. Before Step 4 executes — consolidation plan review
 5. After Step 4 — before proceeding to finalize
 6. Before branch deletion in Step 5
-7. Before asset moves in Step 5 if referenced files are found
+7. Before stopping all running services (Docker containers, dev servers) in Step 5
+8. Before asset moves in Step 5 if referenced files are found
 
 ## See also
 

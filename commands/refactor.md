@@ -46,6 +46,9 @@ Scan all project files except:
 - node_modules/
 - public/
 - storage/
+- __pycache__/, .venv/, dist/, build/  (Python)
+- tmp/, log/                            (Ruby)
+- bin/                                  (Go)
 - migration files
 - .env files
 - generated or compiled files
@@ -141,7 +144,7 @@ Wait for response before proceeding to Step 5.
 ### 5A. Deep Mode
 
 1. List all project files within scan boundaries (Step 3). Group them by folder/module rather than raw line count, so related code (e.g. a controller and its service layer) stays in the same chunk — this avoids missing issues that span two files in different chunks.
-2. Estimate a comfortable read budget per sub-agent, and compute how many chunks/sub-agents are needed based on total project size.
+2. Estimate a comfortable read budget per sub-agent, and compute how many chunks/sub-agents are needed based on total project size. Cap at 8 sub-agents maximum — if more chunks are needed, merge the smallest adjacent folders until within the cap.
 3. Spawn one sub-agent per chunk. Each sub-agent reads its full chunk once and checks **all** categories in that single pass (architecture, code quality, performance, tests, dependencies) — do not run a second category-only pass over the same files; that doubles cost for no real benefit.
 4. Each sub-agent returns structured findings: category, priority, file, line, description.
 5. Main agent consolidation:

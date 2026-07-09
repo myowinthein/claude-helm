@@ -102,7 +102,7 @@ The user picks via a prompt with the reason for the recommendation shown inline.
 
 ### 5. Scan
 
-**Deep Mode** — splits the project into folder/module chunks (keeping related files together), spawns one sub-agent per chunk, and has each agent read its full chunk in a single pass across all five categories. The main agent then consolidates: merges reports, spots cross-chunk patterns, checks new findings against the ledger to avoid duplicates, auto-resolves stale entries, assigns `risk` (`safe` / `needs-review`), groups related findings into `cluster_id`s, and records `depends_on` order where one fix must precede another.
+**Deep Mode** — splits the project into folder/module chunks (keeping related files together), spawns one sub-agent per chunk, and has each agent read its full chunk in a single pass across all five categories: **Architecture**, **Code Quality**, **Performance**, **Tests**, and **Dependencies**. The main agent then consolidates: merges reports, spots cross-chunk patterns, checks new findings against the ledger to avoid duplicates, auto-resolves stale entries, assigns `risk` (`safe` / `needs-review`), groups related findings into `cluster_id`s, and records `depends_on` order where one fix must precede another.
 
 **Quick Mode** — runs `git diff --name-only` since the last scan commit. If the diff exceeds 50 files, asks whether to switch to Deep Mode instead. Otherwise re-validates all open ledger entries against changed files (auto-resolving deleted or rewritten ones), then scans just the changed files in a single pass.
 
@@ -121,7 +121,7 @@ Each finding is tagged `[New]`/`[Still Open]`, priority (`High`/`Medium`/`Low`),
 
 ### 7. Select categories
 
-Multi-select prompt with only categories that have at least one `new` or `still open` finding (max 4 options — smallest two merge if more than four qualify). Categories with only auto-resolved findings are excluded. Selecting nothing is a clean skip with no harm done.
+Multi-select prompt with only categories that have at least one `new` or `still open` finding (max 4 options — smallest two merge if more than four qualify). Categories with only auto-resolved findings are excluded. Performance findings are reported but folded into whichever category it merges with if all five categories have issues. Selecting nothing is a clean skip with no harm done.
 
 ### 8. Apply category by category
 
@@ -132,7 +132,7 @@ For each selected category in turn:
 3. **Needs-review findings** — presented one at a time (or batched if closely related) for the user to approve or skip. Skipped findings are marked `skipped-by-user` in the ledger and stop resurfacing unless the surrounding code changes significantly enough to warrant a second look.
 4. **Test, lint, commit** — run tests after each category; if they fail, halt and wait for resolution. Then lint, format, and commit: `refactor({category}): {summary}`. Update ledger statuses: `fixed` with `resolved_commit` and `resolved_date`, or `skipped-by-user`.
 
-### 8.5 Scoped verification pass
+### 7.5 Scoped verification pass
 
 After all selected categories are applied, re-checks only the files touched this session — not a fresh full scan. Confirms each `fixed` finding is actually gone, and catches anything new the fixes themselves introduced. Updates the ledger accordingly. Results surface in the final report.
 

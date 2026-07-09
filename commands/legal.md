@@ -205,11 +205,6 @@ For HTML (`.html`):
 - Include `<meta charset="UTF-8">` and `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
 - Set `<title>` to the document title (e.g. "Privacy Policy")
 
-**Writing style**
-- Use em-dashes sparingly. Only use one when no other punctuation
-  (comma, semicolon, colon, or a new sentence) works as well.
-  When in doubt, restructure the sentence instead.
-
 **Date format:** Use `YYYY-MM-DD` (e.g. `2026-07-07`) for all "Last updated" dates.
 
 **Contact section (all documents):** End every document with a `## Contact` section
@@ -345,7 +340,7 @@ Required sections in order:
 ## Step 5 — Commit
 
 Commit all generated documents:
-  docs(legal): generate legal documents for v{version}
+  docs(legal): generate legal documents
 
 Include the resolved output path and format in the commit body if they differ from
 the default (`legal/` Markdown), so future runs have context.

@@ -36,6 +36,11 @@ Reload locally: `/reload-plugins` after any change
 - Conventional Commits required on every commit (scope is mandatory)
 - No PRs, no feature branches — commit directly to main
 
+## Writing Style
+
+When writing content for `CLAUDE.md`, `README.md`, or any generated document:
+- Use em-dashes sparingly. Only use one when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
+
 ## Hard Safety Rules
 
 - Never push without running `/helm:ship` — raw `git push` skips the version bump
@@ -51,7 +56,7 @@ Reload locally: `/reload-plugins` after any change
 ## Rules
 
 This project follows the rules shipped in claude-helm:
-- /Users/myowinthein/.claude/plugins/marketplaces/claude-helm/rules/git.md
-- /Users/myowinthein/.claude/plugins/marketplaces/claude-helm/rules/safety.md
+- rules/git.md
+- rules/safety.md
 
 <!-- last-reviewed: 216cea2f3695b4b1930dce053998687e2f252e0e -->

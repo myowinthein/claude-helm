@@ -80,8 +80,9 @@ The command never reports success while tests are failing. Each commit only land
 - **No framework, user skips setup.** Configure a framework and re-run.
 - **User cancels at the test plan.** No tests written.
 - **No priorities or no scope selected.** Clean exit.
+- **Written tests fail.** The command stops before committing and waits for the user to fix the failure.
 
 ## See also
 
-- [`/helm:refactor`](refactor.md) - pairs naturally; refactor first, then write tests to lock the new behavior in
-- [`/helm:ship`](ship.md) - runs the test suite as part of the release gate
+- [`/helm:refactor`](refactor.md) — pairs naturally; refactor first, then write tests to lock the new behavior in
+- [`/helm:ship`](ship.md) — runs the test suite as part of the release gate

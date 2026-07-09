@@ -186,7 +186,3 @@ ADOPT COMPLETE
 - This command never writes outside `.claude/rules/` or `CLAUDE.md` in the current project.
 - This command never touches anything in the user's `~/.claude/` directory.
 
-**Writing style**
-- Use em-dashes sparingly. Only use one when no other punctuation
-  (comma, semicolon, colon, or a new sentence) works as well.
-  When in doubt, restructure the sentence instead.
