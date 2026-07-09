@@ -90,6 +90,12 @@ docker save {service} | gzip > recovery/docker/{service}.tar.gz
 
 Export one tarball per service (web, database, cache, etc.).
 
+After exporting each tarball, validate it by running:
+```
+docker load < recovery/docker/{service}.tar.gz
+```
+If `docker load` fails, the tarball is corrupt — re-export before proceeding.
+
 Add `recovery/docker/` to `.gitignore` — tarballs are stored locally alongside the repo, not committed.
 
 Document the recovery commands in `docs/setup.md`:
