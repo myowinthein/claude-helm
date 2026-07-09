@@ -804,11 +804,11 @@
       "file": "docs/commands/legal.md",
       "line": "116",
       "description": "Document specs table for privacy-policy omits the Cookies section that the command requires as section 8 when cookies are detected.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "84e4472",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-051",
