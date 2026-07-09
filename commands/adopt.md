@@ -183,6 +183,8 @@ Wait for response.
 
 ## Step 7 — Report
 
+For Copy/Update, verify the written files before reporting: read `.claude/rules/git.md` and `.claude/rules/safety.md` and confirm each file exists and contains the `<!-- helm-rule: claude-helm@v{current_version} -->` marker. If a file is missing or the marker is absent, report the error instead of ADOPT COMPLETE.
+
 Print outcome.
 
 For Copy/Update:
