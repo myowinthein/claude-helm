@@ -1300,11 +1300,11 @@
       "file": ".claude-plugin/plugin.json",
       "line": "2",
       "description": "plugin.json carries a version field but marketplace.json has no version field, making the marketplace registration version-unaware.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "73e5108",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-082",
@@ -1332,11 +1332,11 @@
       "file": "commands/archive.md",
       "line": "131",
       "description": "Docker base image pinning guidance uses mutable tags (node:18.17.1-alpine) instead of immutable digests (@sha256:...), undermining the long-term recovery guarantee.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "4d99975",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-084",
@@ -1364,11 +1364,11 @@
       "file": "steps/archive/2-restore-and-freeze.md",
       "line": "88",
       "description": "docker save | gzip uses a shell pipe that may silently fail or produce an empty file in non-Unix Docker environments (Windows, remote Docker context).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "9f233f0",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-086",
@@ -1380,11 +1380,11 @@
       "file": "steps/archive/3-postman.md",
       "line": "n/a",
       "description": "Does not specify Postman Collection format version (v2.0 vs v2.1) or whether Bruno/Insomnia formats are acceptable; v2.0 is not importable by Bruno without conversion.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b72d154",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-087",
@@ -1396,11 +1396,11 @@
       "file": "_config.yml",
       "line": "6",
       "description": "Jekyll remote theme pinned to just-the-docs@v0.10.0; may not be the latest stable release and could miss security or compatibility patches.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "52bbb9c",
       "first_found_date": "2026-07-09",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "fb95097",
+      "resolved_date": "2026-07-09"
     },
     {
       "id": "f-088",
