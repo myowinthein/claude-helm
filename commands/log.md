@@ -165,7 +165,7 @@ Write directly — no approval needed.
 
 ## Step 5 — Gap Update
 
-Before reviewing commits, run Project Config Check.
+Before reviewing commits, run Project Config Check (Step 3) — skip silently if all flags are already present.
 
 Read commit messages first to get the shape of what changed.
 Then read file changes only for significant commits — skip: bug fixes,
