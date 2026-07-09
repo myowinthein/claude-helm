@@ -581,9 +581,15 @@ If no running services are found: skip silently.
 
 Show git status — all staged and unstaged changes accumulated across the full workflow.
 
-Commit all changes:
+Stage all changes made during this archive workflow by explicit path — avoid `git add -A` to prevent accidentally including credentials or untracked files:
+
 ```
-git add -A
+git add docs/ README.md .gitignore
+```
+
+Add any additional files modified during Steps 2–4 (Dockerfile, docker-compose.yml, .gitattributes, etc.) by name. Then commit:
+
+```
 git commit -m "chore(archive): seal project archive"
 ```
 
