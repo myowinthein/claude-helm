@@ -160,7 +160,7 @@ Use lowercase, hyphens only, no spaces.
 ## Environment Branches (optional)
 
 Independent of strategy. Works with both Solo mode and GitHub Flow.
-Detected automatically via: git branch -r
+Detected automatically from remote branch names.
 
 Environment branches are any long-lived branches that are not main,
 master, or feature branches — e.g. staging, stage, uat, preprod,
