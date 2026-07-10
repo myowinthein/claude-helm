@@ -101,11 +101,11 @@ If CLAUDE.md exists with a saved commit hash and schema is intact:
 
 ## Step 3 — Project Config Check
 
-**Full scan:** always ask both questions below.
+**Full scan:** always ask all applicable questions below.
 **Gap update:** ask only the question(s) for flags missing from the existing Project Config section.
-  If both flags are already present, skip this step silently.
+  If all applicable flags are already present, skip this step silently.
 
-**Question 1 — Branching strategy** (ask if `git-solo` is absent, or on full scan):
+**Question 1 — Branching strategy** (ask if `git-strategy` is absent, or on full scan):
 
   AskUserQuestion:
     question: "Which git branching strategy should this project use?"
@@ -117,8 +117,8 @@ If CLAUDE.md exists with a saved commit hash and schema is intact:
       - label: "GitHub Flow"
         description: "Branch off main for every change, open a PR to merge back. Intended for teams or projects with peer review."
 
-  Solo Mode selected → write `git-solo: true` under Project Config.
-  GitHub Flow selected → omit `git-solo` from Project Config (absence means GitHub Flow).
+  Solo Mode selected → write `git-strategy: solo` under Project Config.
+  GitHub Flow selected → write `git-strategy: github-flow` under Project Config.
 
 **Question 2 — Auto-commit** (ask if `git-auto-commit` is absent, or on full scan):
 
@@ -134,6 +134,24 @@ If CLAUDE.md exists with a saved commit hash and schema is intact:
 
   Yes selected → write `git-auto-commit: true` under Project Config.
   No selected → omit `git-auto-commit` from Project Config.
+
+**Question 3 — Merge strategy** (ask only if GitHub Flow is active or was just selected; ask if `git-merge-strategy` is absent, or on full scan):
+
+  AskUserQuestion:
+    question: "Which merge strategy should be used when merging pull requests into main?"
+    header:   "Merge strategy"
+    multiSelect: false
+    options:
+      - label: "Squash (Recommended)"
+        description: "Squash all commits into one with a Conventional Commit message. Keeps main history clean and linear."
+      - label: "Rebase"
+        description: "Replay branch commits onto main without a merge commit. Linear history, preserves individual commits."
+      - label: "Merge commit"
+        description: "Create a merge commit. Preserves full branch topology and commit authorship."
+
+  Squash selected → write `git-merge-strategy: squash` under Project Config.
+  Rebase selected → write `git-merge-strategy: rebase` under Project Config.
+  Merge commit selected → write `git-merge-strategy: merge` under Project Config.
 
 ---
 

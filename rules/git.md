@@ -5,9 +5,9 @@
 ## Solo Mode
 
 Activate by declaring in CLAUDE.md (Project Config section):
-  git-solo: true
+  git-strategy: solo
 
-After reading CLAUDE.md, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active (no git-solo declaration found)."
+After reading CLAUDE.md, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active."
 
 When active:
 - Commit directly to main — no feature branches required
@@ -51,7 +51,6 @@ These apply regardless of mode.
 **Commits**
 - Every commit on main must leave the codebase in a working state
 - One commit per logical unit — if you need "and" to describe it, split it
-- Use squash merge when merging feature branches into main
 
 **Safety**
 - Never push to any branch without confirmation (covered in safety.md)
@@ -110,7 +109,7 @@ Run before pushing, regardless of mode:
 
 ## GitHub Flow (default)
 
-Active when git-solo is not declared in CLAUDE.md.
+Active when `git-strategy: github-flow` is declared in CLAUDE.md, or when `git-strategy` is absent.
 
 **Branch structure:**
   main
@@ -128,7 +127,10 @@ Active when git-solo is not declared in CLAUDE.md.
 - All branches base from main
 - main is always deployable
 - Open a PR before merging to main
-- Squash merge into main with a conventional commit message
+- Merge using the strategy declared as `git-merge-strategy` in CLAUDE.md (default: squash):
+  - `squash` — squash all commits into one with a Conventional Commit message
+  - `rebase` — replay branch commits onto main without a merge commit
+  - `merge` — create a merge commit preserving full branch topology
 - Delete feature branch immediately after merge
 - If CI is configured, it must pass before merge
 

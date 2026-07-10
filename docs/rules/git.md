@@ -12,19 +12,19 @@ The git workflow rules for a project. Defines two modes (Solo and GitHub Flow), 
 
 ```mermaid
 flowchart TD
-  Start([Project loads git.md]) --> Check{git-solo: true<br/>in CLAUDE.md<br/>Project Config?}
+  Start([Project loads git.md]) --> Check{git-strategy: solo<br/>in CLAUDE.md<br/>Project Config?}
   Check -->|yes| Solo[Solo Mode active]
-  Check -->|no| Flow[GitHub Flow active]
+  Check -->|no| Flow[GitHub Flow active<br/>reads git-merge-strategy]
 
   Solo --> Sections1[Apply:<br/>Solo, Universal, Conventional Commits,<br/>Code Quality, optional Environment Branches]
   Flow --> Sections2[Apply:<br/>Universal, Conventional Commits,<br/>Code Quality, GitHub Flow, Branch Naming,<br/>optional Environment Branches]
 ```
 
-The `git-solo: true` flag lives in `CLAUDE.md` under `## Project Config`. Absence means GitHub Flow. The `git-auto-commit: true` flag is independent of mode and controls whether Claude commits without prompting.
+The `git-strategy` flag lives in `CLAUDE.md` under `## Project Config`. Set to `solo` for Solo Mode or `github-flow` for GitHub Flow. Absence defaults to GitHub Flow. The `git-auto-commit: true` flag is independent of mode. The `git-merge-strategy` flag applies only under GitHub Flow and sets the PR merge method (`squash`, `rebase`, or `merge`; defaults to `squash`).
 
 ## Solo Mode
 
-Activate by declaring `git-solo: true` in `CLAUDE.md`. When active:
+Activate by declaring `git-strategy: solo` in `CLAUDE.md`. When active:
 
 - After reading `CLAUDE.md`, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active (no git-solo declaration found)."
 - Commit directly to `main`. No feature branches required.
@@ -124,7 +124,7 @@ Run before pushing, regardless of mode:
 
 ## GitHub Flow (default)
 
-Active when `git-solo` is not declared.
+Active when `git-strategy: github-flow` is declared, or when `git-strategy` is absent.
 
 **Branch structure**
 
@@ -141,7 +141,10 @@ refactor/*
 - All branches base from `main`.
 - `main` is always deployable.
 - Open a PR before merging to `main`.
-- Squash merge into `main` with a Conventional Commit message.
+- Merge using the strategy declared as `git-merge-strategy` (default: `squash`):
+  - `squash` — squash all commits into one with a Conventional Commit message
+  - `rebase` — replay branch commits onto `main` without a merge commit
+  - `merge` — create a merge commit preserving full branch topology
 - Delete the feature branch immediately after merge.
 - If CI is configured, it must pass before merge.
 
