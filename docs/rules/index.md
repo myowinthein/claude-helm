@@ -11,5 +11,5 @@ Rule files installed into projects via [`/helm:adopt`](/docs/commands/adopt). Th
 
 ## Rule files
 
-- [`git.md`](git) — git workflow rules: Solo Mode, GitHub Flow, branch naming, Conventional Commits, code quality gates, and environment branch promotion. Activate features by declaring them in your project's `CLAUDE.md` (`git-solo: true`, `git-auto-commit: true`).
+- [`git.md`](git) — git workflow rules: Solo Mode, GitHub Flow, branch naming, Conventional Commits, code quality gates, and environment branch promotion. Activate features by declaring them in your project's `CLAUDE.md` (`git-strategy: solo`, `git-auto-commit: true`, `git-merge-strategy: squash`).
 - [`safety.md`](safety) — operational safety rules: what to scan on bootstrap, what never to touch without explicit confirmation, and the minimum evidence checklist for risky operations.

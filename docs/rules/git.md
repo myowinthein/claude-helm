@@ -26,7 +26,7 @@ The `git-strategy` flag lives in `CLAUDE.md` under `## Project Config`. Set to `
 
 Activate by declaring `git-strategy: solo` in `CLAUDE.md`. When active:
 
-- After reading `CLAUDE.md`, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active (no git-solo declaration found)."
+- After reading `CLAUDE.md`, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active."
 - Commit directly to `main`. No feature branches required.
 - No PR required.
 - Skip Branch Naming and GitHub Flow sections entirely.

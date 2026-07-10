@@ -76,7 +76,7 @@ Investigates the project from scratch: business purpose, modules and workflows, 
 Then writes `CLAUDE.md` using a seven-section schema:
 
 1. Project Identity
-2. Project Config (e.g. `git-solo: true`, `git-auto-commit: true`)
+2. Project Config (e.g. `git-strategy: solo`, `git-auto-commit: true`, `git-merge-strategy: squash`)
 3. Dev Commands
 4. Architecture Pointers
 5. Behavior Rules

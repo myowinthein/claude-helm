@@ -169,7 +169,7 @@ Before writing anything, investigate in this order:
 
 Then write CLAUDE.md using the seven-section schema:
 1. Project Identity (name, stack, purpose, blast radius)
-2. Project Config (flag-style declarations read by .claude/rules, e.g. `git-solo: true`, `git-auto-commit: true`; keep heading even if empty)
+2. Project Config (flag-style declarations read by .claude/rules, e.g. `git-strategy: solo`, `git-auto-commit: true`; keep heading even if empty)
 3. Dev Commands (install, run, test single file, migrate, logs)
 4. Architecture Pointers (key files with one-line why, not summaries)
 5. Behavior Rules (autonomy model, confirmation gates, test requirements)
