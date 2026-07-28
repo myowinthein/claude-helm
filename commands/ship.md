@@ -96,15 +96,29 @@ If Conventional Commits detected:
   Deployment targets:
   - {selected environments from Step 2}
 
-  AskUserQuestion:
-    question: "Confirm version for this release? Current: v{last_tag} → Proposed: v{proposed}"
-    header:   "Version"
-    multiSelect: false
-    options:
-      - label: "Confirm v{proposed} (Recommended)"
-        description: "Tag and release as v{proposed}"
-      - label: "Enter custom version"
-        description: "Specify a different version number"
+  If current version is 0.x.x:
+    AskUserQuestion:
+      question: "Confirm version for this release? Current: v{last_tag} → Proposed: v{proposed}"
+      header:   "Version"
+      multiSelect: false
+      options:
+        - label: "Confirm v{proposed} (Recommended)"
+          description: "Tag and release as v{proposed}"
+        - label: "Bump to v1.0.0"
+          description: "This release completes a usable set of features that solves a real problem end-to-end"
+        - label: "Enter custom version"
+          description: "Specify a different version number"
+
+  If current version is 1.0.0 or above:
+    AskUserQuestion:
+      question: "Confirm version for this release? Current: v{last_tag} → Proposed: v{proposed}"
+      header:   "Version"
+      multiSelect: false
+      options:
+        - label: "Confirm v{proposed} (Recommended)"
+          description: "Tag and release as v{proposed}"
+        - label: "Enter custom version"
+          description: "Specify a different version number"
 
   If "Enter custom version" selected → ask human to type the version before proceeding.
   Wait for response before proceeding.
