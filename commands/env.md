@@ -46,15 +46,18 @@ Using findings from 2.2 and 2.3:
 
 **Never referenced in code:** Keys present in env files that do not appear anywhere in source code. These may be stale or only used at the infrastructure level — flag but do not auto-remove.
 
-### 2.5 — Detect real secrets in .env.example
+### 2.5 — Check secret vs placeholder correctness
 
+Two complementary checks:
+
+**`.env.example` — no real secrets allowed**
 If no `.env.example` exists, skip this check silently.
-
-Check `.env.example` only. It should contain placeholder values exclusively — real credentials committed here would be exposed in the repository.
-
-For each key-value pair, flag any value that looks like a real secret: long random strings, tokens starting with known prefixes (`sk-`, `pk_`, `ghp_`, `xoxb-`, `ya29.`, etc.), Base64-encoded blobs, or connection strings with passwords.
-
+Every value should be a placeholder. Flag any value that looks like a real secret: long random strings, tokens starting with known prefixes (`sk-`, `pk_`, `ghp_`, `xoxb-`, `ya29.`, etc.), Base64-encoded blobs, or connection strings with passwords.
 Redact flagged values in the report — show only the first 4 and last 4 characters (e.g. `sk-a...xyz9`).
+
+**All other env files — no placeholders allowed**
+Every value should be a real value. Flag any key whose value looks like a placeholder: `your-key-here`, `REPLACE_ME`, `xxx`, `changeme`, `TODO`, empty string, or similar template patterns.
+These indicate the developer forgot to fill in a real value, which would cause silent failures at runtime.
 
 ### 2.6 — Scan for hardcoded values in source code
 
@@ -124,11 +127,15 @@ Keys in env files with no code reference (may be infrastructure-only):
 - KEY_NAME        .env, .env.staging
 
 ─────────────────────────────────
-REAL SECRETS IN .env.example    {X found}
+SECRET/PLACEHOLDER ISSUES        {X found}
 ─────────────────────────────────
-[WARNING] These look like real credentials — .env.example should only contain placeholders:
+.env.example — real secrets found (should be placeholders):
 - KEY_NAME        sk-a...xyz9
 - KEY_NAME        ghp_A...B3k
+
+.env, .env.staging — placeholders found (should be real values):
+- KEY_NAME        .env            your-key-here
+- KEY_NAME        .env.staging    REPLACE_ME
 
 ─────────────────────────────────
 HARDCODED VALUES  {X issues}
@@ -295,7 +302,7 @@ Hardcoded values: {N} replaced, {N} skipped
 Cleanup:          {N} env files cleaned, .gitignore cleaned and updated
 ─────────────────────────────────
 Needs manual action:
-- Real secrets:   {N} flagged — rotate and replace with placeholders
+- Secret/placeholder issues: {N} flagged — replace real secrets in .env.example with placeholders; fill in real values where placeholders remain in other env files
 - Never referenced: {N} flagged — review and remove if stale
 - Tracked files:  {list} — run git rm --cached to untrack
 ─────────────────────────────────
