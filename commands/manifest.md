@@ -22,10 +22,6 @@ Current branch is {branch}. Please switch and re-run."
 Check CLAUDE.md Project Config for `readme-style`.
 
 If `readme-style` is absent:
-  Check README.md for `<!-- last-reviewed: {hash} -->` marker.
-  - Marker found → infer `readme-style: standard`. Write `readme-style: standard` to CLAUDE.md Project Config.
-  - No marker → ask:
-
   AskUserQuestion:
     question: "README.md exists with no known style. Which style should this project use?"
     header:   "README style"
