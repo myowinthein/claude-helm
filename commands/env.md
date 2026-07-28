@@ -69,7 +69,16 @@ For each finding, suggest a descriptive env var name (e.g. `STRIPE_PUBLISHABLE_K
 
 Exclude: test fixtures, mock data, constants that are genuinely environment-agnostic.
 
-### 2.7 — Scan .gitignore
+### 2.7 — Check env file formatting
+
+For each env file, check for formatting issues:
+- Duplicate keys
+- Inconsistent spacing around `=`
+- Missing or inconsistent blank lines between logical groups
+- Keys not in `UPPER_SNAKE_CASE`
+- Trailing whitespace or Windows-style line endings
+
+### 2.8 — Scan .gitignore
 
 Check `.gitignore`:
 - **Formatting issues** — inconsistent spacing, missing section groupings, duplicate entries
@@ -133,6 +142,15 @@ HARDCODED VALUES  {X issues}
       Suggested env var: API_BASE_URL
 
 ─────────────────────────────────
+ENV FORMATTING    {X issues}
+─────────────────────────────────
+.env:
+- 2 duplicate keys
+- Inconsistent spacing around = on 3 lines
+.env.staging:
+- Trailing whitespace on 1 line
+
+─────────────────────────────────
 GITIGNORE         {X issues}
 ─────────────────────────────────
 Missing entries (stack: Node.js):
@@ -165,8 +183,8 @@ AskUserQuestion:
       description: "{N} keys referenced in code but not in any env file"
     - label: "Hardcoded values"
       description: "{N} values in source code that should be env vars"
-    - label: ".gitignore"
-      description: "{N} missing entries, duplicates, or tracked file conflicts"
+    - label: "Formatting"
+      description: "{N} formatting issues across env files and .gitignore"
 
 If more than 4 categories qualify, merge the smallest into one option.
 
@@ -214,6 +232,20 @@ If Replace selected:
 - Add the key with a placeholder to `.env.example`
 - Add the key with the original value to `.env` if it does not already exist
 
+### Formatting
+
+For each env file with formatting issues:
+- Remove duplicate keys (keep the last occurrence)
+- Normalise spacing to `KEY=value` with no spaces around `=`
+- Convert keys to `UPPER_SNAKE_CASE`
+- Strip trailing whitespace and normalise to Unix line endings
+- Preserve existing blank lines between logical groups; do not reorder entries
+
+For `.gitignore`:
+- Remove duplicate entries
+- Add missing section groupings with comment headers
+- Strip trailing whitespace
+
 ### .gitignore
 
 Apply all three sub-fixes together:
@@ -254,6 +286,7 @@ ENV COMPLETE
 Env sync:         {N} keys added across {N} files
 Missing from env: {N} keys added to .env.example
 Hardcoded values: {N} replaced, {N} skipped
+Formatting:       {N} env files cleaned, .gitignore cleaned
 .gitignore:       {N} entries added, {N} duplicates removed
 ─────────────────────────────────
 Needs manual action:
