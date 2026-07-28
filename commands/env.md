@@ -160,11 +160,15 @@ Missing entries (stack: Node.js):
 - dist/
 
 Tracked files matching gitignore patterns:
-- .env.local      already tracked by git — gitignore will not protect it
+- .env.local      already tracked by git — run git rm --cached .env.local to untrack
+
+Entries that should not be ignored:
+- *.js             overly broad — would exclude source files
+- config/          matches committed application code — likely added by mistake
 
 Formatting:
 - 3 duplicate entries found
-- Missing section groupings
+- Missing category groupings
 
 ─────────────────────────────────
 TOTAL: {N} issues across {N} categories
