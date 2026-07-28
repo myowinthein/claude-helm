@@ -23,6 +23,10 @@ Check README.md:
 - Is there a saved commit hash? (look for `<!-- last-reviewed: {hash} -->`)
 - If hash exists, run `git log {hash}..HEAD --oneline` to see the gap
 - How significant is the gap? (ignore: bug fixes, styling, dependency updates, routine CRUD)
+- If the file exists and has content, check whether all mandatory sections are present:
+  `Title`, `Short Description`, `Install`, `Usage`, `Contributing`, `License`
+
+Structure is intact if all mandatory sections are found. Structure is broken if any are missing.
 
 Based on current state, use AskUserQuestion (single-select) to present options:
 
@@ -48,7 +52,21 @@ If README.md exists but has no saved commit hash:
       - label: "Skip"
         description: "No update needed"
 
-If README.md exists with a saved commit hash:
+If README.md exists with a saved commit hash and structure is broken (any mandatory section missing):
+  Regardless of gap size, recommend Full scan. State which sections are missing.
+  AskUserQuestion:
+    question: "{one sentence stating which sections are missing and why full scan is recommended}"
+    header:   "Update mode"
+    multiSelect: false
+    options:
+      - label: "Full scan (Recommended)"
+        description: "Rewrite README.md from a complete project scan to restore missing sections"
+      - label: "Gap update"
+        description: "Update only commits since last review — missing sections will not be added"
+      - label: "Skip"
+        description: "No update needed"
+
+If README.md exists with a saved commit hash and structure is intact:
   Form a recommendation (Full or Gap) based on gap significance.
   Put the recommended option first.
 
@@ -145,4 +163,3 @@ Propose changes per affected section. Ask for confirmation before writing.
 README.md = human-facing documentation (contributors, GitHub visitors, new users).
 Not a changelog. Not a technical spec. Not a deployment manual.
 Audience is humans, not future Claude sessions — keep it clear and scannable.
-
