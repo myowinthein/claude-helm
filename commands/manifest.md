@@ -149,6 +149,7 @@ If `readme-style: standard`:
   - Long Description (only if short description is insufficient)
   - Background (useful if the "why" behind the project is non-obvious)
   - API (if the project has a public interface)
+  - Limitations (only if the project has meaningful limitations worth surfacing to users evaluating adoption)
 
   Skip unless specifically needed:
   - Banner, Security, Thanks, Maintainers, Extra Sections
