@@ -242,6 +242,8 @@ If Replace selected:
 - Substitute the hardcoded value in source code with the appropriate env var access pattern for the detected language
 - Add the key with a placeholder to `.env.example`
 - Add the key with the original value to `.env` if it does not already exist
+- Add the key with a placeholder to all other env files if it does not already exist, with a comment: `# Set the real value for this environment`
+- Inform the user which files were updated and that real values need to be filled in for each environment
 
 ### Cleanup
 
