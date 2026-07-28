@@ -48,13 +48,13 @@ Using findings from 2.2 and 2.3:
 
 ### 2.5 — Detect real secrets in .env.example
 
+If no `.env.example` exists, skip this check silently.
+
 Check `.env.example` only. It should contain placeholder values exclusively — real credentials committed here would be exposed in the repository.
 
 For each key-value pair, flag any value that looks like a real secret: long random strings, tokens starting with known prefixes (`sk-`, `pk_`, `ghp_`, `xoxb-`, `ya29.`, etc.), Base64-encoded blobs, or connection strings with passwords.
 
 Redact flagged values in the report — show only the first 4 and last 4 characters (e.g. `sk-a...xyz9`).
-
-If no `.env.example` exists, skip this check silently.
 
 ### 2.6 — Scan for hardcoded values in source code
 
