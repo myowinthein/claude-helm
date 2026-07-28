@@ -36,16 +36,7 @@ Build a matrix of all keys across all files. Find mismatches:
 
 ### 2.3 — Scan source code for env var references
 
-Detect the project's language and framework, then scan source files for env var access patterns. Common patterns:
-
-- JavaScript/TypeScript: `process.env.KEY`, `import.meta.env.KEY`
-- Python: `os.environ['KEY']`, `os.getenv('KEY')`, `os.environ.get('KEY')`
-- PHP: `getenv('KEY')`, `$_ENV['KEY']`, `env('KEY')`, `Config::get('KEY')`
-- Ruby: `ENV['KEY']`, `ENV.fetch('KEY')`
-- Go: `os.Getenv("KEY")`
-- Shell: `$KEY`, `${KEY}`
-
-Collect every unique key referenced in source code.
+Detect the project's language and framework, then scan source files for env var access patterns appropriate for the detected stack. Collect every unique key referenced in source code.
 
 ### 2.4 — Cross-reference code vs env files
 
