@@ -24,17 +24,7 @@ Read-only. Do not modify anything in this step.
 
 ### 2.1 — Detect env files
 
-Find all env files in the project root and subdirectories:
-`.env`, `.env.local`, `.env.example`, `.env.staging`, `.env.production`, `.env.test`, `.env.*.local`, and any other `.env.*` variants.
-
-For each file found, infer its purpose:
-- `.env` — local development (primary)
-- `.env.example` — template for onboarding, committed to repo
-- `.env.local` — local overrides, not committed
-- `.env.staging`, `.env.production` — environment-specific deployments
-- `.env.test` — test suite configuration
-
-Label each file with its inferred purpose. If purpose cannot be determined, label as unknown.
+Find all `.env*` files in the project. For each file found, infer its purpose from the filename and context. If purpose cannot be determined, label as unknown.
 
 ### 2.2 — Compare entries across env files
 
