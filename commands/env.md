@@ -46,14 +46,15 @@ Using findings from 2.2 and 2.3:
 
 **Never referenced in code:** Keys present in env files that do not appear anywhere in source code. These may be stale or only used at the infrastructure level — flag but do not auto-remove.
 
-### 2.5 — Detect real secrets vs placeholders
+### 2.5 — Detect real secrets in .env.example
 
-For each key-value pair across all env files, classify the value:
+Check `.env.example` only. It should contain placeholder values exclusively — real credentials committed here would be exposed in the repository.
 
-- **Placeholder** — looks like a template value: `your-key-here`, `REPLACE_ME`, `xxx`, empty string, `changeme`, `secret`, `password`, etc.
-- **Real secret** — looks like an actual credential: long random strings, tokens starting with known prefixes (`sk-`, `pk_`, `ghp_`, `xoxb-`, `ya29.`, etc.), Base64-encoded blobs, connection strings with passwords.
+For each key-value pair, flag any value that looks like a real secret: long random strings, tokens starting with known prefixes (`sk-`, `pk_`, `ghp_`, `xoxb-`, `ya29.`, etc.), Base64-encoded blobs, or connection strings with passwords.
 
-Flag any real secrets found, noting the file and key name. Redact values in the report — show only the first 4 and last 4 characters (e.g. `sk-a...xyz9`).
+Redact flagged values in the report — show only the first 4 and last 4 characters (e.g. `sk-a...xyz9`).
+
+If no `.env.example` exists, skip this check silently.
 
 ### 2.6 — Scan for hardcoded values in source code
 
@@ -123,11 +124,11 @@ Keys in env files with no code reference (may be infrastructure-only):
 - KEY_NAME        .env, .env.staging
 
 ─────────────────────────────────
-REAL SECRETS      {X found}
+REAL SECRETS IN .env.example    {X found}
 ─────────────────────────────────
-[WARNING] These look like real credentials, not placeholders:
-- KEY_NAME        .env          sk-a...xyz9
-- KEY_NAME        .env.staging  ghp_A...B3k
+[WARNING] These look like real credentials — .env.example should only contain placeholders:
+- KEY_NAME        sk-a...xyz9
+- KEY_NAME        ghp_A...B3k
 
 ─────────────────────────────────
 HARDCODED VALUES  {X issues}
