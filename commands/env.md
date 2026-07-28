@@ -199,9 +199,9 @@ AskUserQuestion:
     - label: "Cleanup"
       description: "Formatting and grouping fixes for env files and .gitignore"
 
-Never referenced and Real secrets are always reported but never auto-fixed:
+Never referenced and Secret/placeholder issues are always reported but never auto-fixed:
 - Never referenced: flagged for manual review — do not auto-remove, as they may be infrastructure-only
-- Real secrets: warn the user to rotate and replace with placeholders — do not modify values
+- Secret/placeholder issues: warn the user to act manually — do not modify values
 
 Wait for response before proceeding.
 
@@ -258,12 +258,8 @@ For `.gitignore`:
 - If the file already has comment-based category groups: preserve them and do not reorder entries within a group
 - If the file has no groups: infer categories (Dependencies, Environment, Build output, OS, Editor, etc.) and add comment headers
 - Strip trailing whitespace
-
-### .gitignore
-
-Apply all three sub-fixes together:
-- Add missing stack-appropriate entries, grouped by category with a comment header
-- Remove duplicate entries
+- Add missing stack-appropriate entries within the appropriate category group
+- Remove entries flagged as overly broad or harmful (entries that should not be ignored)
 - For tracked files matching gitignore patterns, do not modify `.gitignore` — inform the user:
   "{file} is already tracked by git. Run `git rm --cached {file}` to untrack it, then gitignore will take effect."
 
