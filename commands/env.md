@@ -74,14 +74,14 @@ Exclude: test fixtures, mock data, constants that are genuinely environment-agno
 For each env file, check for formatting issues:
 - Duplicate keys
 - Inconsistent spacing around `=`
-- Missing or inconsistent blank lines between logical groups
 - Keys not in `UPPER_SNAKE_CASE`
 - Trailing whitespace or Windows-style line endings
+- Missing category groupings — if the file has no comment-based groups, flag it; if groups exist, check whether all keys belong to the right group
 
 ### 2.8 — Scan .gitignore
 
 Check `.gitignore`:
-- **Formatting issues** — inconsistent spacing, missing section groupings, duplicate entries
+- **Formatting issues** — inconsistent spacing, duplicate entries, missing category groupings
 - **Missing stack-appropriate entries** — based on detected language and framework, identify files or folders that should be gitignored but are not (e.g. `.env`, `node_modules/`, `__pycache__/`, `.DS_Store`, `*.log`, `dist/`, `.venv/`)
 - **Entries matching tracked files** — run `git ls-files` and cross-check against `.gitignore` patterns; flag any tracked file that matches a gitignore pattern, since gitignore will not protect already-tracked files
 
@@ -239,11 +239,13 @@ For each env file with formatting issues:
 - Normalise spacing to `KEY=value` with no spaces around `=`
 - Convert keys to `UPPER_SNAKE_CASE`
 - Strip trailing whitespace and normalise to Unix line endings
-- Preserve existing blank lines between logical groups; do not reorder entries
+- If the file already has comment-based category groups: preserve them, correct any misplaced keys, and do not reorder entries within a group
+- If the file has no groups: infer categories from key names (e.g. `DB_*` → Database, `STRIPE_*` → Stripe, `JWT_*` → Auth) and add comment headers; do not reorder keys within an inferred group
 
 For `.gitignore`:
 - Remove duplicate entries
-- Add missing section groupings with comment headers
+- If the file already has comment-based category groups: preserve them and do not reorder entries within a group
+- If the file has no groups: infer categories (Dependencies, Environment, Build output, OS, Editor, etc.) and add comment headers
 - Strip trailing whitespace
 
 ### .gitignore
