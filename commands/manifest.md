@@ -17,16 +17,43 @@ Current branch is {branch}. Please switch and re-run."
 
 ## Step 2 — Assessment
 
+**Determine readme-style:**
+
+Check CLAUDE.md Project Config for `readme-style`.
+
+If `readme-style` is absent:
+  Check README.md for `<!-- last-reviewed: {hash} -->` marker.
+  - Marker found → infer `readme-style: standard`. Write `readme-style: standard` to CLAUDE.md Project Config.
+  - No marker → ask:
+
+  AskUserQuestion:
+    question: "README.md exists with no known style. Which style should this project use?"
+    header:   "README style"
+    multiSelect: false
+    options:
+      - label: "Standard Readme spec"
+        description: "Enforce the Standard Readme spec structure when writing or updating."
+      - label: "Custom style"
+        description: "Follow the existing README structure — never rewrite into the spec."
+
+  Write the chosen value (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md Project Config before continuing.
+
+If `readme-style` is already set → use it as-is. Do not ask again.
+
+---
+
+**Assess README.md:**
+
 Check README.md:
 - Does it exist?
 - Does it have content?
 - Is there a saved commit hash? (look for `<!-- last-reviewed: {hash} -->`)
 - If hash exists, run `git log {hash}..HEAD --oneline` to see the gap
 - How significant is the gap? (ignore: bug fixes, styling, dependency updates, routine CRUD)
-- If the file exists and has content, check whether all mandatory sections are present:
+- If `readme-style: standard` and the file exists and has content, check whether all mandatory sections are present:
   `Title`, `Short Description`, `Install`, `Usage`, `Contributing`, `License`
 
-Structure is intact if all mandatory sections are found. Structure is broken if any are missing.
+  Structure is intact if all mandatory sections are found. Structure is broken if any are missing.
 
 Based on current state, use AskUserQuestion (single-select) to present options:
 
@@ -37,7 +64,7 @@ If README.md is absent or empty:
     multiSelect: false
     options:
       - label: "Full scan (Recommended)"
-        description: "Rewrite README.md from a complete project scan"
+        description: "Write README.md from a complete project scan"
       - label: "Skip"
         description: "No update needed"
 
@@ -52,7 +79,7 @@ If README.md exists but has no saved commit hash:
       - label: "Skip"
         description: "No update needed"
 
-If README.md exists with a saved commit hash and structure is broken (any mandatory section missing):
+If README.md exists with a saved commit hash and `readme-style: standard` and structure is broken (any mandatory section missing):
   Regardless of gap size, recommend Full scan. State which sections are missing.
   AskUserQuestion:
     question: "{one sentence stating which sections are missing and why full scan is recommended}"
@@ -66,7 +93,7 @@ If README.md exists with a saved commit hash and structure is broken (any mandat
       - label: "Skip"
         description: "No update needed"
 
-If README.md exists with a saved commit hash and structure is intact:
+If README.md exists with a saved commit hash and (structure is intact or `readme-style: custom`):
   Form a recommendation (Full or Gap) based on gap significance.
   Put the recommended option first.
 
@@ -108,29 +135,36 @@ Before writing anything, investigate:
 - Public API surface (if any)
 - License, contributing model, maintainers
 
-Write README.md following the Standard Readme spec section order.
-Include only sections relevant to this project — do not force all sections.
+If `readme-style: standard`:
+  Write README.md following the Standard Readme spec section order.
+  Include only sections relevant to this project — do not force all sections.
 
-Mandatory sections (always include):
-- Title (must match repo/package name)
-- Short Description (under 120 chars, matches package.json description field)
-- Table of Contents (if README will exceed 100 lines)
-- Install
-- Usage
-- Contributing
-- License (must be last section before the comment tag)
+  Mandatory sections (always include):
+  - Title (must match repo/package name)
+  - Short Description (under 120 chars, matches package.json description field)
+  - Table of Contents (if README will exceed 100 lines)
+  - Install
+  - Usage
+  - Contributing
+  - License (must be last section before the comment tag)
 
-Include when relevant:
-- Badges (CI, version — keep minimal)
-- Long Description (only if short description is insufficient)
-- Background (useful if the "why" behind the project is non-obvious)
-- API (if the project has a public interface)
+  Include when relevant:
+  - Badges (CI, version — keep minimal)
+  - Long Description (only if short description is insufficient)
+  - Background (useful if the "why" behind the project is non-obvious)
+  - API (if the project has a public interface)
 
-Skip unless specifically needed:
-- Banner, Security, Thanks, Maintainers, Extra Sections
+  Skip unless specifically needed:
+  - Banner, Security, Thanks, Maintainers, Extra Sections
 
-Sections must appear in the order listed by the spec.
-Do not invent sections outside the spec.
+  Sections must appear in the order listed by the spec.
+  Do not invent sections outside the spec.
+
+If `readme-style: custom`:
+  Read the existing README structure before writing.
+  Preserve the existing section order and naming.
+  Rewrite content within each section based on the project scan.
+  Do not add, remove, or rename sections without explicit approval.
 
 At the end of the file, append:
 `<!-- last-reviewed: {current HEAD commit hash} -->`
@@ -151,6 +185,9 @@ changed CLI commands, new env vars, removed functionality.
 
 For each significant change, identify which README section is affected.
 Update only those sections. Do not rewrite unaffected sections.
+
+If `readme-style: standard`: sections must remain in spec order after updates.
+If `readme-style: custom`: preserve existing section order and naming.
 
 Update the saved commit hash at the end of the file to current HEAD.
 
