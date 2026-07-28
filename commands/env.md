@@ -59,17 +59,9 @@ Flag any key whose value looks like an unfilled placeholder. These would cause s
 
 ### 2.6 — Scan for hardcoded values in source code
 
-Scan source files for values that should be env vars:
+Scan source files for values that should be env vars. For each finding, suggest a descriptive env var name.
 
-- API keys, tokens, or credentials hardcoded as string literals
-- Base URLs or hostnames tied to a specific environment (e.g. `https://api.production.com`, `localhost:5432`)
-- Database connection strings
-- Third-party service IDs (Stripe publishable keys, Sentry DSNs, Firebase config objects, etc.)
-- Magic strings that vary between environments (port numbers, feature flags, timeout values that differ per env)
-
-For each finding, suggest a descriptive env var name (e.g. `STRIPE_PUBLISHABLE_KEY`, `DATABASE_URL`, `API_BASE_URL`).
-
-Exclude: test fixtures, mock data, constants that are genuinely environment-agnostic.
+Exclude test fixtures, mock data, and constants that are genuinely environment-agnostic.
 
 ### 2.7 — Check env file formatting
 
