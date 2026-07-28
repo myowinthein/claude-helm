@@ -117,6 +117,7 @@ Do not invent sections outside the spec.
 At the end of the file, append:
 `<!-- last-reviewed: {current HEAD commit hash} -->`
 
+Use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
 Write directly — no approval needed.
 
 ---

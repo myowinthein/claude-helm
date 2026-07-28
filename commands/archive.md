@@ -346,6 +346,7 @@ Goal: Make future me able to understand, restore, run, troubleshoot, and demonst
 - Do not invent setup procedures, demo workflows, runtime requirements, or API behavior.
 - Do not include secrets, credentials, API keys, or private/production URLs.
 - Keep README.md concise — link to docs/ rather than repeating content.
+- Use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
 - Do not commit or push.
 
 ### Consolidation

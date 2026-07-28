@@ -181,6 +181,7 @@ Wait for both responses before proceeding.
 ## Step 4 — Generate documents
 
 Generate each selected document in plain English, GDPR compliant.
+Use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
 Write to the resolved output path using the resolved format. Overwrite if the file already exists.
 
 **Format rules**
