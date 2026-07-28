@@ -58,7 +58,11 @@ Detect version file by scanning for package.json, composer.json, VERSION file.
 Read current version from detected file.
 
 Run: git describe --tags --abbrev=0
-If no tag exists, ask human to confirm base version before proceeding.
+If no tag exists:
+  Read current version from detected version file.
+  If version found in file → use it as base version.
+  If not found → use 0.1.0 as base version.
+  Inform human: "No tags found. Using {base_version} as base version."
 
 **Detect commit style and calculate version**
 Run: git log {last_tag}..HEAD --oneline
