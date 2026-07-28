@@ -65,12 +65,7 @@ Exclude test fixtures, mock data, and constants that are genuinely environment-a
 
 ### 2.7 — Check env file formatting
 
-For each env file, check for formatting issues:
-- Duplicate keys
-- Inconsistent spacing around `=`
-- Keys not in `UPPER_SNAKE_CASE`
-- Trailing whitespace or Windows-style line endings
-- Missing category groupings — if the file has no comment-based groups, flag it; if groups exist, check whether all keys belong to the right group
+Check each env file for formatting issues. Also check whether comment-based category groupings exist and whether all keys belong to the right group.
 
 ### 2.8 — Scan .gitignore
 
