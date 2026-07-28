@@ -84,6 +84,7 @@ Check `.gitignore`:
 - **Formatting issues** — inconsistent spacing, duplicate entries, missing category groupings
 - **Missing stack-appropriate entries** — based on detected language and framework, identify files or folders that should be gitignored but are not (e.g. `.env`, `node_modules/`, `__pycache__/`, `.DS_Store`, `*.log`, `dist/`, `.venv/`)
 - **Entries matching tracked files** — run `git ls-files` and cross-check against `.gitignore` patterns; flag any tracked file that matches a gitignore pattern, since gitignore will not protect already-tracked files
+- **Entries that should not be ignored** — flag patterns that are overly broad or likely harmful: patterns that would exclude source files, patterns that match nothing in the project, or entries that appear to have been added by mistake (e.g. ignoring a directory that contains committed application code). Suggest removing them.
 
 ---
 
