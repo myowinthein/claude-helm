@@ -6,7 +6,7 @@ nav_order: 3
 
 # /helm:manifest
 
-Keep `README.md` in sync with the codebase, following the Standard Readme spec. Acts as the vessel's manifest: the public-facing listing of what is aboard. Full scan on first run, gap update on subsequent runs.
+Keep `README.md` in sync with the codebase. Full scan on first run, gap update on subsequent runs. Supports two styles: Standard Readme spec (enforced structure) or custom (preserves the developer's existing structure).
 
 ## Flow
 
@@ -17,11 +17,22 @@ flowchart TD
   Branch -->|yes| Exists{README.md exists<br/>with content?}
 
   Exists -->|no| Mode1[Ask: full scan or skip?]
-  Exists -->|yes, no hash| Mode1
-  Exists -->|yes, with hash| Gap{Gap significance<br/>since last review?}
+  Exists -->|yes| StyleFlag{readme-style<br/>in CLAUDE.md?}
+
+  StyleFlag -->|no| AskStyle["Ask: standard or custom?\nSave to CLAUDE.md Project Config"]
+  StyleFlag -->|yes| HashCheck
+  AskStyle --> HashCheck
+
+  HashCheck{Saved hash?}
+  HashCheck -->|no| Mode1
+  HashCheck -->|"yes + standard"| StructCheck{Mandatory sections<br/>present?}
+  HashCheck -->|"yes + custom"| Gap
+
+  StructCheck -->|broken| Mode3["Ask: full scan (default),<br/>gap update, or skip?"]
+  StructCheck -->|intact| Gap{Gap significance<br/>since last review?}
 
   Gap -->|small or moderate| Mode2["Ask: gap update (default),<br/>full scan, or skip?"]
-  Gap -->|large or significant| Mode3["Ask: full scan (default),<br/>gap update, or skip?"]
+  Gap -->|large or significant| Mode3
 
   Mode1 -->|skip| Skip[/Exit: no update needed/]
   Mode1 -->|full| Full
@@ -32,8 +43,8 @@ flowchart TD
   Mode3 -->|full| Full
   Mode3 -->|gap| GapPath
 
-  Full[Investigate project<br/>write Standard Readme spec<br/>append last-reviewed hash] --> Done
-  GapPath[Identify affected sections<br/>propose per-section changes<br/>confirm, then write] --> Done
+  Full["Investigate project<br/>Write per readme-style<br/>Append last-reviewed hash"] --> Done
+  GapPath["Identify affected sections<br/>Propose per-section changes<br/>Confirm, then write per style"] --> Done
 
   Done([Updated README.md])
 ```
@@ -46,13 +57,18 @@ Only runs from `main` or `master`. Halts on any other branch.
 
 ### 2. Assessment
 
-Reads the current `README.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, runs `git log {hash}..HEAD --oneline` to measure the gap. Ignores noise commits.
+First determines the README style by reading `readme-style` from CLAUDE.md Project Config. If the flag is absent, asks the user once and saves the choice (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md before continuing.
+
+Then reads the current `README.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, runs `git log {hash}..HEAD --oneline` to measure the gap. Ignores noise commits.
+
+When `readme-style: standard` and a hash exists, also checks whether all mandatory sections are present. If any are missing, recommends a full scan regardless of gap size and states which sections are missing.
 
 ### 3. Pick mode
 
 Three modes, default depending on assessment:
 
 - **No file or no hash**: Full scan or skip.
+- **Standard style, structure broken**: Full scan (recommended), gap update, or skip.
 - **Small to moderate gap**: Gap update (recommended), full scan, or skip.
 - **Large gap**: Full scan (recommended), gap update, or skip.
 
@@ -60,11 +76,15 @@ Three modes, default depending on assessment:
 
 Investigates: business purpose and target audience, stack and dependencies, installation steps, core usage patterns and CLI commands, public API surface, license, contributing model, maintainers.
 
-Writes `README.md` following the Standard Readme spec section order. Mandatory sections: Title (matches repo name), Short Description (under 120 chars, matches `package.json` description), Table of Contents (if README exceeds 100 lines), Install, Usage, Contributing, License (last section before the comment tag).
+If `readme-style: standard`: writes `README.md` following the Standard Readme spec section order.
 
-Optional sections when relevant: badges, long description, background, API.
+Mandatory sections: Title (matches repo name), Short Description (under 120 chars, matches `package.json` description), Table of Contents (if README exceeds 100 lines), Install, Usage, Contributing, License (last section before the comment tag).
+
+Optional sections when relevant: badges, long description, background, API, limitations (only if the project has meaningful limitations worth surfacing to users evaluating adoption).
 
 Skipped unless specifically needed: banner, security, thanks, maintainers, extra sections.
+
+If `readme-style: custom`: reads the existing README structure first. Rewrites content within each section based on the project scan. Does not add, remove, or rename sections without explicit approval.
 
 Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
 
@@ -72,11 +92,12 @@ Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
 
 Reads commit messages first. Reads file changes only for significant commits. Focuses on new features, API changes, new install steps, changed usage, changed CLI commands, new env vars, and removed functionality.
 
-For each significant change, identifies the affected README section. Updates only those sections. Proposes the changes per section, asks for confirmation, then writes. Bumps the saved hash to HEAD.
+For each significant change, identifies the affected README section. Updates only those sections. Does not rewrite unaffected sections.
 
-### 6. Confirm completion
+If `readme-style: standard`: sections remain in spec order after updates.
+If `readme-style: custom`: preserves existing section order and naming.
 
-Reports which sections were touched and the new last-reviewed hash.
+Proposes the changes per section, asks for confirmation, then writes. Bumps the saved hash to HEAD.
 
 ## Scope
 

@@ -55,6 +55,10 @@ Only on `main`. Discovers remote environment branches via `git branch -r`, filte
 
 Only on `main`. Versions follow [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Scans the last 20 commits for Conventional Commits patterns. If detected, walks commits since the last tag and proposes the next version: `BREAKING CHANGE` or `feat!` bumps major, `feat` bumps minor, `fix` bumps patch, `chore` and `docs` are ignored. The user confirms or enters a custom version. If Conventional Commits are not in use, the command asks the human for the version directly.
 
+If no tag exists, the base version is read from the version file (`package.json`, `composer.json`, `VERSION`). If no version is found there either, `0.1.0` is used as the starting point.
+
+When the current version is in the `0.x.x` range, the confirmation prompt includes a dedicated **Bump to v1.0.0** option. This is for releases that complete a usable set of features solving a real problem end-to-end — not about size or stability, just about being genuinely usable. Once the version reaches `1.0.0` or above, this option is no longer shown.
+
 ### 4. Run tests
 
 Runs the full test suite using the project's detected test framework. Halts on failure with a clear stop message. Skips silently if no test framework is configured.
