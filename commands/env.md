@@ -181,17 +181,15 @@ AskUserQuestion:
   question: "Which categories would you like to fix?"
   header:   "Fix categories"
   multiSelect: true
-  options (include only categories with findings, max 4):
+  options (include only if the category has findings):
     - label: "Env sync"
       description: "{N} keys missing from one or more env files"
     - label: "Missing from env"
       description: "{N} keys referenced in code but not in any env file"
     - label: "Hardcoded values"
       description: "{N} values in source code that should be env vars"
-    - label: "Formatting"
-      description: "{N} formatting issues across env files and .gitignore"
-
-If more than 4 categories qualify, merge the smallest into one option.
+    - label: "Cleanup"
+      description: "Formatting and grouping fixes for env files and .gitignore"
 
 Never referenced and Real secrets are always reported but never auto-fixed:
 - Never referenced: flagged for manual review — do not auto-remove, as they may be infrastructure-only
@@ -237,7 +235,7 @@ If Replace selected:
 - Add the key with a placeholder to `.env.example`
 - Add the key with the original value to `.env` if it does not already exist
 
-### Formatting
+### Cleanup
 
 For each env file with formatting issues:
 - Remove duplicate keys (keep the last occurrence)
@@ -293,8 +291,7 @@ ENV COMPLETE
 Env sync:         {N} keys added across {N} files
 Missing from env: {N} keys added to .env.example
 Hardcoded values: {N} replaced, {N} skipped
-Formatting:       {N} env files cleaned, .gitignore cleaned
-.gitignore:       {N} entries added, {N} duplicates removed
+Cleanup:          {N} env files cleaned, .gitignore cleaned and updated
 ─────────────────────────────────
 Needs manual action:
 - Real secrets:   {N} flagged — rotate and replace with placeholders
