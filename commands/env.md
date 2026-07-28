@@ -295,7 +295,7 @@ ENV COMPLETE
 Env sync:         {N} keys added across {N} files
 Missing from env: {N} keys added to .env.example
 Hardcoded values: {N} replaced, {N} skipped
-Cleanup:          {N} env files cleaned, .gitignore cleaned and updated
+Cleanup:          {N} env files cleaned, .gitignore: {N} entries added, {N} removed, {N} duplicates removed, groupings added: yes/no
 ─────────────────────────────────
 Needs manual action:
 - Secret/placeholder issues: {N} flagged — replace real secrets in .env.example with placeholders; fill in real values where placeholders remain in other env files
