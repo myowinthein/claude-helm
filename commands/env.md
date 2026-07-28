@@ -213,20 +213,15 @@ Apply selected categories one at a time.
 
 ### Env sync
 
-For each key missing from an env file: add it with a placeholder value.
-Use the existing placeholder style found in `.env.example` if present, otherwise use `your-{key-name}-here`.
-Add a comment above new entries: `# Added by /helm:env — set the real value for this environment`.
-Do not overwrite existing values.
+Add missing keys with placeholder values. Do not overwrite existing values.
 
 ### Missing from env
 
-Add each missing key to `.env.example` with a placeholder value and a comment indicating where it is referenced.
-If no `.env.example` exists, create one.
-Inform the user: "These keys have been added to `.env.example`. Add real values to `.env` and environment-specific files manually."
+Add missing keys to `.env.example` with placeholders. Create `.env.example` if it does not exist.
 
 ### Hardcoded values
 
-For each finding, present the specific change needed and ask for confirmation before touching code:
+Ask for confirmation before touching each finding:
 
 AskUserQuestion:
   question: "Replace hardcoded value in {file}:{line} with env var {SUGGESTED_NAME}?"
@@ -234,48 +229,36 @@ AskUserQuestion:
   multiSelect: false
   options:
     - label: "Replace"
-      description: "Substitute the hardcoded value with process.env.{SUGGESTED_NAME} (or equivalent for this stack)"
+      description: "Substitute with the appropriate env var access pattern for this stack"
     - label: "Skip"
       description: "Leave this value as-is"
 
 If Replace selected:
-- Substitute the hardcoded value in source code with the appropriate env var access pattern for the detected language
-- Add the key with a placeholder to `.env.example`
-- Add the key with the original value to `.env` if it does not already exist
-- Add the key with a placeholder to all other env files if it does not already exist, with a comment: `# Set the real value for this environment`
-- Inform the user which files were updated and that real values need to be filled in for each environment
+- Replace the hardcoded value in source code
+- Add the key with the original value to `.env` if absent
+- Add the key with a placeholder to `.env.example` and all other env files if absent
+- Inform the user which files were updated and that real values need to be filled in per environment
 
 ### Cleanup
 
-For each env file with formatting issues:
-- Remove duplicate keys (keep the last occurrence)
-- Normalise spacing to `KEY=value` with no spaces around `=`
-- Convert keys to `UPPER_SNAKE_CASE`
-- Strip trailing whitespace and normalise to Unix line endings
-- If the file already has comment-based category groups: preserve them, correct any misplaced keys, and do not reorder entries within a group
-- If the file has no groups: infer categories from key names (e.g. `DB_*` → Database, `STRIPE_*` → Stripe, `JWT_*` → Auth) and add comment headers; do not reorder keys within an inferred group
+For env files: fix formatting, remove duplicate keys (keep last occurrence), add category groupings if absent. Preserve existing group order — do not reorder entries within a group.
 
-For `.gitignore`:
-- Remove duplicate entries
-- If the file already has comment-based category groups: preserve them and do not reorder entries within a group
-- If the file has no groups: infer categories (Dependencies, Environment, Build output, OS, Editor, etc.) and add comment headers
-- Strip trailing whitespace
-- Add missing stack-appropriate entries within the appropriate category group
-- Remove entries flagged as overly broad or harmful (entries that should not be ignored)
-- For tracked files matching gitignore patterns, do not modify `.gitignore` — ask for confirmation first:
+For `.gitignore`: fix formatting, remove duplicates, add missing stack-appropriate entries, remove overly broad or harmful entries, add category groupings if absent. Preserve existing group order.
 
-  AskUserQuestion:
-    question: "{file} is tracked by git but matches a .gitignore pattern. Untrack it with git rm --cached?"
-    header:   "Untrack file"
-    multiSelect: false
-    options:
-      - label: "Untrack"
-        description: "Run git rm --cached {file} so .gitignore takes effect"
-      - label: "Skip"
-        description: "Leave it tracked — handle manually later"
+For tracked files matching gitignore patterns, ask for confirmation before untracking:
 
-  If Untrack selected → run `git rm --cached {file}`.
-  If Skip selected → note it in the Step 6 report under manual action.
+AskUserQuestion:
+  question: "{file} is tracked by git but matches a .gitignore pattern. Untrack it with git rm --cached?"
+  header:   "Untrack file"
+  multiSelect: false
+  options:
+    - label: "Untrack"
+      description: "Run git rm --cached {file} so .gitignore takes effect"
+    - label: "Skip"
+      description: "Leave it tracked — handle manually later"
+
+If Untrack selected → run `git rm --cached {file}`.
+If Skip selected → note it in the Step 6 report under manual action.
 
 ---
 
