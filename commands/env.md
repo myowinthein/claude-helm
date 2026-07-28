@@ -260,8 +260,20 @@ For `.gitignore`:
 - Strip trailing whitespace
 - Add missing stack-appropriate entries within the appropriate category group
 - Remove entries flagged as overly broad or harmful (entries that should not be ignored)
-- For tracked files matching gitignore patterns, do not modify `.gitignore` — inform the user:
-  "{file} is already tracked by git. Run `git rm --cached {file}` to untrack it, then gitignore will take effect."
+- For tracked files matching gitignore patterns, do not modify `.gitignore` — ask for confirmation first:
+
+  AskUserQuestion:
+    question: "{file} is tracked by git but matches a .gitignore pattern. Untrack it with git rm --cached?"
+    header:   "Untrack file"
+    multiSelect: false
+    options:
+      - label: "Untrack"
+        description: "Run git rm --cached {file} so .gitignore takes effect"
+      - label: "Skip"
+        description: "Leave it tracked — handle manually later"
+
+  If Untrack selected → run `git rm --cached {file}`.
+  If Skip selected → note it in the Step 6 report under manual action.
 
 ---
 
