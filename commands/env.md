@@ -52,12 +52,10 @@ Two complementary checks:
 
 **`.env.example` — no real secrets allowed**
 If no `.env.example` exists, skip this check silently.
-Every value should be a placeholder. Flag any value that looks like a real secret: long random strings, tokens starting with known prefixes (`sk-`, `pk_`, `ghp_`, `xoxb-`, `ya29.`, etc.), Base64-encoded blobs, or connection strings with passwords.
-Redact flagged values in the report — show only the first 4 and last 4 characters (e.g. `sk-a...xyz9`).
+Flag any value that looks like a real credential. Redact flagged values in the report — show only the first 4 and last 4 characters (e.g. `sk-a...xyz9`).
 
 **All other env files — no placeholders allowed**
-Every value should be a real value. Flag any key whose value looks like a placeholder: `your-key-here`, `REPLACE_ME`, `xxx`, `changeme`, `TODO`, empty string, or similar template patterns.
-These indicate the developer forgot to fill in a real value, which would cause silent failures at runtime.
+Flag any key whose value looks like an unfilled placeholder. These would cause silent failures at runtime.
 
 ### 2.6 — Scan for hardcoded values in source code
 
