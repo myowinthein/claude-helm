@@ -24,7 +24,7 @@ Reload locally: `/reload-plugins` after any change
 - `commands/*.md` — slash command definitions; YAML frontmatter `description:` powers the `/` picker tooltip
 - `rules/git.md` — git workflow rules shipped to projects; covers Solo Mode and GitHub Flow
 - `rules/safety.md` — operational safety rules shipped to projects
-- `steps/archive/` — step files for `/helm:archive` kept here intentionally to avoid appearing as slash commands in the menu
+- `prompts/archive/` — step files for `/helm:archive` kept here intentionally to avoid appearing as slash commands in the menu
 - `docs/commands/` — human-readable detail pages per command (not command source); `docs/rules/` covers the two rule files
 - `.claude-plugin/plugin.json` — the version file; bump this on every release
 - `.claude-plugin/marketplace.json` — Claude Code marketplace registration metadata
@@ -44,7 +44,7 @@ Reload locally: `/reload-plugins` after any change
 ## Known Traps
 
 - **Plugin cache is stale after releases.** `/plugin update` + `/reload-plugins` does not invalidate `~/.claude/plugins/cache/`. After each release, command files must be manually copied from `~/.claude/plugins/marketplaces/claude-helm/commands/` into the active cache version directory, then `/reload-plugins` must be run again. Workaround: `cp ~/.claude/plugins/marketplaces/claude-helm/commands/*.md "$(ls -d ~/.claude/plugins/cache/helm@*/commands/ | tail -1)"` then `/reload-plugins`.
-- **`steps/` directory is intentional.** Files in `steps/archive/` are not commands — they are sub-steps for `/helm:archive`. Do not move them to `commands/`.
+- **`prompts/` directory is intentional.** Files in `prompts/archive/` are not commands — they are sub-steps for `/helm:archive`. Do not move them to `commands/`.
 - **`docs/commands/` is not the command source.** The slash command definitions live in `commands/`. The `docs/commands/` files are detail pages that serve as Jekyll site content and link from README — editing them does not change command behavior.
 
 ## Rules

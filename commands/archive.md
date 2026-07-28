@@ -14,11 +14,11 @@ Current branch is {branch}. Please switch and re-run."
 
 ## Sequence
 
-1. Read steps/archive/1-explore.md and follow it exactly.
-2. Read steps/archive/2-restore-and-freeze.md and follow it exactly.
-3. Read steps/archive/3-postman.md and follow it exactly.
-4. Read steps/archive/4-documentation.md and follow it exactly.
-5. Read steps/archive/5-finalize.md and follow it exactly.
+1. Read prompts/archive/step1-explore.md and follow it exactly.
+2. Read prompts/archive/step2-restore-and-freeze.md and follow it exactly.
+3. Read prompts/archive/step3-postman.md and follow it exactly.
+4. Read prompts/archive/step4-documentation.md and follow it exactly.
+5. Read prompts/archive/step5-finalize.md and follow it exactly.
 
 ## Important
 
