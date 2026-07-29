@@ -198,14 +198,14 @@ Apply selected categories one at a time.
 
 Process one env file at a time. For each file with missing keys:
 
-1. Display the missing keys with their values from the reference env file:
+1. Display the missing keys and where they exist:
 
 ```
 .env.staging — 3 keys missing
 
-KEY_NAME       exists in: .env, .env.production    value: abc123
-DB_URL         exists in: .env only                value: postgres://...
-API_SECRET     exists in: .env, .env.production    value: sk-xxx...
+KEY_NAME       exists in: .env, .env.production
+DB_URL         exists in: .env only
+API_SECRET     exists in: .env, .env.production
 ```
 
 2. Let the developer add the keys manually to the file.
