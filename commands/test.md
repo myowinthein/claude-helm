@@ -4,20 +4,10 @@ description: Detect test framework and write missing tests for recent changes or
 
 # test
 
-## Step 1 — Branch check
-
-Only proceed if on `main` or `master`.
-If on any other branch, stop and inform the user:
-
-"test must be run on main or master.
-Current branch is {branch}. Please switch and re-run."
-
----
-
-## Step 2 — Detect test framework
+## Step 1 — Detect test framework
 
 Scan for test framework configuration files and dependencies.
-Also detect the project's coverage tool (coverage.py, nyc, jest --coverage, etc.) — record it for use in Step 6.
+Also detect the project's coverage tool (coverage.py, nyc, jest --coverage, etc.) — record it for use in Step 5.
 
 If framework detected → proceed to Step 3.
 
@@ -42,7 +32,7 @@ If framework selected → inform user how to install, then proceed to Step 3.
 
 ---
 
-## Step 3 — Load ledger
+## Step 2 — Load ledger
 
 Look for `.claude/test-log.json`. If it exists, load it. If it does not exist, proceed as if it is empty — a missing ledger is not an error.
 
@@ -76,10 +66,10 @@ Schema:
 
 ---
 
-## Step 4 — Assessment
+## Step 3 — Assessment
 
 Check recent git activity and existing test coverage:
-- Identify recently changed files using the same commit-range diff as Step 5:
+- Identify recently changed files using the same commit-range diff as Step 4:
   - If `last_test_run_commit` is in the ledger: run `git diff {last_test_run_commit}..HEAD --name-only`
   - If absent: fall back to `git diff HEAD~1..HEAD --name-only`, or the working tree diff if uncommitted changes exist
 - Scan for existing test files
@@ -144,7 +134,7 @@ If existing tests found and recent changes detected:
 
 ---
 
-## Step 5 — Catch Up
+## Step 4 — Catch Up
 
 Identify changed files using the ledger's `last_test_run_commit`:
 - If `last_test_run_commit` is present: run `git diff {last_test_run_commit}..HEAD` to get all files changed since the last run.
@@ -204,11 +194,11 @@ Assess whether the expected behavior is clear from the code, docs, or existing t
 
 ---
 
-## Step 6 — Full Scan
+## Step 5 — Full Scan
 
 ### Coverage check
 
-Run the project's coverage tool (detected in Step 2) across the full project. This is always full and current — never partial, never skipped, regardless of ledger state.
+Run the project's coverage tool (detected in Step 1) across the full project. This is always full and current — never partial, never skipped, regardless of ledger state.
 
 ### Priority judgment
 
@@ -276,12 +266,12 @@ For each priority:
 
 ---
 
-## Step 7 — Update ledger
+## Step 6 — Update ledger
 
 After tests are written, run, and committed:
 
 - **Catch Up run**: set `last_test_run_commit` to current HEAD.
-- **Full Scan run**: set both `last_full_scan_commit` and `last_test_run_commit` to current HEAD. Persist all `full_scan_findings` changes from Step 6 (new entries, updated priorities, removed stale entries).
+- **Full Scan run**: set both `last_full_scan_commit` and `last_test_run_commit` to current HEAD. Persist all `full_scan_findings` changes from Step 5 (new entries, updated priorities, removed stale entries).
 - Add new `skipped-by-user` entries for files the user chose to skip in the confirmation step.
 - Add new `ambiguous` entries recorded during the Behavior Clarity Check.
 - Remove or update entries for files resolved this run (test written successfully, or ambiguity clarified).

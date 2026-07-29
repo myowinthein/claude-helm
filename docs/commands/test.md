@@ -57,16 +57,14 @@ Reads `.claude/test-log.json` if it exists. A missing file is not an error — t
 
 The ledger stores:
 - **`findings`** — user decisions: `skipped-by-user` (not re-prompted next run unless the file changes) and `ambiguous` (resurfaces in a future run rather than silently guessing).
-- **`full_scan_findings`** — sub-agent priority judgments from the last Full Scan, keyed by file with a `last_judged_commit`. Used in Step 6 to skip re-running judgment on unchanged files. Kept separate from `findings` because it is scan data, not a user decision.
+- **`full_scan_findings`** — sub-agent priority judgments from the last Full Scan, keyed by file with a `last_judged_commit`. Used in Step 5 to skip re-running judgment on unchanged files. Kept separate from `findings` because it is scan data, not a user decision.
 - **`last_test_run_commit`** and **`last_full_scan_commit`** — for scoping the next run's diff.
 
 ### 3. Assess coverage and recent activity
 
-Uses the same commit-range diff as the Catch Up step to identify recently changed files: `git diff {last_test_run_commit}..HEAD --name-only`, falling back to `HEAD~1..HEAD` or the working tree diff if no ledger commit is stored. Scans for existing test files and estimates gap-in-recent-changes and overall coverage. The branching depends on what it finds.
+Uses the same commit-range diff as the Catch Up step to identify recently changed files: `git diff {last_test_run_commit}..HEAD --name-only`, falling back to `HEAD~1..HEAD` or the working tree diff if no ledger commit is stored. Scans for existing test files and estimates gap-in-recent-changes and overall coverage.
 
-### 4. Choose scope
-
-Three possible scopes, with the recommendation depending on assessment:
+Three possible scopes, with the recommendation depending on what it finds:
 
 - **No tests yet**: Full scan or skip.
 - **Tests exist, no recent changes**: Full scan or skip.
@@ -74,7 +72,7 @@ Three possible scopes, with the recommendation depending on assessment:
 
 For the "tests plus changes" case, the command makes a real recommendation based on gap significance and lists that option first.
 
-### 5. Catch Up path
+### 4. Catch Up path
 
 Identifies changed files using a commit-range diff:
 
@@ -93,7 +91,7 @@ If the expected behavior is clear from the code, docs, or existing tests: write 
 
 If it is ambiguous (undocumented edge case, unclear intended behavior, behavior contradicts docs): stop and ask the user to clarify or skip. If the user clarifies, proceed. If they skip, record the file in the ledger with `status: "ambiguous"` and a short note — never guess and encode a guess as a test.
 
-### 6. Full Scan path
+### 5. Full Scan path
 
 **Coverage check**: runs the project's coverage tool across the full project on every run — never partial, never skipped.
 
@@ -103,7 +101,7 @@ Builds a coverage report grouped into High / Medium / Low priority with file-lev
 
 Applies the **Behavior Clarity Check** before writing each test. Writes tests priority by priority, single-agent and sequential — no parallel writing. If a single priority tier is too large for one agent's context, it is batched sequentially (write a chunk, commit, continue) without any planning or dependency system. Runs the suite and commits per priority with `test({scope}): add missing tests for {priority} priority areas`.
 
-### 7. Update ledger
+### 6. Update ledger
 
 After tests are written, run, and committed:
 
