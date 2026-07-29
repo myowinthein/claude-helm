@@ -42,7 +42,7 @@ Detect the project's language and framework, then scan source files for env var 
 
 Using findings from 2.2 and 2.3:
 
-**Missing from env files:** Keys referenced in source code that do not appear in any env file. These would silently fail or use undefined values at runtime.
+**Missing from env files:** Keys referenced in source code that do not appear in any env file (completely missing, not just missing from some). Keys missing from some but not all env files are covered by the Env sync check. These would silently fail or use undefined values at runtime.
 
 **Never referenced in code:** Keys present in env files that do not appear anywhere in source code. These may be stale or only used at the infrastructure level — flag but do not auto-remove.
 
@@ -226,7 +226,28 @@ AskUserQuestion:
 
 ### Missing from env
 
-Add missing keys to `.env.example` with placeholders. Create `.env.example` if it does not exist.
+Display keys that are completely missing from all env files with their code reference locations:
+
+```
+Keys referenced in code but missing from all env files:
+
+KEY_NAME        src/config.js:14
+KEY_NAME        src/api/client.ts:8
+
+Add these to .env and all relevant env files manually.
+```
+
+Then wait:
+
+AskUserQuestion:
+  question: "Have you finished adding the missing keys to your env files?"
+  header:   "Missing from env"
+  multiSelect: false
+  options:
+    - label: "Done — move to next step"
+      description: "Continue to the next fix category"
+    - label: "Skip"
+      description: "Leave these keys unresolved and move on"
 
 ### Hardcoded values
 
