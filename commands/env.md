@@ -196,7 +196,33 @@ Apply selected categories one at a time.
 
 ### Env sync
 
-Add missing keys with placeholder values. Do not overwrite existing values.
+Process one env file at a time. For each file with missing keys:
+
+1. Display the missing keys with their values from the reference env file:
+
+```
+.env.staging — 3 keys missing
+
+KEY_NAME       exists in: .env, .env.production    value: abc123
+DB_URL         exists in: .env only                value: postgres://...
+API_SECRET     exists in: .env, .env.production    value: sk-xxx...
+```
+
+2. Let the developer add the keys manually to the file.
+
+3. Ask to proceed:
+
+AskUserQuestion:
+  question: "Have you finished updating .env.staging?"
+  header:   "Env sync"
+  multiSelect: false
+  options:
+    - label: "Done — move to next file"
+      description: "Continue to the next env file with missing keys"
+    - label: "Skip this file"
+      description: "Leave .env.staging as-is and move on"
+
+4. Move to the next file. Do not recheck or validate what was added.
 
 ### Missing from env
 
