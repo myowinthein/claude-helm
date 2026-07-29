@@ -22,6 +22,8 @@ Current branch is {branch}. Please switch and re-run."
 
 Read-only. Do not modify anything in this step.
 
+Scan all env files and source files completely before proceeding. Never stop early — a partial scan produces an incomplete report and missed findings will silently persist.
+
 ### 2.1 — Detect env files
 
 Find all `.env*` files in the project. For each file found, infer its purpose from the filename and context. If purpose cannot be determined, label as unknown.
@@ -182,9 +184,10 @@ AskUserQuestion:
     - label: "Cleanup"
       description: "Formatting and grouping fixes for env files and .gitignore"
 
-Never referenced and Secret/placeholder issues are always reported but never auto-fixed:
+Secret/placeholder and Never referenced are not in the multi-select above — they have dedicated flows:
+- Secret cleanup (.env.example): handled in Step 4 if findings exist — ask before replacing
+- Placeholder cleanup (other env files): handled in Step 4 if findings exist — dev fills in manually, then marks done
 - Never referenced: flagged for manual review — do not auto-remove, as they may be infrastructure-only
-- Secret/placeholder issues: warn the user to act manually — do not modify values
 
 Wait for response before proceeding.
 
@@ -192,7 +195,74 @@ Wait for response before proceeding.
 
 ## Step 4 — Apply fixes
 
-Apply selected categories one at a time.
+Apply selected categories one at a time. Complete each section fully before moving to the next. Never mark the command done if a section was only partially applied — partial fixes leave the project in an inconsistent state.
+
+### Secret cleanup (.env.example)
+
+Only run this section if real secrets were found in `.env.example`.
+
+Display the flagged keys with their planned replacement:
+
+```
+.env.example — real secrets found. Planned replacements:
+
+KEY_NAME        sk-a...xyz9    →  <YOUR_KEY_NAME>
+GITHUB_TOKEN    ghp_A...B3k    →  <YOUR_GITHUB_TOKEN>
+```
+
+Then ask:
+
+AskUserQuestion:
+  question: "Replace real secrets in .env.example with placeholders?"
+  header:   "Secret cleanup"
+  multiSelect: false
+  options:
+    - label: "Replace all"
+      description: "Replace all {N} flagged values with the placeholders shown above"
+    - label: "Skip"
+      description: "Leave .env.example unchanged — handle manually"
+
+If Replace all selected: replace each flagged key's value with `<YOUR_{KEY_NAME}>`.
+If user selects Other and types instructions: follow their instructions exactly. Apply only what was explicitly requested.
+If Skip selected: note in Step 6 report under manual action.
+
+Do not touch values in any other env file during this section.
+
+### Placeholder cleanup (other env files)
+
+Only run this section if placeholders were found in non-example env files.
+
+Display findings grouped by file:
+
+```
+Other env files — placeholders found (should be real values):
+
+.env
+  KEY_NAME        your-key-here
+  DB_PASSWORD     <YOUR_DB_PASSWORD>
+
+.env.staging
+  API_SECRET      REPLACE_ME
+  KEY_NAME        your-key-here
+
+Fill in the real values in each file, then mark done.
+```
+
+Then ask:
+
+AskUserQuestion:
+  question: "Have you filled in the placeholder values?"
+  header:   "Placeholders"
+  multiSelect: false
+  options:
+    - label: "Done — move to next step"
+      description: "Continue to the next fix category"
+    - label: "Skip"
+      description: "Leave these placeholders as-is and move on"
+
+Do not recheck or validate what was filled in.
+
+---
 
 ### Env sync
 
@@ -251,23 +321,42 @@ AskUserQuestion:
 
 ### Hardcoded values
 
-Ask for confirmation before touching each finding:
+Display all findings:
+
+```
+Hardcoded values found — should be moved to env vars:
+
+[High] src/api/stripe.js:23
+  Value: pk_live_A...xyz (redacted)
+  Suggested env var: STRIPE_PUBLISHABLE_KEY
+
+[Medium] src/config.js:5
+  Value: https://api.production.com
+  Suggested env var: API_BASE_URL
+```
+
+Then ask:
 
 AskUserQuestion:
-  question: "Replace hardcoded value in {file}:{line} with env var {SUGGESTED_NAME}?"
-  header:   "Hardcoded value"
+  question: "Move hardcoded values to env vars?"
+  header:   "Hardcoded values"
   multiSelect: false
   options:
-    - label: "Replace"
-      description: "Substitute with the appropriate env var access pattern for this stack"
+    - label: "Replace all"
+      description: "Substitute in source + add to all env files using the suggested names above"
     - label: "Skip"
-      description: "Leave this value as-is"
+      description: "Leave all hardcoded values as-is"
 
-If Replace selected:
-- Replace the hardcoded value in source code
-- Add the key with the original value to `.env` if absent
-- Add the key with a placeholder to `.env.example` and all other env files if absent
-- Inform the user which files were updated and that real values need to be filled in per environment
+If Replace all selected:
+- If there are more than 10 findings, process one source file at a time and commit after each file before moving to the next.
+- For each finding:
+  - Replace the hardcoded value in source with the env var access pattern for the detected stack
+  - Add the key + real value to `.env` and all other non-example env files if absent
+  - Add the key + placeholder (`<YOUR_{KEY_NAME}>`) to `.env.example` if absent
+- Inform the dev which source files and env files were updated
+
+If user selects Other and types instructions: follow their instructions exactly. Apply only what was explicitly requested.
+If Skip selected: no changes.
 
 ### Never referenced
 
@@ -288,16 +377,67 @@ What would you like to do? You can say things like:
 
 Read the developer's free-text response and act accordingly. Apply only what was explicitly requested.
 
-### Cleanup
+### Cleanup — Env files
 
-For env files: fix formatting, remove duplicate keys (keep last occurrence), add category groupings if absent. Preserve existing group order — do not reorder entries within a group.
-
-For `.gitignore`: fix formatting, remove duplicates, add missing stack-appropriate entries, remove overly broad or harmful entries, add category groupings if absent. Preserve existing group order.
-
-For tracked files matching gitignore patterns, ask for confirmation before untracking:
+Only run this section if env formatting issues were found.
 
 AskUserQuestion:
-  question: "{file} is tracked by git but matches a .gitignore pattern. Untrack it with git rm --cached?"
+  question: "Fix formatting across all env files?"
+  header:   "Env formatting"
+  multiSelect: false
+  options:
+    - label: "Proceed"
+      description: "Fix formatting, remove duplicates, and add category groupings consistently across all env files"
+    - label: "Skip"
+      description: "Leave env file formatting as-is"
+
+If Proceed selected:
+- Apply consistent formatting rules across all env files: spacing around `=`, line endings, no trailing whitespace
+- Remove duplicate keys (keep last occurrence) in each file
+- Add category groupings if absent — use the same grouping structure across all env files
+- Preserve existing group order — do not reorder entries within a group
+
+If Skip selected: no changes to env files.
+
+### Cleanup — Gitignore: Missing entries
+
+Only run this section if missing entries were found in Step 2.8.
+
+Display all missing entries with a reason:
+
+```
+Missing .gitignore entries (stack: Node.js):
+
+node_modules/    dependency directory — never committed
+.env.local       local override file — contains machine-specific values
+dist/            build output — regenerated on every build
+```
+
+Then ask:
+
+AskUserQuestion:
+  question: "Add missing entries to .gitignore?"
+  header:   "Missing entries"
+  multiSelect: false
+  options:
+    - label: "Add all"
+      description: "Add all {N} missing entries to .gitignore"
+    - label: "Skip"
+      description: "Leave .gitignore unchanged"
+
+If Add all selected: add all entries to .gitignore, then proceed immediately to tracked files check below.
+If Skip selected: skip to next section.
+
+### Cleanup — Gitignore: Tracked files
+
+Run this section in two cases:
+- Automatically after Missing entries if new entries were added — check for tracked files matching those new patterns
+- If pre-existing tracked files were found in Step 2.8 — handle those too
+
+For each tracked file, ask:
+
+AskUserQuestion:
+  question: "{file} is tracked by git but matches a .gitignore pattern. Untrack it?"
   header:   "Untrack file"
   multiSelect: false
   options:
@@ -308,6 +448,55 @@ AskUserQuestion:
 
 If Untrack selected → run `git rm --cached {file}`.
 If Skip selected → note it in the Step 6 report under manual action.
+
+### Cleanup — Gitignore: Entries to remove
+
+Only run this section if overly broad or harmful entries were found in Step 2.8.
+
+Display all entries to remove with a reason:
+
+```
+Entries that should not be ignored:
+
+*.js             overly broad — would exclude source files
+config/          matches committed application code — likely added by mistake
+```
+
+Then ask:
+
+AskUserQuestion:
+  question: "Remove these entries from .gitignore?"
+  header:   "Entries to remove"
+  multiSelect: false
+  options:
+    - label: "Remove all"
+      description: "Remove all {N} flagged entries from .gitignore"
+    - label: "Skip"
+      description: "Leave .gitignore unchanged"
+
+If Remove all selected: remove all flagged entries from .gitignore.
+If Skip selected: no changes.
+
+### Cleanup — Gitignore: Formatting
+
+Only run this section if formatting issues were found in Step 2.8.
+
+AskUserQuestion:
+  question: "Fix .gitignore formatting?"
+  header:   "Gitignore formatting"
+  multiSelect: false
+  options:
+    - label: "Proceed"
+      description: "Fix formatting, remove duplicate entries, and add category groupings"
+    - label: "Skip"
+      description: "Leave .gitignore formatting as-is"
+
+If Proceed selected:
+- Fix formatting and remove duplicate entries
+- Add category groupings if absent
+- Preserve existing group order — do not reorder entries within a group
+
+If Skip selected: no changes.
 
 ---
 
@@ -338,15 +527,17 @@ Report:
 ```
 ENV COMPLETE
 ─────────────────────────────────
+Secret cleanup:   .env.example — {N} replaced, {N} skipped
+Placeholder:      {N} keys flagged across {N} files — done / skipped
 Env sync:         {N} keys added across {N} files
-Missing from env: {N} keys added to .env.example
+Missing from env: {N} keys identified — added manually
 Hardcoded values: {N} replaced, {N} skipped
-Cleanup:          {N} env files cleaned, .gitignore: {N} entries added, {N} removed, {N} duplicates removed, groupings added: yes/no
+Cleanup:          {N} env files fixed, .gitignore: {N} entries added, {N} removed, {N} duplicates removed, groupings added: yes/no
+Tracked files:    {N} untracked, {N} skipped
 ─────────────────────────────────
 Needs manual action:
-- Secret/placeholder issues: {N} flagged — replace real secrets in .env.example with placeholders; fill in real values where placeholders remain in other env files
 - Never referenced: {N} flagged — review and remove if stale
-- Tracked files:  {list} — run git rm --cached to untrack
+- Tracked files skipped: {list} — run git rm --cached to untrack manually
 ─────────────────────────────────
 Committed: yes / no
 ```
