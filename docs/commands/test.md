@@ -64,13 +64,14 @@ The ledger stores:
 
 Uses the same commit-range diff as the Catch Up step to identify recently changed files: `git diff {last_test_run_commit}..HEAD --name-only`, falling back to `HEAD~1..HEAD` or the working tree diff if no ledger commit is stored. Scans for existing test files and estimates gap-in-recent-changes and overall coverage.
 
-Three possible scopes, with the recommendation depending on what it finds:
+Four scenarios, with the recommendation depending on what it finds:
 
 - **No tests yet**: Full scan or skip.
-- **Tests exist, no recent changes**: Full scan or skip.
-- **Tests exist plus recent changes**: Catch Up, Full, or skip.
+- **Tests exist, full scan never run**: Full scan recommended — coverage gaps may exist that catch-up never touched.
+- **Tests exist, full scan done, no changes since last run**: exits cleanly with "tests are up to date." No prompt shown.
+- **Tests exist plus recent changes**: Catch Up, Full, or skip — recommendation based on gap significance.
 
-For the "tests plus changes" case, the command makes a real recommendation based on gap significance and lists that option first.
+The clean exit in scenario 3 is the key distinction: if nothing has changed and a full scan was already done, there is nothing for the developer to act on.
 
 ### 4. Catch Up path
 
@@ -116,6 +117,7 @@ Commits the ledger with `test(log): update test ledger after {catch-up / full-sc
 ## Stop conditions
 
 - **No framework, user skips setup.** Configure a framework and re-run.
+- **No changes since last run and full scan already done.** Exits cleanly — tests are up to date.
 - **User cancels at the test plan.** No tests written.
 - **No priorities or no scope selected.** Clean exit.
 - **Written tests fail.** The command stops before committing and waits for the user to fix the failure.

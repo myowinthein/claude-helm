@@ -76,13 +76,11 @@ Check recent git activity and existing test coverage:
 - Estimate coverage gaps in recently changed code
 - Estimate overall project test coverage
 
-Based on current state, determine which options are valid:
+Based on current state, pick one of four scenarios:
 
-Use AskUserQuestion (single-select) based on current state:
-
-If no existing tests found:
+**Scenario 1 — No existing tests found:**
   AskUserQuestion:
-    question: "{one sentence, e.g. 'No existing tests found — a full scan is recommended.'}"
+    question: "No existing tests found — a full scan is recommended."
     header:   "Test scope"
     multiSelect: false
     options:
@@ -91,18 +89,23 @@ If no existing tests found:
       - label: "Skip"
         description: "No tests needed"
 
-If existing tests found but no recent changes:
+**Scenario 2 — Tests exist, full scan was never run (`last_full_scan_commit` absent):**
   AskUserQuestion:
-    question: "{one sentence describing coverage status and recommendation}"
+    question: "Tests exist but a full scan has never been run — coverage gaps may exist."
     header:   "Test scope"
     multiSelect: false
     options:
       - label: "Full scan (Recommended)"
-        description: "Scan entire project for missing tests"
+        description: "Scan entire project for pre-existing coverage gaps"
       - label: "Skip"
         description: "No tests needed"
 
-If existing tests found and recent changes detected:
+**Scenario 3 — Tests exist, full scan done, no changes since last run:**
+  Exit cleanly. Inform the user:
+  "No changes since last run — tests are up to date."
+  Do not present any AskUserQuestion.
+
+**Scenario 4 — Tests exist and recent changes detected:**
   Form recommendation (Catch Up or Full) based on gap significance.
   Put recommended option first.
 
