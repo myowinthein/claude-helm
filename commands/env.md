@@ -269,6 +269,25 @@ If Replace selected:
 - Add the key with a placeholder to `.env.example` and all other env files if absent
 - Inform the user which files were updated and that real values need to be filled in per environment
 
+### Never referenced
+
+Display keys that exist in env files but are never referenced in source code, grouped by file, with a note on whether each looks infrastructure-only or stale:
+
+```
+Keys in env files with no code reference:
+
+KEY_NAME        .env, .env.staging     (looks infrastructure-only)
+OLD_API_KEY     .env                   (looks stale — similar to STRIPE_API_KEY)
+DEBUG_TOKEN     .env.staging           (looks stale)
+
+What would you like to do? You can say things like:
+- "delete OLD_API_KEY and DEBUG_TOKEN, keep KEY_NAME"
+- "replace config/database.js line 12 with KEY_NAME"
+- "delete all" / "keep all"
+```
+
+Read the developer's free-text response and act accordingly. Apply only what was explicitly requested.
+
 ### Cleanup
 
 For env files: fix formatting, remove duplicate keys (keep last occurrence), add category groupings if absent. Preserve existing group order — do not reorder entries within a group.
