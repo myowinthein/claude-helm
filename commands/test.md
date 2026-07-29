@@ -9,7 +9,7 @@ description: Detect test framework and write missing tests for recent changes or
 Scan for test framework configuration files and dependencies.
 Also detect the project's coverage tool (coverage.py, nyc, jest --coverage, etc.) — record it for use in Step 5.
 
-If framework detected → proceed to Step 3.
+If framework detected → proceed to Step 2.
 
 If no framework detected, use AskUserQuestion:
   AskUserQuestion:
@@ -28,7 +28,7 @@ If no framework detected, use AskUserQuestion:
 
 If Skip selected → exit and inform user:
   "Configure a test framework and re-run /test."
-If framework selected → inform user how to install, then proceed to Step 3.
+If framework selected → inform user how to install, then proceed to Step 2.
 
 ---
 
