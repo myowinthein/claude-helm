@@ -80,7 +80,7 @@ Question and labels adapt to the detected state:
 
 ### 5. Execute
 
-**Copy or Update**: ensures `.claude/rules/` exists, then writes `git.md` and `safety.md` from the installed plugin source. Each file gets a leading `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker so a future `/helm:adopt` run can detect them as helm-managed. When switching from reference mode, the helm reference lines are also removed from `CLAUDE.md`; if the `## Rules` section becomes empty, the heading is removed too.
+**Copy or Update**: ensures `.claude/rules/` exists, then writes `git.md` and `safety.md` from the installed plugin source. Each file gets a leading `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker so a future `/helm:adopt` run can detect them as helm-managed. It also points `CLAUDE.md` at the copied files — a `## Rules` section listing the local `.claude/rules/` paths with an instruction to read and follow them each session — so the rules load as context rather than relying on implicit auto-loading. When switching from reference mode, the marketplace-path reference lines are replaced with the local paths rather than removed.
 
 **Conflict / Review per file**: for each foreign file, asks Overwrite, Skip, or Show diff. Showing the diff loops back to the same prompt so the user can pick after seeing the changes.
 

@@ -131,7 +131,18 @@ Wait for response.
   - Read the source from `~/.claude/plugins/marketplaces/claude-helm/rules/{name}`.
   - Prepend a marker line: `<!-- helm-rule: claude-helm@v{current_version} -->`
   - Write to `.claude/rules/{name}`.
-- If switching from reference mode (REFERENCED → copy): also remove the helm reference lines from CLAUDE.md. If the `## Rules` section becomes empty after removal, remove the section heading too.
+- Point CLAUDE.md at the copied rules so they load as context — detect or create a `## Rules` section listing the local paths:
+  ```
+  ## Rules
+
+  This project follows the rules shipped in claude-helm:
+  - .claude/rules/git.md
+  - .claude/rules/safety.md
+
+  At the start of every session, read the rule files above and follow them.
+  ```
+  If a `## Rules` section already lists these local paths, leave it as-is. If CLAUDE.md does not exist, create it with just this section.
+- If switching from reference mode (REFERENCED → copy): replace the marketplace-path reference lines with the local paths above — keep the `## Rules` section, now pointing at the copied files.
 - For the CONFLICT/Review path: for each Foreign file, use AskUserQuestion with options: Overwrite, Skip, Show diff. Loop the prompt after Show diff so the user can still pick Overwrite or Skip.
 
 ### Reference path
@@ -192,6 +203,7 @@ For Copy/Update:
 ADOPT COMPLETE
 - git.md    {written / updated / skipped} → .claude/rules/git.md (v{current_version})
 - safety.md {written / updated / skipped} → .claude/rules/safety.md (v{current_version})
+- CLAUDE.md ## Rules section points at the copied files
 ```
 
 For Reference:
