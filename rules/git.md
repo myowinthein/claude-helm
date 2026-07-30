@@ -13,6 +13,7 @@ When active:
 - Commit directly to main — no feature branches required
 - No PR required
 - Skip Branch Naming and GitHub Flow sections entirely
+- Environment Branches rules still apply if such branches exist
 - All Universal Rules still apply
 - Conventional Commits still apply
 - Code quality checks still apply before pushing
@@ -70,6 +71,7 @@ All commits must follow this format:
 - feat — new feature
 - fix — bug fix
 - refactor — code change, no feature or fix
+- revert — reverts a previous commit
 - test — adding or updating tests
 - docs — documentation only
 - chore — maintenance, dependencies, tooling

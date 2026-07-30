@@ -30,6 +30,7 @@ Activate by declaring `git-strategy: solo` in `CLAUDE.md`. When active:
 - Commit directly to `main`. No feature branches required.
 - No PR required.
 - Skip Branch Naming and GitHub Flow sections entirely.
+- Environment Branches rules still apply if such branches exist.
 - Universal Rules still apply.
 - Conventional Commits still apply.
 - Code quality checks still run before every push.
@@ -85,7 +86,7 @@ type(scope): description
 [optional footer]
 ```
 
-**Types**: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `style`, `perf`, `ci`, `build`.
+**Types**: `feat`, `fix`, `refactor`, `revert`, `test`, `docs`, `chore`, `style`, `perf`, `ci`, `build`.
 
 **Scope**: required. The module, feature, or domain area touched.
 
