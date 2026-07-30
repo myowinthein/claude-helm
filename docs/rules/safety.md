@@ -15,8 +15,9 @@ Loaded as context so that any agent acting in the project respects the same oper
 These actions always require explicit confirmation, regardless of context or autonomy level:
 
 - `git push`, force-push, tag creation.
+- Publishing packages or cutting public releases (`npm publish`, registry uploads, `gh release create`).
 - Any deployment command.
-- Migrations, database imports, database resets.
+- Migrations, seeders, database imports, database resets.
 - Infrastructure changes, DNS changes, secret rotation.
 - Destructive operations: resets, drops, clears, environment recreation.
 

@@ -6,8 +6,9 @@ Loaded as context so agents respect the same operational guardrails throughout t
 
 These actions always require explicit confirmation regardless of context:
 - git push, force-push, tag creation
+- publishing packages or cutting public releases (npm publish, registry uploads, gh release create)
 - any deployment command
-- migrations, database imports, database resets
+- migrations, seeders, database imports, database resets
 - infrastructure changes, DNS changes, secret rotation
 - destructive operations (resets, drops, clears, environment recreation)
 
