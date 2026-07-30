@@ -154,6 +154,26 @@ Wait for response.
 
 ## Step 4 — Execute
 
+### Updating CLAUDE.md's `## Rules` section
+
+The Copy or Update and Reference paths both update CLAUDE.md the same way — only the snippet content differs. Wherever a path says "update the `## Rules` section with {snippet}", do this:
+
+- Detect the helm entries in any existing `## Rules` section (lines pointing at `.claude/rules/` or the marketplaces path) and set them to the snippet's entries. Preserve any user-authored entries — add or replace only the helm entries. Create a new `## Rules` section only if none exists — never add a second `## Rules` heading.
+- If CLAUDE.md exists: write silently — the install mode was already chosen in Step 3.
+- If CLAUDE.md does not exist: ask before creating it:
+
+  AskUserQuestion:
+    question: "CLAUDE.md does not exist. Create it with just the helm rules section?"
+    header:   "Create CLAUDE.md"
+    multiSelect: false
+    options:
+      - label: "Create CLAUDE.md (Recommended)"
+        description: "Creates a minimal CLAUDE.md containing only the ## Rules section."
+      - label: "Skip"
+        description: "Print the snippet to chat instead so you can place it manually."
+
+  On Create, write a new CLAUDE.md containing just the section. On Skip, print the snippet to chat.
+
 ### Copy or Update path
 
 - Create `.claude/rules/` if it does not exist.
@@ -161,7 +181,7 @@ Wait for response.
   - Read the source from `~/.claude/plugins/marketplaces/claude-helm/rules/{name}`.
   - Prepend a marker line: `<!-- helm-rule: claude-helm@v{current_version} -->`
   - Write to `.claude/rules/{name}`.
-- Point CLAUDE.md at the copied rules so they load as context. Detect the helm entries in any `## Rules` section — lines pointing at `.claude/rules/` or the marketplaces path — and set them to the local paths below, replacing any marketplace-path or stale entries rather than appending alongside them. If a `## Rules` section already exists (even a user-authored one), add or replace only the helm entries and preserve the user's other entries; create a new `## Rules` section only if none exists — never add a second `## Rules` heading:
+- Update CLAUDE.md's `## Rules` section (see *Updating CLAUDE.md's `## Rules` section* above) with this snippet, so the copied rules load as context:
   ```
   ## Rules
 
@@ -169,9 +189,8 @@ Wait for response.
   - .claude/rules/git.md
   - .claude/rules/safety.md
 
-  At the start of every session, read the rule files above and follow them.
+  At the start of every session, read the rule files at the paths above and follow them.
   ```
-  If CLAUDE.md does not exist, create it with just this section.
 
 ### Review per file path
 
@@ -182,44 +201,18 @@ Wait for response.
 
 - If Helm-marked local files exist at `.claude/rules/{name}` (switching from copy/update), delete them so the next scan classifies as REFERENCED, not UPDATE. Leave Foreign (unmarked) files untouched — the CONFLICT → reference path points CLAUDE.md at the plugin without removing user-authored files.
 - Use the marketplaces install path: `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`.
-- If `CLAUDE.md` exists:
-  - Detect the helm entries in any `## Rules` section — lines pointing at `.claude/rules/` or the marketplaces path — and set them to the marketplace paths below, replacing any local-path entries left by copy mode rather than appending alongside them. If a `## Rules` section already exists (even a user-authored one), add or replace only the helm entries and preserve the user's other entries; create a new `## Rules` section only if none exists — never add a second `## Rules` heading.
-    ```
-    ## Rules
+- Update CLAUDE.md's `## Rules` section (see *Updating CLAUDE.md's `## Rules` section* above) with this snippet:
+  ```
+  ## Rules
 
-    This project follows the rules shipped in claude-helm:
-    - ~/.claude/plugins/marketplaces/claude-helm/rules/git.md
-    - ~/.claude/plugins/marketplaces/claude-helm/rules/safety.md
+  This project follows the rules shipped in claude-helm:
+  - ~/.claude/plugins/marketplaces/claude-helm/rules/git.md
+  - ~/.claude/plugins/marketplaces/claude-helm/rules/safety.md
 
-    At the start of every session, read the rule files at the paths above and follow them.
-    If either path is missing, inform the user: "helm rules are referenced in CLAUDE.md but the
-    plugin is not installed on this machine. Install it with: /plugin install helm@claude-helm"
-    ```
-  - Ask for confirmation before writing.
-- If `CLAUDE.md` does not exist:
-  - Ask for confirmation before creating it:
-    AskUserQuestion:
-      question: "CLAUDE.md does not exist. Create it with just the helm rule references?"
-      header:   "Create CLAUDE.md"
-      multiSelect: false
-      options:
-        - label: "Create CLAUDE.md (Recommended)"
-          description: "Creates a minimal CLAUDE.md containing only the helm rules section."
-        - label: "Skip"
-          description: "Print the snippet to chat instead so you can place it manually."
-  - If Create: write a new `CLAUDE.md` containing only the rules snippet:
-    ```
-    ## Rules
-
-    This project follows the rules shipped in claude-helm:
-    - ~/.claude/plugins/marketplaces/claude-helm/rules/git.md
-    - ~/.claude/plugins/marketplaces/claude-helm/rules/safety.md
-
-    At the start of every session, read the rule files at the paths above and follow them.
-    If either path is missing, inform the user: "helm rules are referenced in CLAUDE.md but the
-    plugin is not installed on this machine. Install it with: /plugin install helm@claude-helm"
-    ```
-  - If Skip: print the snippet to the chat so the user can place it manually.
+  At the start of every session, read the rule files at the paths above and follow them.
+  If either path is missing, inform the user: "helm rules are referenced in CLAUDE.md but the
+  plugin is not installed on this machine. Install it with: /plugin install helm@claude-helm"
+  ```
 
 ### No-change path
 
