@@ -157,7 +157,7 @@ Wait for response.
 
     At the start of every session, read the rule files at the paths above and follow them.
     If either path is missing, inform the user: "helm rules are referenced in CLAUDE.md but the
-    plugin is not installed on this machine. Install it with: /plugin install claude-helm"
+    plugin is not installed on this machine. Install it with: /plugin install helm@claude-helm"
     ```
   - Ask for confirmation before writing.
 - If `CLAUDE.md` does not exist:
@@ -181,7 +181,7 @@ Wait for response.
 
     At the start of every session, read the rule files at the paths above and follow them.
     If either path is missing, inform the user: "helm rules are referenced in CLAUDE.md but the
-    plugin is not installed on this machine. Install it with: /plugin install claude-helm"
+    plugin is not installed on this machine. Install it with: /plugin install helm@claude-helm"
     ```
   - If Skip: print the snippet to the chat so the user can place it manually.
 
