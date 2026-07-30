@@ -145,6 +145,7 @@ Wait for response.
 
 ### Reference path
 
+- If Helm-marked local files exist at `.claude/rules/{name}` (switching from copy/update), delete them so the next scan classifies as REFERENCED, not UPDATE. Leave Foreign (unmarked) files untouched — the CONFLICT → reference path points CLAUDE.md at the plugin without removing user-authored files.
 - Use the marketplaces install path: `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`.
 - If `CLAUDE.md` exists:
   - Detect an existing helm `## Rules` section — entries pointing at `.claude/rules/` or the marketplaces path — and set its entries to the marketplace paths below; create the section if absent. This replaces any local-path entries left by copy mode rather than appending alongside them.
