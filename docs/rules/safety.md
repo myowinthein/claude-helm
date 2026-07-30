@@ -25,7 +25,7 @@ Projects can extend the list, never shrink it.
 
 ## When to run a safety scan
 
-Run at project bootstrap, and update when deployment, infrastructure, or environment configuration changes.
+Run at project bootstrap, and re-run whenever the operational risk surface changes — when anything in the Scan Targets or Risk Categories below is added, removed, or reconfigured (e.g. a new production remote, a new background job, a new credential location).
 
 `/helm:log` Full scan mode may surface and propose safety findings for CLAUDE.md's Hard Safety Rules section, but it does not run this scan or write `.claude/rules` automatically — findings are proposed, never auto-written.
 
