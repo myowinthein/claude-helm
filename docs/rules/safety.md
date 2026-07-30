@@ -30,6 +30,8 @@ Run at project bootstrap, and update when deployment, infrastructure, or environ
 
 Only document risks supported by evidence in the repository. No assumptions, no speculation.
 
+**Output:** Documented findings — the Risk/Instruction pairs, environment classifications, and any project-specific boundary additions — go into `.claude/rules/safety.local.md`, a project-owned file adopt never overwrites (its scan only manages `git.md` and `safety.md`), so findings survive plugin updates. CLAUDE.md's `## Hard Safety Rules` section keeps only a brief never-do summary and links to `safety.local.md` for the detail.
+
 ## Scan Targets
 
 Bootstrap scan looks at:

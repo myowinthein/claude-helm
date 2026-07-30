@@ -24,6 +24,13 @@ Hard Safety Rules section, but it does not run this scan or write
 
 Only document risks supported by evidence in the repository — not assumptions.
 
+**Output:** Write documented findings — the Risk/Instruction pairs, environment
+classifications, and any project-specific boundary additions — into
+`.claude/rules/safety.local.md`, a project-owned file adopt never overwrites so
+findings survive plugin updates. Keep only a brief never-do summary in
+CLAUDE.md's `## Hard Safety Rules` section, and link it to `safety.local.md` for
+the detail.
+
 ## Scan Targets
 
 Review for operational risks:
