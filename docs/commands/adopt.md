@@ -14,11 +14,11 @@ Unlike the workflow commands, `/helm:adopt` configures how helm relates to a pro
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:adopt]) --> Sanity{Directory<br/>looks like<br/>a project?}
-  Sanity -->|no| AskContinue[Ask: continue or cancel?]
+  Start([User runs /helm:adopt]) --> Sanity{Directory state?}
+  Sanity -->|non-empty, no project markers| AskContinue[Ask: continue or cancel?]
   AskContinue -->|cancel| Cancel[/Exit: no changes/]
   AskContinue -->|continue| Scan
-  Sanity -->|yes| Scan
+  Sanity -->|project markers, or empty| Scan
 
   Scan[Scan .claude/rules/ and CLAUDE.md<br/>read helm-rule markers and references<br/>resolve installed helm version] --> State{Existing<br/>state?}
 
@@ -52,7 +52,7 @@ flowchart TD
 
 ### 1. Sanity check
 
-Looks for `.git/`, `CLAUDE.md`, or a recognised manifest (`package.json`, `composer.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`). If the directory doesn't look like a project, prompts the user to confirm or cancel.
+Looks for `.git/`, `CLAUDE.md`, or a recognised manifest (`package.json`, `composer.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`). Proceeds when markers are found, and also when the directory is empty (a plausible fresh-project setup with nothing to clobber). Only prompts to confirm or cancel when the directory is non-empty but has no project markers — the case that suggests a wrong directory.
 
 ### 2. Scan existing rules
 
@@ -94,7 +94,7 @@ Final summary line per file describing what was written, updated, skipped, or re
 
 ## Stop conditions
 
-- **Directory does not look like a project and user cancels.**
+- **Directory is non-empty without project markers and user cancels.**
 - **User picks Cancel at any of the install-mode prompts.**
 - **No `CLAUDE.md` and Reference mode chosen, user declines to create it**: the snippet is printed but nothing is written; user takes over.
 

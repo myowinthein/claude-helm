@@ -8,14 +8,18 @@ Install or update the helm rule files (`git.md`, `safety.md`) into the current p
 
 ## Step 1 — Sanity check
 
-Confirm the current directory looks like a project. Check for any of:
+Check whether the current directory looks like a project — any of:
 - `.git/`
 - `CLAUDE.md`
 - `package.json`, `composer.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`
 
-If none found, use AskUserQuestion:
+Decide based on what is present:
+- **Project markers found** → proceed.
+- **Empty directory** (no project markers and no other files) → proceed silently. This is a plausible fresh-project setup with nothing to clobber.
+- **Non-empty but no project markers** → this is the suspicious case (a populated folder that isn't a project — possibly the wrong directory). Confirm before writing:
+
   AskUserQuestion:
-    question: "This directory does not look like a project (no .git, no CLAUDE.md, no recognised manifest). Continue anyway?"
+    question: "This directory has files but does not look like a project (no .git, no CLAUDE.md, no recognised manifest). Continue anyway?"
     header:   "Confirm"
     multiSelect: false
     options:
@@ -24,7 +28,7 @@ If none found, use AskUserQuestion:
       - label: "Cancel"
         description: "Exit without changes"
 
-If Cancel → exit.
+  If Cancel → exit.
 
 ## Step 2 — Scan existing rules
 
