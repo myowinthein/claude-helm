@@ -161,7 +161,7 @@ Wait for response.
   - Read the source from `~/.claude/plugins/marketplaces/claude-helm/rules/{name}`.
   - Prepend a marker line: `<!-- helm-rule: claude-helm@v{current_version} -->`
   - Write to `.claude/rules/{name}`.
-- Point CLAUDE.md at the copied rules so they load as context. Detect an existing helm `## Rules` section — entries pointing at `.claude/rules/` or the marketplaces path — and set its entries to the local paths below; create the section if absent. This replaces any marketplace-path or stale entries (e.g. left by reference mode) rather than appending alongside them:
+- Point CLAUDE.md at the copied rules so they load as context. Detect the helm entries in any `## Rules` section — lines pointing at `.claude/rules/` or the marketplaces path — and set them to the local paths below, replacing any marketplace-path or stale entries rather than appending alongside them. If a `## Rules` section already exists (even a user-authored one), add or replace only the helm entries and preserve the user's other entries; create a new `## Rules` section only if none exists — never add a second `## Rules` heading:
   ```
   ## Rules
 
@@ -183,7 +183,7 @@ Wait for response.
 - If Helm-marked local files exist at `.claude/rules/{name}` (switching from copy/update), delete them so the next scan classifies as REFERENCED, not UPDATE. Leave Foreign (unmarked) files untouched — the CONFLICT → reference path points CLAUDE.md at the plugin without removing user-authored files.
 - Use the marketplaces install path: `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`.
 - If `CLAUDE.md` exists:
-  - Detect an existing helm `## Rules` section — entries pointing at `.claude/rules/` or the marketplaces path — and set its entries to the marketplace paths below; create the section if absent. This replaces any local-path entries left by copy mode rather than appending alongside them.
+  - Detect the helm entries in any `## Rules` section — lines pointing at `.claude/rules/` or the marketplaces path — and set them to the marketplace paths below, replacing any local-path entries left by copy mode rather than appending alongside them. If a `## Rules` section already exists (even a user-authored one), add or replace only the helm entries and preserve the user's other entries; create a new `## Rules` section only if none exists — never add a second `## Rules` heading.
     ```
     ## Rules
 
