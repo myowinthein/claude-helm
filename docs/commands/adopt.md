@@ -43,7 +43,7 @@ flowchart TD
 
   Copy[Copy from plugin install path<br/>prepend helm-rule version marker<br/>write to .claude/rules/] --> Done
   PerFile --> Done
-  Reference[Append a Rules section to CLAUDE.md<br/>with absolute plugin paths<br/>or print the snippet for paste] --> Done
+  Reference[Set the Rules section in CLAUDE.md<br/>to absolute plugin paths<br/>or print the snippet for paste] --> Done
 
   Done([Report: what landed where])
 ```
@@ -84,7 +84,7 @@ Question and labels adapt to the detected state:
 
 **Conflict / Review per file**: for each foreign file, asks Overwrite, Skip, or Show diff. Showing the diff loops back to the same prompt so the user can pick after seeing the changes.
 
-**Reference**: appends a `## Rules` section to `CLAUDE.md` pointing at `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`. The snippet instructs the agent to read and follow those rule files at the start of every session (and to warn if the plugin is not installed) — so cross-references between the rules resolve the same way they would in copy mode. If `CLAUDE.md` does not exist, the command offers to create it first (recommended); if the user declines, it prints the snippet to the chat for manual placement.
+**Reference**: sets the `## Rules` section in `CLAUDE.md` to point at `~/.claude/plugins/marketplaces/claude-helm/rules/` — replacing any local-path entries left by copy mode rather than appending alongside them. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`. The snippet instructs the agent to read and follow those rule files at the start of every session (and to warn if the plugin is not installed) — so cross-references between the rules resolve the same way they would in copy mode. If `CLAUDE.md` does not exist, the command offers to create it first (recommended); if the user declines, it prints the snippet to the chat for manual placement.
 
 ### 6. Report
 

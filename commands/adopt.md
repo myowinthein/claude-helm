@@ -6,17 +6,7 @@ description: Install or update helm rule files (git.md, safety.md) into the curr
 
 Install or update the helm rule files (`git.md`, `safety.md`) into the current project. Setup helper, not a workflow command.
 
-## Step 1 — Branch check
-
-Only proceed if on `main` or `master`.
-If on any other branch, stop and inform the user:
-
-"adopt must be run on main or master.
-Current branch is {branch}. Please switch and re-run."
-
----
-
-## Step 2 — Sanity check
+## Step 1 — Sanity check
 
 Confirm the current directory looks like a project. Check for any of:
 - `.git/`
@@ -36,7 +26,7 @@ If none found, use AskUserQuestion:
 
 If Cancel → exit.
 
-## Step 3 — Scan existing rules
+## Step 2 — Scan existing rules
 
 For each of `.claude/rules/git.md` and `.claude/rules/safety.md`, record one of:
 - **Absent** — file does not exist and not referenced in CLAUDE.md
@@ -54,7 +44,7 @@ Compute the overall state:
 
 Read the currently installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json`. Record as `current_version`.
 
-## Step 4 — Show the scan summary
+## Step 3 — Show the scan summary
 
 Display:
 
@@ -64,7 +54,7 @@ Display:
 Installed helm version:  v{current_version}
 ```
 
-## Step 5 — Choose install mode
+## Step 4 — Choose install mode
 
 Choose the question and labels based on state.
 
@@ -77,7 +67,7 @@ If state = REFERENCED:
       - label: "Keep references (no change)"
         description: "References point to the marketplaces path and stay current after /plugin update."
       - label: "Switch to copy mode"
-        description: "Copy versioned rule files into .claude/rules/ and remove the CLAUDE.md references."
+        description: "Copy versioned rule files into .claude/rules/ and repoint the CLAUDE.md references at them."
       - label: "Cancel"
         description: "Exit without changes."
 
@@ -122,7 +112,7 @@ If state = CONFLICT:
 
 Wait for response.
 
-## Step 6 — Execute
+## Step 5 — Execute
 
 ### Copy or Update path
 
@@ -149,8 +139,7 @@ Wait for response.
 
 - Use the marketplaces install path: `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`.
 - If `CLAUDE.md` exists:
-  - Detect or create a `## Rules` section.
-  - Append a list of absolute paths:
+  - Detect an existing helm `## Rules` section — entries pointing at `.claude/rules/` or the marketplaces path — and set its entries to the marketplace paths below; create the section if absent. This replaces any local-path entries left by copy mode rather than appending alongside them.
     ```
     ## Rules
 
@@ -192,7 +181,7 @@ Wait for response.
 
 - Exit silently. No files written.
 
-## Step 7 — Report
+## Step 6 — Report
 
 For Copy/Update, verify the written files before reporting: read `.claude/rules/git.md` and `.claude/rules/safety.md` and confirm each file exists and contains the `<!-- helm-rule: claude-helm@v{current_version} -->` marker. If a file is missing or the marker is absent, report the error instead of ADOPT COMPLETE.
 
