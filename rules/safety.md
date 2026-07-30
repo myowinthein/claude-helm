@@ -1,6 +1,6 @@
 # Operational Safety Rules
 
-This file is not procedural — it does not run on every session. It is loaded as context so agents respect the same operational guardrails throughout the project.
+Loaded as context so agents respect the same operational guardrails throughout the project. It is not a checklist to execute top to bottom — the safety scan runs only when triggered (see When to Run a Safety Scan).
 
 ## Agent Execution Boundaries
 

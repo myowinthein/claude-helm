@@ -8,7 +8,7 @@ nav_order: 2
 
 The operational safety reference for a project. Defines which actions always need explicit confirmation, what to scan when bootstrapping a new project, and how to document risk categories so future agents read the same constraints.
 
-The file is not procedural; it does not "run." It is loaded as context so that any agent acting in the project respects the same operational guardrails.
+Loaded as context so that any agent acting in the project respects the same operational guardrails. It is not a checklist to execute top to bottom — the safety scan runs only when triggered (see When to run a safety scan).
 
 ## Agent Execution Boundaries
 
