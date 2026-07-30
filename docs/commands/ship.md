@@ -61,11 +61,11 @@ When the current version is in the `0.x.x` range, the confirmation prompt includ
 
 ### 4. Run code quality checks
 
-Runs the full Code Quality gate before releasing — lint and tests, per git.md. Detects and runs the linter/formatter (fixing errors before proceeding, skipped silently if none configured), then runs the full test suite using the detected framework. Halts on test failure with a clear stop message; skips test validation with a confirmation prompt if no framework is configured.
+Runs the git.md Code Quality gate — lint and tests — before releasing, rather than restating the procedure. Two release-specific overrides: it runs the full test suite (not just changed-file tests), and if no test framework is detected it asks for confirmation to release untested instead of skipping silently. Does not proceed until lint passes and tests are green.
 
 ### 5. Execute release
 
-Only on `main`. Bumps the version in the detected version file (`package.json`, `composer.json`, or `VERSION`), updates any inline version references in the README, commits as `chore(release): bump version to {version}`, creates an annotated tag `v{version}`, and pushes both the commit and tag. For each selected environment branch, merges `main` in with a `--no-ff` deploy commit and pushes.
+Only on `main`. Bumps the version in the detected version file (`package.json`, `composer.json`, or `VERSION`), updates any inline version references in the README, then stages the version file, the README (if changed), and any files the linter/formatter touched in Step 4 — folding formatting changes into the release commit per git.md, never `git add -A`. Commits as `chore(release): bump version to {version}`, creates an annotated tag `v{version}`, and pushes both the commit and tag. For each selected environment branch, merges `main` in with a `--no-ff` deploy commit and pushes.
 
 After pushing, checks whether the remote origin URL contains `github.com`. If not, this sub-step is skipped silently. If yes, asks whether to create a GitHub Release. On confirmation, extracts `feat` and `fix` commits from `git log v{last_tag}..HEAD` and runs `gh release create v{version} --title "v{version}" --notes "{extracted_notes}"`, which publishes a release on GitHub with the curated commit list.
 

@@ -137,20 +137,11 @@ If Conventional Commits not detected:
 
 ## Step 4 — Run code quality checks
 
-Run the full Code Quality gate before releasing (per git.md: lint + tests, regardless of mode).
+Run the git.md Code Quality gate — lint + tests — before releasing. Two release-specific overrides:
+- Run the full test suite, not just changed-file tests — a release warrants it.
+- If no test framework is detected, don't skip silently — ask "No test framework detected — releasing without test validation. Continue?" and wait.
 
-Lint and formatting:
-- Detect the linter/formatter and run it. Fix all errors before proceeding.
-- If no linter is configured, skip silently.
-
-Tests:
-- Run full test suite using detected test framework.
-- If tests fail, stop and inform human:
-  "Tests failed. Fix before releasing."
-  Do not proceed until tests pass.
-- If no test framework detected, inform human:
-  "No test framework detected — releasing without test validation. Continue?"
-  Wait for confirmation before proceeding.
+Do not proceed until lint passes and tests are green.
 
 ---
 
@@ -166,6 +157,7 @@ If found, update to {version}. Skip silently if none found.
 Commit, tag, and push:
 - git add {version_file}
 - git add README.md  (only if README was updated in the step above)
+- git add {any files the Step 4 linter/formatter modified}  (per git.md: fold formatting changes into the last commit; never git add -A)
 - git commit -m "chore(release): bump version to {version}"
 - git tag -a v{version} -m "Release v{version}"
 - git push origin HEAD
