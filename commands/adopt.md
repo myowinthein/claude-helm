@@ -41,9 +41,9 @@ Then classify each of `.claude/rules/git.md` and `.claude/rules/safety.md` as on
 - **Helm-marked** — file exists and starts with `<!-- helm-rule: claude-helm@v{X.Y.Z} -->`; record version
 - **Foreign** — file exists but does not contain the helm marker
 - **Referenced** — file does not exist and a marketplace ref is present
-- **Absent** — file does not exist and no marketplace ref is present (a stray local ref does not block this — Step 5 rewrites it)
+- **Absent** — file does not exist and no marketplace ref is present (a stray local ref does not block this — Step 4 rewrites it)
 
-Classification is driven by the file first; the reference type only disambiguates the file-absent cases (Referenced vs Absent) and is reconciled in Step 5.
+Classification is driven by the file first; the reference type only disambiguates the file-absent cases (Referenced vs Absent) and is reconciled in Step 4.
 
 Read the currently installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json`. Record as `current_version`.
 
@@ -58,9 +58,9 @@ For UPDATE state, compare each Helm-marked file's marker version against `curren
 - **in sync** — every marker version equals `current_version` (nothing to reconcile)
 - **ahead** — any marker version is higher than `current_version` (project is newer than the installed plugin — unusual, e.g. the install was downgraded)
 
-## Step 3 — Show the scan summary
+## Step 3 — Choose install mode
 
-Display:
+First display the scan summary so the user sees the per-file state before deciding:
 
 ```
 .claude/rules/git.md     {Absent / Helm v{X.Y.Z} / Foreign / Referenced in CLAUDE.md}
@@ -68,9 +68,7 @@ Display:
 Installed helm version:  v{current_version}
 ```
 
-## Step 4 — Choose install mode
-
-Choose the question and labels based on state.
+Then choose the question and labels based on state.
 
 If state = REFERENCED:
   AskUserQuestion:
@@ -154,7 +152,7 @@ If state = CONFLICT:
 
 Wait for response.
 
-## Step 5 — Execute
+## Step 4 — Execute
 
 ### Copy or Update path
 
@@ -232,7 +230,7 @@ Wait for response.
 - "Update rules" (behind) and "Roll back to v{current_version}" (ahead) both run the Copy or Update path.
 - "Switch to reference mode" runs the Reference path.
 
-## Step 6 — Report
+## Step 5 — Report
 
 For Copy/Update, verify the written files before reporting: read `.claude/rules/git.md` and `.claude/rules/safety.md` and confirm each file exists and contains the `<!-- helm-rule: claude-helm@v{current_version} -->` marker. If a file is missing or the marker is absent, report the error instead of ADOPT COMPLETE.
 

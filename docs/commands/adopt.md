@@ -62,24 +62,20 @@ Reads `.claude/rules/git.md` and `.claude/rules/safety.md`, and detects the `CLA
 - **Helm-marked**: file exists and starts with `<!-- helm-rule: claude-helm@v{X.Y.Z} -->`. The version is recorded.
 - **Foreign**: file exists but does not carry the helm marker. Authored manually or by another tool.
 - **Referenced**: the file does not exist as a physical copy, but a marketplace ref is present in CLAUDE.md (reference-mode install).
-- **Absent**: the file does not exist and no marketplace ref is present. A stray local ref (e.g. a copy-mode file that was later deleted) does not block this — Step 5 rewrites the reference.
+- **Absent**: the file does not exist and no marketplace ref is present. A stray local ref (e.g. a copy-mode file that was later deleted) does not block this — the Execute step rewrites the reference.
 
 Then reads the installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json` so the prompt can show users which version they would adopt.
 
-### 3. Show the scan summary
+### 3. Choose install mode
 
-Prints a small status table so the user knows what is on disk before picking an install mode.
-
-### 4. Choose install mode
-
-Question and labels adapt to the detected state:
+First prints a small status table (per-file state plus the installed version) so the user sees what is on disk before deciding. Then the question and labels adapt to the detected state:
 
 - **FRESH** (no existing files, no CLAUDE.md references): Copy into `.claude/rules/` is the recommended option; Reference and Cancel are also available.
 - **REFERENCED** (rules referenced in CLAUDE.md, no physical files): Keep references is the recommended option; Switch to copy mode and Cancel are also available.
 - **UPDATE** (helm-marked physical files present): branches on a semver comparison of each file's marker version against the installed plugin version. **Behind** → offers to update from `v{marker}` to `v{current}`. **In sync** (marker equals installed) → reports "already up to date" and offers no overwrite. **Ahead** (marker newer than installed, e.g. the plugin was downgraded) → warns and defaults to keeping the project's newer rules rather than rolling back. Switch to reference and Cancel remain available throughout.
 - **CONFLICT** (foreign physical files present): Review per file is the recommended option; Reference and Cancel are also available.
 
-### 5. Execute
+### 4. Execute
 
 **Copy or Update**: ensures `.claude/rules/` exists, then writes `git.md` and `safety.md` from the installed plugin source. Each file gets a leading `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker so a future `/helm:adopt` run can detect them as helm-managed. It also points `CLAUDE.md` at the copied files — a `## Rules` section listing the local `.claude/rules/` paths with an instruction to read and follow them each session — so the rules load as context rather than relying on implicit auto-loading. This *sets* the section entries, replacing any existing helm entries (a marketplace ref from reference mode, or a stale one) rather than appending — so switching reference ↔ copy is idempotent and never leaves a doubled or dangling reference.
 
@@ -87,7 +83,7 @@ Question and labels adapt to the detected state:
 
 **Reference**: when switching from copy or update, first deletes any Helm-marked local files in `.claude/rules/` so the next scan classifies as REFERENCED rather than UPDATE (Foreign, user-authored files are left untouched). Then sets the `## Rules` section in `CLAUDE.md` to point at `~/.claude/plugins/marketplaces/claude-helm/rules/` — replacing any local-path entries left by copy mode rather than appending alongside them. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`. The snippet instructs the agent to read and follow those rule files at the start of every session (and to warn if the plugin is not installed) — so cross-references between the rules resolve the same way they would in copy mode. If `CLAUDE.md` does not exist, the command offers to create it first (recommended); if the user declines, it prints the snippet to the chat for manual placement.
 
-### 6. Report
+### 5. Report
 
 For Copy or Update installs, verifies the written files before reporting: reads `.claude/rules/git.md` and `.claude/rules/safety.md` and confirms each exists and contains the `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker. If a file is missing or the marker is absent, reports the error instead of success.
 
