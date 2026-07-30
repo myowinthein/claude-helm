@@ -52,11 +52,6 @@ Active when `git-strategy: github-flow` is declared, or when `git-strategy` is a
 - Delete feature branch immediately after merge
 - If CI is configured, it must pass before merge
 
-**Deployment:**
-- Push trigger: CI auto-deploys on merge to main
-- Tag trigger: CI deploys on SemVer tag via /ship command
-- Both can be active simultaneously (push → staging, tag → production)
-
 #### Branch Naming
 
 Only applies when GitHub Flow is active.
@@ -163,6 +158,16 @@ Run before pushing, regardless of mode:
 - Detect test framework from project files
 - Run tests covering changed files — full suite if touching shared/core code
 - Skip silently if not configured — never push with failing tests
+
+---
+
+## Deployment
+
+Independent of strategy. Applies under both Solo mode and GitHub Flow.
+
+- Push trigger: CI auto-deploys on merge to main
+- Tag trigger: CI deploys on SemVer tag via /ship command
+- Both can be active simultaneously (push → staging, tag → production)
 
 ---
 

@@ -16,8 +16,8 @@ flowchart TD
   Check -->|yes| Solo[Solo Mode active]
   Check -->|no| Flow[GitHub Flow active<br/>reads git-merge-strategy]
 
-  Solo --> Sections1[Apply:<br/>Solo, Universal, Conventional Commits,<br/>Code Quality, optional Environment Branches]
-  Flow --> Sections2[Apply:<br/>Universal, Conventional Commits,<br/>Code Quality, GitHub Flow, Branch Naming,<br/>optional Environment Branches]
+  Solo --> Sections1[Apply:<br/>Solo, Universal, Conventional Commits,<br/>Code Quality, Deployment,<br/>optional Environment Branches]
+  Flow --> Sections2[Apply:<br/>Universal, Conventional Commits,<br/>Code Quality, GitHub Flow, Branch Naming,<br/>Deployment, optional Environment Branches]
 ```
 
 The `git-strategy` flag lives in `CLAUDE.md` under `## Project Config`. Set to `solo` for Solo Mode or `github-flow` for GitHub Flow. Absence defaults to GitHub Flow. Exactly one strategy is active at a time. The `git-auto-commit: true` flag is independent of strategy. The `git-merge-strategy` flag applies only under GitHub Flow and sets the PR merge method (`squash`, `rebase`, or `merge`; defaults to `squash`).
@@ -63,12 +63,6 @@ refactor/*
   - `merge` — create a merge commit preserving full branch topology
 - Delete the feature branch immediately after merge.
 - If CI is configured, it must pass before merge.
-
-**Deployment**
-
-- Push trigger: CI auto-deploys on merge to `main`.
-- Tag trigger: CI deploys on SemVer tag via `/helm:ship`.
-- Both can be active simultaneously (e.g. push promotes to staging, tag promotes to production).
 
 #### Branch Naming
 
@@ -171,6 +165,14 @@ Run before pushing, regardless of strategy:
 - Detect test framework from project files.
 - Run tests for changed files. Run the full suite if shared or core code is touched.
 - Skip silently if not configured. Never push with failing tests.
+
+## Deployment
+
+Independent of strategy. Applies under both Solo and GitHub Flow.
+
+- Push trigger: CI auto-deploys on merge to `main`.
+- Tag trigger: CI deploys on SemVer tag via `/helm:ship`.
+- Both can be active simultaneously (e.g. push promotes to staging, tag promotes to production).
 
 ## Environment Branches (optional)
 
