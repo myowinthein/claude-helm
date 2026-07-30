@@ -24,12 +24,13 @@ Hard Safety Rules section, but it does not run this scan or write
 
 Only document risks supported by evidence in the repository — not assumptions.
 
-**Output:** Write documented findings — the Risk/Instruction pairs, environment
-classifications, and any project-specific boundary additions — into
+**Output:** Documented findings — the Risk/Instruction pairs, environment
+classifications, and any project-specific boundary additions — belong in
 `.claude/rules/safety.local.md`, a project-owned file adopt never overwrites so
-findings survive plugin updates. Keep only a brief never-do summary in
-CLAUDE.md's `## Hard Safety Rules` section, and link it to `safety.local.md` for
-the detail.
+findings survive plugin updates. Propose the findings first and write them only
+on confirmation — never auto-write a safety rule without review. Keep only a
+brief never-do summary in CLAUDE.md's `## Hard Safety Rules` section, and link it
+to `safety.local.md` for the detail.
 
 ## Scan Targets
 
