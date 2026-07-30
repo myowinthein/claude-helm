@@ -27,7 +27,7 @@ flowchart TD
   Confirm --> Tests
   AskVersion --> Tests
 
-  Tests[Run test suite] -->|fail| TestStop[/Stop: fix tests first/]
+  Tests[Run lint + tests] -->|fail| TestStop[/Stop: fix tests first/]
   Tests -->|pass| Release[Bump version file<br/>Commit, tag, push<br/>Promote to selected envs]
   Release --> GHCheck{Remote is<br/>github.com?}
   GHCheck -->|no| MainDone
@@ -59,9 +59,9 @@ If no tag exists, the base version is read from the version file (`package.json`
 
 When the current version is in the `0.x.x` range, the confirmation prompt includes a dedicated **Bump to v1.0.0** option. This is for releases that complete a usable set of features solving a real problem end-to-end — not about size or stability, just about being genuinely usable. Once the version reaches `1.0.0` or above, this option is no longer shown.
 
-### 4. Run tests
+### 4. Run code quality checks
 
-Runs the full test suite using the project's detected test framework. Halts on failure with a clear stop message. Skips silently if no test framework is configured.
+Runs the full Code Quality gate before releasing — lint and tests, per git.md. Detects and runs the linter/formatter (fixing errors before proceeding, skipped silently if none configured), then runs the full test suite using the detected framework. Halts on test failure with a clear stop message; skips test validation with a confirmation prompt if no framework is configured.
 
 ### 5. Execute release
 

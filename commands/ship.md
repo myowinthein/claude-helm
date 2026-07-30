@@ -135,15 +135,22 @@ If Conventional Commits not detected:
 
 ---
 
-## Step 4 — Run tests
+## Step 4 — Run code quality checks
 
-Run full test suite using detected test framework.
-If tests fail, stop and inform human:
-"Tests failed. Fix before releasing."
-Do not proceed until tests pass.
-If no test framework detected, inform human:
-"No test framework detected — releasing without test validation. Continue?"
-Wait for confirmation before proceeding.
+Run the full Code Quality gate before releasing (per git.md: lint + tests, regardless of mode).
+
+Lint and formatting:
+- Detect the linter/formatter and run it. Fix all errors before proceeding.
+- If no linter is configured, skip silently.
+
+Tests:
+- Run full test suite using detected test framework.
+- If tests fail, stop and inform human:
+  "Tests failed. Fix before releasing."
+  Do not proceed until tests pass.
+- If no test framework detected, inform human:
+  "No test framework detected — releasing without test validation. Continue?"
+  Wait for confirmation before proceeding.
 
 ---
 

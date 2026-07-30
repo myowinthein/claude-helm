@@ -108,6 +108,8 @@ Apply in both strategies.
 - Never delete a published tag from a public repository.
 - Delete feature branches immediately after merge.
 
+Exception: release commits made by `/helm:ship` (version bump + tag) may land directly on `main` in any mode — the sanctioned release path, not an ad-hoc direct commit.
+
 **Commits**
 
 - Every commit on `main` must leave the codebase in a working state.
