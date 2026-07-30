@@ -98,12 +98,12 @@ If Conventional Commits detected:
 
   If current version is 0.x.x:
     AskUserQuestion:
-      question: "Confirm version for this release? Current: v{last_tag} → Proposed: v{proposed}"
+      question: "Ship v{proposed}? Confirming will commit, tag, push, and promote to any environments selected in Step 2. Current: v{last_tag} → Proposed: v{proposed}"
       header:   "Version"
       multiSelect: false
       options:
         - label: "Confirm v{proposed} (Recommended)"
-          description: "Tag and release as v{proposed}"
+          description: "Commit, tag, push, and promote v{proposed} — this is the release go-ahead"
         - label: "Bump to v1.0.0"
           description: "This release completes a usable set of features that solves a real problem end-to-end"
         - label: "Enter custom version"
@@ -111,12 +111,12 @@ If Conventional Commits detected:
 
   If current version is 1.0.0 or above:
     AskUserQuestion:
-      question: "Confirm version for this release? Current: v{last_tag} → Proposed: v{proposed}"
+      question: "Ship v{proposed}? Confirming will commit, tag, push, and promote to any environments selected in Step 2. Current: v{last_tag} → Proposed: v{proposed}"
       header:   "Version"
       multiSelect: false
       options:
         - label: "Confirm v{proposed} (Recommended)"
-          description: "Tag and release as v{proposed}"
+          description: "Commit, tag, push, and promote v{proposed} — this is the release go-ahead"
         - label: "Enter custom version"
           description: "Specify a different version number"
 

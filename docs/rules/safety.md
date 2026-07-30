@@ -21,6 +21,8 @@ These actions always require explicit confirmation, regardless of context or aut
 - Infrastructure changes, DNS changes, secret rotation.
 - Destructive operations: resets, drops, clears, environment recreation.
 
+A user-invoked command that confirms these actions within its own flow (e.g. `/helm:ship` confirming the version, deploy targets, and release) satisfies this boundary — do not add a separate prompt on top.
+
 Projects can extend the list, never shrink it.
 
 ## When to run a safety scan
