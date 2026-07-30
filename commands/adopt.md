@@ -172,7 +172,11 @@ Wait for response.
   At the start of every session, read the rule files above and follow them.
   ```
   If CLAUDE.md does not exist, create it with just this section.
-- For the CONFLICT/Review path: for each Foreign file, use AskUserQuestion with options: Overwrite, Skip, Show diff. Loop the prompt after Show diff so the user can still pick Overwrite or Skip.
+
+### Review per file path
+
+- For each Foreign file, use AskUserQuestion with options: Overwrite, Skip, Show diff. Loop the prompt after Show diff so the user can still pick Overwrite or Skip.
+- Overwrite writes the file via the Copy or Update path (marker + local `## Rules` entry); Skip leaves the user's file untouched.
 
 ### Reference path
 
@@ -219,7 +223,7 @@ Wait for response.
 
 ### No-change path
 
-- For "Nothing" (in sync) or "Keep project rules" (ahead): make no changes and report the status (already up to date, or project ahead of the installed plugin). No files written.
+- For "Nothing" (in sync), "Keep project rules" (ahead), or "Keep references" (already in reference mode): make no changes and report the status (already up to date, project ahead of the installed plugin, or references kept). No files written.
 
 ### Cancel path
 

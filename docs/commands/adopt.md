@@ -83,6 +83,8 @@ First prints a small status table (per-file state plus the installed version) so
 
 **Reference**: when switching from copy or update, first deletes any Helm-marked local files in `.claude/rules/` so the next scan classifies as REFERENCED rather than UPDATE (Foreign, user-authored files are left untouched). Then sets the `## Rules` section in `CLAUDE.md` to point at `~/.claude/plugins/marketplaces/claude-helm/rules/` — replacing any local-path entries left by copy mode rather than appending alongside them. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`. The snippet instructs the agent to read and follow those rule files at the start of every session (and to warn if the plugin is not installed) — so cross-references between the rules resolve the same way they would in copy mode. If `CLAUDE.md` does not exist, the command offers to create it first (recommended); if the user declines, it prints the snippet to the chat for manual placement.
 
+**No change**: for the no-op choices — "Nothing" (already in sync), "Keep project rules" (project ahead of the installed plugin), or "Keep references" (already in reference mode) — writes nothing and just reports the status.
+
 ### 5. Report
 
 For Copy or Update installs, verifies the written files before reporting: reads `.claude/rules/git.md` and `.claude/rules/safety.md` and confirms each exists and contains the `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker. If a file is missing or the marker is absent, reports the error instead of success.
