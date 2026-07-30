@@ -44,11 +44,15 @@ Review for operational risks:
 - Docker, Dev Containers, Podman, Lando, Laravel Sail configuration
 - Git remotes, branch structure, protected branches
 - .env.example, credential files, service account files, private keys
+- Database migrations, seeders, and data/repair scripts
+- Destructive scripts (reset, drop, wipe, restore commands)
 - Queue config, scheduler config, background job definitions
 - Deployment platforms (Fly.io, Railway, Render, Heroku, or similar)
 - Cloud/infrastructure config (AWS, GCP, Azure, DO, Cloudflare, Supabase, Vercel, Neon, Elasticsearch, Redis, etc)
 
 ## Risk Categories
+
+These are the lenses for documenting what the Scan Targets above surface — one per operational domain.
 
 For each category, scan for evidence and document findings as:
   Risk: one-line description
