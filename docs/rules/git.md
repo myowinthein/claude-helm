@@ -6,9 +6,9 @@ nav_order: 1
 
 # git.md
 
-The git workflow rules for a project. Defines two modes (Solo and GitHub Flow), the universal rules that apply in both, the Conventional Commits format used for every commit, code-quality gates before pushing, and optional environment-branch promotion.
+The git workflow rules for a project. Defines two strategies (Solo and GitHub Flow), the universal rules that apply in both, the Conventional Commits format used for every commit, code-quality gates before pushing, and optional environment-branch promotion.
 
-## Mode selection
+## Git Strategy
 
 ```mermaid
 flowchart TD
@@ -20,16 +20,17 @@ flowchart TD
   Flow --> Sections2[Apply:<br/>Universal, Conventional Commits,<br/>Code Quality, GitHub Flow, Branch Naming,<br/>optional Environment Branches]
 ```
 
-The `git-strategy` flag lives in `CLAUDE.md` under `## Project Config`. Set to `solo` for Solo Mode or `github-flow` for GitHub Flow. Absence defaults to GitHub Flow. The `git-auto-commit: true` flag is independent of mode. The `git-merge-strategy` flag applies only under GitHub Flow and sets the PR merge method (`squash`, `rebase`, or `merge`; defaults to `squash`).
+The `git-strategy` flag lives in `CLAUDE.md` under `## Project Config`. Set to `solo` for Solo Mode or `github-flow` for GitHub Flow. Absence defaults to GitHub Flow. Exactly one strategy is active at a time. The `git-auto-commit: true` flag is independent of strategy. The `git-merge-strategy` flag applies only under GitHub Flow and sets the PR merge method (`squash`, `rebase`, or `merge`; defaults to `squash`).
 
-## Solo Mode
+After reading `CLAUDE.md`, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active."
+
+### Solo Mode
 
 Activate by declaring `git-strategy: solo` in `CLAUDE.md`. When active:
 
-- After reading `CLAUDE.md`, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active."
 - Commit directly to `main`. No feature branches required.
 - No PR required.
-- Skip Branch Naming and GitHub Flow sections entirely.
+- Skip the GitHub Flow and Branch Naming subsections entirely.
 - Environment Branches rules still apply if such branches exist.
 - Universal Rules still apply.
 - Conventional Commits still apply.
@@ -37,9 +38,58 @@ Activate by declaring `git-strategy: solo` in `CLAUDE.md`. When active:
 
 Use this mode for solo work where peer review and branch protection have no audience. Switch to GitHub Flow the moment you have collaborators.
 
+### GitHub Flow (default)
+
+Active when `git-strategy: github-flow` is declared, or when `git-strategy` is absent.
+
+**Branch structure**
+
+```
+main
+feature/*
+fix/*
+chore/*
+refactor/*
+```
+
+**Rules**
+
+- All branches base from `main`.
+- `main` is always deployable.
+- Open a PR before merging to `main`.
+- Merge using the strategy declared as `git-merge-strategy` (default: `squash`):
+  - `squash` — squash all commits into one with a Conventional Commit message
+  - `rebase` — replay branch commits onto `main` without a merge commit
+  - `merge` — create a merge commit preserving full branch topology
+- Delete the feature branch immediately after merge.
+- If CI is configured, it must pass before merge.
+
+**Deployment**
+
+- Push trigger: CI auto-deploys on merge to `main`.
+- Tag trigger: CI deploys on SemVer tag via `/helm:ship`.
+- Both can be active simultaneously (e.g. push promotes to staging, tag promotes to production).
+
+#### Branch Naming
+
+Only applies under GitHub Flow.
+
+Format: `type/short-description`. Include a ticket number when provided: `type/123-short-description`.
+
+```
+feature/user-authentication
+feature/123-user-authentication
+fix/payment-timeout
+fix/456-payment-timeout
+chore/bump-dependencies
+refactor/extract-payment-service
+```
+
+Types mirror Conventional Commits types. Lowercase, hyphens only, no spaces.
+
 ## Auto-Commit
 
-Activate by declaring `git-auto-commit: true` in `CLAUDE.md`. Independent of git mode — works with both Solo and GitHub Flow.
+Activate by declaring `git-auto-commit: true` in `CLAUDE.md`. Independent of git strategy — works with both Solo and GitHub Flow.
 
 When active:
 
@@ -53,7 +103,7 @@ When not active (default): ask for confirmation before every commit.
 
 ## Universal Rules
 
-Apply in both modes.
+Apply in both strategies.
 
 **Branches**
 
@@ -68,7 +118,6 @@ Apply in both modes.
 
 - Every commit on `main` must leave the codebase in a working state.
 - One commit per logical unit. If the subject needs "and" to describe it, split it.
-- Use squash merge when merging feature branches into `main`.
 
 **Safety**
 
@@ -108,7 +157,7 @@ The `/helm:ship` command reads these types to calculate the next version: `feat!
 
 ## Code Quality
 
-Run before pushing, regardless of mode:
+Run before pushing, regardless of strategy:
 
 **Lint and Formatting**
 
@@ -123,58 +172,9 @@ Run before pushing, regardless of mode:
 - Run tests for changed files. Run the full suite if shared or core code is touched.
 - Skip silently if not configured. Never push with failing tests.
 
-## GitHub Flow (default)
-
-Active when `git-strategy: github-flow` is declared, or when `git-strategy` is absent.
-
-**Branch structure**
-
-```
-main
-feature/*
-fix/*
-chore/*
-refactor/*
-```
-
-**Rules**
-
-- All branches base from `main`.
-- `main` is always deployable.
-- Open a PR before merging to `main`.
-- Merge using the strategy declared as `git-merge-strategy` (default: `squash`):
-  - `squash` — squash all commits into one with a Conventional Commit message
-  - `rebase` — replay branch commits onto `main` without a merge commit
-  - `merge` — create a merge commit preserving full branch topology
-- Delete the feature branch immediately after merge.
-- If CI is configured, it must pass before merge.
-
-**Deployment**
-
-- Push trigger: CI auto-deploys on merge to `main`.
-- Tag trigger: CI deploys on SemVer tag via `/helm:ship`.
-- Both can be active simultaneously (e.g. push promotes to staging, tag promotes to production).
-
-## Branch Naming
-
-Only applies under GitHub Flow.
-
-Format: `type/short-description`. Include a ticket number when provided: `type/123-short-description`.
-
-```
-feature/user-authentication
-feature/123-user-authentication
-fix/payment-timeout
-fix/456-payment-timeout
-chore/bump-dependencies
-refactor/extract-payment-service
-```
-
-Types mirror Conventional Commits types. Lowercase, hyphens only, no spaces.
-
 ## Environment Branches (optional)
 
-Independent of mode. Works alongside Solo and GitHub Flow.
+Independent of strategy. Works alongside Solo and GitHub Flow.
 
 Environment branches are long-lived branches that are not `main`, `master`, or feature branches: `staging`, `stage`, `uat`, `preprod`, `production`, `prod`. The presence of any such branch on the remote activates these rules:
 

@@ -2,21 +2,78 @@
 
 ---
 
-## Solo Mode
+## Git Strategy
 
-Activate by declaring in CLAUDE.md (Project Config section):
-  git-strategy: solo
+Set the strategy with `git-strategy` in CLAUDE.md (Project Config section):
+  git-strategy: solo         → Solo Mode
+  git-strategy: github-flow  → GitHub Flow
+
+Absence defaults to GitHub Flow. Exactly one strategy is active at a time.
 
 After reading CLAUDE.md, confirm which mode is active before taking any git action. State it explicitly: "Solo Mode active" or "GitHub Flow active."
+
+### Solo Mode
 
 When active:
 - Commit directly to main — no feature branches required
 - No PR required
-- Skip Branch Naming and GitHub Flow sections entirely
+- Skip the GitHub Flow and Branch Naming subsections entirely
 - Environment Branches rules still apply if such branches exist
 - All Universal Rules still apply
 - Conventional Commits still apply
 - Code quality checks still apply before pushing
+
+Use this mode for solo work where peer review and branch protection have no audience. Switch to GitHub Flow the moment you have collaborators.
+
+### GitHub Flow (default)
+
+Active when `git-strategy: github-flow` is declared, or when `git-strategy` is absent.
+
+**Branch structure:**
+  main
+  feature/*  (or feat/*)
+  fix/*
+  chore/*
+  refactor/*
+  docs/*
+  test/*
+  perf/*
+  ci/*
+  build/*
+
+**Rules:**
+- All branches base from main
+- main is always deployable
+- Open a PR before merging to main
+- Merge using the strategy declared as `git-merge-strategy` in CLAUDE.md (default: squash):
+  - `squash` — squash all commits into one with a Conventional Commit message
+  - `rebase` — replay branch commits onto main without a merge commit
+  - `merge` — create a merge commit preserving full branch topology
+- Delete feature branch immediately after merge
+- If CI is configured, it must pass before merge
+
+**Deployment:**
+- Push trigger: CI auto-deploys on merge to main
+- Tag trigger: CI deploys on SemVer tag via /ship command
+- Both can be active simultaneously (push → staging, tag → production)
+
+#### Branch Naming
+
+Only applies when GitHub Flow is active.
+
+Format: type/short-description
+Include ticket number if provided: type/123-short-description
+
+Examples:
+  feature/user-authentication
+  feature/123-user-authentication
+  fix/payment-timeout
+  fix/456-payment-timeout
+  chore/bump-dependencies
+  refactor/extract-payment-service
+
+Types mirror Conventional Commits types.
+Use lowercase, hyphens only, no spaces.
 
 ---
 
@@ -106,60 +163,6 @@ Run before pushing, regardless of mode:
 - Detect test framework from project files
 - Run tests covering changed files — full suite if touching shared/core code
 - Skip silently if not configured — never push with failing tests
-
----
-
-## GitHub Flow (default)
-
-Active when `git-strategy: github-flow` is declared in CLAUDE.md, or when `git-strategy` is absent.
-
-**Branch structure:**
-  main
-  feature/*  (or feat/*)
-  fix/*
-  chore/*
-  refactor/*
-  docs/*
-  test/*
-  perf/*
-  ci/*
-  build/*
-
-**Rules:**
-- All branches base from main
-- main is always deployable
-- Open a PR before merging to main
-- Merge using the strategy declared as `git-merge-strategy` in CLAUDE.md (default: squash):
-  - `squash` — squash all commits into one with a Conventional Commit message
-  - `rebase` — replay branch commits onto main without a merge commit
-  - `merge` — create a merge commit preserving full branch topology
-- Delete feature branch immediately after merge
-- If CI is configured, it must pass before merge
-
-**Deployment:**
-- Push trigger: CI auto-deploys on merge to main
-- Tag trigger: CI deploys on SemVer tag via /ship command
-- Both can be active simultaneously (push → staging, tag → production)
-
----
-
-## Branch Naming
-
-Only applies when GitHub Flow is active.
-
-Format: type/short-description
-Include ticket number if provided: type/123-short-description
-
-Examples:
-  feature/user-authentication
-  feature/123-user-authentication
-  fix/payment-timeout
-  fix/456-payment-timeout
-  chore/bump-dependencies
-  refactor/extract-payment-service
-
-Types mirror Conventional Commits types.
-Use lowercase, hyphens only, no spaces.
 
 ---
 
