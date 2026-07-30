@@ -45,13 +45,18 @@ Then classify each of `.claude/rules/git.md` and `.claude/rules/safety.md` as on
 
 Classification is driven by the file first; the reference type only disambiguates the file-absent cases (Referenced vs Absent) and is reconciled in Step 5.
 
+Read the currently installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json`. Record as `current_version`.
+
 Compute the overall state:
 - All Absent → state = FRESH
 - Any Referenced, none Helm-marked, none Foreign → state = REFERENCED
 - Any Helm-marked, none Foreign → state = UPDATE
 - Any Foreign → state = CONFLICT
 
-Read the currently installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json`. Record as `current_version`.
+For UPDATE state, compare each Helm-marked file's marker version against `current_version` (semver) and record the relationship:
+- **behind** — any marker version is lower than `current_version` (a real update is available)
+- **in sync** — every marker version equals `current_version` (nothing to reconcile)
+- **ahead** — any marker version is higher than `current_version` (project is newer than the installed plugin — unusual, e.g. the install was downgraded)
 
 ## Step 3 — Show the scan summary
 
@@ -93,16 +98,44 @@ If state = FRESH:
       - label: "Cancel"
         description: "Exit without changes."
 
-If state = UPDATE:
+If state = UPDATE, branch on the version relationship:
+
+If **in sync** (marker versions all equal `current_version`):
+  Inform the user: "Helm rules are already up to date (v{current_version})." Do not offer an overwrite.
   AskUserQuestion:
-    question: "Update the helm rules in this project to v{current_version}?"
+    question: "Rules are already at v{current_version}. Anything to change?"
+    header:   "Up to date"
+    multiSelect: false
+    options:
+      - label: "Nothing (Recommended)"
+        description: "Leave everything as-is."
+      - label: "Switch to reference mode"
+        description: "Delete the copied files and reference the installed plugin path from CLAUDE.md instead."
+
+If **behind** (a marker version is lower than `current_version`):
+  AskUserQuestion:
+    question: "Update the helm rules in this project from v{marker_version} to v{current_version}?"
     header:   "Update mode"
     multiSelect: false
     options:
       - label: "Update rules in .claude/rules/ (Recommended)"
-        description: "Overwrite helm-marked files with the version from the installed plugin."
+        description: "Overwrite helm-marked files with v{current_version} from the installed plugin."
       - label: "Switch to reference mode"
         description: "Delete the copied files and reference the installed plugin path from CLAUDE.md instead."
+      - label: "Cancel"
+        description: "Exit without changes."
+
+If **ahead** (a marker version is higher than `current_version`):
+  Warn the user: "This project's rules (v{marker_version}) are newer than the installed plugin (v{current_version}) — the installed plugin may have been downgraded. Overwriting would roll the rules back."
+  AskUserQuestion:
+    question: "Project rules (v{marker_version}) are ahead of the installed plugin (v{current_version}). How would you like to proceed?"
+    header:   "Project ahead"
+    multiSelect: false
+    options:
+      - label: "Keep project rules (Recommended)"
+        description: "Leave the newer files in place — update the installed plugin instead if you want to move forward."
+      - label: "Roll back to v{current_version}"
+        description: "Overwrite with the older installed-plugin version anyway."
       - label: "Cancel"
         description: "Exit without changes."
 
@@ -186,9 +219,18 @@ Wait for response.
     ```
   - If Skip: print the snippet to the chat so the user can place it manually.
 
+### No-change path
+
+- For "Nothing" (in sync) or "Keep project rules" (ahead): make no changes and report the status (already up to date, or project ahead of the installed plugin). No files written.
+
 ### Cancel path
 
 - Exit silently. No files written.
+
+### Overwrite mapping
+
+- "Update rules" (behind) and "Roll back to v{current_version}" (ahead) both run the Copy or Update path.
+- "Switch to reference mode" runs the Reference path.
 
 ## Step 6 — Report
 
@@ -208,6 +250,13 @@ For Reference:
 ```
 ADOPT COMPLETE
 - CLAUDE.md updated with references to claude-helm rules at v{current_version}
+```
+
+For No-change (in sync or project ahead):
+```
+ADOPT COMPLETE — no changes
+- Rules already at v{current_version} (in sync)         # in-sync case
+- Project rules v{marker_version} are ahead of installed v{current_version}; left as-is   # ahead case
 ```
 
 ## Notes

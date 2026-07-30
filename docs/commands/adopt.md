@@ -24,7 +24,7 @@ flowchart TD
 
   State -->|all absent| Fresh[Ask: copy, reference, or cancel?]
   State -->|referenced in CLAUDE.md| Referenced[Ask: keep references,<br/>switch to copy, or cancel?]
-  State -->|helm-marked files| Update[Ask: update, switch to reference,<br/>or cancel?]
+  State -->|helm-marked files| Update[Compare marker vs installed version:<br/>update if behind, keep if in sync,<br/>warn if ahead; or switch to reference]
   State -->|foreign content| Conflict[Ask: review per file,<br/>reference, or cancel?]
 
   Fresh -->|cancel| Cancel
@@ -36,7 +36,8 @@ flowchart TD
   Fresh -->|reference| Reference
   Referenced -->|keep references| Done
   Referenced -->|switch to copy| Copy
-  Update -->|update| Copy
+  Update -->|update / roll back| Copy
+  Update -->|in sync or keep-ahead| Done
   Update -->|switch to reference| Reference
   Conflict -->|review per file| PerFile[Per file:<br/>overwrite, skip, or diff]
   Conflict -->|reference| Reference
@@ -75,7 +76,7 @@ Question and labels adapt to the detected state:
 
 - **FRESH** (no existing files, no CLAUDE.md references): Copy into `.claude/rules/` is the recommended option; Reference and Cancel are also available.
 - **REFERENCED** (rules referenced in CLAUDE.md, no physical files): Keep references is the recommended option; Switch to copy mode and Cancel are also available.
-- **UPDATE** (helm-marked physical files present): Update is the recommended option; Switch to reference and Cancel are also available.
+- **UPDATE** (helm-marked physical files present): branches on a semver comparison of each file's marker version against the installed plugin version. **Behind** → offers to update from `v{marker}` to `v{current}`. **In sync** (marker equals installed) → reports "already up to date" and offers no overwrite. **Ahead** (marker newer than installed, e.g. the plugin was downgraded) → warns and defaults to keeping the project's newer rules rather than rolling back. Switch to reference and Cancel remain available throughout.
 - **CONFLICT** (foreign physical files present): Review per file is the recommended option; Reference and Cancel are also available.
 
 ### 5. Execute
