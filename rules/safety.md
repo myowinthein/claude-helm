@@ -35,9 +35,11 @@ Only document risks supported by evidence in the repository — not assumptions.
 classifications, and any project-specific boundary additions — belong in
 `.claude/rules/safety.local.md`, a project-owned file adopt never overwrites so
 findings survive plugin updates. Propose the findings first and write them only
-on confirmation — never auto-write a safety rule without review. Keep only a
-brief never-do summary in CLAUDE.md's `## Hard Safety Rules` section, and link it
-to `safety.local.md` for the detail.
+on confirmation — never auto-write a safety rule without review. In CLAUDE.md's
+`## Hard Safety Rules` section, keep a brief never-do summary and instruct the
+agent to read and follow `.claude/rules/safety.local.md` every session — so the
+findings bind like the base rules. Keep this in Hard Safety Rules, not the
+adopt-managed `## Rules` section, which adopt rewrites on each run.
 
 ## Scan Targets
 

@@ -173,7 +173,7 @@ Then write CLAUDE.md using the seven-section schema:
 3. Dev Commands (install, run, test single file, migrate, logs)
 4. Architecture Pointers (key files with one-line why, not summaries)
 5. Behavior Rules (autonomy model, confirmation gates, test requirements)
-6. Hard Safety Rules (invariants, never-do list — keep brief, detail in .claude/rules/safety.local.md)
+6. Hard Safety Rules (invariants, never-do list — keep brief; instruct the agent to read and follow .claude/rules/safety.local.md every session for the full detail)
 7. Known Traps (initially empty or inferred from README warnings)
 
 Before writing the Project Config section, run Project Config Check.
