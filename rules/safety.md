@@ -2,10 +2,26 @@
 
 This file is not procedural — it does not run on every session. It is loaded as context so agents respect the same operational guardrails throughout the project.
 
+## Agent Execution Boundaries
+
+These actions always require explicit confirmation regardless of context:
+- git push, force-push, tag creation
+- any deployment command
+- migrations, database imports, database resets
+- infrastructure changes, DNS changes, secret rotation
+- destructive operations (resets, drops, clears, environment recreation)
+
+Document any project-specific additions to this list.
+
 ## When to Run a Safety Scan
 
-Perform this scan during project bootstrap, as part of /helm:log Full scan mode.
-Update when deployment, infrastructure, or environment configuration changes.
+Perform this scan at project bootstrap, and update it when deployment,
+infrastructure, or environment configuration changes.
+
+/helm:log Full scan mode may surface and propose safety findings for CLAUDE.md's
+Hard Safety Rules section, but it does not run this scan or write
+.claude/rules automatically — findings are proposed, never auto-written.
+
 Only document risks supported by evidence in the repository — not assumptions.
 
 ## Scan Targets
@@ -20,17 +36,6 @@ Review for operational risks:
 - Queue config, scheduler config, background job definitions
 - Deployment platforms (Fly.io, Railway, Render, Heroku, or similar)
 - Cloud/infrastructure config (AWS, GCP, Azure, DO, Cloudflare, Supabase, Vercel, Neon, Elasticsearch, Redis, etc)
-
-## Agent Execution Boundaries
-
-These actions always require explicit confirmation regardless of context:
-- git push, force-push, tag creation
-- any deployment command
-- migrations, database imports, database resets
-- infrastructure changes, DNS changes, secret rotation
-- destructive operations (resets, drops, clears, environment recreation)
-
-Document any project-specific additions to this list.
 
 ## Risk Categories
 

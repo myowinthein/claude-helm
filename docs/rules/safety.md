@@ -10,12 +10,6 @@ The operational safety reference for a project. Defines which actions always nee
 
 The file is not procedural; it does not "run." It is loaded as context so that any agent acting in the project respects the same operational guardrails.
 
-## When to run a safety scan
-
-Run during project bootstrap, ideally as part of `/helm:log` (Full scan mode). Update when deployment, infrastructure, or environment configuration changes.
-
-Only document risks supported by evidence in the repository. No assumptions, no speculation.
-
 ## Agent Execution Boundaries
 
 These actions always require explicit confirmation, regardless of context or autonomy level:
@@ -28,6 +22,14 @@ These actions always require explicit confirmation, regardless of context or aut
 
 Projects can extend the list, never shrink it.
 
+## When to run a safety scan
+
+Run at project bootstrap, and update when deployment, infrastructure, or environment configuration changes.
+
+`/helm:log` Full scan mode may surface and propose safety findings for CLAUDE.md's Hard Safety Rules section, but it does not run this scan or write `.claude/rules` automatically — findings are proposed, never auto-written.
+
+Only document risks supported by evidence in the repository. No assumptions, no speculation.
+
 ## Scan Targets
 
 Bootstrap scan looks at:
@@ -35,11 +37,12 @@ Bootstrap scan looks at:
 - `CLAUDE.md`, `.claude/rules`, README files, project documentation.
 - CI/CD pipelines (GitHub Actions, GitLab CI), deployment scripts.
 - Composer scripts, package scripts, Makefiles, shell scripts.
-- Docker, Lando, Laravel Sail configuration.
+- Docker, Dev Containers, Podman, Lando, Laravel Sail configuration.
 - Git remotes, branch structure, protected branches.
 - `.env.example`, credential files, service account files, private keys.
 - Queue config, scheduler config, background job definitions.
-- Cloud/infrastructure config (AWS, DO, Cloudflare, Elasticsearch, Redis, etc.).
+- Deployment platforms (Fly.io, Railway, Render, Heroku, or similar).
+- Cloud/infrastructure config (AWS, GCP, Azure, DO, Cloudflare, Supabase, Vercel, Neon, Elasticsearch, Redis, etc.).
 
 ## Risk Categories
 
@@ -108,4 +111,4 @@ Examples: unit tests, feature tests, linting, static analysis, frontend build, g
 ## See also
 
 - [`git.md`](git.md) - the workflow rules that reference safety boundaries
-- [`/helm:log`](../commands/log.md) - the command that scans the project and surfaces what belongs in this file
+- [`/helm:log`](../commands/log.md) - the command that surfaces and proposes what belongs in this file
