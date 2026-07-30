@@ -32,13 +32,18 @@ Decide based on what is present:
 
 ## Step 2 — Scan existing rules
 
-For each of `.claude/rules/git.md` and `.claude/rules/safety.md`, record one of:
-- **Absent** — file does not exist and not referenced in CLAUDE.md
+First detect the CLAUDE.md reference type for each rule, one of:
+- **marketplace ref** — a line with `marketplaces/claude-helm/rules/{name}` is present
+- **local ref** — a line with `.claude/rules/{name}` is present
+- **no ref** — neither is present
+
+Then classify each of `.claude/rules/git.md` and `.claude/rules/safety.md` as one of:
 - **Helm-marked** — file exists and starts with `<!-- helm-rule: claude-helm@v{X.Y.Z} -->`; record version
 - **Foreign** — file exists but does not contain the helm marker
-- **Referenced** — file does not exist but a matching `~/.claude/plugins/marketplaces/claude-helm/rules/{name}` path is present in CLAUDE.md
+- **Referenced** — file does not exist and a marketplace ref is present
+- **Absent** — file does not exist and no marketplace ref is present (a stray local ref does not block this — Step 5 rewrites it)
 
-To detect Referenced: check whether CLAUDE.md contains a line with `marketplaces/claude-helm/rules/git.md` (or `safety.md`).
+Classification is driven by the file first; the reference type only disambiguates the file-absent cases (Referenced vs Absent) and is reconciled in Step 5.
 
 Compute the overall state:
 - All Absent → state = FRESH
@@ -125,7 +130,7 @@ Wait for response.
   - Read the source from `~/.claude/plugins/marketplaces/claude-helm/rules/{name}`.
   - Prepend a marker line: `<!-- helm-rule: claude-helm@v{current_version} -->`
   - Write to `.claude/rules/{name}`.
-- Point CLAUDE.md at the copied rules so they load as context — detect or create a `## Rules` section listing the local paths:
+- Point CLAUDE.md at the copied rules so they load as context. Detect an existing helm `## Rules` section — entries pointing at `.claude/rules/` or the marketplaces path — and set its entries to the local paths below; create the section if absent. This replaces any marketplace-path or stale entries (e.g. left by reference mode) rather than appending alongside them:
   ```
   ## Rules
 
@@ -135,8 +140,7 @@ Wait for response.
 
   At the start of every session, read the rule files above and follow them.
   ```
-  If a `## Rules` section already lists these local paths, leave it as-is. If CLAUDE.md does not exist, create it with just this section.
-- If switching from reference mode (REFERENCED → copy): replace the marketplace-path reference lines with the local paths above — keep the `## Rules` section, now pointing at the copied files.
+  If CLAUDE.md does not exist, create it with just this section.
 - For the CONFLICT/Review path: for each Foreign file, use AskUserQuestion with options: Overwrite, Skip, Show diff. Loop the prompt after Show diff so the user can still pick Overwrite or Skip.
 
 ### Reference path

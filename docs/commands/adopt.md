@@ -56,12 +56,12 @@ Looks for `.git/`, `CLAUDE.md`, or a recognised manifest (`package.json`, `compo
 
 ### 2. Scan existing rules
 
-Reads `.claude/rules/git.md` and `.claude/rules/safety.md`, then checks `CLAUDE.md` for reference-mode entries. For each file, classifies as:
+Reads `.claude/rules/git.md` and `.claude/rules/safety.md`, and detects the `CLAUDE.md` reference type for each — a *marketplace ref* (`marketplaces/claude-helm/rules/{name}`), a *local ref* (`.claude/rules/{name}`, written by copy mode), or *no ref*. Classification is driven by the file first; the reference type only disambiguates the file-absent cases:
 
-- **Absent**: the file does not exist and is not referenced in CLAUDE.md.
 - **Helm-marked**: file exists and starts with `<!-- helm-rule: claude-helm@v{X.Y.Z} -->`. The version is recorded.
 - **Foreign**: file exists but does not carry the helm marker. Authored manually or by another tool.
-- **Referenced**: the file does not exist as a physical copy, but a matching `marketplaces/claude-helm/rules/{name}` path is present in CLAUDE.md (reference-mode install).
+- **Referenced**: the file does not exist as a physical copy, but a marketplace ref is present in CLAUDE.md (reference-mode install).
+- **Absent**: the file does not exist and no marketplace ref is present. A stray local ref (e.g. a copy-mode file that was later deleted) does not block this — Step 5 rewrites the reference.
 
 Then reads the installed helm version from `~/.claude/plugins/marketplaces/claude-helm/.claude-plugin/plugin.json` so the prompt can show users which version they would adopt.
 
@@ -80,7 +80,7 @@ Question and labels adapt to the detected state:
 
 ### 5. Execute
 
-**Copy or Update**: ensures `.claude/rules/` exists, then writes `git.md` and `safety.md` from the installed plugin source. Each file gets a leading `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker so a future `/helm:adopt` run can detect them as helm-managed. It also points `CLAUDE.md` at the copied files — a `## Rules` section listing the local `.claude/rules/` paths with an instruction to read and follow them each session — so the rules load as context rather than relying on implicit auto-loading. When switching from reference mode, the marketplace-path reference lines are replaced with the local paths rather than removed.
+**Copy or Update**: ensures `.claude/rules/` exists, then writes `git.md` and `safety.md` from the installed plugin source. Each file gets a leading `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker so a future `/helm:adopt` run can detect them as helm-managed. It also points `CLAUDE.md` at the copied files — a `## Rules` section listing the local `.claude/rules/` paths with an instruction to read and follow them each session — so the rules load as context rather than relying on implicit auto-loading. This *sets* the section entries, replacing any existing helm entries (a marketplace ref from reference mode, or a stale one) rather than appending — so switching reference ↔ copy is idempotent and never leaves a doubled or dangling reference.
 
 **Conflict / Review per file**: for each foreign file, asks Overwrite, Skip, or Show diff. Showing the diff loops back to the same prompt so the user can pick after seeing the changes.
 
