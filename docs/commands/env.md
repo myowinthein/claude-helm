@@ -108,8 +108,8 @@ Summarises every category: counts replaced, added, or fixed. Lists skipped track
 ## Stop conditions
 
 - **Not on `main` or `master`.** Switch back first.
-- **User picks Skip on all categories.** Clean exit, no changes.
-- **Tests fail during Hardcoded values fix.** Stop and inform before moving to the next file.
+- **No findings in any category.** Nothing to fix — the report shows a clean audit.
+- **User picks Skip on every prompt.** Clean exit, no changes written.
 
 ## See also
 

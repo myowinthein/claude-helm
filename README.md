@@ -47,6 +47,7 @@ Links below go to detail pages. Command logic lives in `commands/*.md`.
 | [`/helm:ship`](docs/commands/ship.md) | Cut a release: calculate version, test, tag, push, and create a GitHub Release. |
 | [`/helm:test`](docs/commands/test.md) | Assess coverage and write missing tests. |
 | [`/helm:refactor`](docs/commands/refactor.md) | Run a project-wide refactor on a dedicated branch. |
+| [`/helm:env`](docs/commands/env.md) | Audit and fix `.env` files and `.gitignore`: sync, formatting, missing vars, hardcoded values. |
 | [`/helm:log`](docs/commands/log.md) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
 | [`/helm:manifest`](docs/commands/manifest.md) | Sync `README.md` to the current codebase. The vessel's manifest. |
 | [`/helm:legal`](docs/commands/legal.md) | Generate GDPR-aware legal documents from a project scan. |
