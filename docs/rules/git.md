@@ -83,7 +83,7 @@ Types mirror Conventional Commits types. Lowercase, hyphens only, no spaces.
 
 ## Auto-Commit
 
-Activate by declaring `git-auto-commit: true` in `CLAUDE.md`. Independent of git strategy — works with both Solo and GitHub Flow.
+Set with `git-auto-commit: true` in `CLAUDE.md`. Independent of git strategy — works with both Solo and GitHub Flow. Absence defaults to off — ask for confirmation before every commit.
 
 When active:
 
@@ -92,8 +92,6 @@ When active:
 - Derive the commit message from the work done; follow Conventional Commits.
 - If the task spans multiple logical units, commit each unit separately before moving on.
 - Push still requires confirmation (cross-references `safety.md`).
-
-When not active (default): ask for confirmation before every commit.
 
 ## Universal Rules
 

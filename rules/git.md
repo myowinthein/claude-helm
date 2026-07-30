@@ -74,8 +74,10 @@ Use lowercase, hyphens only, no spaces.
 
 ## Auto-Commit
 
-Activate by declaring in CLAUDE.md (Project Config section):
-  git-auto-commit: true
+Set with `git-auto-commit` in CLAUDE.md (Project Config section):
+  git-auto-commit: true   → commit automatically after each task
+
+Absence defaults to off — ask for confirmation before committing.
 
 When active:
 - After completing a task, commit without asking for confirmation
@@ -83,9 +85,6 @@ When active:
 - Derive the commit message from the work done; follow Conventional Commits
 - Push still requires confirmation (covered in safety.md)
 - If the task spans multiple logical units, commit each unit separately before moving to the next
-
-When not active (default):
-- Ask for confirmation before committing
 
 ---
 
