@@ -12,12 +12,12 @@ List any unmerged local branches (`git branch --no-merged`); if any exist, warn 
 
 ## State tracking
 
-Progress and each step's report are persisted under `.archive/` so the workflow can resume across the approval gates and survive context loss between sessions.
+Progress and each step's report are persisted under `.archive/` so the workflow can resume across the approval gates and survive context loss between sessions. `.archive/` is not gitignored — Step 5 commits it as part of the final seal, so it becomes a permanent audit trail in the archive (the whole point of this command is not to lose things, and nothing commits before Step 5 already switches to the private archive remote — see Task 1 — so it never risks landing anywhere else).
 
 At the start, check for `.archive/state.json`:
 - If it exists and `last_completed_step` is 5, all steps are done — tell me the archive already completed and that I can delete `.archive/` to run again. Do nothing else.
 - If it exists with `last_completed_step` below 5, read it, tell me which step you are resuming from, and continue from the next step. Do not re-run completed steps.
-- If it does not exist, check for `docs/archive-metadata.md` before assuming a fresh run — `.archive/` is gitignored scratch, so a fresh clone of an already-archived project has no local trace of a prior run even though this committed file does. If `docs/archive-metadata.md` exists, tell me this project appears to already be archived (per that file) and confirm before restarting the whole workflow. If it does not exist either, this is a genuine fresh run — start from Step 1. Do not create `.archive/` yet: Step 1 is read-only and nothing may be modified before its approval.
+- If it does not exist, check for `docs/archive-metadata.md` as a secondary signal before assuming a fresh run — this is a belt-and-suspenders check for a repo archived before `.archive/` was committed, or where it was deleted locally after cloning. If `docs/archive-metadata.md` exists, tell me this project appears to already be archived (per that file) and confirm before restarting the whole workflow. If it does not exist either, this is a genuine fresh run — start from Step 1. Do not create `.archive/` yet: Step 1 is read-only and nothing may be modified before its approval.
 
 State file format:
 ```
@@ -28,7 +28,7 @@ State file format:
 ```
 
 After I approve each step:
-- On the first write (after Step 1's approval), create `.archive/` and add `.archive/` to `.gitignore` — it is scratch, never committed to the archive.
+- On the first write (after Step 1's approval), create `.archive/`.
 - Write that step's report — verbatim, exactly as the step produced it — to `.archive/step{N}-{name}.md`, matching the step file name (e.g. `.archive/step1-explore.md`). Do not summarize or reformat it.
 - Set `last_completed_step` to N and `updated_at` to now in `.archive/state.json`.
 

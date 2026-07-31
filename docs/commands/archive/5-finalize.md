@@ -90,7 +90,7 @@ All running services tied to the project are listed (Docker containers, dev serv
 
 ## Task 6 — Final commit and push
 
-All changes accumulated across the full workflow are committed in a single commit:
+All changes accumulated across the full workflow are committed in a single commit, including `.archive/` — it is not gitignored, so the step reports and `state.json` become a permanent audit trail in the archive rather than being lost once the local copy is cleaned up:
 
 ```
 chore(archive): seal project archive

@@ -156,9 +156,10 @@ If Cancel → stop and leave changes as-is. Do not commit or push.
 If Commit and push: stage all tracked and new files explicitly — do not use `git add -A` blindly. Check `git status` first and stage only the files accumulated during this workflow:
 ```
 git add -u                                             # stage all tracked modifications
-git add recovery/ docs/ README.md .gitignore .gitattributes  # stage new files created this session
+git add recovery/ docs/ README.md .gitignore .gitattributes .archive/  # stage new files created this session
 git commit -m "chore(archive): seal project archive"
 ```
+`.archive/` is included deliberately — it is not gitignored. Its step reports become a permanent audit trail in the archive, and `state.json` lets a future clone recognize this project as already archived without relying solely on `docs/archive-metadata.md`.
 If the tarballs are LFS-tracked (Task 3), confirm they are staged as LFS pointers (`git lfs status`) before committing — not as raw blobs.
 
 Push to origin using the branch kept in Task 2 (now named `main`):
