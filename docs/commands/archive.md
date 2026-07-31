@@ -9,6 +9,8 @@ has_children: true
 
 The archival command. Runs a five-step workflow to restore an old project, freeze its environment with Docker, generate a Postman collection, write recovery documentation, and push everything to a private archive remote — so the project can be recovered years later from a clean machine.
 
+The workflow is **resumable**. Progress and each step's report are persisted under a gitignored `.archive/` directory: a `state.json` cursor tracks the last completed step, and each step writes its report to `.archive/step{N}-{name}.md`. Later steps read those reports by name rather than relying on conversation memory — so the workflow survives context compaction and can resume across the approval gates, even in a new session. On start it reads `state.json` and continues from the next step (or reports that the archive already completed). Step 1 stays read-only: nothing is written until after its approval.
+
 ## Flow
 
 ```mermaid

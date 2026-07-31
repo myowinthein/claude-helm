@@ -2,7 +2,7 @@
 
 Create project documentation for long-term archive recovery and future demonstration.
 
-Use all relevant outputs from previous steps as context.
+Read the prior step reports from `.archive/` — `step1-explore.md`, `step2-restore-and-freeze.md`, and `step3-postman.md` — and use them as context. If a required report is missing, stop and report that the prior step must complete first.
 
 Goal: Make future me able to understand, restore, run, troubleshoot, and demonstrate this project years later.
 

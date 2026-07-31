@@ -2,7 +2,7 @@
 
 Restore this project and freeze its environment for long-term archive recovery.
 
-Use all relevant outputs from previous steps as context.
+Read Step 1's report from `.archive/step1-explore.md` and use it as context. If it is missing, stop and report that Step 1 must complete first.
 
 Goal: Get the project running locally, containerize it with pinned image versions, and export the built images to tarballs so the environment can be recovered years later without depending on external registries.
 

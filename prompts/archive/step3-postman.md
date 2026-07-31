@@ -2,7 +2,7 @@
 
 Generate a Postman collection for this project if it exposes an API.
 
-Use all relevant outputs from previous steps as context.
+Read the prior step reports from `.archive/` — `step1-explore.md` and `step2-restore-and-freeze.md` — and use them as context. If a required report is missing, stop and report that the prior step must complete first.
 
 Goal: Create reusable Postman files that future me can use to understand, test, troubleshoot, and demonstrate the project's API years later.
 

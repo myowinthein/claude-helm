@@ -2,7 +2,7 @@
 
 Prepare the repository for final archival, clean up remotes and branches, and push to the private archive remote.
 
-Use all relevant outputs from previous steps as context.
+Read the prior step reports from `.archive/` — `step1-explore.md`, `step2-restore-and-freeze.md`, `step3-postman.md`, and `step4-documentation.md` — and use them as context. If a required report is missing, stop and report that the prior step must complete first.
 
 Goal: Seal the archive — ensure the repository is clean, safe, and pushed to the correct private remote.
 
