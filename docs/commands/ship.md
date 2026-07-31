@@ -19,7 +19,7 @@ flowchart TD
 
   Targets -->|yes| Pick[Ask: which envs to promote?]
   Targets -->|no| CC
-  Pick --> CC{Conventional Commits<br/>detected in last 20?}
+  Pick --> CC{Conventional Commits<br/>detected since last tag?}
 
   CC -->|yes| Calc[Calculate bump from<br/>feat / fix / BREAKING]
   CC -->|no| AskVersion[Ask human for version]
@@ -36,9 +36,11 @@ flowchart TD
   GHConfirm -->|create| GHRelease[gh release create<br/>--notes extracted_notes]
   GHRelease --> MainDone([Report: tagged + promoted + release])
 
-  EnvNext -->|staging → production| EnvPush[Push current branch]
+  EnvNext -->|staging → production| EnvConfirm[Ask: confirm promotion?]
   EnvNext -->|already on production| EnvStop[/Stop: nothing to promote/]
-  EnvPush --> EnvDone([Report: pushed + promoted])
+  EnvConfirm -->|cancel| EnvCancelExit[/Exit: no changes/]
+  EnvConfirm -->|confirm| EnvMerge[Push current branch<br/>merge into next environment<br/>push next environment]
+  EnvMerge --> EnvDone([Report: promoted + pushed])
 ```
 
 ## Steps
@@ -53,7 +55,7 @@ Only on `main`. Discovers remote environment branches via `git branch -r`, filte
 
 ### 2. Calculate version
 
-Only on `main`. Versions follow [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Scans the last 20 commits for Conventional Commits patterns. If detected, walks commits since the last tag and proposes the next version: `BREAKING CHANGE` or `feat!` bumps major, `feat` bumps minor, `fix` bumps patch, `chore` and `docs` are ignored. The user confirms or enters a custom version. If Conventional Commits are not in use, the command asks the human for the version directly.
+Only on `main`. Versions follow [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Scans every commit since the last tag (`git log {last_tag}..HEAD`, unbounded) for Conventional Commits patterns. If detected, the same commit list proposes the next version: `BREAKING CHANGE` or `feat!` bumps major, `feat` (no breaking change) bumps minor, only `fix` bumps patch. `chore`, `docs`, `style`, `ci`, and `build` are ignored for version calculation. The user confirms or enters a custom version. If Conventional Commits are not in use, the command asks the human for the version directly.
 
 If no tag exists, the base version is read from the version file (`package.json`, `composer.json`, `VERSION`). If no version is found there either, `0.1.0` is used as the starting point.
 
@@ -73,11 +75,11 @@ After pushing, checks whether the remote origin URL contains `github.com`. If no
 
 ### 5. Promotion path
 
-Only on an environment branch. Pushes the current branch so CI/CD can deploy. Determines the next environment in the chain (`staging → production`) and stops if already on the final environment.
+Only on an environment branch. Determines the next environment in the chain (`staging → production`) and stops if already on the final environment. Otherwise confirms before mutating anything (per safety.md: never push without confirmation), then pushes the current branch, merges it into the next environment branch with a `--no-ff` deploy commit, pushes that branch too, and returns to the current branch.
 
 ### 6. Report
 
-Closes with a summary: version tagged, README updated yes or no, environments promoted, GitHub Release created or skipped or not applicable, deployment triggered.
+Closes with a summary. On `main`: version tagged, README updated yes or no, environments promoted, GitHub Release created or skipped or not applicable, deployment triggered. On an environment branch: which branch was promoted to which, both branches pushed, deployment triggered.
 
 ## Stop conditions
 

@@ -204,10 +204,27 @@ Determine next environment in promotion chain:
   staging    → production
   production → no further promotion, inform human and exit
 
-If next environment exists:
-  git push origin {current_branch}
-  Inform human:
-  "Pushed {current_branch}. CI/CD will deploy to corresponding server."
+If next environment exists, confirm before mutating anything (per safety.md: never push without confirmation):
+  AskUserQuestion:
+    question: "Promote {current_branch} to {next_environment}? This merges {current_branch} into {next_environment} and pushes both branches."
+    header:   "Promote"
+    multiSelect: false
+    options:
+      - label: "Promote to {next_environment} (Recommended)"
+        description: "Merge {current_branch} into {next_environment} and push"
+      - label: "Cancel"
+        description: "Exit without promoting"
+
+  If Cancel → exit silently.
+
+  If confirmed:
+  - git push origin {current_branch}
+  - git checkout {next_environment}
+  - git merge {current_branch} --no-ff -m "chore(deploy): promote {current_branch} to {next_environment}"
+  - git push origin {next_environment}
+  - git checkout {current_branch}
+  - Inform human:
+    "Promoted {current_branch} → {next_environment}. CI/CD will deploy to corresponding server."
 
 If no next environment (already on production):
   Stop and inform human:
@@ -228,6 +245,6 @@ If on main or master:
 
 If on environment branch:
   Report:
-  - Branch pushed:         {branch}
-  - Promoted to:           {next environment}
+  - Promoted:              {current_branch} → {next_environment}
+  - Branches pushed:       {current_branch}, {next_environment}
   - Deployment triggered:  yes/no (based on CI/CD presence)
