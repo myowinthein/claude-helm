@@ -62,34 +62,24 @@ If CLAUDE.md is absent, empty, or has no saved commit hash:
       - label: "Skip"
         description: "No update needed"
 
-If CLAUDE.md exists with a saved commit hash and schema is broken (any required section missing):
-  Regardless of gap size, recommend Full scan. State which sections are missing.
-  AskUserQuestion:
-    question: "{one sentence stating which sections are missing and why full scan is recommended}"
-    header:   "Update mode"
-    multiSelect: false
-    options:
-      - label: "Full scan (Recommended)"
-        description: "Rewrite CLAUDE.md from a complete project scan to restore missing sections"
-      - label: "Gap update"
-        description: "Update only commits since last review — missing sections will not be added"
-      - label: "Skip"
-        description: "No update needed"
-
 If CLAUDE.md exists with a saved commit hash and schema is intact, and there are no meaningful commits since the hash (`git log {hash}..HEAD` is empty, or only noise commits):
   CLAUDE.md is already current. Inform the user: "CLAUDE.md is up to date — no meaningful commits since last review." Do not present any prompt.
 
-If CLAUDE.md exists with a saved commit hash and schema is intact, with meaningful commits since the hash:
-  Recommend Gap update for a small or moderate gap, or Full scan for a large or significant gap. List the recommended option first and append "(Recommended)" to it.
+If CLAUDE.md exists with a saved commit hash, and either schema is broken or there are meaningful commits since the hash:
+  Determine recommendation:
+  - If schema is broken (any required section missing): recommend Full scan regardless of gap size — state which sections are missing.
+  - Otherwise (schema intact, meaningful commits exist): recommend Gap update for a small or moderate gap, or Full scan for a large or significant gap.
+  List the recommended option first and append "(Recommended)" to it.
+
   AskUserQuestion:
     question: "{one sentence status and recommendation}"
     header:   "Update mode"
     multiSelect: false
     options:
       - label: "Gap update"
-        description: "Update only sections affected by commits since last review"
+        description: "Update only sections affected by commits since last review{ — missing sections will not be added, if schema is broken}"
       - label: "Full scan"
-        description: "Rewrite CLAUDE.md from a complete project scan"
+        description: "Rewrite CLAUDE.md from a complete project scan{ to restore missing sections, if schema is broken}"
       - label: "Skip"
         description: "No update needed"
 

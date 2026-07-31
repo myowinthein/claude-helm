@@ -78,31 +78,21 @@ If README.md exists but has no saved commit hash:
       - label: "Skip"
         description: "No update needed"
 
-If README.md exists with a saved commit hash and `readme-style: standard` and structure is broken (any mandatory section missing):
-  Regardless of gap size, recommend Full scan. State which sections are missing.
-  AskUserQuestion:
-    question: "{one sentence stating which sections are missing and why full scan is recommended}"
-    header:   "Update mode"
-    multiSelect: false
-    options:
-      - label: "Full scan (Recommended)"
-        description: "Rewrite README.md from a complete project scan to restore missing sections"
-      - label: "Gap update"
-        description: "Update only commits since last review — missing sections will not be added"
-      - label: "Skip"
-        description: "No update needed"
+If README.md exists with a saved commit hash:
+  Determine recommendation:
+  - If `readme-style: standard` and structure is broken (any mandatory section missing): recommend Full scan regardless of gap size — state which sections are missing.
+  - Otherwise: recommend Gap update for a small or moderate gap, or Full scan for a large or significant gap.
+  List the recommended option first and append "(Recommended)" to it.
 
-If README.md exists with a saved commit hash and (structure is intact or `readme-style: custom`):
-  Recommend Gap update for a small or moderate gap, or Full scan for a large or significant gap. List the recommended option first and append "(Recommended)" to it.
   AskUserQuestion:
     question: "{one sentence status and recommendation}"
     header:   "Update mode"
     multiSelect: false
     options:
       - label: "Gap update"
-        description: "Update only sections affected by commits since last review"
+        description: "Update only sections affected by commits since last review{ — missing sections will not be added, if structure is broken}"
       - label: "Full scan"
-        description: "Rewrite README.md from a complete project scan"
+        description: "Rewrite README.md from a complete project scan{ to restore missing sections, if structure is broken}"
       - label: "Skip"
         description: "No update needed"
 
