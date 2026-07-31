@@ -79,7 +79,9 @@ Build a rewrite plan: a list of {sha, original_message, proposed_message} for ev
 
 ## Step 3 — Show plan and confirm
 
-Present the plan using AskUserQuestion:
+If non_compliant_count is 0 → inform user "All commits already follow Conventional Commits. Nothing to do." and exit. Do not present any prompt — there is nothing to confirm.
+
+Otherwise, present the plan using AskUserQuestion:
 
   AskUserQuestion:
     question: "Scan complete.\n\nTotal commits: {total}\nAlready compliant: {compliant_count}\nTo be rewritten: {non_compliant_count}\n\nSample rewrites:\n{show up to 5 examples in format: '{original}' → '{proposed}'}\n\nLocal branches that will be rewritten: {list from Step 2}\nIf an environment or teammate branch you need rewritten too isn't listed, cancel, fetch and check it out, then re-run.\n\nProceeding will rewrite {non_compliant_count} commits and force-push every listed branch to remote."
@@ -92,7 +94,6 @@ Present the plan using AskUserQuestion:
         description: "Exit without making any changes"
 
 If Cancel → exit silently.
-If non_compliant_count is 0 → inform user "All commits already follow Conventional Commits. Nothing to do." and exit.
 
 ---
 

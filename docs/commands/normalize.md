@@ -65,7 +65,9 @@ For non-compliant commits, reads the diff via `git show {sha} --stat` to infer t
 
 ### 3. Show plan and confirm
 
-Second gate, informed by real data. Presents:
+If the non-compliant count is zero, exits immediately with a "nothing to do" message — no prompt shown, since there'd be nothing to confirm.
+
+Otherwise, this second gate, informed by real data, presents:
 
 - Total commits scanned
 - Already-compliant count
@@ -74,8 +76,6 @@ Second gate, informed by real data. Presents:
 - The local branches that will be rewritten — a reminder to cancel, fetch, and check out any environment or teammate branch that isn't listed but needs the same treatment
 
 The user sees exactly what will change before confirming. Cancel exits cleanly with no changes made.
-
-If the non-compliant count is zero, the command exits here with a "nothing to do" message.
 
 ### 4. Rewrite
 
