@@ -160,19 +160,7 @@ The Copy or Update and Reference paths both update CLAUDE.md the same way — on
 
 - Detect the helm entries in any existing `## Rules` section (lines pointing at `.claude/rules/` or the marketplaces path) and set them to the snippet's entries. Preserve any user-authored entries — add or replace only the helm entries. Create a new `## Rules` section only if none exists — never add a second `## Rules` heading.
 - If CLAUDE.md exists: write silently — the install mode was already chosen in Step 3.
-- If CLAUDE.md does not exist: ask before creating it:
-
-  AskUserQuestion:
-    question: "CLAUDE.md does not exist. Create it with just the helm rules section?"
-    header:   "Create CLAUDE.md"
-    multiSelect: false
-    options:
-      - label: "Create CLAUDE.md (Recommended)"
-        description: "Creates a minimal CLAUDE.md containing only the ## Rules section."
-      - label: "Skip"
-        description: "Print the snippet to chat instead so you can place it manually."
-
-  On Create, write a new CLAUDE.md containing just the section. On Skip, print the snippet to chat.
+- If CLAUDE.md does not exist: create it silently with just the `## Rules` section. Do not prompt and do not offer a manual-placement path — the pointer is required for the rules to load, so anything short of writing it leaves the install non-functional. The Report step notes that CLAUDE.md was created.
 
 ### Copy or Update path
 
@@ -266,13 +254,13 @@ For Copy/Update:
 ADOPT COMPLETE
 - git.md    {written / updated / skipped} → .claude/rules/git.md (v{current_version})
 - safety.md {written / updated / skipped} → .claude/rules/safety.md (v{current_version})
-- CLAUDE.md ## Rules section points at the copied files
+- CLAUDE.md {created / updated}: ## Rules section points at the copied files
 ```
 
 For Reference:
 ```
 ADOPT COMPLETE
-- CLAUDE.md updated with references to claude-helm rules at v{current_version}
+- CLAUDE.md {created / updated}: ## Rules section references claude-helm rules at v{current_version}
 ```
 
 For No-change (in sync or project ahead):
