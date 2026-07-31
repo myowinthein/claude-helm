@@ -195,7 +195,9 @@ Wait for response before proceeding.
 
 ## Step 4 — Apply fixes
 
-Apply selected categories one at a time. Complete each section fully before moving to the next. Never mark the command done if a section was only partially applied — partial fixes leave the project in an inconsistent state.
+Step 4 runs two kinds of fix. The **dedicated flows** — Secret cleanup, Placeholder cleanup, and Never referenced — run automatically whenever their findings exist, regardless of the Step 3 selection (even if no category was selected). The four **selectable categories** — Env sync, Missing from env, Hardcoded values, Cleanup — run only if selected in Step 3.
+
+Apply each applicable section one at a time. Complete each section fully before moving to the next. Never mark the command done if a section was only partially applied — partial fixes leave the project in an inconsistent state.
 
 ### Secret cleanup (.env.example)
 
