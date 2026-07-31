@@ -44,13 +44,14 @@ flowchart TD
   Mode4 -->|full| Full
   Mode4 -->|gap| GapPath
 
-  Full["Investigate project<br/>Q1: git-strategy?<br/>Q2: auto-commit yes or no?<br/>Q3: merge strategy? (GitHub Flow only)<br/>write 7-section CLAUDE.md<br/>append last-reviewed hash"] --> Commit
+  Full["Investigate project<br/>Q1: git-strategy?<br/>Q2: auto-commit yes or no?<br/>Q3: merge strategy? (GitHub Flow only)<br/>write 8-section CLAUDE.md<br/>append last-reviewed hash"] --> Commit
   GapPath[Review commits since hash<br/>apply 3-question filter<br/>update sections or report<br/>no change, bump hash] --> Commit
 
-  Commit["Commit (per git-auto-commit)"] --> SoloOrFlow{Which mode?}
-  SoloOrFlow -->|Solo| Promote
-  SoloOrFlow -->|GitHub Flow| MergeMain[Merge branch into main<br/>Push main]
-  MergeMain --> Promote
+  Commit["Commit — silent under<br/>git-auto-commit, or confirm"] --> SoloOrFlow{Which mode?}
+  SoloOrFlow -->|Solo| PushAsk[Ask: push main now?<br/>always confirmed, regardless<br/>of git-auto-commit]
+  SoloOrFlow -->|GitHub Flow| MergeMain[Merge branch into main] --> PushAsk
+  PushAsk -->|Cancel| Done2[/Report: committed but<br/>not pushed, branch left as-is/]
+  PushAsk -->|Push| Promote
 
   Promote{Environment<br/>branches exist?}
   Promote -->|yes| PromoteAsk[Ask: which to promote?<br/>Merge main into each selected]
@@ -137,11 +138,11 @@ Only updates if all three answers are yes. Every change is bound to one of the e
 
 If nothing was written (the "CLAUDE.md is already up to date" case, or Skip selected anywhere): skips commit, merge, and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
 
-Otherwise commits per [git.md's Auto-Commit rule](../rules/git.html#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
+Otherwise commits per [git.md's Auto-Commit rule](../rules/git.html#auto-commit): silent if `git-auto-commit: true`, otherwise confirms before committing, merging, and pushing together. Either way, push always requires its own separate confirmation regardless of `git-auto-commit` — git.md's Auto-Commit rule states this as an explicit exception, and rules/safety.md lists `git push` as always requiring confirmation with no exceptions.
 
-If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
+If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the update — that branch-selection prompt is itself the confirmation for those pushes. Under GitHub Flow, the branch is merged into main first, then `git push origin main` gets its own separate "Push main now?" confirmation before proceeding to promotion and cleanup.
 
-**Solo Mode** commits directly to main, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
+**Solo Mode** commits directly to main, confirms the push, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main, confirms the push, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from. If push is cancelled at either point, the command stops there — no promotion, no branch cleanup — leaving the commit (or merge) in place locally for a manual push later.
 
 ### 6. Confirm completion
 
