@@ -303,8 +303,9 @@ Work through the current wave's clusters one at a time, in order. For each clust
   If skipped, this finding's ledger `status` becomes `skipped-by-user` (not `open`), so it stops resurfacing every run. Only re-surface it later if the surrounding code changes enough that the original suggestion may no longer apply.
 
 - Once the cluster's edits are complete: run tests — stop and inform if tests fail, do not move to the next cluster until resolved. Run lint and formatter.
+- Infer the commit scope from the primary module, folder, or domain area touched by this cluster's files — per git.md's Conventional Commits convention (module/feature/domain, e.g. `orders`, `auth`, `payment`), not this command's five-category taxonomy (architecture/quality/performance/tests/dependencies), which is a report and selection grouping, not a commit scope. If the cluster spans multiple areas, use the dominant one; if truly cross-cutting, use `project` or `core`. Keep it lowercase, one word or hyphenated.
 - Commit:
-  refactor({category}): {brief summary of this cluster's changes}
+  refactor({scope}): {brief summary of this cluster's changes}
 - Update the ledger immediately for every finding in this cluster: `status` to `fixed` or `skipped-by-user`, with `resolved_commit` and `resolved_date` set.
 
 This is the checkpoint: each cluster is fully tested, committed, and recorded in the ledger before moving to the next one. If the agent stops for any reason after this point, nothing already committed is lost or ambiguous.
@@ -321,9 +322,9 @@ This replaces "silently completes a few and reports the rest at the end" with "a
 For any finding in this category the user did not select at the category level (Step 5), leave its ledger `status` as `open`.
 
 Example commits:
-  refactor(architecture): extract business logic from controllers
-  refactor(quality): remove duplicate helper methods
-  refactor(tests): update outdated assertions
+  refactor(orders): extract business logic from controller
+  refactor(auth): remove duplicate helper methods
+  refactor(checkout): update outdated assertions
 
 ### 6.4 Scoped verification pass
 
