@@ -199,7 +199,7 @@ The Copy or Update and Reference paths both update CLAUDE.md the same way — on
 
 ### Reference path
 
-- Clear any local `.claude/rules/{name}` so it does not sit alongside — and conflict with — the referenced plugin rules. **Gather all decisions before deleting anything**, so a Cancel leaves the project untouched:
+- Resolve any local `.claude/rules/{name}` that would otherwise sit alongside — and conflict with — the referenced plugin rules. Helm-marked files are removed; Foreign files are the user's call. **Gather all decisions before deleting anything**, so a Cancel leaves the project untouched:
   - **Decide (no changes yet):** for each Foreign (unmarked) file, warn that it would coexist with the referenced plugin rules and ask. Helm did not create these, so never delete them silently.
 
     AskUserQuestion:
