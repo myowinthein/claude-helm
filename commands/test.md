@@ -4,6 +4,14 @@ description: Detect test framework and write missing tests for recent changes or
 
 # test
 
+## Scope
+
+Tests must reflect actual proven behavior — not speculative edge cases.
+Follow existing test conventions, naming, and file structure.
+Never push with failing tests.
+
+---
+
 ## Step 1 — Detect test framework
 
 Scan for test framework configuration files and dependencies.
@@ -304,11 +312,3 @@ After tests are written, run, and committed:
 
 Commit the ledger:
   test(log): update test ledger after {catch-up / full-scan}
-
----
-
-## Scope
-
-Tests must reflect actual proven behavior — not speculative edge cases.
-Follow existing test conventions, naming, and file structure.
-Never push with failing tests.
