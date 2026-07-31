@@ -461,6 +461,7 @@ If Cancel selected → leave the documents written but uncommitted, then proceed
 If Commit selected:
 - Stage the generated documents and the updated `.claude/legal-manifest.json`; do not use `git add -A`.
 - Commit: `docs(legal): generate legal documents` (include the resolved output path and format in the body if they differ from the default).
+- Push: `git push origin main`.
 - Run Environment promotion above.
 
 **GitHub Flow:**

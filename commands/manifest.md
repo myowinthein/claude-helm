@@ -231,7 +231,21 @@ Commit per git.md's Auto-Commit rule: silent if `git-auto-commit: true`, otherwi
 
   If no environment branches exist, or the user selects none, skip silently.
 
-**Solo Mode:** commit directly to main, then run Environment promotion above.
+**Solo Mode:** commit directly to main. Before pushing, confirm:
+
+  AskUserQuestion:
+    question: "Push main now? This publishes the commit to origin."
+    header:   "Push"
+    multiSelect: false
+    options:
+      - label: "Push (Recommended)"
+        description: "git push origin main"
+      - label: "Cancel"
+        description: "Leave main committed locally but unpushed — push manually when ready"
+
+If Cancel selected → stop here. Do not push or promote. Proceed to Step 5 to report the outcome, noting main is committed locally but unpushed.
+
+If Push selected: `git push origin main`, then run Environment promotion above.
 
 **GitHub Flow:**
 1. Commit on `{branch}`.
