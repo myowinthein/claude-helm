@@ -16,7 +16,7 @@ flowchart TD
 
   Exists -->|no| Mode1[Ask: full scan or skip?]
   Exists -->|yes, no hash| Mode1
-  Exists -->|yes, with hash| Schema{All 7 sections<br/>present?}
+  Exists -->|yes, with hash| Schema{All 8 sections<br/>present?}
 
   Schema -->|no| Mode4["Ask: full scan (default),<br/>gap update, or skip?<br/>(names missing sections)"]
   Schema -->|yes| Gap{Gap significance<br/>since last review?}
@@ -49,7 +49,7 @@ flowchart TD
 
 Reads the current `CLAUDE.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, runs `git log {hash}..HEAD --oneline` to measure the gap. Categorizes the gap as small/moderate or large/significant, ignoring noise commits (bug fixes, styling, dependency updates, routine CRUD).
 
-Also checks whether all seven required sections are present (`## Project Identity`, `## Project Config`, `## Dev Commands`, `## Architecture Pointers`, `## Behavior Rules`, `## Hard Safety Rules`, `## Known Traps`). A missing section means the schema is broken, regardless of gap size.
+Also checks whether all eight required sections are present (`## Project Identity`, `## Project Config`, `## Dev Commands`, `## Architecture Pointers`, `## Domain Rules`, `## Behavior Rules`, `## Hard Safety Rules`, `## Known Traps`). A missing section means the schema is broken, regardless of gap size.
 
 ### 2. Pick mode
 
@@ -69,15 +69,16 @@ Investigates the project from scratch: business purpose, modules and workflows, 
 2. **Auto-commit** — yes (Claude commits after each task without prompting) or no (ask before every commit).
 3. **Merge strategy** (GitHub Flow only) — Squash (default), Rebase, or Merge commit. Stored as `git-merge-strategy`.
 
-Then writes `CLAUDE.md` using a seven-section schema:
+Then writes `CLAUDE.md` using an eight-section schema:
 
 1. Project Identity
 2. Project Config (e.g. `git-strategy: solo`, `git-auto-commit: true`, `git-merge-strategy: squash`)
 3. Dev Commands
 4. Architecture Pointers
-5. Behavior Rules
-6. Hard Safety Rules
-7. Known Traps
+5. Domain Rules (non-obvious business, lifecycle, and permission constraints — "None" if there are none)
+6. Behavior Rules
+7. Hard Safety Rules
+8. Known Traps
 
 Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly. Target under 150 lines.
 

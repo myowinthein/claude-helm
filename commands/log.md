@@ -12,11 +12,11 @@ Check CLAUDE.md:
 - Is there a saved commit hash? (look for `<!-- last-reviewed: {hash} -->`)
 - If hash exists, run `git log {hash}..HEAD --oneline` to see the gap
 - How significant is the gap? (ignore: bug fixes, styling, dependency updates, routine CRUD)
-- If the file exists and has content, check whether all seven required sections are present:
+- If the file exists and has content, check whether all eight required sections are present:
   `## Project Identity`, `## Project Config`, `## Dev Commands`,
-  `## Architecture Pointers`, `## Behavior Rules`, `## Hard Safety Rules`, `## Known Traps`
+  `## Architecture Pointers`, `## Domain Rules`, `## Behavior Rules`, `## Hard Safety Rules`, `## Known Traps`
 
-Schema is intact if all seven headings are found. Schema is broken if any are missing.
+Schema is intact if all eight headings are found. Schema is broken if any are missing.
 
 Based on current state, use AskUserQuestion (single-select) to present options:
 
@@ -159,14 +159,15 @@ Before writing anything, investigate in this order:
 7. Identify operational context and common development workflows
 8. Review existing docs, README, .claude/rules
 
-Then write CLAUDE.md using the seven-section schema:
+Then write CLAUDE.md using the eight-section schema:
 1. Project Identity (name, stack, purpose, blast radius)
 2. Project Config (flag-style declarations read by .claude/rules, e.g. `git-strategy: solo`, `git-auto-commit: true`; keep heading even if empty)
 3. Dev Commands (install, run, test single file, migrate, logs)
 4. Architecture Pointers (key files with one-line why, not summaries)
-5. Behavior Rules (autonomy model, confirmation gates, test requirements)
-6. Hard Safety Rules (invariants, never-do list — keep brief; instruct the agent to read and follow .claude/rules/safety.local.md every session for the full detail)
-7. Known Traps (initially empty or inferred from README warnings)
+5. Domain Rules (non-obvious business, lifecycle, and permission constraints a change could violate — one line each; write "None" if the project has no notable domain rules)
+6. Behavior Rules (autonomy model, confirmation gates, test requirements)
+7. Hard Safety Rules (invariants, never-do list — keep brief; instruct the agent to read and follow .claude/rules/safety.local.md every session for the full detail)
+8. Known Traps (initially empty or inferred from README warnings)
 
 Before writing the Project Config section, run Project Config Check.
 
