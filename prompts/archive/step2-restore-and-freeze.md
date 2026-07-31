@@ -145,7 +145,7 @@ Images exported to `recovery/docker/`. Size of each tarball. Recovery commands.
 Data source selected and why. How data was restored. Demo accounts or sample data available if any.
 
 ## Changes Made
-Every file created or modified: path, what changed, and why it was necessary.
+Every file created, modified, or deleted: path, what changed (or why it was removed), and why it was necessary.
 
 ## Environment Variables
 Any variables added or changed from the original.
