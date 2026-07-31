@@ -107,9 +107,9 @@ Optional sections when relevant: badges, long description, background, API, limi
 
 Skipped unless specifically needed: banner, security, thanks, maintainers, extra sections.
 
-If `readme-style: custom` and README.md already has content: reads the existing structure first, rewrites content within each section based on the project scan, and does not add, remove, or rename sections without explicit approval. If README.md is absent or empty, there's nothing to preserve yet — establishes a minimal, sensible structure from the project scan (at minimum title, short description, install, usage, license) rather than forcing the Standard Readme spec's full section set; future runs preserve whatever gets established here.
+If `readme-style: custom` and README.md already has content: reads the existing structure first, rewrites content within each section based on the project scan, and does not add, remove, or rename sections without explicit approval. If README.md is absent or empty, writes nothing — custom mode preserves structure, it doesn't author it. Reports that there's no README.md yet and asks the developer to write one in whatever structure they prefer; a future run then preserves it.
 
-Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
+If a write happened: appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
 
 ### 4. Gap update
 
@@ -124,7 +124,9 @@ Proposes the changes per section, asks for confirmation, then writes. Bumps the 
 
 ### 5. Commit and finalize
 
-Commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
+Skipped entirely if Full scan wrote nothing (the custom-mode, absent-README case) — nothing to commit, merge, or promote.
+
+Otherwise commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
 
 If environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
 

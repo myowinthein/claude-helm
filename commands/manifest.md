@@ -47,7 +47,7 @@ If `readme-style` is absent:
         - label: "Standard Readme spec"
           description: "Write README.md following the Standard Readme spec structure."
         - label: "Custom style"
-          description: "No existing structure to follow — establishes a minimal structure now instead of the full spec, which future runs then preserve rather than rewrite."
+          description: "No existing structure to follow yet — you write README.md yourself in whatever structure you prefer; once it exists, future runs preserve it rather than rewrite it."
 
   Write the chosen value (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md Project Config before continuing.
 
@@ -155,10 +155,10 @@ If `readme-style: custom`:
     Preserve the existing section order and naming.
     Rewrite content within each section based on the project scan.
     Do not add, remove, or rename sections without explicit approval.
-  If README.md is absent or empty (nothing to preserve yet):
-    Establish a minimal, sensible structure based on the project scan — at minimum a title, a short description, install steps (if applicable), usage, and license. Do not force the Standard Readme spec's full section set or ordering; this is a starting point, not a spec to satisfy. Future runs preserve whatever structure is established here.
+  If README.md is absent or empty:
+    Do not write anything — custom mode preserves structure, it does not author it. Report that there is no README.md yet, so there is nothing to be "custom" relative to, and ask the developer to write one in whatever structure they prefer. A future run will then preserve that structure.
 
-At the end of the file, append:
+If a write happened (i.e. not the custom-mode absent-README case above): at the end of the file, append:
 `<!-- last-reviewed: {current HEAD commit hash} -->`
 
 Write directly — no approval needed.
@@ -192,6 +192,8 @@ Propose changes per affected section. Ask for confirmation before writing.
 ---
 
 ## Step 4 — Commit and finalize
+
+Skip this step entirely if Step 2 wrote nothing (the custom-mode, absent-README case) — there is nothing to commit, merge, or promote.
 
 Commit per git.md's Auto-Commit rule — this also governs whether the sequence below needs confirmation before proceeding: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
 
