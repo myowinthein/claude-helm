@@ -2709,11 +2709,11 @@
       "file": "commands/adopt.md",
       "line": 259,
       "description": "Fresh bootstrap path commits any Step 4 changes and stops with no push confirmation offered at all, unlike the Normal flow which always confirms push separately per rules/safety.md \u2014 a commit with a real remote present is left local with no path to push and the outcome isn't reported.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a09c2663a4b16198f1d300f17cc915b6767e4393",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0123",
@@ -2725,11 +2725,11 @@
       "file": "commands/adopt.md",
       "line": 330,
       "description": "None of the ADOPT COMPLETE report variants include a 'Pushed: yes/no' line, unlike every other command's completion report in this codebase.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a09c2663a4b16198f1d300f17cc915b6767e4393",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0124",
