@@ -39,7 +39,7 @@ flowchart TD
   Update -->|update / roll back| Copy
   Update -->|in sync or keep-ahead| Done
   Update -->|switch to reference| Reference
-  Conflict -->|review per file| PerFile[Per file:<br/>overwrite, skip, or diff]
+  Conflict -->|review per file| PerFile[Per file:<br/>overwrite or skip]
   Conflict -->|reference| Reference
 
   Copy[Copy from plugin install path<br/>prepend helm-rule version marker<br/>write to .claude/rules/] --> Done
@@ -81,7 +81,7 @@ Both the Copy or Update and Reference paths update CLAUDE.md's `## Rules` sectio
 
 **Copy or Update**: ensures `.claude/rules/` exists, then writes `git.md` and `safety.md` from the installed plugin source — each with a leading `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker so a future run detects them as helm-managed. The `## Rules` snippet lists the local `.claude/rules/` paths, so the rules load as context rather than relying on implicit auto-loading.
 
-**Conflict / Review per file**: for each foreign file, asks Overwrite, Skip, or Show diff. Showing the diff loops back to the same prompt so the user can pick after seeing the changes. Overwrite installs the file via the Copy or Update path; Skip leaves it untouched.
+**Conflict / Review per file**: for each foreign file, asks Overwrite or Skip. Overwrite installs the file via the Copy or Update path; Skip leaves it untouched (the developer can diff against the plugin source manually if they want to compare first).
 
 **Reference**: first resolves any local `.claude/rules/` copy that would otherwise sit alongside — and conflict with — the referenced plugin rules. All decisions are gathered before anything is deleted, so cancelling leaves the project untouched. Helm-marked files are deleted (so the next scan classifies as REFERENCED rather than UPDATE); Foreign, user-authored files are never deleted silently — the command warns about the coexistence and asks per file whether to keep or delete it, and any kept file is flagged in the report as a possible conflict. The `## Rules` snippet points at `~/.claude/plugins/marketplaces/claude-helm/rules/` — always the latest installed version, auto-updating after `/plugin update helm@claude-helm` — and includes a warning to install the plugin if those paths are missing.
 

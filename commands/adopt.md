@@ -194,8 +194,20 @@ The Copy or Update and Reference paths both update CLAUDE.md the same way — on
 
 ### Review per file path
 
-- For each Foreign file, use AskUserQuestion with options: Overwrite, Skip, Show diff. Loop the prompt after Show diff so the user can still pick Overwrite or Skip.
-- Overwrite writes the file via the Copy or Update path (marker + local `## Rules` entry); Skip leaves the user's file untouched.
+For each Foreign file:
+
+AskUserQuestion:
+  question: "{file} already exists and was not created by helm. Overwrite it with the plugin's version?"
+  header:   "Foreign file"
+  multiSelect: false
+  options:
+    - label: "Overwrite"
+      description: "Replace it with the helm version — adds the marker and the local ## Rules entry"
+    - label: "Skip"
+      description: "Leave your file untouched"
+
+- On Overwrite → write the file via the Copy or Update path.
+- On Skip → leave the user's file as-is. (To compare first, the developer can diff their file against the plugin source manually.)
 
 ### Reference path
 
