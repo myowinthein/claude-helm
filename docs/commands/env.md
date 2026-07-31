@@ -12,25 +12,34 @@ Audit `.env` files, `.gitignore`, and source code to find and fix environment co
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:env]) --> Scan[Scan all env files,<br/>source code, and .gitignore<br/>11 checks — read-only]
+  Start([User runs /helm:env]) --> Branch[Solo Mode: require main/master<br/>GitHub Flow: branch off main]
+  Branch --> Scan[Scan all env files,<br/>source code, and .gitignore<br/>11 checks — read-only]
 
   Scan --> Report[Present findings — ENV AUDIT REPORT]
   Report --> Ask[Ask: which targets to work through?<br/>Env files and/or .gitignore]
 
   Ask -->|Env files| EnvFlows[Env-file sub-flows, each with a Skip:<br/>Secret cleanup · Placeholder cleanup ·<br/>Env sync · Missing from env ·<br/>Hardcoded values · Never referenced ·<br/>Env formatting]
   Ask -->|.gitignore| GitFlows[.gitignore sub-flows, each with a Skip:<br/>Missing entries · Tracked files ·<br/>Entries to remove · Formatting]
-  Ask -->|neither| SkipExit[/Exit: no changes/]
+  Ask -->|neither| SkipExit[/Exit: no changes,<br/>clean up branch if one was created/]
 
-  EnvFlows --> Commit[Ask: commit now?]
+  EnvFlows --> Commit[Commit — silent under<br/>git-auto-commit, or confirm]
   GitFlows --> Commit
-  Commit --> Done([Report: ENV COMPLETE])
+  Commit --> Push[Ask: push main now?]
+  Push --> Promote[Ask: promote to<br/>environment branches?]
+  Promote --> Cleanup[GitHub Flow: merge to main,<br/>delete temp branch]
+  Cleanup --> Done([Report: ENV COMPLETE])
 ```
 
 ## Steps
 
 ### Before starting
 
-No branch requirement — runs from any branch. This command audits and fixes `.env`/`.gitignore` configuration in place; it doesn't generate canonical content that needs a stable, merged main to scan from, so it isn't git-strategy-aware the way `/helm:log` or `/helm:manifest` are.
+Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.html):
+
+- **Solo Mode**: runs only on `main`/`master`. Halts on any other branch. No branch is created — every commit lands directly on main.
+- **GitHub Flow**: records the current branch, then checks out a fresh branch from main's current tip (`chore/env-{date}`). Returns to the original branch at the end (see Step 4).
+
+If the command exits at any point without writing anything, this cleanup still runs: delete the temporary branch and return to the original branch.
 
 ### 1. Scan
 
@@ -75,13 +84,17 @@ Run the selected target's sub-flows, one at a time, each completing fully before
 - **Entries to remove** — shows overly broad or harmful entries with reason, single-select Remove all/Skip.
 - **Gitignore formatting** — single-select Proceed/Skip. Fixes formatting, removes duplicates, adds category groupings.
 
-### 4. Commit
+### 4. Commit, push, and promote
 
-After all fixes are applied, commits (per [git.md's Auto-Commit rule](../rules/git.html#auto-commit), which governs every commit this plugin makes). Commit message: `chore(env): audit and fix env configuration`.
+After all fixes are applied, stages what's left (explicit paths, never `git add -A`) and commits — per [git.md's Auto-Commit rule](../rules/git.html#auto-commit): silent if `git-auto-commit: true`, otherwise confirms first. Commit message: `chore(env): audit and fix env configuration`. If nothing was staged (e.g. the Hardcoded values sub-flow already committed everything per-file), skips commit, merge, and promotion entirely.
+
+Push always requires its own confirmation regardless of `git-auto-commit`, per git.md's Auto-Commit exception and rules/safety.md's unconditional push-confirmation rule. If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the update, then merges main into each and pushes.
+
+**Solo Mode** commits directly to main, confirms the push, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main, confirms the push, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
 
 ### 5. Completion report
 
-Summarises the outcome grouped by target (Env files, .gitignore): counts replaced, added, deleted, or fixed for each of the eleven sub-flows — including how many never-referenced keys were deleted vs kept. Lists anything needing manual follow-up: skipped secret cleanup (real secrets still in `.env.example`) and skipped tracked files.
+Summarises the outcome grouped by target (Env files, .gitignore): counts replaced, added, deleted, or fixed for each of the eleven sub-flows — including how many never-referenced keys were deleted vs kept. Lists anything needing manual follow-up: skipped secret cleanup (real secrets still in `.env.example`) and skipped tracked files. Also reports whether the commit was pushed (or is waiting locally for a manual push), which environment branches were promoted, and — under GitHub Flow — the temporary branch's fate and which branch the command returned to.
 
 ## Stop conditions
 
