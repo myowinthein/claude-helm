@@ -2453,11 +2453,11 @@
       "file": "docs/commands/archive/3-postman.md",
       "line": 1,
       "description": "Missing the Postman Collection Format v2.1 schema detail and Bruno-compatibility rationale that the real prompts/archive/step3-postman.md specifies.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "828ef72b51f50ba0b8202e6ee52a5f221b23c8b6",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0107",
