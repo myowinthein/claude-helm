@@ -25,11 +25,14 @@ flowchart TD
   BranchApproval -->|no| StopBranch([Stop])
   BranchApproval -->|yes| DeleteBranches[Delete all other branches\nRename archived branch to main]
 
-  DeleteBranches --> LFS{Files larger\nthan 100 MB?}
-  LFS -->|yes| SetupLFS[Set up Git LFS\nTrack in .gitattributes]
-  LFS -->|no| Assets
-
+  DeleteBranches --> ReportSize[Report recovery/docker/\nand other 100+ MB file sizes]
+  ReportSize --> LFSChoice{Commit tarballs via\nGit LFS, or keep local only?}
+  LFSChoice -->|Git LFS| SetupLFS[Set up Git LFS\nTrack in .gitattributes\nStage .gitattributes]
+  LFSChoice -->|Keep local only| GitignoreDocker[Add recovery/docker/\nto .gitignore\nNote: back up separately]
+  LFSChoice -->|Cancel| StopLFS([Stop])
   SetupLFS --> Assets{Archive-worthy\nassets found?}
+  GitignoreDocker --> Assets
+
   Assets -->|yes, safe to move| MoveAssets[Move to recovery/assets/\nUpdate doc references]
   Assets -->|yes, referenced| WarnAssets[/Report referenced assets\nwait for developer to decide/]
   Assets -->|none| Services
@@ -72,9 +75,13 @@ If local and remote `main` have diverged after the push, the step stops for appr
 
 After deletion, runs `git ls-remote --heads origin` to confirm the deleted branches no longer appear on the remote.
 
-## Task 3 — Git LFS
+## Task 3 — Git LFS and recovery tarballs
 
-Scans for files larger than 100 MB (tracked and untracked). If found, Git LFS is set up and large files are tracked with appropriate patterns in `.gitattributes`. Skips silently if no large files exist.
+Reports the total size of `recovery/docker/` and any other files over 100 MB (tracked or untracked). Since the Docker tarballs are the freeze mechanism and must travel with the archive for a clean-machine recovery, the developer is asked how they should travel:
+
+- **Commit via Git LFS (recommended)** — sets up Git LFS, tracks `recovery/docker/*.tar.gz` and any other over-100 MB files with patterns in `.gitattributes`, and stages `.gitattributes`. Keeps the archive self-contained.
+- **Keep local only** — adds `recovery/docker/` to `.gitignore`; the report notes the tarballs must be backed up separately and placed back before recovery. Other over-100 MB files staying in the repo are still LFS-tracked.
+- **Cancel** — stops here to decide later.
 
 ## Task 4 — Asset consolidation
 

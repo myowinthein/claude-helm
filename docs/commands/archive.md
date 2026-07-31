@@ -83,7 +83,7 @@ After the workflow completes, the project contains:
 
 ```
 recovery/
-  docker/         ← gitignored Docker image tarballs (local only)
+  docker/         ← Docker image tarballs (committed via Git LFS, or gitignored if kept local only)
   postman/        ← Postman collection and environment files
   assets/         ← consolidated screenshots, exports, demo files
 docs/
