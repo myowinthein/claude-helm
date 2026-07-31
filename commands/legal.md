@@ -126,6 +126,32 @@ After resolving the format and path, confirm with the user before continuing:
   If Custom path selected → ask the user to type the path and preferred format before proceeding.
   If confirmed → proceed with the resolved path and format.
 
+**Contact point**
+
+Legal documents must give users a real way to reach the owner (mandatory under GDPR Art. 13). Resolve it now — do not generate anything until a valid contact point is confirmed. Never fall back to a bare placeholder.
+
+Infer candidates from the project:
+- Repo issues URL — from the git remote, `package.json`, or `composer.json`.
+- Support/contact email — from `package.json` (`bugs.email`, `author.email`), `composer.json` (`authors.email`), or a `SECURITY.md` / `CONTACT` file.
+
+Ask which to use:
+
+  AskUserQuestion:
+    question: "How should users contact the owner in the legal documents? Required — a legal document needs a real contact."
+    header:   "Contact point"
+    multiSelect: false
+    options:
+      - label: "Open a repo issue"          ← include only if an issues URL was found; show the URL in the description
+        description: "Users open an issue at {issues URL}"
+      - label: "Email"                       ← include only if an email was found; show it in the description
+        description: "Users email {email}"
+      - label: "Enter a contact manually"    ← always include, so the question has at least two options
+        description: "Type an email, contact page URL, or postal address"
+
+  The built-in Other option also lets the developer type any contact. Whatever is chosen or typed must be a valid contact — an email address, a URL, or a postal address. If the response is empty or not a recognisable contact, re-ask; do not proceed without one.
+
+Record the resolved contact and its type (email / issue URL / page / postal) for the Contact section in Step 3.
+
 **Existing legal documents**
 - Check whether the resolved output path exists.
 - List which documents are already present using the resolved file extension.
@@ -250,13 +276,14 @@ For HTML (`.html`):
 
 **Last updated (all documents):** Begin every document with a `**Last updated:** {current date}` line directly below the title, before the first section. Use the current date in `YYYY-MM-DD` format (e.g. `2026-07-07`).
 
-**Contact section (all documents):** End every document with a `## Contact` section
-using this exact wording:
+**Contact section (all documents):** End every document with a `## Contact` section, using the contact point resolved in Step 1 and wording that matches its type:
 
-  For questions about this {Document Title}, open an issue at {repo issues URL}.
+  Email → "For questions about this {Document Title}, contact us at {email}."
+  Repo issue URL → "For questions about this {Document Title}, open an issue at {issues URL}."
+  Contact page or other URL → "For questions about this {Document Title}, reach us at {url}."
+  Postal address → "For questions about this {Document Title}, write to us at {address}."
 
-  Infer the repo issues URL from `package.json`, `composer.json`, or git remote.
-  If not found, use a placeholder and note it.
+  Never emit a placeholder here — Step 1 has already guaranteed a valid contact.
 
 ---
 

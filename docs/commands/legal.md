@@ -103,8 +103,7 @@ Each selected document is written in plain English, GDPR compliant, to the resol
 
 **Last updated:** every document begins with a `**Last updated:** {current date}` line below the title, in `YYYY-MM-DD` format.
 
-**Contact section:** every document ends with a `## Contact` section using:
-> For questions about this {Document Title}, open an issue at {repo issues URL}.
+**Contact section:** every document ends with a `## Contact` section using the contact point resolved in Step 1, with wording matched to its type — "contact us at {email}", "open an issue at {url}", "reach us at {page}", or "write to us at {address}". The contact is resolved up front: the command infers candidates (repo issues URL, support email) and asks the developer which to use, with the built-in Other option for a custom one. Because a legal document legally needs a working contact (GDPR Art. 13), it **will not generate anything until a valid contact is provided** — it never falls back to a placeholder.
 
 **Document specs** — summary of titles and key sections. The command specification is the canonical source for full section lists and content rules:
 
