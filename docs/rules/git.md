@@ -187,13 +187,17 @@ Environment branches are long-lived branches that are not `main`, `master`, or f
 - Environment branches are permanent. Never delete.
 - Nothing merges directly to an environment branch.
 - All changes flow through `main` first (upstream-first rule).
-- Promote by merging upstream branch into downstream branch.
 - Hotfixes follow the same rule: `main` first, then promote.
-- If CI is configured, it must pass before promoting to the next environment.
+- If CI is configured, it must pass before promoting.
 
-**Promotion flow**: `main → {environment branches in order}`.
+**Promotion model**: governs `/helm:ship`'s release promotion specifically. Set with `environment-promotion` in CLAUDE.md's Project Config (`fan-out` or `chain`; absence defaults to `fan-out`).
 
-The `/helm:ship` command detects environment branches automatically and offers a multi-select for which to promote alongside the main release. `/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` do the same after committing their generated content, so environment branches don't fall behind main on legal documents, `CLAUDE.md`, `README.md`, or the installed rule files.
+- **Fan-out** (default): `main` promotes directly to any combination of environment branches, independently — no ordering between them. Simple parallel deploy targets.
+- **Chain**: environments form an ordered pipeline (e.g. `main → staging → production`). Only the first tier (`staging`, `stage`, `uat`, `preprod`) is ever merged into directly from `main`. A later tier (`production`, `prod`) is never a direct deploy target — it's only reached by merging the previous tier's branch forward into it, one tier at a time.
+
+`/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` always use fan-out for promoting their own generated content (legal documents, `CLAUDE.md`, `README.md`, rule files), regardless of this setting — those are content syncs, not a release pipeline, so there's no tier for a document to pass through.
+
+The `/helm:ship` command detects environment branches automatically and offers a multi-select for which to promote alongside the main release (filtered to first-tier branches only under `chain` mode). `/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` do the same after committing their generated content, so environment branches don't fall behind main on legal documents, `CLAUDE.md`, `README.md`, or the installed rule files.
 
 ## See also
 

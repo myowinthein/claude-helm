@@ -198,9 +198,19 @@ If environment branches detected, these additional rules apply:
 - Environment branches are permanent — never delete
 - Nothing merges directly to environment branches
 - All changes flow through main first (upstream-first rule)
-- Promote by merging upstream branch into downstream branch
 - Hotfixes follow the same rule — main first, then promote
-- If CI is configured, it must pass before promoting to next environment
+- If CI is configured, it must pass before promoting
 
-**Promotion flow:**
-  main → {environment branches in order}
+**Promotion model**
+
+Governs `/helm:ship`'s release promotion specifically. `/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` always use fan-out for their own promotion of generated content (CLAUDE.md, README.md, legal documents, rule files) regardless of this setting — those are content syncs, not a release pipeline, so there's no meaningful "tier" for a document to pass through.
+
+Set with `environment-promotion` in CLAUDE.md (Project Config section):
+  environment-promotion: fan-out  → main merges directly into every selected environment, independently
+  environment-promotion: chain    → environments form an ordered pipeline; only the first tier is reached directly from main
+
+Absence defaults to fan-out.
+
+**Fan-out**: main promotes directly to any combination of environment branches — no ordering, no dependency between them. Simple parallel deploy targets (e.g. staging and production both receive the same release independently).
+
+**Chain**: environments form an ordered pipeline (e.g. main → staging → production). Only the first tier (staging, stage, uat, preprod) is ever merged into directly from main. A later tier (production, prod) is never selected as a direct deploy target — it's only reached by later merging the previous tier's branch forward into it (upstream-first rule, one tier at a time).

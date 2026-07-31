@@ -31,19 +31,23 @@ Skip this step if on environment branch — proceed directly to Step 5.
 Discover environment branches via: git branch -r
 Filter for known environment names (staging, production, or similar).
 
-If no environment branches exist:
+Check `environment-promotion` in CLAUDE.md Project Config (see git.md's Environment Branches section; absence defaults to `fan-out`):
+- **fan-out**: offer every discovered environment branch below.
+- **chain**: offer only first-tier branches (staging, stage, uat, preprod) — second-tier branches (production, prod) are never a direct deploy target from main in chain mode; they're only reached later via Step 5's promotion from the first tier. If only second-tier branches exist (no first tier to promote through), offer none and inform the human why: "production-tier branches require a pre-production tier to promote through in chain mode; none found."
+
+If no environment branches exist (after filtering):
   Skip this step. Tag and push main only.
 
-If environment branches exist, use AskUserQuestion:
+If environment branches exist (after filtering), use AskUserQuestion:
   AskUserQuestion:
     question: "main/master will always be tagged and pushed. Which additional environments should be promoted?"
     header:   "Deploy targets"
     multiSelect: true
-    options: one entry per discovered environment branch, e.g.:
+    options: one entry per offered environment branch, e.g.:
       - label: "staging"
         description: "Merge and push main to the staging branch"
       - label: "production"
-        description: "Merge and push main to the production branch"
+        description: "Merge and push main to the production branch"  (fan-out mode only)
 
   If user selects none → deploy to main/master only.
   Wait for response before proceeding.
@@ -154,7 +158,7 @@ Commit, tag, and push:
 - git push origin HEAD
 - git push origin v{version}
 
-Before promoting to any selected environment, check CI status for the commit just pushed to main — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting to next environment"):
+Before promoting to any selected environment, check CI status for the commit just pushed to main — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting"):
 - If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check silently — proceed straight to the promotion loop below.
 - Otherwise: capture the pushed commit's SHA (`git rev-parse HEAD`), then run `gh run list --branch main --limit 20 --json headSha,status,conclusion` and filter to runs whose `headSha` matches. A single push can trigger multiple workflow runs, and querying only the single most recent run risks catching a stale run from a previous commit before GitHub has registered this one — matching on `headSha` avoids both problems.
   - If no matching runs found → treat as "none yet" (CI hasn't registered this commit).
@@ -208,6 +212,17 @@ If hosted on GitHub, use AskUserQuestion:
 
 Only run this step if on environment branch.
 
+Check `environment-promotion` in CLAUDE.md Project Config (see git.md's Environment Branches section; absence defaults to `fan-out`).
+
+### Fan-out mode
+
+There is no chain to advance — environment branches only ever receive code directly from main (Step 1), never from each other. Just push the current branch:
+- git push origin {current_branch}
+- Inform human:
+  "Pushed {current_branch}. CI/CD will deploy to corresponding server."
+
+### Chain mode
+
 Determine next environment in promotion chain. git.md recognizes these environment names; treat names within the same tier as equivalent, matching {current_branch} against whichever it is:
   Tier 1 (pre-production): staging, stage, uat, preprod
   Tier 2 (production):     production, prod
@@ -216,7 +231,7 @@ If {current_branch} matches Tier 1: the next environment is whichever Tier 2 bra
 If {current_branch} matches Tier 2: no further promotion, inform human and exit.
 If {current_branch} matches neither tier (a long-lived branch that still qualifies as an environment branch per git.md, just outside the recognized name list): ask the human which branch it should promote to, rather than guessing.
 
-If next environment exists, first check CI status for {current_branch} — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting to next environment"):
+If next environment exists, first check CI status for {current_branch} — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting"):
 - If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check — proceed to the confirmation below with no CI line in the question.
 - Otherwise: capture the branch tip's SHA (`git rev-parse {current_branch}`), then run `gh run list --branch {current_branch} --limit 20 --json headSha,status,conclusion` and filter to runs whose `headSha` matches — a single commit can trigger multiple workflow runs, so checking only the most recent entry could miss one still failing or in progress. Fold the result (all matching runs succeeded / not yet / none found) into the confirmation question below rather than asking separately.
 
@@ -243,9 +258,9 @@ Confirm before mutating anything (per safety.md: never push without confirmation
   - Inform human:
     "Promoted {current_branch} → {next_environment}. CI/CD will deploy to corresponding server."
 
-If no next environment (already on production):
+If no next environment (already on the last tier):
   Stop and inform human:
-  "Already on production. Nothing to promote further."
+  "Already on the last environment in the chain. Nothing to promote further."
 
 ---
 
@@ -260,7 +275,12 @@ If on main or master:
   - GitHub Release:        created / skipped / not GitHub
   - Deployment triggered:  yes/no (based on CI/CD presence)
 
-If on environment branch:
+If on environment branch, fan-out mode:
+  Report:
+  - Branch pushed:         {current_branch}
+  - Deployment triggered:  yes/no (based on CI/CD presence)
+
+If on environment branch, chain mode:
   Report:
   - Promoted:              {current_branch} → {next_environment}
   - Branches pushed:       {current_branch}, {next_environment}

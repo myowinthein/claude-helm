@@ -14,8 +14,8 @@ The release command. Reads the commits since the last tag, calculates the next v
 flowchart TD
   Start([User runs /helm:ship]) --> Branch{On which branch?}
   Branch -->|feature / other| FeatStop[/Stop: merge to main first/]
-  Branch -->|main or master| Targets{Env branches<br/>on remote?}
-  Branch -->|env branch| EnvNext{Next env in chain?}
+  Branch -->|main or master| Targets{Env branches on remote?<br/>filtered by environment-promotion mode}
+  Branch -->|env branch| EnvMode{environment-promotion<br/>mode?}
 
   Targets -->|yes| Pick[Ask: which envs to promote?]
   Targets -->|no| CC
@@ -41,6 +41,10 @@ flowchart TD
   GHConfirm -->|create| GHRelease[gh release create<br/>--notes extracted_notes]
   GHRelease --> MainDone([Report: tagged + promoted + release])
 
+  EnvMode -->|fan-out| EnvPushOnly[Push current branch]
+  EnvPushOnly --> EnvFanDone([Report: pushed])
+
+  EnvMode -->|chain| EnvNext{Next env in chain?}
   EnvNext -->|pre-production tier| EnvConfirm[Ask: confirm promotion?<br/>shows CI status if available]
   EnvNext -->|production tier| EnvStop[/Stop: nothing to promote/]
   EnvNext -->|unrecognized name| EnvAsk[Ask: which branch<br/>to promote to?]
@@ -61,7 +65,7 @@ Refuses to release from a feature branch. On `main` or `master`, runs the full r
 
 ### 1. Select deployment targets
 
-Only on `main`. Discovers remote environment branches via `git branch -r`, filters for known environment names, and presents a multi-select so the user can pick which environments to promote alongside the main release. Selecting none means a main-only release.
+Only on `main`. Discovers remote environment branches via `git branch -r`, filters for known environment names, then filters again by `environment-promotion` mode (git.md Environment Branches; default `fan-out`): fan-out offers every discovered branch, chain offers only pre-production-tier branches (`staging`, `stage`, `uat`, `preprod`) — a production-tier branch is never a direct deploy target from main under chain mode, only reachable later via Step 5. Presents a multi-select so the user can pick which of the offered environments to promote alongside the main release. Selecting none means a main-only release.
 
 ### 2. Calculate version
 
@@ -81,7 +85,7 @@ Only reached on the main-branch path — Step 1's redirect sends the environment
 
 Only on `main`. Bumps the version in the detected version file (`package.json`, `composer.json`, or `VERSION`), updates any inline version references in the README, then stages the version file, the README (if changed), and any files the linter/formatter touched in Step 3 — folding formatting changes into the release commit per git.md, never `git add -A`. Commits as `chore(release): bump version to {version}`, creates an annotated tag `v{version}`, and pushes both the commit and tag.
 
-Before promoting to any selected environment, checks CI status for the commit just pushed — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting to next environment"). If the repo isn't on GitHub or no workflow files exist, this check is skipped silently. Otherwise it matches `gh run list` results against the pushed commit's exact SHA (`headSha`) rather than just the single most recent run — a push can trigger several workflow runs, and checking only the latest one risks missing a still-failing run, or catching a stale run from before this commit was even registered. If every matching run succeeded, promotion proceeds silently; otherwise (still running, failed, or none found yet) it asks whether to promote anyway or skip promotion for this run — main stays tagged and pushed either way. Once cleared, merges `main` into each selected environment branch with a `--no-ff` deploy commit and pushes.
+Before promoting to any selected environment, checks CI status for the commit just pushed — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting"). If the repo isn't on GitHub or no workflow files exist, this check is skipped silently. Otherwise it matches `gh run list` results against the pushed commit's exact SHA (`headSha`) rather than just the single most recent run — a push can trigger several workflow runs, and checking only the latest one risks missing a still-failing run, or catching a stale run from before this commit was even registered. If every matching run succeeded, promotion proceeds silently; otherwise (still running, failed, or none found yet) it asks whether to promote anyway or skip promotion for this run — main stays tagged and pushed either way. Once cleared, merges `main` into each selected environment branch with a `--no-ff` deploy commit and pushes.
 
 After pushing, checks whether the remote origin URL contains `github.com`. If not, this sub-step is skipped silently. If yes, asks whether to create a GitHub Release. On confirmation, extracts `feat` and `fix` commits from `git log v{last_tag}..HEAD` and runs `gh release create v{version} --title "v{version}" --notes "{extracted_notes}"`, which publishes a release on GitHub with the curated commit list.
 
@@ -89,13 +93,17 @@ After pushing, checks whether the remote origin URL contains `github.com`. If no
 
 ### 5. Promotion path
 
-Only on an environment branch. Matches the current branch against two tiers of git.md's recognized environment names — pre-production (`staging`, `stage`, `uat`, `preprod`) and production (`production`, `prod`) — treating names within a tier as equivalent rather than requiring an exact match. From the pre-production tier, the next environment is whichever production-tier branch actually exists on the remote; stops if already on the production tier. If the current branch is a long-lived branch outside both recognized tiers, asks which branch to promote to instead of guessing.
+Only on an environment branch. Checks `environment-promotion` mode first (git.md Environment Branches; default `fan-out`):
 
-Otherwise checks CI status for the current branch's tip commit the same way Step 4 does — matched by `headSha`, all matching runs must succeed (skipped silently if not on GitHub or no CI configured) — folds the result into the confirmation prompt rather than asking twice, and confirms before mutating anything (per safety.md: never push without confirmation). On confirm, pushes the current branch, merges it into the next environment branch with a `--no-ff` deploy commit. If the merge conflicts, aborts it, returns to the current branch, and reports that manual resolution is needed rather than leaving the repo mid-merge. On a clean merge, pushes the next environment branch and returns to the current branch.
+**Fan-out mode**: there's no chain to advance — environment branches only ever receive code directly from main (Step 1), never from each other. Just pushes the current branch and reports.
+
+**Chain mode**: matches the current branch against two tiers of git.md's recognized environment names — pre-production (`staging`, `stage`, `uat`, `preprod`) and production (`production`, `prod`) — treating names within a tier as equivalent rather than requiring an exact match. From the pre-production tier, the next environment is whichever production-tier branch actually exists on the remote; stops if already on the production tier. If the current branch is a long-lived branch outside both recognized tiers, asks which branch to promote to instead of guessing.
+
+Then checks CI status for the current branch's tip commit the same way Step 4 does — matched by `headSha`, all matching runs must succeed (skipped silently if not on GitHub or no CI configured) — folds the result into the confirmation prompt rather than asking twice, and confirms before mutating anything (per safety.md: never push without confirmation). On confirm, pushes the current branch, merges it into the next environment branch with a `--no-ff` deploy commit. If the merge conflicts, aborts it, returns to the current branch, and reports that manual resolution is needed rather than leaving the repo mid-merge. On a clean merge, pushes the next environment branch and returns to the current branch.
 
 ### 6. Report
 
-Closes with a summary. On `main`: version tagged, README updated yes or no, environments promoted (including "none — skipped, CI had not passed" if that's why), GitHub Release created or skipped or not applicable, deployment triggered. On an environment branch: which branch was promoted to which, both branches pushed, deployment triggered.
+Closes with a summary. On `main`: version tagged, README updated yes or no, environments promoted (including "none — skipped, CI had not passed" if that's why), GitHub Release created or skipped or not applicable, deployment triggered. On an environment branch: fan-out mode reports the branch pushed; chain mode reports which branch was promoted to which and both branches pushed. Either way, deployment triggered.
 
 ## Stop conditions
 
@@ -103,7 +111,7 @@ The command refuses to proceed in three cases:
 
 - **On a feature branch.** Merge to `main` first via PR, then re-run.
 - **Tests fail.** Fix the failing tests before releasing.
-- **Already on the final environment.** No further promotion is available.
+- **Already on the final environment (chain mode only).** No further promotion is available.
 
 ## See also
 
