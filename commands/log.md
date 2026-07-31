@@ -11,9 +11,9 @@ CLAUDE.md uses these eight sections, in order. Both a full scan and a gap update
 1. **Project Identity** — name, stack, purpose, blast radius.
 2. **Project Config** — flag-style declarations read by `.claude/rules` (e.g. `git-strategy: solo`, `git-auto-commit: true`); keep the heading even if empty.
 3. **Dev Commands** — install, run, test a single file, migrate, logs.
-4. **Architecture Pointers** — key files with a one-line why, not summaries.
+4. **Architecture Pointers** — key files and modules with a one-line why, not summaries.
 5. **Domain Rules** — non-obvious business, lifecycle, and permission constraints a change could violate; one line each; write "None" if there are none.
-6. **Behavior Rules** — autonomy model, confirmation gates, test requirements.
+6. **Behavior Rules** — development conventions, autonomy model, confirmation gates, test requirements.
 7. **Hard Safety Rules** — invariants / never-do list; keep brief and instruct the agent to read and follow `.claude/rules/safety.local.md` every session for the full detail.
 8. **Known Traps** — gotchas; initially empty or inferred from README warnings.
 
@@ -203,19 +203,7 @@ styling, dependency updates, routine CRUD.
 Focus on: architectural changes, new modules, new conventions, domain
 rule changes, new operational knowledge, newly discovered traps.
 
-**Stay within the CLAUDE.md Schema (above).** Every change must land in one
-of the eight existing sections — never add a new heading or section. Map each finding
-to its home:
-- architecture, new modules → Architecture Pointers
-- business, lifecycle, permission rules → Domain Rules
-- conventions, autonomy, confirmation gates → Behavior Rules
-- install / run / test / migrate / ops commands → Dev Commands
-- name, stack, purpose changes → Project Identity
-- config flags → Project Config (via the Config Check)
-- gotchas → Known Traps
-- never-do invariants → Hard Safety Rules
-
-If a finding fits none of the eight sections, it does not belong in CLAUDE.md — leave it out.
+**Stay within the CLAUDE.md Schema (above).** Every change must land in one of the eight existing sections — the schema says what each holds. Never add a new heading or section; if a finding fits none of the eight, it does not belong in CLAUDE.md — leave it out.
 
 Before adding anything, apply the three-question filter:
 1. Will a future session struggle to find this from the codebase?
