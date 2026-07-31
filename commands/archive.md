@@ -21,7 +21,7 @@ Progress and each step's report are persisted under `.archive/` so the workflow 
 At the start, check for `.archive/state.json`:
 - If it exists and `last_completed_step` is 5, all steps are done — tell me the archive already completed and that I can delete `.archive/` to run again. Do nothing else.
 - If it exists with `last_completed_step` below 5, read it, tell me which step you are resuming from, and continue from the next step. Do not re-run completed steps.
-- If it does not exist, this is a fresh run — start from Step 1. Do not create `.archive/` yet: Step 1 is read-only and nothing may be modified before its approval.
+- If it does not exist, check for `docs/archive-metadata.md` before assuming a fresh run — `.archive/` is gitignored scratch, so a fresh clone of an already-archived project has no local trace of a prior run even though this committed file does. If `docs/archive-metadata.md` exists, tell me this project appears to already be archived (per that file) and confirm before restarting the whole workflow. If it does not exist either, this is a genuine fresh run — start from Step 1. Do not create `.archive/` yet: Step 1 is read-only and nothing may be modified before its approval.
 
 State file format:
 ```
