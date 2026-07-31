@@ -36,6 +36,7 @@ flowchart TD
   StructCheck -->|broken| Mode3["Ask: full scan (default),<br/>gap update, or skip?"]
   StructCheck -->|intact| Gap{Gap significance<br/>since last review?}
 
+  Gap -->|none — only noise| UpToDate[/Exit: README.md up to date<br/>still runs Step 5 cleanup/]
   Gap -->|small or moderate| Mode2["Ask: gap update (default),<br/>full scan, or skip?"]
   Gap -->|large or significant| Mode3
 
@@ -78,6 +79,8 @@ Rewrites `README.md` from the project's state, so it needs the full merged, stab
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/manifest-{date}`) — regardless of what the starting branch was. README.md is always scanned from main's own state, never from a feature branch's unmerged work; if a feature branch changes something README.md should reflect, re-run `/helm:manifest` after that branch merges to main. Returns to the original branch at the end (see Step 5).
 
+If the command exits at any point without writing anything — Skip selected at any prompt, README.md already up to date, or custom mode finding nothing to preserve — this cleanup still runs: delete the temporary branch and return to the original branch. This applies everywhere in the command, not just the specific cases called out below, so the user is never left stranded on an empty temporary branch it created.
+
 ### 1. Assessment
 
 First determines the README style by reading `readme-style` from CLAUDE.md Project Config. If the flag is absent, checks whether README.md already exists with content and asks accordingly — the question and the Custom option's description differ depending on whether there's an existing README to be "custom" relative to, since a brand-new project has nothing yet. Saves the choice (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md before continuing.
@@ -88,12 +91,12 @@ When `readme-style: standard` and a hash exists, also checks whether all mandato
 
 ### 2. Pick mode
 
-Three modes, default depending on assessment:
+Four outcomes, default depending on assessment:
 
 - **No file or no hash**: Full scan or skip.
 - **Standard style, structure broken**: Full scan (recommended), gap update, or skip.
-- **Small to moderate gap**: Gap update (recommended), full scan, or skip.
-- **Large gap**: Full scan (recommended), gap update, or skip.
+- **Structure intact (or custom) and no meaningful commits since the last review**: exits cleanly — "README.md is up to date" — no prompt shown.
+- **Structure intact (or custom) and meaningful commits since the last review**: Gap update or Full scan, recommended option first based on gap size, or skip.
 
 ### 3. Full scan
 
@@ -119,6 +122,8 @@ Reads commit messages first. Reads file changes only for significant commits. Fo
 
 For each significant change, identifies the affected README section. Updates only those sections. Does not rewrite unaffected sections.
 
+If no significant changes are found despite the initial gap estimate: reports that no update is needed — the equivalent of [`/helm:log`](log.md)'s Outcome A — and skips the proposal and confirmation below; only the hash advances.
+
 If `readme-style: standard`: sections remain in spec order after updates. A significant change can also add a newly-relevant optional section (e.g. a first public API) in its spec position, or remove one whose justification went away (e.g. the API was removed) — never inventing a section outside the spec.
 If `readme-style: custom`: preserves existing section order and naming, and — matching Step 2 — does not add, remove, or rename sections without explicit approval. If a significant change doesn't fit any existing section, asks whether to add a new one or fold it into the closest existing section rather than deciding silently.
 
@@ -126,7 +131,7 @@ Proposes the changes per section, asks for confirmation, then writes. Bumps the 
 
 ### 5. Commit and finalize
 
-Skipped entirely if Full scan wrote nothing (the custom-mode, absent-README case) — nothing to commit, merge, or promote.
+If Full scan wrote nothing (the custom-mode, absent-README case): skips commit, merge, and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
 
 Otherwise commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
 
@@ -141,8 +146,12 @@ README.md is human-facing documentation for contributors, GitHub visitors, and n
 ## Stop conditions
 
 - **Solo Mode, not on main/master.** Switch to main or master and re-run.
+- **README.md is up to date.** Structure intact and no meaningful commits since the last review — clean exit, no prompt.
 - **User picks Skip.** Clean exit, no changes.
 - **User cancels at the proposed-changes confirmation.** No write.
+- **No significant changes found during Gap Update.** Only the hash advances.
+
+Every exit above still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created — see Before starting.
 
 ## See also
 

@@ -15,6 +15,7 @@ description: Update README.md with a full scan or gap update since last review
 - Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
 - Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b docs/manifest-{YYYYMMDD}` from it. This happens unconditionally — README.md is always scanned from main's own state, never from a feature branch's unmerged work. If a feature branch changes something README.md should reflect, re-run `/helm:manifest` after that branch merges to main.
 - Call this branch `{branch}` for the rest of this command.
+- If this command exits at any point without writing anything — the user selects Skip at any prompt, README.md is already up to date, or custom mode finds nothing to preserve — delete `{branch}` and return to `{original_branch}` before exiting. This applies everywhere in this command, not just at the specific cases called out later: never leave the user stranded on an empty temporary branch it created.
 
 ---
 
@@ -101,7 +102,10 @@ If README.md exists but has no saved commit hash:
       - label: "Skip"
         description: "No update needed"
 
-If README.md exists with a saved commit hash:
+If README.md exists with a saved commit hash and (structure is intact or `readme-style: custom`), and there are no meaningful commits since the hash (`git log {hash}..HEAD` is empty, or only noise commits):
+  README.md is already current. Inform the user: "README.md is up to date — no meaningful commits since last review." Do not present any prompt. Proceed to Step 4 — it writes nothing but still needs to run its GitHub Flow cleanup (delete `{branch}`, return to `{original_branch}`) if a temporary branch was created.
+
+If README.md exists with a saved commit hash, and either structure is broken or there are meaningful commits since the hash:
   Determine recommendation:
   - If `readme-style: standard` and structure is broken (any mandatory section missing): recommend Full scan regardless of gap size — state which sections are missing.
   - Otherwise: recommend Gap update for a small or moderate gap, or Full scan for a large or significant gap.
@@ -123,7 +127,7 @@ If README.md exists with a saved commit hash:
 
 ## Step 2 — Full Project Scan
 
-If `readme-style: custom` and README.md is absent or empty: skip investigation entirely — there is nothing to write. Do not write anything — custom mode preserves structure, it does not author it. Report that there is no README.md yet, so there is nothing to be "custom" relative to, and ask the developer to write one in whatever structure they prefer. A future run will then preserve that structure. Stop here — do not proceed to Step 4.
+If `readme-style: custom` and README.md is absent or empty: skip investigation entirely — there is nothing to write. Do not write anything — custom mode preserves structure, it does not author it. Report that there is no README.md yet, so there is nothing to be "custom" relative to, and ask the developer to write one in whatever structure they prefer. A future run will then preserve that structure. Skip the rest of Step 2 and Step 3, but proceed to Step 4 — it writes nothing but still needs to run its GitHub Flow cleanup (delete `{branch}`, return to `{original_branch}`) if a temporary branch was created.
 
 Otherwise, before writing anything, investigate:
 - Business purpose and target audience
@@ -185,6 +189,8 @@ changed CLI commands, new env vars, removed functionality.
 For each significant change, identify which README section is affected.
 Update only those sections. Do not rewrite unaffected sections.
 
+If no significant changes are found despite the initial gap estimate: report that no update is needed — the equivalent of log.md's Outcome A. Skip the proposal and confirmation below; only the hash advances.
+
 If `readme-style: standard`:
   Sections must remain in spec order after updates.
   If a significant change makes an optional section newly relevant (per Step 2's "include when relevant" list — e.g. a first public API, a newly meaningful limitation), add it in its spec-ordered position. If a change removes what justified an existing optional section (e.g. the public API is removed), remove that section. Do not invent sections outside the spec.
@@ -195,13 +201,13 @@ If `readme-style: custom`:
 
 Update the saved commit hash at the end of the file to current HEAD.
 
-Propose changes per affected section. Ask for confirmation before writing.
+If significant changes were found: propose changes per affected section. Ask for confirmation before writing.
 
 ---
 
 ## Step 4 — Commit and finalize
 
-Skip this step entirely if Step 2 wrote nothing (the custom-mode, absent-README case) — there is nothing to commit, merge, or promote.
+If Step 2 wrote nothing (the custom-mode, absent-README case): skip commit, merge, and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` (per Before starting's cleanup rule) — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
 
 Commit per git.md's Auto-Commit rule — this also governs whether the sequence below needs confirmation before proceeding: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
 
