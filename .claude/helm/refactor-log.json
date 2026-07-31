@@ -2741,11 +2741,11 @@
       "file": "commands/adopt.md",
       "line": 272,
       "description": "The 'Promote to environments' AskUserQuestion (repeated identically in adopt.md, env.md, legal.md, log.md, manifest.md, refactor.md, ship.md, test.md) builds one option per discovered environment branch with no cap or merge-down logic, unlike refactor.md's category picker and legal.md's document picker, which both explicitly cap at 4 options. A project with 5+ environment branches would silently exceed AskUserQuestion's option cap in all eight commands.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "e5c5c8fc36e7ab0abc66b933ee85f7ea78ab8147",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0125",
