@@ -52,7 +52,7 @@ By project type:
 
 **Document versions instead of containerizing (where Docker does not apply):**
 
-- **Mobile** (React Native, Flutter, iOS, Android): Docker cannot meaningfully freeze a mobile build environment. Document exact SDK version, toolchain version, target platform version, and any required IDE version in `docs/recovery-notes.md`.
+- **Mobile** (React Native, Flutter, iOS, Android): Docker cannot meaningfully freeze a mobile build environment. Document exact SDK version, toolchain version, target platform version, and any required IDE version in `docs/setup.md`.
 - **Desktop** (Electron, Tauri, etc.): prefer Docker for the build step if possible; otherwise document exact Node or Rust version.
 - **Browser extension**: document exact browser version and extension API versions used.
 - **Library / package**: Docker for the test environment; document the published package version.

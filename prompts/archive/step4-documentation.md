@@ -141,4 +141,4 @@ Anything that could not be documented due to missing or unverified information f
 
 ---
 
-Do not commit or push. Output the report and stop.
+Do not commit or push. Output the report and stop. Wait for explicit approval before proceeding to Step 5 — Step 5 is destructive (rewrites remotes, deletes branches, pushes).
