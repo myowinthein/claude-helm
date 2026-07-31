@@ -72,7 +72,7 @@ Use the best available source in this order:
 5. Documented external exports
 6. Existing localhost database — only if no repository-contained source exists
 
-If no data source exists and the project requires one: report the gap and explain the impact on the demonstration.
+If no data source exists and the project requires one: report the gap and explain the impact on the demonstration, then stop and ask how to proceed — either continue without data (build with an empty or schema-only database, noting the limitation in the report), or wait while you provide a dump or point to a data source, then continue on your signal.
 
 If restoration requires a network, VPN-accessible, or cloud database: do not connect. Report which source needs it and why, then stop and ask how to proceed — either skip it and fall back to the next-best source (noting the reduced data in the report), or wait while you arrange access or provide a dump, then continue on your signal.
 
