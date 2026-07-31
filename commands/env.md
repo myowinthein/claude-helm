@@ -508,7 +508,23 @@ AskUserQuestion:
       description: "Leave changes uncommitted — commit manually when ready"
 
 If Commit selected:
-  Stage only the safe artifacts modified during this command: `.env.example` (placeholders only), the source files changed, `.gitignore`, and `.gitattributes` if touched. **Never stage `.env` or any other real-value env file** — they hold real secrets and must never be committed. If such a file is tracked, warn the user instead of committing it (it should be untracked via the .gitignore sub-flow). Never use `git add -A`.
+  Stage only the safe artifacts modified during this command: `.env.example` (placeholders only), the source files changed, `.gitignore`, and `.gitattributes` if touched. **Never stage `.env` or any other real-value env file** — they hold real secrets and must never be committed. Never use `git add -A`.
+
+  Before committing, check whether any real-value env file is tracked (a live leak — already in git with real values). If so, do not silently proceed: warn the user and offer to untrack it before committing:
+
+  AskUserQuestion:
+    question: "{file} is tracked by git and holds real values. Untrack it before committing so secrets stop being versioned?"
+    header:   "Tracked env file"
+    multiSelect: false
+    options:
+      - label: "Untrack (Recommended)"
+        description: "Run git rm --cached {file}, then commit"
+      - label: "Commit anyway"
+        description: "Leave it tracked — flag under manual action"
+
+  If Untrack → run `git rm --cached {file}`. If Commit anyway → note it under manual action in the Step 5 report.
+
+  Then commit the safe artifacts:
   git commit -m "chore(env): audit and fix env configuration"
 
 ---
