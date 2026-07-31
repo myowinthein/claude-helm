@@ -508,7 +508,7 @@ AskUserQuestion:
       description: "Leave changes uncommitted — commit manually when ready"
 
 If Commit selected:
-  Stage only the files modified during this command. Never use `git add -A`.
+  Stage only the safe artifacts modified during this command: `.env.example` (placeholders only), the source files changed, `.gitignore`, and `.gitattributes` if touched. **Never stage `.env` or any other real-value env file** — they hold real secrets and must never be committed. If such a file is tracked, warn the user instead of committing it (it should be untracked via the .gitignore sub-flow). Never use `git add -A`.
   git commit -m "chore(env): audit and fix env configuration"
 
 ---
