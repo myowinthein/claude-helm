@@ -1669,11 +1669,11 @@
       "file": "commands/refactor.md",
       "line": 151,
       "description": "Branch-naming format refactor/{YYYYMMDD-HHMMSS} is an outlier \u2014 every other command uses {type}/{desc}-{YYYYMMDD} with no time component.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "828ed39625c83a26c9ec5a0edd06bc6332f0364a",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0014",
