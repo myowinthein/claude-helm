@@ -74,12 +74,12 @@ flowchart TD
 
 ### Before starting
 
-Rewrites `README.md` from the project's state, so it needs the full merged, stable state — never an in-progress feature branch. Behavior depends on `git-strategy`:
+Rewrites `README.md` from the project's state, so it needs the full merged, stable state — never an in-progress feature branch. Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md):
 
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/manifest-{date}`) — regardless of what the starting branch was. README.md is always scanned from main's own state, never from a feature branch's unmerged work; if a feature branch changes something README.md should reflect, re-run `/helm:manifest` after that branch merges to main. Returns to the original branch at the end (see Step 5).
 
-If the command exits at any point without writing anything — Skip selected at any prompt, README.md already up to date, or custom mode finding nothing to preserve — this cleanup still runs: delete the temporary branch and return to the original branch. This applies everywhere in the command, not just the specific cases called out below, so the user is never left stranded on an empty temporary branch it created.
+If the command exits at any point without writing anything — Skip selected at any prompt, README.md already up to date, or custom mode finding nothing to preserve — this cleanup still runs: delete the temporary branch and return to the original branch. This applies everywhere in the command, not just the specific cases called out below, so the user is never left stranded on an empty temporary branch it created. (Gap Update's no-significant-changes outcome doesn't count as "nothing written" either — it still advances the saved hash, so it goes through the normal commit path in Step 4, same as log.md's Outcome A.)
 
 ## Scope
 
@@ -142,6 +142,10 @@ Otherwise commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) �
 If environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
 
 **Solo Mode** commits directly to main, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
+
+### 6. Confirm completion
+
+Reports the outcome (up to date / full scan written / gap update written / skipped), the style used (standard or custom), which sections were updated, and which environments were promoted. Under GitHub Flow, also reports the temporary branch's fate and which branch you were returned to. Runs even when nothing was written, since that's still an outcome worth reporting.
 
 ## Stop conditions
 

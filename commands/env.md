@@ -352,7 +352,7 @@ AskUserQuestion:
       description: "Leave all hardcoded values as-is"
 
 If Replace all selected:
-- If there are more than 10 findings, process one source file at a time and commit after each file before moving to the next.
+- If there are more than 10 findings, process one source file at a time: stage that source file plus any env files it touched (`git add {source file} .env .env.example` and any other env files updated), then commit `fix(env): move hardcoded values to env vars ({file})` before moving to the next file.
 - For each finding:
   - Replace the hardcoded value in source with the env var access pattern for the detected stack
   - Add the key + real value to `.env` and all other non-example env files if absent
@@ -510,7 +510,13 @@ If Skip selected: no changes.
 
 ## Step 4 — Commit
 
-After all fixes are applied:
+After all fixes are applied, stage what's left — do not use `git add -A` blindly:
+  git add -u                    # stage modified tracked files (env files, .gitignore, any source files not already committed per-file)
+  git add .env.example          # only if newly created this run
+
+If nothing is staged (the Hardcoded values sub-flow already committed everything per-file above, and no other fixes were applied): skip this commit — there is nothing left to do.
+
+Otherwise:
   git commit -m "chore(env): audit and fix env configuration"
 
 ---

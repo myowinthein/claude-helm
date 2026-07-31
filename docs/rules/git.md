@@ -46,10 +46,15 @@ Active when `git-strategy: github-flow` is declared, or when `git-strategy` is a
 
 ```
 main
-feature/*
+feature/*  (or feat/*)
 fix/*
 chore/*
 refactor/*
+docs/*
+test/*
+perf/*
+ci/*
+build/*
 ```
 
 **Rules**
@@ -92,10 +97,10 @@ When active:
 - After completing a task, commit without asking for confirmation.
 - Stage only the files changed for the task. Never use `git add -A` blindly.
 - Derive the commit message from the work done; follow Conventional Commits.
+- Push still requires confirmation — same rule as Universal Rules → Safety below, restated here since it's the exception auto-commit doesn't override.
 - If the task spans multiple logical units, commit each unit separately before moving on.
 
 **Exception:** commits covered by [`safety.md`](safety.md#agent-execution-boundaries)'s Agent Execution Boundaries — e.g. committing generated legal documents ([`/helm:legal`](../commands/legal.md)) — always ask for confirmation regardless of this setting. Those are public or otherwise high-stakes content where autonomy level should never skip review.
-- Push still requires confirmation (cross-references `safety.md`).
 
 ## Universal Rules
 
@@ -143,6 +148,8 @@ fix(payment): resolve stripe timeout
 refactor(orders): extract service layer
 ```
 
+**Scope inference** — for commands that infer scope from a diff or cluster of changed files (e.g. `/helm:refactor`, `/helm:test`): use the primary module, folder, or domain actually touched, never a command's own internal category/priority taxonomy (e.g. "architecture", "high-priority"), which is a report/selection grouping, not a commit scope. Dominant area wins if a change spans multiple; `project` or `core` if truly cross-cutting.
+
 **Breaking changes**: append `!` to the type and include a `BREAKING CHANGE:` footer.
 
 ```
@@ -182,7 +189,7 @@ Independent of strategy. Applies under both Solo and GitHub Flow.
 
 Independent of strategy. Works alongside Solo and GitHub Flow.
 
-Environment branches are long-lived branches that are not `main`, `master`, or feature branches: `staging`, `stage`, `uat`, `preprod`, `production`, `prod`. The presence of any such branch on the remote activates these rules:
+Environment branches are long-lived branches that are not `main`, `master`, or feature branches — e.g. `staging`, `stage`, `uat`, `preprod`, `production`, `prod`, or similar. The presence of any such branch on the remote activates these rules:
 
 - Environment branches are permanent. Never delete.
 - Nothing merges directly to an environment branch.
@@ -197,7 +204,7 @@ Environment branches are long-lived branches that are not `main`, `master`, or f
 
 `/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` always use fan-out for promoting their own generated content (legal documents, `CLAUDE.md`, `README.md`, rule files), regardless of this setting — those are content syncs, not a release pipeline, so there's no tier for a document to pass through.
 
-The `/helm:ship` command detects environment branches automatically and offers a multi-select for which to promote alongside the main release (filtered to first-tier branches only under `chain` mode). `/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` do the same after committing their generated content, so environment branches don't fall behind main on legal documents, `CLAUDE.md`, `README.md`, or the installed rule files.
+The [`/helm:ship`](../commands/ship.md) command detects environment branches automatically and offers a multi-select for which to promote alongside the main release (filtered to first-tier branches only under `chain` mode). [`/helm:legal`](../commands/legal.md), [`/helm:log`](../commands/log.md), [`/helm:manifest`](../commands/manifest.md), and [`/helm:adopt`](../commands/adopt.md) do the same after committing their generated content, so environment branches don't fall behind main on legal documents, `CLAUDE.md`, `README.md`, or the installed rule files.
 
 ## See also
 

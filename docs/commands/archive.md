@@ -83,7 +83,7 @@ After the workflow completes, the project contains:
 
 ```
 recovery/
-  docker/         ← gitignored Docker image tarballs (local only)
+  docker/         ← Docker image tarballs (committed via Git LFS, or gitignored if kept local only)
   postman/        ← Postman collection and environment files
   assets/         ← consolidated screenshots, exports, demo files
 docs/
@@ -96,20 +96,22 @@ README.md         ← fresh archive-focused index
 ## Stop conditions
 
 - **Approve declined at any gate.** The command halts cleanly with no further changes.
-- **Step 1 complexity rated Blocked.** User can still approve to proceed, but is warned.
 
-The command stops and waits for explicit approval at ten points:
+Note: Step 1 complexity rated Blocked is a warning, not a stop condition — the user can still approve and proceed; it isn't listed above since, unlike the points below, declining isn't the only way past it.
+
+The command stops and waits for explicit approval at eleven points:
 
 1. After Step 1 — before anything is modified
 2. After Step 2 — with a warning if restoration was not fully successful
 3. After Step 3 — before proceeding to documentation
 4. Before Step 4 executes — consolidation plan review
 5. After Step 4 — before proceeding to finalize
-6. Before branch deletion in Step 5
-7. Before choosing how the recovery tarballs travel (Git LFS or local only) in Step 5
-8. Before stopping all running services (Docker containers, dev servers) in Step 5
-9. Before asset moves in Step 5 if referenced files are found
-10. Before the final commit and push in Step 5
+6. Confirming the private archive remote URL in Step 5 — nothing else in Step 5 proceeds until origin is set
+7. Before branch deletion in Step 5
+8. Before choosing how the recovery tarballs travel (Git LFS or local only) in Step 5
+9. Before stopping all running services (Docker containers, dev servers) in Step 5
+10. Before asset moves in Step 5 if referenced files are found
+11. Before the final commit and push in Step 5
 
 ## See also
 

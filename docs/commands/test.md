@@ -23,30 +23,34 @@ flowchart TD
   Ledger["Load .claude/test-log.json<br/>(empty if not found)"] --> Assess
 
   Assess{Existing tests, recent changes,<br/>or ambiguous findings outstanding?}
-  Assess -->|no tests| FullOrSkip["Ask: full scan or skip?"]
-  Assess -->|tests, no changes, nothing outstanding| FullOrSkip
-  Assess -->|tests + changes or ambiguous outstanding| Choice["Ask: Catch Up, Full, or Skip?"]
+  Assess -->|no tests, or full scan never run| FullOrSkip["Ask: full scan or skip?"]
+  Assess -->|up to date, nothing outstanding| Report(["Report outcome<br/>(Step 7)"])
+  Assess -->|changes or ambiguous outstanding| Choice["Ask: Catch Up, Full, or Skip?"]
 
-  FullOrSkip -->|skip| Skip[/Exit: no tests needed/]
+  FullOrSkip -->|skip| Report
   FullOrSkip -->|full| FullScan
-  Choice -->|skip| Skip
+  Choice -->|skip| Report
   Choice -->|Catch Up| CatchUp
   Choice -->|Full| FullScan
 
   CatchUp["git diff {last_run_commit}..HEAD<br/>union in outstanding ambiguous entries<br/>drop unchanged skipped-by-user files<br/>group into clusters by module/domain"] --> CatchPlan["Show test plan · ask: write or cancel?"]
-  CatchPlan -->|cancel| Cancel[/Exit: no tests written/]
+  CatchPlan -->|cancel| Report
   CatchPlan -->|write| CWrite["Behavior Clarity Check per test<br/>Write · run · commit, cluster by cluster"]
   CWrite --> UpdateLedger
 
   FullScan["Run coverage tool<br/>Sub-agents: priority judgment per chunk<br/>Carry forward unchanged file labels"] --> FullPlan["Show coverage report<br/>ask: which priorities?"]
-  FullPlan -->|none selected| Skip
+  FullPlan -->|none selected| UpdateLedger
   FullPlan -->|priorities selected| FWrite["Behavior Clarity Check per test<br/>Group into clusters within each priority<br/>Write · run · commit, cluster by cluster"]
   FWrite --> UpdateLedger
 
-  UpdateLedger["Update .claude/test-log.json<br/>commit ledger"] --> Done([Report: tests added])
+  UpdateLedger["Update .claude/test-log.json<br/>commit ledger"] --> Report
 ```
 
 ## Steps
+
+### Before starting
+
+No branch requirement — runs from any branch. Writing tests for the code you're currently working on is useful regardless of branch, so this isn't git-strategy-aware the way `/helm:log` or `/helm:manifest` are.
 
 ### 1. Detect test framework
 
@@ -123,12 +127,16 @@ After tests are written, run, and committed:
 
 Commits the ledger with `test(log): update test ledger after {catch-up / full-scan}`.
 
+### 7. Confirm completion
+
+Reports the outcome (up to date / catch up written / full scan written / skipped), the mode used, how many tests were written and where, commits made, whether tests are passing, and the ledger's skipped-by-user/ambiguous/resolved counts. Runs even when nothing was written — Scenario 3's clean exit and any Skip choice both still reach this step to report the outcome, rather than exiting silently. When a Full Scan's scan ran but no priorities were selected for writing, the scan itself is still recorded in the ledger and reported here.
+
 ## Stop conditions
 
 - **No framework, user skips setup.** Configure a framework and re-run.
-- **No changes since last run, full scan already done, and no ambiguous findings outstanding.** Exits cleanly — tests are up to date.
-- **User cancels at the test plan.** No tests written.
-- **No priorities or no scope selected.** Clean exit.
+- **No changes since last run, full scan already done, and no ambiguous findings outstanding.** Tests are up to date — reports via Step 7, no tests written.
+- **User cancels at the test plan.** No tests written — reports via Step 7.
+- **No priorities or no scope selected.** No tests written — reports via Step 7.
 - **Written tests fail.** The command stops before committing and waits for the user to fix the failure.
 
 ## See also

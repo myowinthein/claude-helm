@@ -87,6 +87,8 @@ If restoration requires a network, VPN-accessible, or cloud database: do not con
 
 After the project is verified as running:
 
+If this step was interrupted and is being re-run, check each service for a pre-existing tarball before exporting: if `recovery/docker/{service}.tar.gz` already exists, is non-empty, and passes `docker load` (see validation below), skip re-exporting that service — it already succeeded. Only export services that are missing or fail that check.
+
 Export all Docker images to `recovery/docker/` as gzipped tarballs:
 
 ```
@@ -182,6 +184,8 @@ Exact commands run in order.
 
 ## Access Points
 How to access or run the project locally (URLs and ports for web projects, commands for CLI tools, entry points for scripts or notebooks). State "not applicable" if the project type has no access point.
+
+App running: yes/no — Step 3 (Postman collection generation) reads this directly rather than inferring it from prose above; state it explicitly even when "not applicable."
 
 ## Verification Results
 What was tested and what the results were. Any critical errors found.

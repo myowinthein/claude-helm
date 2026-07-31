@@ -87,7 +87,7 @@ When active:
 - After completing a task, commit without asking for confirmation
 - Stage only the files changed for the task. Never use `git add -A` blindly
 - Derive the commit message from the work done; follow Conventional Commits
-- Push still requires confirmation (covered in safety.md)
+- Push still requires confirmation — same rule as Universal Rules → Safety below, restated here since it's the exception auto-commit doesn't override
 - If the task spans multiple logical units, commit each unit separately before moving to the next
 
 **Exception:** commits covered by safety.md's Agent Execution Boundaries — e.g.
@@ -146,6 +146,8 @@ All commits must follow this format:
   feat(auth): add OAuth login
   fix(payment): resolve stripe timeout
   refactor(orders): extract service layer
+
+**Scope inference** (for commands that infer it from a diff or cluster of changed files, e.g. `/helm:refactor`, `/helm:test`): use the primary module, folder, or domain area actually touched — never a command's own internal category/priority taxonomy (e.g. "architecture", "high-priority"), which is a report/selection grouping, not a commit scope. If the change spans multiple areas, use the dominant one; if truly cross-cutting, use `project` or `core`. Keep it lowercase, one word or hyphenated.
 
 **Breaking changes:**
   feat(auth)!: replace session with JWT

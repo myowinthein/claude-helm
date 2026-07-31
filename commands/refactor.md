@@ -139,6 +139,8 @@ After the user confirms a mode, proceed to Step 3.4, then Step 4.
 
 ### 3.4 — Create the refactor branch
 
+Unlike other commands' `{type}/{desc}-{YYYYMMDD}` branches, refactor branches use `refactor/{YYYYMMDD-HHMMSS}` — day-only granularity isn't enough here, since "Create new branch" below can produce a second refactor branch on the same day an old one already exists.
+
 If an existing refactor/* branch was found in Step 1, ask:
   AskUserQuestion:
     question: "An existing refactor branch was found: {branch}. Continue on it or start fresh?"
@@ -307,7 +309,7 @@ Work through the current wave's clusters one at a time, in order. For each clust
   If skipped, this finding's ledger `status` becomes `skipped-by-user` (not `open`), so it stops resurfacing every run. Only re-surface it later if the surrounding code changes enough that the original suggestion may no longer apply.
 
 - Once the cluster's edits are complete: run tests — stop and inform if tests fail, do not move to the next cluster until resolved. Run lint and formatter.
-- Infer the commit scope from the primary module, folder, or domain area touched by this cluster's files — per git.md's Conventional Commits convention (module/feature/domain, e.g. `orders`, `auth`, `payment`), not this command's five-category taxonomy (architecture/quality/performance/tests/dependencies), which is a report and selection grouping, not a commit scope. If the cluster spans multiple areas, use the dominant one; if truly cross-cutting, use `project` or `core`. Keep it lowercase, one word or hyphenated.
+- Infer the commit scope from this cluster's files per git.md's Scope inference convention — not this command's five-category taxonomy (architecture/quality/performance/tests/dependencies), which is a report and selection grouping, not a commit scope.
 - Commit:
   refactor({scope}): {brief summary of this cluster's changes}
 - Update the ledger immediately for every finding in this cluster: `status` to `fixed` or `skipped-by-user`, with `resolved_commit` and `resolved_date` set.
@@ -364,16 +366,20 @@ Wait for response before proceeding.
 - Merge refactor/{timestamp} into main --no-ff
   with message: refactor(project): apply refactoring {timestamp}
 - Push main
-- **Environment promotion**: if environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this refactor:
+- **Environment promotion**: if environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), first check CI status for the commit just pushed to main — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting"), same mechanics as ship.md's Step 5:
+    - If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check — proceed to the confirmation below with no CI line in the question.
+    - Otherwise: capture the pushed commit's SHA, then run `gh run list --branch main --limit 20 --json headSha,status,conclusion` and filter to runs whose `headSha` matches — a single push can trigger multiple workflow runs, so checking only the most recent entry could miss one still failing or in progress. Fold the result (all matching runs succeeded / not yet / none found) into the confirmation question below rather than asking separately.
+
+  Ask which environments should also receive this refactor:
 
     AskUserQuestion:
-      question: "main has been updated. Which environment branches should also receive this refactor?"
+      question: "main has been updated. Which environment branches should also receive this refactor? {CI: {conclusion}, if checked above}"
       header:   "Promote to environments"
       multiSelect: true
       options: one entry per discovered environment branch, e.g.:
-        - label: "staging"
+        - label: "staging (Recommended if CI passed)"
           description: "Merge main into staging"
-        - label: "production"
+        - label: "production (Recommended if CI passed)"
           description: "Merge main into production"
 
   For each selected environment:

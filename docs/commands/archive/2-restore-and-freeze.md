@@ -33,8 +33,7 @@ flowchart TD
   Verify -->|yes| Export[Export Docker images\nto recovery/docker/\nas gzipped tarballs]
   Verify -->|no| BlockerReport[/Report blockers/]
 
-  Export --> Gitignore[Add recovery/docker/\nto .gitignore]
-  Gitignore --> Report[Output restoration report]
+  Export --> Report[Output restoration report\nrecovery/docker/ left in place\nnot gitignored]
   DocVersion --> Report
   BlockerReport --> Report
 
@@ -76,7 +75,7 @@ If restoration requires a network or cloud database, the step stops for approval
 
 ## Image export
 
-After verification, all Docker images are exported to `recovery/docker/` as gzipped tarballs — one per service. The folder is gitignored and stored locally alongside the repo, never committed.
+After verification, all Docker images are exported to `recovery/docker/` as gzipped tarballs — one per service. The folder is **not** gitignored here — these tarballs are the freeze mechanism and must travel with the archive for a clean-machine recovery. Step 5 decides how: committed via Git LFS (recommended), or kept local only and gitignored if you decline there.
 
 Recovery commands are documented in `docs/setup.md`:
 ```

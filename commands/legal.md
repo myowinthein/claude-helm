@@ -73,6 +73,16 @@ Scan the codebase to understand the project's legal profile:
 Scan the project to determine which scenario applies. Use config files, package
 manifests, folder structure, and any other available signals to decide:
 
+  If the scan finds multiple independent web packages or apps (e.g. a workspace layout with several `package.json` files each defining their own framework, under `apps/`, `packages/`, or similar): ask which one the legal documents belong to, since a monorepo usually has one public-facing surface — then apply the scenarios below scoped to that package only.
+
+    AskUserQuestion:
+      question: "Multiple web packages found: {list}. Which one should receive the legal documents?"
+      header:   "Monorepo target"
+      multiSelect: false
+      options: one entry per detected package, e.g.:
+        - label: "{package name}"
+          description: "{detected framework and path, e.g. \"Next.js app in apps/web\"}"
+
   Static site generator (Jekyll, Hugo, Eleventy, and similar):
   - Format: `.md`
   - Output path: the generator's content or docs directory, under a `legal/` subfolder
@@ -461,6 +471,7 @@ If Cancel selected → leave the documents written but uncommitted, then proceed
 If Commit selected:
 - Stage the generated documents and the updated `.claude/legal-manifest.json`; do not use `git add -A`.
 - Commit: `docs(legal): generate legal documents` (include the resolved output path and format in the body if they differ from the default).
+- Push: `git push origin main`.
 - Run Environment promotion above.
 
 **GitHub Flow:**

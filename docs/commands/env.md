@@ -28,6 +28,10 @@ flowchart TD
 
 ## Steps
 
+### Before starting
+
+No branch requirement — runs from any branch. This command audits and fixes `.env`/`.gitignore` configuration in place; it doesn't generate canonical content that needs a stable, merged main to scan from, so it isn't git-strategy-aware the way `/helm:log` or `/helm:manifest` are.
+
 ### 1. Scan
 
 Eleven read-only checks across all env files, source code, and `.gitignore`. Never stops early — a partial scan produces missed findings that silently persist.

@@ -40,7 +40,7 @@ Do not proceed to any other task until origin is confirmed as the private archiv
 
 ## Task 2 — Branch Cleanup
 
-List all local and remote branches. The branch this workflow was run from (per Step 1) is the one being archived — it becomes the single branch to keep, renamed to `main` if it isn't already named `main` or `master`. No merging happens here: nothing is combined, the archived branch is simply relabeled as canonical and everything else is discarded.
+List all local and remote branches. The branch this workflow was run from is the one being archived — read it from Step 1's report's explicit "Archiving from:" field, not the current branch (a resumed session may have started on a different branch than the original run). It becomes the single branch to keep, renamed to `main` if it isn't already named `main` or `master`. No merging happens here: nothing is combined, the archived branch is simply relabeled as canonical and everything else is discarded.
 
 Present the plan and wait for explicit approval:
 
@@ -156,9 +156,10 @@ If Cancel → stop and leave changes as-is. Do not commit or push.
 If Commit and push: stage all tracked and new files explicitly — do not use `git add -A` blindly. Check `git status` first and stage only the files accumulated during this workflow:
 ```
 git add -u                                             # stage all tracked modifications
-git add recovery/ docs/ README.md .gitignore .gitattributes .archive/  # stage new files created this session
+git add recovery/ docs/ README.md .gitignore .archive/  # stage new files created this session
 git commit -m "chore(archive): seal project archive"
 ```
+`.gitattributes` only exists if Task 3 created it (LFS branch, or "Keep local only" with other over-100 MB files) — stage it too in that case, but do not add it unconditionally, since it may not exist and `git add` would fail on a nonexistent path.
 `.archive/` is included deliberately — it is not gitignored. Its step reports become a permanent audit trail in the archive, and `state.json` lets a future clone recognize this project as already archived without relying solely on `docs/archive-metadata.md`.
 If the tarballs are LFS-tracked (Task 3), confirm they are staged as LFS pointers (`git lfs status`) before committing — not as raw blobs.
 

@@ -28,7 +28,7 @@ Reload locally: `/reload-plugins` after any change
 - `docs/commands/` — human-readable detail pages per command (not command source); `docs/rules/` covers the two rule files
 - `.claude-plugin/plugin.json` — the version file; bump this on every release
 - `.claude-plugin/marketplace.json` — Claude Code marketplace registration metadata
-- `_config.yml` + `Gemfile` + `_sass/` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
+- `_config.yml` + `Gemfile` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
 
 ## Behavior Rules
 
@@ -43,7 +43,7 @@ Reload locally: `/reload-plugins` after any change
 
 ## Known Traps
 
-- **Plugin cache is stale after releases.** `/plugin update` + `/reload-plugins` does not invalidate `~/.claude/plugins/cache/`. After each release, command files must be manually copied from `~/.claude/plugins/marketplaces/claude-helm/commands/` into the active cache version directory, then `/reload-plugins` must be run again. Workaround: `cp ~/.claude/plugins/marketplaces/claude-helm/commands/*.md "$(ls -d ~/.claude/plugins/cache/helm@*/commands/ | tail -1)"` then `/reload-plugins`.
+- **Plugin cache is stale after releases.** `/plugin update` + `/reload-plugins` does not invalidate `~/.claude/plugins/cache/`. After each release, command files must be manually copied from `~/.claude/plugins/marketplaces/claude-helm/commands/` into the active cache version directory, then `/reload-plugins` must be run again. Workaround: `cp ~/.claude/plugins/marketplaces/claude-helm/commands/*.md "$(ls -d ~/.claude/plugins/cache/claude-helm/helm/*/commands/ | tail -1)"` then `/reload-plugins`.
 - **`prompts/` directory is intentional.** Files in `prompts/archive/` are not commands — they are sub-steps for `/helm:archive`. Do not move them to `commands/`.
 - **`docs/commands/` is not the command source.** The slash command definitions live in `commands/`. The `docs/commands/` files are detail pages that serve as Jekyll site content and link from README — editing them does not change command behavior.
 
