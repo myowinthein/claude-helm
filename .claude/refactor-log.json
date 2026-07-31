@@ -2421,11 +2421,11 @@
       "file": "docs/commands/refactor.md",
       "line": 144,
       "description": "Step 7 doc text and mermaid flow omit the CI-gate check before environment promotion \u2014 real commands/refactor.md Step 7 checks CI status for the pushed commit (gh run list, matched by SHA) and folds the result into the promotion confirmation.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7eee6a530b633a8027129881b829a061497c8968",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0105",
