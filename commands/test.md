@@ -63,7 +63,16 @@ Schema:
 
 `schema_version` — bumped only if this ledger's structure changes in a future release. Lets a future version of this command detect an older-shaped file and handle it explicitly instead of misreading it.
 
-If `schema_version` is `1` or absent (a ledger written before this shape existed): convert on load rather than misreading it. The old shape had `last_test_run_commit`, `last_full_scan_commit`, a `findings` array (`status`, `note`, `recorded_commit`, `recorded_date`), and a separate `full_scan_findings` array (`priority`, `last_judged_commit`). Merge both arrays into one `files` array keyed by file — a file present in both old arrays becomes one record carrying both sets of fields. Map `last_test_run_commit` → `last_run_commit`, and the mere presence of `last_full_scan_commit` (regardless of its value) → `full_scan_ever_run: true`. Set `consecutive_catchup_count` to `0`, since the old shape never tracked it. Treat the result as `schema_version: 2` for the rest of this run, and it will be persisted in that shape at Step 6.
+If `schema_version` is `1` or absent (a ledger written before this shape existed): convert on load rather than misreading it. The old shape had `last_test_run_commit`, `last_full_scan_commit`, a `findings` array (`status`, `note`, `recorded_commit`, `recorded_date`), and a separate `full_scan_findings` array (`priority`, `last_judged_commit`).
+
+Convert as follows:
+- Map `last_test_run_commit` → `last_run_commit` directly.
+- `full_scan_ever_run` is `true` only if `last_full_scan_commit` holds an actual commit SHA — **not** merely if the key is present. The old field could legitimately be `null` (a repo where a full scan has never run yet, `findings` and `full_scan_findings` both empty) while still being present in the JSON; treating key-presence alone as "a full scan happened" gets this case wrong.
+- Merge `findings` and `full_scan_findings` into one `files` array keyed by file path. A file present in both old arrays becomes one record carrying both sets of fields — this is common, not an edge case (e.g. a file already flagged `ambiguous` by a human is also a real target for the next Full Scan's priority judgment).
+- Set `consecutive_catchup_count` to `0` — the old shape never tracked it, and there's no way to reconstruct a meaningful count retroactively.
+- Every commit SHA carried over (`last_run_commit`, and each entry's `last_judged_commit`/`recorded_commit`) should already be a valid, reachable commit in this repo, since the old command only ever wrote real SHAs there — no fallback or repair needed for those.
+
+Treat the result as `schema_version: 2` for the rest of this run, and it will be persisted in that shape at Step 6.
 
 Each `files` entry represents everything currently known about one file. `priority` and `last_judged_commit` come from sub-agent scan judgment (Full Scan only) and are independent of `user_status`, `note`, `recorded_commit`, and `recorded_date`, which come from an actual human decision (Behavior Clarity Check, or the Catch Up/Full Scan skip option) — a file can have either set of fields, both, or neither, and updating one set must never clobber the other.
 
