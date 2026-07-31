@@ -16,7 +16,7 @@ Goal: Get the project running locally, containerize it with pinned image version
 - Do not connect to production systems, live databases, or external services.
 - Do not send emails, SMS, notifications, webhooks, or invoke payment gateways without explicit approval.
 - Do not change Git state — no commit, push, pull, fetch, checkout, reset, rebase, merge, or history rewrite.
-- Work only within the current repository. If another repository appears required, report it and stop for approval.
+- Work only within the current repository. If another repository appears required, report which one and why, then stop and ask how to proceed — either continue without it (noting the gap in the report), or wait while you make it available, then continue on your signal.
 
 ---
 
@@ -74,7 +74,7 @@ Use the best available source in this order:
 
 If no data source exists and the project requires one: report the gap and explain the impact on the demonstration.
 
-If restoration requires a network, VPN-accessible, or cloud database: report why and stop for approval.
+If restoration requires a network, VPN-accessible, or cloud database: do not connect. Report which source needs it and why, then stop and ask how to proceed — either skip it and fall back to the next-best source (noting the reduced data in the report), or wait while you arrange access or provide a dump, then continue on your signal.
 
 ---
 
