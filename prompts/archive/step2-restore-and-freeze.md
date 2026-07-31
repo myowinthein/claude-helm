@@ -61,9 +61,14 @@ By project type:
 
 ## Data Restoration
 
-Discover all available data sources in the repository. Assess each for completeness and suitability.
+First determine the project's data layer from Step 1's findings and the project type, then restore accordingly:
 
-Use the best available source in this order:
+- **Database-backed** (backend / API, CMS, full-stack): restore from a data source — follow the priority list below.
+- **Consumes an external or backend API** (frontend-only): no local database to restore. Record how it gets data — whether the API is part of this repo (restore it too) or external (note as a dependency) — and how demo data is provided (mock data, fixtures, recorded responses).
+- **Local or file-based storage** (desktop, mobile, CLI, data science using SQLite, embedded stores, or data files): restore the local data files or embedded database if present in the repo.
+- **No data layer** (static site, stateless CLI, library): skip — state that no data restoration is required.
+
+For database-backed projects, discover all available data sources in the repository, assess each for completeness and suitability, and use the best in this order:
 
 1. Repository-contained database dumps or backup files (SQL, MongoDB, SQLite, Redis snapshots, etc.)
 2. Seed scripts, fixture files, or sample datasets
