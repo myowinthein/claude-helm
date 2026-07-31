@@ -22,7 +22,7 @@ flowchart TD
 
   Ledger{.claude/refactor-log.json<br/>exists?}
   Ledger -->|no — first run| DeepAuto["Inform: running Deep Mode<br/>to build baseline"]
-  Ledger -->|yes| ModeAsk["Ask: Deep Mode, Quick Mode,<br/>or Fix Backlog?\nrecommendation based on commits,<br/>days elapsed, and open_count"]
+  Ledger -->|yes| ModeAsk["Ask: Deep Mode, Quick Mode,<br/>or Fix Backlog?\nrecommendation based on commits,<br/>days elapsed, changed files,<br/>and open_count"]
 
   DeepAuto --> CreateBranch["Switch to main if needed<br/>create refactor/{timestamp}<br/>(or ask to continue existing)"]
   ModeAsk -->|Deep| CreateBranch
@@ -30,13 +30,8 @@ flowchart TD
   ModeAsk -->|Fix Backlog| CreateBranch
 
   CreateBranch -->|Deep or first run| Deep[Spawn sub-agents per folder chunk<br/>each reads full chunk, all categories]
-  CreateBranch -->|Quick| QuickCheck{Changed files > 50?}
+  CreateBranch -->|Quick| Quick[Single-thread scan of<br/>changed files only]
   CreateBranch -->|Fix Backlog| FixBacklog[Load open findings only<br/>no scan performed]
-
-  QuickCheck -->|yes| BigAsk[Ask: switch to Deep or continue?]
-  QuickCheck -->|no| Quick[Single-thread scan of<br/>changed files only]
-  BigAsk -->|Deep| Deep
-  BigAsk -->|continue| Quick
 
   Deep --> Consolidate[Consolidate findings<br/>cross-chunk issues<br/>auto-resolve stale entries]
   Quick --> Revalidate[Re-validate open ledger entries<br/>auto-resolve deleted or rewritten files]
@@ -99,12 +94,12 @@ Looks for `.claude/refactor-log.json` — the command's persistent memory.
 
 **First run (no ledger):** skips the mode question and runs Deep Mode automatically to build a baseline.
 
-**Later runs:** computes commits and days elapsed since the last scan and the number of open findings, then recommends a mode:
+**Later runs:** computes commits, days elapsed, and the real changed-file count (`git diff --name-only`) since the last scan, plus the number of open findings, then recommends a mode:
 - **Fix Backlog** if there are open findings and zero commits since last scan — nothing new to scan for
-- **Deep Mode** if 40+ commits, 60+ days, or two Quick Mode scans in a row (`consecutive_quick_count >= 2`)
+- **Deep Mode** if 40+ commits, 60+ days, two Quick Mode scans in a row (`consecutive_quick_count >= 2`), or more than 50 files changed — commit count alone is a weak proxy for diff size, so the real file count is checked upfront rather than discovered as a surprise after Quick Mode is already chosen
 - **Quick Mode** otherwise
 
-The Fix Backlog option only appears when there are open findings. The user picks via a prompt with the reason for the recommendation shown inline.
+The Fix Backlog option only appears when there are open findings. The user picks via a prompt with the reason for the recommendation shown inline — the recommendation is a suggestion, not a restriction, and nothing later re-checks or overrides the choice.
 
 **After mode is confirmed**, the refactor branch is created: `refactor/{YYYYMMDD-HHMMSS}`. If an existing `refactor/*` branch was found in Step 1, the user is asked whether to continue on it or start fresh.
 
@@ -112,7 +107,7 @@ The Fix Backlog option only appears when there are open findings. The user picks
 
 **Deep Mode** — splits the project into folder/module chunks (keeping related files together), spawns one sub-agent per chunk, and has each agent read its full chunk in a single pass across all five categories: **Architecture**, **Code Quality**, **Performance**, **Tests**, and **Dependencies**. The main agent then consolidates: merges reports, spots cross-chunk patterns, checks new findings against the ledger to avoid duplicates, auto-resolves stale entries, assigns `risk` (`safe` / `needs-review`), groups related findings into `cluster_id`s, and records `depends_on` order where one fix must precede another.
 
-**Quick Mode** — runs `git diff --name-only` since the last scan commit. If the diff exceeds 50 files, asks whether to switch to Deep Mode instead. Otherwise re-validates all open ledger entries against changed files (auto-resolving deleted or rewritten ones), then scans just the changed files in a single pass.
+**Quick Mode** — reuses the changed-file list already computed in Step 3 (size already accounted for in the mode recommendation, so no second size check here). Re-validates all open ledger entries against changed files (auto-resolving deleted or rewritten ones), then scans just the changed files in a single pass.
 
 **Fix Backlog** — skips scanning entirely. Loads every finding with `status: open` from the ledger and proceeds directly to presenting findings. Scan metadata (`last_scanned_commit`, `last_mode`, `consecutive_quick_count`) is left untouched since no scan was performed.
 
@@ -159,7 +154,6 @@ Closes with a structured summary: branch, mode, changes per category, ledger sta
 - **Not on `main`, `master`, or an existing `refactor/*` branch.** Switch to one first.
 - **Tests fail mid-apply.** Resolve before the next category continues.
 - **No categories selected.** Clean exit, ledger unchanged.
-- **Quick Mode diff exceeds 50 files.** Prompted to switch to Deep Mode or continue.
 
 ## The ledger
 

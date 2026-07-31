@@ -108,10 +108,11 @@ Compute, since `last_scanned_commit`:
 - number of commits on the current branch
 - number of days since `last_scan_date`
 - `open_count` — number of findings in the ledger with `status: open`
+- changed files: `git diff --name-only {last_scanned_commit}..HEAD` (respecting Step 2 exclusions) — keep this list, Step 4B reuses it directly if Quick Mode is chosen instead of recomputing it
 
 Decide which mode to recommend using this logic:
 - If `open_count > 0` AND zero commits since `last_scanned_commit`: recommend **Fix Backlog** — there's nothing new to scan for.
-- Otherwise recommend **Deep Mode** if: 40+ commits since last scan, OR 60+ days since last scan, OR `consecutive_quick_count` is 2 or more.
+- Otherwise recommend **Deep Mode** if: 40+ commits since last scan, OR 60+ days since last scan, OR `consecutive_quick_count` is 2 or more, OR more than 50 files changed. Commit count is a weak proxy for diff size — a handful of commits can still touch hundreds of files (a dependency bump, a mass rename) — so the real changed-file count overrides it here.
 - Otherwise recommend **Quick Mode**.
 
 Ask with AskUserQuestion, filling in the reason in the description.
@@ -123,11 +124,13 @@ Only include the Fix Backlog option if `open_count > 0`:
     multiSelect: false
     options:
       - label: "Deep Mode{recommended tag if applicable}"
-        description: "Full codebase re-scan using multiple agents. {reason, e.g. '45 commits and 70 days since last full scan — old code may have drifted.'}"
+        description: "Full codebase re-scan using multiple agents. {reason, e.g. '158 files changed since last scan — too broad for a focused check.'}"
       - label: "Quick Mode{recommended tag if applicable}"
-        description: "Only checks files changed since the last scan, plus re-validates past findings. {reason, e.g. 'Only 8 commits since last scan — a quick check should cover it.'}"
+        description: "Only checks files changed since the last scan, plus re-validates past findings. {reason, e.g. 'Only 8 commits and 12 files changed since last scan — a quick check should cover it.'}"
       - label: "Fix Backlog{recommended tag if applicable}"  (only include if open_count > 0)
         description: "Skip scanning — {open_count} known issues waiting to be fixed. {reason if recommended, e.g. 'No new commits since last scan.'}"
+
+The recommended tag is a suggestion, not a restriction — the user can still pick Quick Mode here even when Deep Mode was recommended for file-count reasons; nothing later re-checks or overrides that choice.
 
 After the user confirms a mode, proceed to Step 3.4, then Step 4.
 
@@ -176,25 +179,13 @@ If no existing refactor branch was found: switch to main or master first if not 
 
 ### 4B. Quick Mode
 
-1. Read `last_scanned_commit` from the ledger.
-2. Run `git diff --name-only {last_scanned_commit}..HEAD` to get the list of changed files (respecting Step 2 exclusions).
-3. If the changed file list exceeds 50 files, stop and inform the user:
-   "Quick Mode found {N} changed files — that's too broad for a focused check. Consider switching to Deep Mode for a full re-scan."
-   Ask with AskUserQuestion:
-     question: "How would you like to proceed?"
-     header:   "Scope too large"
-     multiSelect: false
-     options:
-       - label: "Switch to Deep Mode (Recommended)"
-         description: "Run a full re-scan with multiple agents"
-       - label: "Continue with Quick Mode anyway"
-         description: "Scan all {N} changed files in a single pass"
-4. Re-validate every `open` ledger entry:
+1. Reuse the changed-file list computed in Step 3.3 (`git diff --name-only {last_scanned_commit}..HEAD`, respecting Step 2 exclusions) — no need to recompute it. The mode decision in 3.3 already accounted for its size, so no further size check happens here.
+2. Re-validate every `open` ledger entry:
    - File deleted or heavily rewritten → mark `auto-resolved`.
    - File untouched → carry forward unchanged, still `open`.
-5. Scan only the changed files (single thread — the list is small, no sub-agents needed) across all categories for new issues. Before adding any finding, cross-check it against the ledger's existing `open` findings for that same file — if it matches one already there, do not create a duplicate, just leave the existing entry as-is. Only genuinely new issues get added. Assign `risk`, `cluster_id`, and `depends_on` to any new findings the same way Deep Mode does.
-6. Update the ledger: add new findings as `open`, keep carried-forward entries as-is, mark auto-resolved ones. Set `last_scanned_commit` to current HEAD, `last_mode` to `quick`, `last_scan_date` to today, increment `consecutive_quick_count` by 1.
-7. Commit the ledger immediately:
+3. Scan only the changed files (single thread, no sub-agents needed) across all categories for new issues. Before adding any finding, cross-check it against the ledger's existing `open` findings for that same file — if it matches one already there, do not create a duplicate, just leave the existing entry as-is. Only genuinely new issues get added. Assign `risk`, `cluster_id`, and `depends_on` to any new findings the same way Deep Mode does.
+4. Update the ledger: add new findings as `open`, keep carried-forward entries as-is, mark auto-resolved ones. Set `last_scanned_commit` to current HEAD, `last_mode` to `quick`, `last_scan_date` to today, increment `consecutive_quick_count` by 1.
+5. Commit the ledger immediately:
    ```
    git add .claude/refactor-log.json
    git commit -m "chore(refactor): update ledger after quick scan"
