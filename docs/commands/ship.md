@@ -43,15 +43,15 @@ flowchart TD
 
 ## Steps
 
-### 1. Branch check
+### Before starting
 
 Refuses to release from a feature branch. On `main` or `master`, runs the full release flow. On an environment branch (`staging`, `production`, or similar), skips version tagging and runs the promotion path instead.
 
-### 2. Select deployment targets
+### 1. Select deployment targets
 
 Only on `main`. Discovers remote environment branches via `git branch -r`, filters for known environment names, and presents a multi-select so the user can pick which environments to promote alongside the main release. Selecting none means a main-only release.
 
-### 3. Calculate version
+### 2. Calculate version
 
 Only on `main`. Versions follow [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Scans the last 20 commits for Conventional Commits patterns. If detected, walks commits since the last tag and proposes the next version: `BREAKING CHANGE` or `feat!` bumps major, `feat` bumps minor, `fix` bumps patch, `chore` and `docs` are ignored. The user confirms or enters a custom version. If Conventional Commits are not in use, the command asks the human for the version directly.
 
@@ -59,23 +59,23 @@ If no tag exists, the base version is read from the version file (`package.json`
 
 When the current version is in the `0.x.x` range, the confirmation prompt includes a dedicated **Bump to v1.0.0** option. This is for releases that complete a usable set of features solving a real problem end-to-end — not about size or stability, just about being genuinely usable. Once the version reaches `1.0.0` or above, this option is no longer shown.
 
-### 4. Run code quality checks
+### 3. Run code quality checks
 
 Runs the git.md Code Quality gate — lint and tests — before releasing, rather than restating the procedure. Two release-specific overrides: it runs the full test suite (not just changed-file tests), and if no test framework is detected it asks for confirmation to release untested instead of skipping silently. Does not proceed until lint passes and tests are green.
 
-### 5. Execute release
+### 4. Execute release
 
-Only on `main`. Bumps the version in the detected version file (`package.json`, `composer.json`, or `VERSION`), updates any inline version references in the README, then stages the version file, the README (if changed), and any files the linter/formatter touched in Step 4 — folding formatting changes into the release commit per git.md, never `git add -A`. Commits as `chore(release): bump version to {version}`, creates an annotated tag `v{version}`, and pushes both the commit and tag. For each selected environment branch, merges `main` in with a `--no-ff` deploy commit and pushes.
+Only on `main`. Bumps the version in the detected version file (`package.json`, `composer.json`, or `VERSION`), updates any inline version references in the README, then stages the version file, the README (if changed), and any files the linter/formatter touched in Step 3 — folding formatting changes into the release commit per git.md, never `git add -A`. Commits as `chore(release): bump version to {version}`, creates an annotated tag `v{version}`, and pushes both the commit and tag. For each selected environment branch, merges `main` in with a `--no-ff` deploy commit and pushes.
 
 After pushing, checks whether the remote origin URL contains `github.com`. If not, this sub-step is skipped silently. If yes, asks whether to create a GitHub Release. On confirmation, extracts `feat` and `fix` commits from `git log v{last_tag}..HEAD` and runs `gh release create v{version} --title "v{version}" --notes "{extracted_notes}"`, which publishes a release on GitHub with the curated commit list.
 
 **Prerequisite:** `gh release create` requires the GitHub CLI to be authenticated. Run `gh auth login` once before using this feature. If `gh` is not authenticated, the command will fail with an auth error and the ship command will surface the manual fix rather than silently failing.
 
-### 6. Promotion path
+### 5. Promotion path
 
 Only on an environment branch. Pushes the current branch so CI/CD can deploy. Determines the next environment in the chain (`staging → production`) and stops if already on the final environment.
 
-### 7. Report
+### 6. Report
 
 Closes with a summary: version tagged, README updated yes or no, environments promoted, GitHub Release created or skipped or not applicable, deployment triggered.
 

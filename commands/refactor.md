@@ -9,7 +9,7 @@ Run periodically on mature codebases to maintain code quality.
 
 ---
 
-## Step 1 — Branch check
+## Before starting
 
 Only proceed if on main or master.
 If on any other branch, stop and inform user:
@@ -19,15 +19,15 @@ Current branch is {branch}. Please switch and re-run."
 
 ---
 
-## Step 2 — Check for existing refactor branch
+## Step 1 — Check for existing refactor branch
 
 Run `git branch --list 'refactor/*'` to check for any existing refactor branch.
 
-If one is found, record its name — it will be offered to the user after they choose a mode in Step 4. Do not create or switch branches here.
+If one is found, record its name — it will be offered to the user after they choose a mode in Step 3. Do not create or switch branches here.
 
 ---
 
-## Step 3 — Scan boundaries
+## Step 2 — Scan boundaries
 
 Scan all project files except:
 - vendor/
@@ -46,9 +46,9 @@ Include test files — test quality degrades fastest and matters most.
 
 ---
 
-## Step 4 — Load history and choose mode
+## Step 3 — Load history and choose mode
 
-### 4.1 Load the ledger
+### 3.1 Load the ledger
 
 Look for `.claude/refactor-log.json`. This file is the command's memory across runs.
 
@@ -92,16 +92,16 @@ Schema:
 
 `consecutive_quick_count` — number of consecutive Quick Mode scans since the last Deep Mode scan. Increment by 1 each time Quick Mode runs; reset to 0 when Deep Mode runs.
 
-### 4.2 First run — no ledger found
+### 3.2 First run — no ledger found
 
 If `.claude/refactor-log.json` does not exist, this is the first run. Do not ask which mode to use.
 Inform user:
 
 "No refactor history found — running Deep Mode to build a baseline."
 
-Proceed to Step 4.4, then Step 5, Deep Mode.
+Proceed to Step 3.4, then Step 4, Deep Mode.
 
-### 4.3 Later runs — ledger found
+### 3.3 Later runs — ledger found
 
 Compute, since `last_scanned_commit`:
 - number of commits on the current branch
@@ -128,11 +128,11 @@ Only include the Fix Backlog option if `open_count > 0`:
       - label: "Fix Backlog{recommended tag if applicable}"  (only include if open_count > 0)
         description: "Skip scanning — {open_count} known issues waiting to be fixed. {reason if recommended, e.g. 'No new commits since last scan.'}"
 
-After the user confirms a mode, proceed to Step 4.4, then Step 5.
+After the user confirms a mode, proceed to Step 3.4, then Step 4.
 
-### 4.4 — Create the refactor branch
+### 3.4 — Create the refactor branch
 
-If an existing refactor/* branch was found in Step 2, ask:
+If an existing refactor/* branch was found in Step 1, ask:
   AskUserQuestion:
     question: "An existing refactor branch was found: {branch}. Continue on it or start fresh?"
     header:   "Branch"
@@ -148,11 +148,11 @@ If no existing refactor branch was found: create and switch to refactor/{YYYYMMD
 
 ---
 
-## Step 5 — Scan
+## Step 4 — Scan
 
-### 5A. Deep Mode
+### 4A. Deep Mode
 
-1. List all project files within scan boundaries (Step 3). Group them by folder/module rather than raw line count, so related code (e.g. a controller and its service layer) stays in the same chunk — this avoids missing issues that span two files in different chunks.
+1. List all project files within scan boundaries (Step 2). Group them by folder/module rather than raw line count, so related code (e.g. a controller and its service layer) stays in the same chunk — this avoids missing issues that span two files in different chunks.
 2. Estimate a comfortable read budget per sub-agent, and compute how many chunks/sub-agents are needed based on total project size. Cap at 8 sub-agents maximum — if more chunks are needed, merge the smallest adjacent folders until within the cap.
 3. Spawn one sub-agent per chunk. Each sub-agent reads its full chunk once and checks **all** categories in that single pass (architecture, code quality, performance, tests, dependencies) — do not run a second category-only pass over the same files; that doubles cost for no real benefit.
 4. Each sub-agent returns structured findings: category, priority, file, line, description.
@@ -172,10 +172,10 @@ If no existing refactor branch was found: create and switch to refactor/{YYYYMMD
    git commit -m "chore(refactor): update ledger after deep scan"
    ```
 
-### 5B. Quick Mode
+### 4B. Quick Mode
 
 1. Read `last_scanned_commit` from the ledger.
-2. Run `git diff --name-only {last_scanned_commit}..HEAD` to get the list of changed files (respecting Step 3 exclusions).
+2. Run `git diff --name-only {last_scanned_commit}..HEAD` to get the list of changed files (respecting Step 2 exclusions).
 3. If the changed file list exceeds 50 files, stop and inform the user:
    "Quick Mode found {N} changed files — that's too broad for a focused check. Consider switching to Deep Mode for a full re-scan."
    Ask with AskUserQuestion:
@@ -198,16 +198,16 @@ If no existing refactor branch was found: create and switch to refactor/{YYYYMMD
    git commit -m "chore(refactor): update ledger after quick scan"
    ```
 
-### 5C. Fix Backlog
+### 4C. Fix Backlog
 
 1. Skip scanning entirely — no file reads, no git diff, no sub-agents.
 2. Load every finding from the ledger with `status: open`. These are the only items in scope this run.
 3. Do not modify `last_scanned_commit`, `last_mode`, or `consecutive_quick_count` — no scan happened, so this run leaves scan metadata untouched.
-4. Proceed directly to Step 6 using only this open-findings list.
+4. Proceed directly to Step 5 using only this open-findings list.
 
 ---
 
-## Step 6 — Present findings
+## Step 5 — Present findings
 
 If this run used Fix Backlog mode, no scan occurred, so the report only ever shows the Still Open section — omit New and Auto-Resolved from the summary counts and category breakdowns entirely, and label the report header `REFACTORING REPORT (mode: Fix Backlog — no scan performed)`.
 
@@ -279,18 +279,18 @@ Wait for response before proceeding.
 
 ---
 
-## Step 7 — Apply refactoring
+## Step 6 — Apply refactoring
 
-Apply selected categories one at a time. Complete steps 7.1–7.4 fully for each category before starting the next. Do not batch changes from multiple categories into a single commit.
+Apply selected categories one at a time. Complete steps 6.1–6.4 fully for each category before starting the next. Do not batch changes from multiple categories into a single commit.
 
-### 7.1 Plan waves within capacity
+### 6.1 Plan waves within capacity
 
 - Take all findings in this category, grouped into their clusters.
 - Estimate how many clusters one agent session can safely handle without running low on context (rough budget based on total diff size expected, similar to the capacity math used for Deep Mode chunking).
 - If the category's clusters fit within that budget, it's a single wave. If not, split into sequential waves — each wave a bounded batch of clusters, still processed one at a time, never in parallel.
 - Sort clusters by `depends_on` across the whole category first, then assign to waves in that order, so a cluster never lands in an earlier wave than something it depends on.
 
-### 7.2 Apply one cluster at a time
+### 6.2 Apply one cluster at a time
 
 Work through the current wave's clusters one at a time, in order. For each cluster:
 
@@ -315,25 +315,25 @@ Work through the current wave's clusters one at a time, in order. For each clust
 
 This is the checkpoint: each cluster is fully tested, committed, and recorded in the ledger before moving to the next one. If the agent stops for any reason after this point, nothing already committed is lost or ambiguous.
 
-### 7.3 Wave handoff
+### 6.3 Wave handoff
 
 - When the current wave's clusters are all done, check whether clusters remain in this category.
-- If none remain, the category is complete — proceed to 7.4.
+- If none remain, the category is complete — proceed to 6.4.
 - If clusters remain, report progress plainly: "Wave {N} complete: clusters {list} fixed. {N} clusters remaining in this category." Continue automatically with a fresh agent session for the next wave; it reads the ledger to see exactly which findings are still open and picks up from there.
 - If capacity runs out mid-wave, stop only at the nearest completed cluster boundary — never leave a cluster half-edited. Report the same way as above and hand the remainder to the next wave.
 
 This replaces "silently completes a few and reports the rest at the end" with "always commits what's done, always states clearly what's left, and always continues from an accurate ledger."
 
-For any finding in this category the user did not select at the category level (Step 6), leave its ledger `status` as `open`.
+For any finding in this category the user did not select at the category level (Step 5), leave its ledger `status` as `open`.
 
 Example commits:
   refactor(architecture): extract business logic from controllers
   refactor(quality): remove duplicate helper methods
   refactor(tests): update outdated assertions
 
-### 7.4 Scoped verification pass
+### 6.4 Scoped verification pass
 
-After all selected categories have been applied and committed, run one lightweight check — reusing the Quick Mode mechanics (Step 5B), but scoped only to the files touched during this Step 7, not the whole repo:
+After all selected categories have been applied and committed, run one lightweight check — reusing the Quick Mode mechanics (Step 4B), but scoped only to the files touched during this Step 6, not the whole repo:
 
 - Re-check each `fixed` finding's file to confirm the issue is actually gone, not just that an edit was made.
 - Scan the same touched files once more for anything new the fixes themselves may have introduced.
@@ -343,7 +343,7 @@ This step is cheap — it only covers files already touched this session, not a 
 
 ---
 
-## Step 8 — Merge and cleanup
+## Step 7 — Merge and cleanup
 
 Use AskUserQuestion:
   AskUserQuestion:
@@ -378,7 +378,7 @@ Wait for response before proceeding.
 
 ---
 
-## Step 9 — Confirm completion
+## Step 8 — Confirm completion
 
 Report:
 

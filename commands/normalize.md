@@ -8,7 +8,7 @@ Rewrite all commit messages in this repository to follow Conventional Commits fo
 
 ---
 
-## Step 1 — Branch check
+## Before starting
 
 Only proceed if on main or master.
 If on any other branch, stop and inform user:
@@ -18,7 +18,7 @@ Current branch is {branch}. Please switch and re-run."
 
 ---
 
-## Step 2 — Risk warning
+## Step 1 — Risk warning
 
 Before doing anything else, present this warning using AskUserQuestion:
 
@@ -36,7 +36,7 @@ If Cancel → exit silently.
 
 ---
 
-## Step 3 — Scan history
+## Step 2 — Scan history
 
 Run: git log --oneline --no-decorate
 Collect every commit SHA and message from the beginning of the repo to HEAD.
@@ -78,7 +78,7 @@ Build a rewrite plan: a list of {sha, original_message, proposed_message} for ev
 
 ---
 
-## Step 4 — Show plan and confirm
+## Step 3 — Show plan and confirm
 
 Present the plan using AskUserQuestion:
 
@@ -97,7 +97,7 @@ If non_compliant_count is 0 → inform user "All commits already follow Conventi
 
 ---
 
-## Step 5 — Rewrite commit messages
+## Step 4 — Rewrite commit messages
 
 Build the rewrite map as a JSON object: `{ "original_message": "conventional_message", ... }`
 Include only non-compliant commits. Messages not in the map pass through unchanged.
@@ -141,7 +141,7 @@ git log --oneline | wc -l  # confirm total commit count is unchanged
 
 ---
 
-## Step 6 — Re-create orphaned tags
+## Step 5 — Re-create orphaned tags
 
 Run: git tag
 Collect all tags.
@@ -161,7 +161,7 @@ If no tags are orphaned: skip silently.
 
 ---
 
-## Step 7 — Force push
+## Step 6 — Force push
 
   AskUserQuestion:
     question: "Rewrite complete. Ready to force push to remote?\n\nThis will overwrite the remote history at origin/{branch}. This cannot be undone on the remote."
@@ -183,7 +183,7 @@ If skip selected: print the manual commands and exit.
 
 ---
 
-## Step 8 — Report
+## Step 7 — Report
 
 ─────────────────────────────────
 NORMALIZE COMPLETE

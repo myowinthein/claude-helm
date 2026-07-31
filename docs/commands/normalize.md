@@ -40,22 +40,22 @@ flowchart TD
 
 ## Steps
 
-### 1. Branch check
+### Before starting
 
 Only runs from `main` or `master`. Refuses to rewrite history from a feature branch — the rebase would diverge from `main` and create a worse mess.
 
-### 2. Risk warning
+### 1. Risk warning
 
 Unconditional first gate. Presents a plain-language summary of what history rewriting means:
 
 - Every rewritten commit gets a new SHA — history is permanently altered
 - Remote copies require a force push to sync
-- Tags pointing at rewritten commits become orphaned (handled in Step 4)
+- Tags pointing at rewritten commits become orphaned (handled in Step 5)
 - Anyone else who has cloned the repo will have a broken history
 
 Cancel is equally prominent. The command exits cleanly if the user declines.
 
-### 3. Scan and classify
+### 2. Scan and classify
 
 Runs `git log --oneline --no-decorate` to collect every commit from the beginning of the repo. For each commit, checks whether the message already matches the `type(scope): description` format.
 
@@ -65,7 +65,7 @@ For non-compliant commits, reads the diff via `git show {sha} --stat` to infer t
 - **Scope** is inferred from the primary module, folder, or domain area affected. Cross-cutting changes use `project` or `core`.
 - **Breaking changes** are detected from keywords (`breaking`, `BREAKING`, `!`) in the original message and preserved with a `!` suffix and `BREAKING CHANGE:` footer.
 
-### 4. Show plan and confirm
+### 3. Show plan and confirm
 
 Second gate, informed by real data. Presents:
 
@@ -78,17 +78,17 @@ The user sees exactly what will change before confirming. Cancel exits cleanly w
 
 If the non-compliant count is zero, the command exits here with a "nothing to do" message.
 
-### 5. Rewrite
+### 4. Rewrite
 
 Uses `git filter-repo --message-callback` (preferred) with a pre-built JSON rewrite map, falling back to `git filter-branch --msg-filter` if `git filter-repo` is not installed. Claude builds the full `{original: proposed}` map during the scan phase and applies it in a single pass — no interactive prompts per commit, no partial rewrites. Messages not in the map pass through unchanged.
 
 Verifies the result by sampling the first 20, last 20, and total count of commits before continuing.
 
-### 6. Re-create orphaned tags
+### 5. Re-create orphaned tags
 
 Collects all tags via `git tag`. For each tag, checks whether the original commit SHA still exists in the rewritten history. Orphaned tags (pointing at rewritten SHAs) are deleted and re-created at the corresponding new SHA with the same name and message.
 
-### 7. Force push
+### 6. Force push
 
 Separate third confirmation before touching the remote. Presents the branch and remote clearly. If the user skips, prints the exact manual commands to run later:
 
@@ -97,7 +97,7 @@ git push origin {branch} --force
 git push origin --tags --force
 ```
 
-### 8. Report
+### 7. Report
 
 Closes with a structured summary: total commits scanned, rewritten count, tags re-created, force push status. Any commits Claude could not classify with high confidence are listed separately as uncertain rewrites so the user can review them manually.
 

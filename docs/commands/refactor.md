@@ -81,19 +81,19 @@ flowchart TD
 
 ## Steps
 
-### 1. Branch check
+### Before starting
 
 Only runs from `main` or `master`. Halts on any other branch.
 
-### 2. Check for existing refactor branch
+### 1. Check for existing refactor branch
 
 Runs `git branch --list 'refactor/*'` and records any existing branch name. No branch is created here.
 
-### 3. Scan boundaries
+### 2. Scan boundaries
 
 Reads the project but skips `vendor/`, `node_modules/`, `public/`, `storage/`, migration files, `.env` files, generated or compiled files, and `.claude/refactor-log.json` itself. Tests are included on purpose because test quality degrades fastest.
 
-### 4. Load history and choose mode
+### 3. Load history and choose mode
 
 Looks for `.claude/refactor-log.json` — the command's persistent memory.
 
@@ -106,9 +106,9 @@ Looks for `.claude/refactor-log.json` — the command's persistent memory.
 
 The Fix Backlog option only appears when there are open findings. The user picks via a prompt with the reason for the recommendation shown inline.
 
-**After mode is confirmed**, the refactor branch is created: `refactor/{YYYYMMDD-HHMMSS}`. If an existing `refactor/*` branch was found in Step 2, the user is asked whether to continue on it or start fresh.
+**After mode is confirmed**, the refactor branch is created: `refactor/{YYYYMMDD-HHMMSS}`. If an existing `refactor/*` branch was found in Step 1, the user is asked whether to continue on it or start fresh.
 
-### 5. Scan
+### 4. Scan
 
 **Deep Mode** — splits the project into folder/module chunks (keeping related files together), spawns one sub-agent per chunk, and has each agent read its full chunk in a single pass across all five categories: **Architecture**, **Code Quality**, **Performance**, **Tests**, and **Dependencies**. The main agent then consolidates: merges reports, spots cross-chunk patterns, checks new findings against the ledger to avoid duplicates, auto-resolves stale entries, assigns `risk` (`safe` / `needs-review`), groups related findings into `cluster_id`s, and records `depends_on` order where one fix must precede another.
 
@@ -119,7 +119,7 @@ The Fix Backlog option only appears when there are open findings. The user picks
 Deep and Quick Mode commit the updated ledger before moving on:
 `chore(refactor): update ledger after {deep/quick} scan`
 
-### 6. Present findings
+### 5. Present findings
 
 Builds a structured report. For Deep and Quick Mode, findings are split into three sections:
 
@@ -131,11 +131,11 @@ For Fix Backlog mode, only **Still Open** is shown — no New or Auto-Resolved s
 
 Each finding is tagged `[New]`/`[Still Open]`, priority (`High`/`Medium`/`Low`), and risk (`Safe`/`Needs Review`). Total count at the bottom shows new vs still-open separately.
 
-### 7. Select categories
+### 6. Select categories
 
 Multi-select prompt with only categories that have at least one `new` or `still open` finding (max 4 options — smallest two merge if more than four qualify). Categories with only auto-resolved findings are excluded. Performance findings are reported but folded into whichever category it merges with if all five categories have issues. Selecting nothing is a clean skip with no harm done.
 
-### 8. Apply category by category
+### 7. Apply category by category
 
 For each selected category in turn:
 
@@ -148,14 +148,14 @@ For each selected category in turn:
 
 After all selected categories are applied, re-checks only the files touched this session — not a fresh full scan. Confirms each `fixed` finding is actually gone, and catches anything new the fixes themselves introduced. Updates the ledger accordingly. Results surface in the final report.
 
-### 9. Merge, PR, or leave
+### 8. Merge, PR, or leave
 
 Asks how to land the work:
 - **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, delete the refactor branch, push
 - **Open PR** — push the branch (with updated ledger) and prompt the user to open a PR
 - **Leave as-is** — branch stays locally for manual review
 
-### 10. Confirm completion
+### 9. Confirm completion
 
 Closes with a structured summary: branch, mode, changes per category, ledger state (still open / auto-resolved / newly fixed / skipped by user), verification result (confirmed resolved / newly introduced), commits made, tests passing, outcome.
 

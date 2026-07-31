@@ -4,7 +4,7 @@ description: Bump version, run tests, tag release, and promote to deployment env
 
 # ship
 
-## Step 1 — Branch check
+## Before starting
 
 Check current branch.
 
@@ -24,9 +24,9 @@ If on feature or any other branch:
 
 ---
 
-## Step 2 — Select deployment targets (main branch only)
+## Step 1 — Select deployment targets (main branch only)
 
-Skip this step if on environment branch — proceed directly to Step 6.
+Skip this step if on environment branch — proceed directly to Step 5.
 
 Discover environment branches via: git branch -r
 Filter for known environment names (staging, production, or similar).
@@ -50,9 +50,9 @@ If environment branches exist, use AskUserQuestion:
 
 ---
 
-## Step 3 — Calculate and propose version (main branch only)
+## Step 2 — Calculate and propose version (main branch only)
 
-Skip this step if on environment branch — proceed directly to Step 6.
+Skip this step if on environment branch — proceed directly to Step 5.
 
 Detect version file by scanning for package.json, composer.json, VERSION file.
 Read current version from detected file.
@@ -94,11 +94,11 @@ If Conventional Commits detected:
   - {list of feat and fix commits, skip chore/docs/style}
 
   Deployment targets:
-  - {selected environments from Step 2}
+  - {selected environments from Step 1}
 
   If current version is 0.x.x:
     AskUserQuestion:
-      question: "Ship v{proposed}? Confirming will commit, tag, push, and promote to any environments selected in Step 2. Current: v{last_tag} → Proposed: v{proposed}"
+      question: "Ship v{proposed}? Confirming will commit, tag, push, and promote to any environments selected in Step 1. Current: v{last_tag} → Proposed: v{proposed}"
       header:   "Version"
       multiSelect: false
       options:
@@ -111,7 +111,7 @@ If Conventional Commits detected:
 
   If current version is 1.0.0 or above:
     AskUserQuestion:
-      question: "Ship v{proposed}? Confirming will commit, tag, push, and promote to any environments selected in Step 2. Current: v{last_tag} → Proposed: v{proposed}"
+      question: "Ship v{proposed}? Confirming will commit, tag, push, and promote to any environments selected in Step 1. Current: v{last_tag} → Proposed: v{proposed}"
       header:   "Version"
       multiSelect: false
       options:
@@ -135,7 +135,7 @@ If Conventional Commits not detected:
 
 ---
 
-## Step 4 — Run code quality checks
+## Step 3 — Run code quality checks
 
 Run the git.md Code Quality gate — lint + tests — before releasing. Two release-specific overrides:
 - Run the full test suite, not just changed-file tests — a release warrants it.
@@ -145,7 +145,7 @@ Do not proceed until lint passes and tests are green.
 
 ---
 
-## Step 5 — Execute release on main
+## Step 4 — Execute release on main
 
 Only run this step if on main or master.
 
@@ -157,7 +157,7 @@ If found, update to {version}. Skip silently if none found.
 Commit, tag, and push:
 - git add {version_file}
 - git add README.md  (only if README was updated in the step above)
-- git add {any files the Step 4 linter/formatter modified}  (per git.md: fold formatting changes into the last commit; never git add -A)
+- git add {any files the Step 3 linter/formatter modified}  (per git.md: fold formatting changes into the last commit; never git add -A)
 - git commit -m "chore(release): bump version to {version}"
 - git tag -a v{version} -m "Release v{version}"
 - git push origin HEAD
@@ -196,7 +196,7 @@ If hosted on GitHub, use AskUserQuestion:
 
 ---
 
-## Step 6 — Execute promotion on environment branch
+## Step 5 — Execute promotion on environment branch
 
 Only run this step if on environment branch.
 
@@ -215,7 +215,7 @@ If no next environment (already on production):
 
 ---
 
-## Step 7 — Confirm completion
+## Step 6 — Confirm completion
 
 If on main or master:
   Report:
