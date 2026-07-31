@@ -93,7 +93,7 @@ Collects all tags via `git tag`. For each tag, confirms it resolves to a commit 
 
 ### 6. Force push
 
-Separate third confirmation before touching the remote. Every local branch collected in Step 2 was rewritten, not just the one the command was run from, so each gets its own force push — not only the current branch. If the user skips, prints the exact manual commands to run later, one per branch, plus tags:
+Separate third confirmation before touching the remote. Every local branch collected in Step 2 was rewritten, not just the one the command was run from, so each gets its own force push — not only the current branch. If the user skips, prints the exact manual commands to run later, one per branch, plus tags, then still proceeds to Step 7 for the report:
 
 ```
 git push origin {branch} --force   # repeated for every local branch collected in Step 2
@@ -102,7 +102,11 @@ git push origin --tags --force
 
 ### 7. Report
 
-Closes with a structured summary: total commits scanned, rewritten count, which local branches were rewritten, tags verified (plus any needing manual attention), force push status per branch. Any commits Claude could not classify with high confidence are listed separately as uncertain rewrites so the user can review them manually.
+Closes with a structured summary: total commits scanned, rewritten count, which local branches were rewritten, tags verified (plus any needing manual attention), force push status per branch. Runs regardless of whether the push in Step 6 was automatic or manual/skipped.
+
+Always includes the commands needed to sync any other clone of the repo — `git pull` will fail or silently diverge after a force-pushed rewrite, so every other clone needs a `git fetch --all && git reset --hard origin/{branch}` per rewritten branch.
+
+Any commits Claude could not classify with high confidence are listed separately as uncertain rewrites so the user can review them manually.
 
 ## Stop conditions
 

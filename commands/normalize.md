@@ -187,7 +187,7 @@ Then:
 git push origin --tags --force
 ```
 
-If skip selected: print the manual commands for every branch (matching the loop above) plus the tags push, and exit.
+If skip selected: print the manual commands for every branch (matching the loop above) plus the tags push, then proceed to Step 7 for the report.
 
 ---
 
@@ -203,6 +203,10 @@ Local branches rewritten: {branch_list from Step 2}
 Tags verified:           {tag_count} correctly moved (or "none" if no tags exist); {N} needing manual attention, if any
 Force pushed:            yes / no (manual) — {branch_list} + tags
 ─────────────────────────────────
+
+Other clones must run, per rewritten branch, before their next pull:
+  git fetch --all && git reset --hard origin/{branch}
+`git pull` will fail or silently diverge otherwise.
 
 Sample of rewrites applied:
 - '{original}' → '{proposed}'
