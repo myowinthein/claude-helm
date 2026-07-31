@@ -200,7 +200,7 @@ repository structure. No assumptions, preferences, or speculation.
 Prefer improving existing content over adding new content.
 Merge overlapping entries, remove outdated ones, improve clarity first.
 
-If a `.claude/rules` file looks out of date, **propose** the change — do not edit it directly. `git.md` and `safety.md` are managed by `/helm:adopt` and overwritten on the next update, so edits there would be lost; project-specific safety findings belong in `.claude/rules/safety.local.md` (proposed, not auto-written).
+If a `.claude/rules` file looks out of date, **propose** the change — do not edit it directly (see Scope for why, and where safety findings go).
 
 Update the saved commit hash at the end of the file to current HEAD.
 
@@ -220,5 +220,5 @@ Ask for confirmation before writing.
 
 CLAUDE.md = descriptive project knowledge (orientation layer).
 .claude/rules/ = prescriptive rules (architecture, safety, git, testing).
-Keep them consistent. When a convention change leaves a rule file out of date, propose the update — do not auto-edit `.claude/rules` (the helm-managed files are overwritten by `/helm:adopt`; project safety findings go in `.claude/rules/safety.local.md`).
+Keep them consistent. When a convention change leaves a rule file out of date, **propose** the update — never auto-edit `.claude/rules`. The helm-managed files (`git.md`, `safety.md`) are overwritten by `/helm:adopt`, so edits there are lost; project-specific safety findings belong in `.claude/rules/safety.local.md`, proposed not auto-written.
 
