@@ -531,11 +531,13 @@ Env files
   Never referenced: {N} deleted, {N} kept
   Env formatting:   {N} files fixed
 .gitignore
-  Entries:          {N} missing added, {N} overly-broad removed
+  Missing entries:  {N} added
   Tracked files:    {N} untracked, {N} skipped
+  Entries removed:  {N} overly-broad removed
   Formatting:       {N} duplicates removed, groupings added: yes/no
 ─────────────────────────────────
 Needs manual action:
+- Secret cleanup skipped: real secrets remain in .env.example — replace with placeholders manually
 - Tracked files skipped: {list} — run git rm --cached to untrack manually
 ─────────────────────────────────
 Committed: yes / no
