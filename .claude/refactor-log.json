@@ -2229,11 +2229,11 @@
       "file": "commands/refactor.md",
       "line": 266,
       "description": "Step 5's category-selection AskUserQuestion hardcodes exactly 4 options (Architecture/Code Quality/Tests/Dependencies), permanently omitting Performance even though it has its own report section and completion-report line \u2014 Performance findings can never be selected for fixing.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "f7dca4e8aec3dfb2279e8c36a797004826b23427",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0093",
