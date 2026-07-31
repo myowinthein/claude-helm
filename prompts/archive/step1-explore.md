@@ -4,13 +4,13 @@ Analyze this project in read-only mode.
 
 Goal: Understand the project well enough to make an informed decision about archiving it, and to give every later step the context it needs.
 
-Rules:
+## Rules
 
 - Read-only only — do not modify, create, delete, or run anything.
 - Do not contact external services.
 - Do not print full credential values. Redact — show only file path, variable name, and a short redacted preview (e.g. `API_KEY=abc...xyz`).
 
-Determine:
+## Determine
 
 - Project purpose and business domain
 - Technology stack — framework, language, runtime versions, package manager, database type
@@ -31,7 +31,7 @@ Determine:
 - Restoration risks and unknowns
 - Recommended restoration approach — local or Docker
 
-Guidance:
+## Guidance
 
 - Do not rely only on README files — read source code, config, and manifests.
 - Separate confirmed facts from guesses. Label guesses explicitly.
