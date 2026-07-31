@@ -54,12 +54,11 @@ If environment branches exist, use AskUserQuestion:
 
 Skip this step if on environment branch — proceed directly to Step 5.
 
-Detect version file by scanning for package.json, composer.json, VERSION file.
-Read current version from detected file.
+Detect version file by scanning for package.json, composer.json, VERSION file — needed later in Step 4 regardless of whether a tag exists.
 
 Run: git describe --tags --abbrev=0
 If no tag exists:
-  Read current version from detected version file.
+  Read current version from the detected file.
   If version found in file → use it as base version.
   If not found → use 0.1.0 as base version.
   Inform human: "No tags found. Using {base_version} as base version."
