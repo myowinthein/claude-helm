@@ -1653,11 +1653,11 @@
       "file": "commands/legal.md",
       "line": 71,
       "description": "Framework detection has no branch for a monorepo with multiple web packages/apps \u2014 which output location/format applies is undefined.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0e8f1f7649a786fbba98cbc117ff982b74ba4373",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0013",
