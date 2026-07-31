@@ -93,32 +93,16 @@ If README.md exists with a saved commit hash and `readme-style: standard` and st
         description: "No update needed"
 
 If README.md exists with a saved commit hash and (structure is intact or `readme-style: custom`):
-  Form a recommendation (Full or Gap) based on gap significance.
-  Put the recommended option first.
-
-  Gap is the recommendation (small or moderate gap):
+  Recommend Gap update for a small or moderate gap, or Full scan for a large or significant gap. List the recommended option first and append "(Recommended)" to it.
   AskUserQuestion:
     question: "{one sentence status and recommendation}"
     header:   "Update mode"
     multiSelect: false
     options:
-      - label: "Gap update (Recommended)"
+      - label: "Gap update"
         description: "Update only sections affected by commits since last review"
       - label: "Full scan"
         description: "Rewrite README.md from a complete project scan"
-      - label: "Skip"
-        description: "No update needed"
-
-  Full is the recommendation (large or significant gap):
-  AskUserQuestion:
-    question: "{one sentence status and recommendation}"
-    header:   "Update mode"
-    multiSelect: false
-    options:
-      - label: "Full scan (Recommended)"
-        description: "Rewrite README.md from a complete project scan"
-      - label: "Gap update"
-        description: "Update only sections affected by commits since last review"
       - label: "Skip"
         description: "No update needed"
 
