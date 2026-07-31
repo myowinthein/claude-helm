@@ -37,20 +37,9 @@ Schema is intact if all eight headings are found. Schema is broken if any are mi
 
 Based on current state, use AskUserQuestion (single-select) to present options:
 
-If CLAUDE.md is absent or empty:
+If CLAUDE.md is absent, empty, or has no saved commit hash:
   AskUserQuestion:
     question: "{one sentence status, e.g. 'CLAUDE.md not found — a full scan is required.'}"
-    header:   "Update mode"
-    multiSelect: false
-    options:
-      - label: "Full scan (Recommended)"
-        description: "Rewrite CLAUDE.md from a complete project scan"
-      - label: "Skip"
-        description: "No update needed"
-
-If CLAUDE.md exists but has no saved commit hash:
-  AskUserQuestion:
-    question: "{one sentence status and recommendation}"
     header:   "Update mode"
     multiSelect: false
     options:
@@ -77,32 +66,16 @@ If CLAUDE.md exists with a saved commit hash and schema is intact, and there are
   CLAUDE.md is already current. Inform the user: "CLAUDE.md is up to date — no meaningful commits since last review." Do not present any prompt.
 
 If CLAUDE.md exists with a saved commit hash and schema is intact, with meaningful commits since the hash:
-  Form a recommendation (Full or Gap) based on gap significance.
-  Put the recommended option first.
-
-  Gap is the recommendation (small or moderate gap):
+  Recommend Gap update for a small or moderate gap, or Full scan for a large or significant gap. List the recommended option first and append "(Recommended)" to it.
   AskUserQuestion:
     question: "{one sentence status and recommendation}"
     header:   "Update mode"
     multiSelect: false
     options:
-      - label: "Gap update (Recommended)"
+      - label: "Gap update"
         description: "Update only sections affected by commits since last review"
       - label: "Full scan"
         description: "Rewrite CLAUDE.md from a complete project scan"
-      - label: "Skip"
-        description: "No update needed"
-
-  Full is the recommendation (large or significant gap):
-  AskUserQuestion:
-    question: "{one sentence status and recommendation}"
-    header:   "Update mode"
-    multiSelect: false
-    options:
-      - label: "Full scan (Recommended)"
-        description: "Rewrite CLAUDE.md from a complete project scan"
-      - label: "Gap update"
-        description: "Update only sections affected by commits since last review"
       - label: "Skip"
         description: "No update needed"
 
