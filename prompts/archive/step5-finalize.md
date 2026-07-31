@@ -117,7 +117,21 @@ If no running services are found: skip silently.
 
 Show git status — all staged and unstaged changes accumulated across the full workflow.
 
-Commit all changes. Stage all tracked and new files explicitly — do not use `git add -A` blindly. Check `git status` first and stage only the files accumulated during this workflow:
+Confirm before committing and pushing — this is the final destructive action:
+
+AskUserQuestion:
+  question: "Seal the archive? This commits all accumulated changes and pushes to {archive_remote_url} ({main_or_master})."
+  header:   "Seal archive"
+  multiSelect: false
+  options:
+    - label: "Commit and push (Recommended)"
+      description: "Commit as chore(archive): seal project archive and push to the private archive remote"
+    - label: "Cancel"
+      description: "Leave changes staged/uncommitted — seal manually later"
+
+If Cancel → stop and leave changes as-is. Do not commit or push.
+
+If Commit and push: stage all tracked and new files explicitly — do not use `git add -A` blindly. Check `git status` first and stage only the files accumulated during this workflow:
 ```
 git add -u                                  # stage all tracked modifications
 git add recovery/ docs/ README.md .gitignore  # stage new files created this session
