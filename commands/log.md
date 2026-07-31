@@ -4,6 +4,21 @@ description: Update CLAUDE.md with a full scan or gap update since last review
 
 # log
 
+## CLAUDE.md Schema
+
+CLAUDE.md uses these eight sections, in order. Both a full scan and a gap update work only within them — never add a new heading, and a finding that fits none of them does not belong in CLAUDE.md.
+
+1. **Project Identity** — name, stack, purpose, blast radius.
+2. **Project Config** — flag-style declarations read by `.claude/rules` (e.g. `git-strategy: solo`, `git-auto-commit: true`); keep the heading even if empty.
+3. **Dev Commands** — install, run, test a single file, migrate, logs.
+4. **Architecture Pointers** — key files with a one-line why, not summaries.
+5. **Domain Rules** — non-obvious business, lifecycle, and permission constraints a change could violate; one line each; write "None" if there are none.
+6. **Behavior Rules** — autonomy model, confirmation gates, test requirements.
+7. **Hard Safety Rules** — invariants / never-do list; keep brief and instruct the agent to read and follow `.claude/rules/safety.local.md` every session for the full detail.
+8. **Known Traps** — gotchas; initially empty or inferred from README warnings.
+
+---
+
 ## Step 1 — Assessment
 
 Check CLAUDE.md:
@@ -12,9 +27,7 @@ Check CLAUDE.md:
 - Is there a saved commit hash? (look for `<!-- last-reviewed: {hash} -->`)
 - If hash exists, run `git log {hash}..HEAD --oneline` to see the gap
 - How significant is the gap? (ignore: bug fixes, styling, dependency updates, routine CRUD)
-- If the file exists and has content, check whether all eight required sections are present:
-  `## Project Identity`, `## Project Config`, `## Dev Commands`,
-  `## Architecture Pointers`, `## Domain Rules`, `## Behavior Rules`, `## Hard Safety Rules`, `## Known Traps`
+- If the file exists and has content, check whether all eight sections from the CLAUDE.md Schema (above) are present.
 
 Schema is intact if all eight headings are found. Schema is broken if any are missing.
 
@@ -159,15 +172,7 @@ Before writing anything, investigate in this order:
 7. Identify operational context and common development workflows
 8. Review existing docs, README, .claude/rules
 
-Then write CLAUDE.md using the eight-section schema:
-1. Project Identity (name, stack, purpose, blast radius)
-2. Project Config (flag-style declarations read by .claude/rules, e.g. `git-strategy: solo`, `git-auto-commit: true`; keep heading even if empty)
-3. Dev Commands (install, run, test single file, migrate, logs)
-4. Architecture Pointers (key files with one-line why, not summaries)
-5. Domain Rules (non-obvious business, lifecycle, and permission constraints a change could violate — one line each; write "None" if the project has no notable domain rules)
-6. Behavior Rules (autonomy model, confirmation gates, test requirements)
-7. Hard Safety Rules (invariants, never-do list — keep brief; instruct the agent to read and follow .claude/rules/safety.local.md every session for the full detail)
-8. Known Traps (initially empty or inferred from README warnings)
+Then write CLAUDE.md using the CLAUDE.md Schema above — all eight sections, in order.
 
 Before writing the Project Config section, run Project Config Check.
 
@@ -198,8 +203,8 @@ styling, dependency updates, routine CRUD.
 Focus on: architectural changes, new modules, new conventions, domain
 rule changes, new operational knowledge, newly discovered traps.
 
-**Stay within the eight-section schema (Step 3).** Every change must land in one
-of the existing sections — never add a new heading or section. Map each finding
+**Stay within the CLAUDE.md Schema (above).** Every change must land in one
+of the eight existing sections — never add a new heading or section. Map each finding
 to its home:
 - architecture, new modules → Architecture Pointers
 - business, lifecycle, permission rules → Domain Rules
