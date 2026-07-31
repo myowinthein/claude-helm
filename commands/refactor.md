@@ -139,6 +139,8 @@ After the user confirms a mode, proceed to Step 3.4, then Step 4.
 
 ### 3.4 — Create the refactor branch
 
+Unlike other commands' `{type}/{desc}-{YYYYMMDD}` branches, refactor branches use `refactor/{YYYYMMDD-HHMMSS}` — day-only granularity isn't enough here, since "Create new branch" below can produce a second refactor branch on the same day an old one already exists.
+
 If an existing refactor/* branch was found in Step 1, ask:
   AskUserQuestion:
     question: "An existing refactor branch was found: {branch}. Continue on it or start fresh?"
