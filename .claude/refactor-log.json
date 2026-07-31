@@ -2069,11 +2069,11 @@
       "file": "prompts/archive/step5-finalize.md",
       "line": 159,
       "description": "Final commit unconditionally runs git add .gitattributes, which is only created under specific Task 3 branches (LFS commit, or \"keep local\" with other >100MB files) \u2014 fails with \"pathspec did not match any files\" if neither condition was met.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "eb146cb2c41fac9337f5f79312509eac54396d06",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0039",
