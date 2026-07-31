@@ -11,7 +11,7 @@ Also detect the project's coverage tool (coverage.py, nyc, jest --coverage, etc.
 
 If framework detected → proceed to Step 2.
 
-If no framework detected, form the recommendation from the project actually detected — language, package manager (from the lockfile), existing build tooling and module system, monorepo structure if any — reusing what the scan above already found rather than defaulting to generic knowledge. Then use AskUserQuestion:
+If no framework detected, form the recommendation from the project actually detected — language, package manager (from the lockfile), existing build tooling and module system, monorepo structure if any — reusing what the scan above already found rather than defaulting to generic knowledge.
   AskUserQuestion:
     question: "No test framework detected. Which would you like to set up? (based on detected stack)"
     header:   "Framework"
