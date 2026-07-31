@@ -12,7 +12,7 @@ Audit `.env` files, `.gitignore`, and source code to find and fix environment co
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:env]) --> Scan[Scan all env files,<br/>source code, and .gitignore<br/>8 checks — read-only]
+  Start([User runs /helm:env]) --> Scan[Scan all env files,<br/>source code, and .gitignore<br/>11 checks — read-only]
 
   Scan --> Report[Present findings — ENV AUDIT REPORT]
   Report --> Ask[Ask: which targets to work through?<br/>Env files and/or .gitignore]
@@ -30,18 +30,21 @@ flowchart TD
 
 ### 1. Scan
 
-Eight read-only checks across all env files, source code, and `.gitignore`. Never stops early — a partial scan produces missed findings that silently persist.
+Eleven read-only checks across all env files, source code, and `.gitignore`. Never stops early — a partial scan produces missed findings that silently persist.
 
 | Check | What it finds |
 |---|---|
-| 2.1 Detect env files | All `.env*` files and their inferred purpose |
-| 2.2 Env sync | Keys present in some files but missing from others |
-| 2.3 Source code refs | Every env var accessed in source, per stack |
-| 2.4 Cross-reference | Keys missing from all env files; keys never referenced in code |
-| 2.5 Secret/placeholder | Real secrets in `.env.example`; unfilled placeholders in other env files |
-| 2.6 Hardcoded values | String literals in source that should be env vars |
-| 2.7 Env formatting | Duplicate keys, spacing, missing category groupings |
-| 2.8 Gitignore | Missing entries, overly broad entries, tracked files matching patterns, formatting |
+| 1.1 Detect env files | All `.env*` files and their inferred purpose |
+| 1.2 Env sync | Keys present in some files but missing from others |
+| 1.3 Source code refs | Every env var accessed in source, per stack |
+| 1.4 Cross-reference | Keys missing from all env files; keys never referenced in code |
+| 1.5 Secret/placeholder | Real secrets in `.env.example`; unfilled placeholders in other env files |
+| 1.6 Hardcoded values | String literals in source that should be env vars |
+| 1.7 Env formatting | Duplicate keys, spacing, missing category groupings |
+| 1.8 Gitignore missing entries | Stack-appropriate entries absent from `.gitignore` |
+| 1.9 Gitignore tracked files | Tracked files that match a `.gitignore` pattern |
+| 1.10 Gitignore entries to remove | Overly broad or harmful `.gitignore` entries |
+| 1.11 Gitignore formatting | Duplicate entries, missing category groupings |
 
 ### 2. Report
 
@@ -64,7 +67,7 @@ Run the selected target's sub-flows, one at a time, each completing fully before
 **.gitignore sub-flows** (if ".gitignore" selected):
 
 - **Missing entries** — shows entries with reason, single-select Add all/Skip. If approved, immediately checks for tracked files matching the new patterns.
-- **Tracked files** — per-file confirmation to run `git rm --cached`. Triggered automatically after missing entries are added, and for any pre-existing tracked files found in Step 1.8.
+- **Tracked files** — per-file confirmation to run `git rm --cached`. Triggered automatically after missing entries are added, and for any pre-existing tracked files found in Step 1.9.
 - **Entries to remove** — shows overly broad or harmful entries with reason, single-select Remove all/Skip.
 - **Gitignore formatting** — single-select Proceed/Skip. Fixes formatting, removes duplicates, adds category groupings.
 
@@ -74,7 +77,7 @@ After all fixes are applied, commits (per [git.md's Auto-Commit rule](../rules/g
 
 ### 5. Completion report
 
-Summarises the outcome grouped by target (Env files, .gitignore): counts replaced, added, deleted, or fixed for each sub-flow — including how many never-referenced keys were deleted vs kept. Lists any skipped tracked files under manual action for follow-up.
+Summarises the outcome grouped by target (Env files, .gitignore): counts replaced, added, deleted, or fixed for each of the eleven sub-flows — including how many never-referenced keys were deleted vs kept. Lists anything needing manual follow-up: skipped secret cleanup (real secrets still in `.env.example`) and skipped tracked files.
 
 ## Stop conditions
 
