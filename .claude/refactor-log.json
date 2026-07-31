@@ -2597,11 +2597,11 @@
       "file": "CLAUDE.md",
       "line": 18,
       "description": "Dev Commands says 'the Jekyll site is not built or verified locally as part of this repo's own workflow', but Gemfile now has a test group with html-proofer specifically for that; stale relative to this session's change, and doesn't document how to run it.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "9e2d3b7ac1812fafd3174ea0ddeff60cfc58c389",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0116",
@@ -2613,11 +2613,11 @@
       "file": "CLAUDE.md",
       "line": 60,
       "description": "Known Traps says 'the Jekyll site build itself is never actually verified before or after a release', which overstates the current state now that html-proofer exists as a local verification step (still true it isn't wired into /helm:ship or CI).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "9e2d3b7ac1812fafd3174ea0ddeff60cfc58c389",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0117",
