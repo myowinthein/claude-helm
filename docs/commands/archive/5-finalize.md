@@ -59,7 +59,7 @@ All non-personal remotes are removed. Origin is set to the provided private URL.
 
 ## Task 2 — Branch cleanup
 
-All local and remote branches are listed. The branch this workflow was run from is the one being archived — it becomes the single surviving branch, renamed to `main` if it isn't already. No merging: nothing is combined, the archived branch is simply relabeled as canonical and everything else is discarded. A plan is presented for explicit approval:
+All local and remote branches are listed. The branch this workflow was run from is the one being archived — read from Step 1's report's explicit "Archiving from:" field, not the current branch, since a resumed multi-session archive may have started on a different branch than the original run (older reports without the field fall back to inferring it from Step 1's prose). It becomes the single surviving branch, renamed to `main` if it isn't already. No merging: nothing is combined, the archived branch is simply relabeled as canonical and everything else is discarded. A plan is presented for explicit approval:
 
 ```
 BRANCH CLEANUP
