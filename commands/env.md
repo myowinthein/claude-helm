@@ -168,26 +168,19 @@ TOTAL: {N} issues across {N} categories
 ─────────────────────────────────
 ```
 
-Then ask which categories to fix:
+Then ask which targets to work through:
 
 AskUserQuestion:
-  question: "Which categories would you like to fix?"
-  header:   "Fix categories"
+  question: "Which findings would you like to work through?"
+  header:   "Fix scope"
   multiSelect: true
-  options (include only if the category has findings):
-    - label: "Env sync"
-      description: "{N} keys missing from one or more env files"
-    - label: "Missing from env"
-      description: "{N} keys referenced in code but not in any env file"
-    - label: "Hardcoded values"
-      description: "{N} values in source code that should be env vars"
-    - label: "Cleanup"
-      description: "Formatting and grouping fixes for env files and .gitignore"
+  options (include only if that target has findings):
+    - label: "Env files"
+      description: "All env-file findings: sync, missing keys, secrets/placeholders, hardcoded values, unreferenced keys, formatting"
+    - label: ".gitignore"
+      description: "All .gitignore findings: missing entries, tracked files, overly-broad entries, formatting"
 
-Secret/placeholder and Never referenced are not in the multi-select above — they have dedicated flows:
-- Secret cleanup (.env.example): handled in Step 4 if findings exist — ask before replacing
-- Placeholder cleanup (other env files): handled in Step 4 if findings exist — dev fills in manually, then marks done
-- Never referenced: flagged for manual review — do not auto-remove, as they may be infrastructure-only
+Selecting a target walks through each of its findings in Step 4 — every sub-flow shows what it found and asks, so you can skip any you do not want. Selecting neither exits without changes (the report above already lists everything).
 
 Wait for response before proceeding.
 
@@ -195,9 +188,13 @@ Wait for response before proceeding.
 
 ## Step 4 — Apply fixes
 
-Step 4 runs two kinds of fix. The **dedicated flows** — Secret cleanup, Placeholder cleanup, and Never referenced — run automatically whenever their findings exist, regardless of the Step 3 selection (even if no category was selected). The four **selectable categories** — Env sync, Missing from env, Hardcoded values, Cleanup — run only if selected in Step 3.
+Run the sub-flows for each selected target: the **Env files** sub-flows if "Env files" was selected, the **.gitignore** sub-flows if ".gitignore" was selected. Within a selected target, run a sub-flow only if it has findings — each shows its findings and asks, with a Skip.
 
-Apply each applicable section one at a time. Complete each section fully before moving to the next. Never mark the command done if a section was only partially applied — partial fixes leave the project in an inconsistent state.
+Apply each sub-flow one at a time. Complete each fully before moving to the next. Never mark the command done if a sub-flow was only partially applied — partial fixes leave the project in an inconsistent state.
+
+---
+
+**Env files sub-flows** — run these only if "Env files" was selected.
 
 ### Secret cleanup (.env.example)
 
@@ -258,7 +255,7 @@ AskUserQuestion:
   multiSelect: false
   options:
     - label: "Done — move to next step"
-      description: "Continue to the next fix category"
+      description: "Continue to the next sub-flow"
     - label: "Skip"
       description: "Leave these placeholders as-is and move on"
 
@@ -317,7 +314,7 @@ AskUserQuestion:
   multiSelect: false
   options:
     - label: "Done — move to next step"
-      description: "Continue to the next fix category"
+      description: "Continue to the next sub-flow"
     - label: "Skip"
       description: "Leave these keys unresolved and move on"
 
@@ -379,7 +376,7 @@ What would you like to do? You can say things like:
 
 Read the developer's free-text response and act accordingly. Apply only what was explicitly requested.
 
-### Cleanup — Env files
+### Env formatting
 
 Only run this section if env formatting issues were found.
 
@@ -401,7 +398,11 @@ If Proceed selected:
 
 If Skip selected: no changes to env files.
 
-### Cleanup — Gitignore: Missing entries
+---
+
+**.gitignore sub-flows** — run these only if ".gitignore" was selected.
+
+### Missing entries
 
 Only run this section if missing entries were found in Step 2.8.
 
@@ -430,7 +431,7 @@ AskUserQuestion:
 If Add all selected: add all entries to .gitignore, then proceed immediately to tracked files check below.
 If Skip selected: skip to next section.
 
-### Cleanup — Gitignore: Tracked files
+### Tracked files
 
 Run this section in two cases:
 - Automatically after Missing entries if new entries were added — check for tracked files matching those new patterns
@@ -451,7 +452,7 @@ AskUserQuestion:
 If Untrack selected → run `git rm --cached {file}`.
 If Skip selected → note it in the Step 6 report under manual action.
 
-### Cleanup — Gitignore: Entries to remove
+### Entries to remove
 
 Only run this section if overly broad or harmful entries were found in Step 2.8.
 
@@ -479,7 +480,7 @@ AskUserQuestion:
 If Remove all selected: remove all flagged entries from .gitignore.
 If Skip selected: no changes.
 
-### Cleanup — Gitignore: Formatting
+### Gitignore formatting
 
 Only run this section if formatting issues were found in Step 2.8.
 
@@ -529,13 +530,17 @@ Report:
 ```
 ENV COMPLETE
 ─────────────────────────────────
-Secret cleanup:   .env.example — {N} replaced, {N} skipped
-Placeholder:      {N} keys flagged across {N} files — done / skipped
-Env sync:         {N} keys added across {N} files
-Missing from env: {N} keys identified — added manually
-Hardcoded values: {N} replaced, {N} skipped
-Cleanup:          {N} env files fixed, .gitignore: {N} entries added, {N} removed, {N} duplicates removed, groupings added: yes/no
-Tracked files:    {N} untracked, {N} skipped
+Env files
+  Secret cleanup:   .env.example — {N} replaced, {N} skipped
+  Placeholder:      {N} keys flagged across {N} files — done / skipped
+  Env sync:         {N} keys added across {N} files
+  Missing from env: {N} keys identified — added manually
+  Hardcoded values: {N} replaced, {N} skipped
+  Env formatting:   {N} files fixed
+.gitignore
+  Entries:          {N} added, {N} removed
+  Tracked files:    {N} untracked, {N} skipped
+  Formatting:       {N} duplicates removed, groupings added: yes/no
 ─────────────────────────────────
 Needs manual action:
 - Never referenced: {N} flagged — review and remove if stale

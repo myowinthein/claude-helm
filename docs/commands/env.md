@@ -16,35 +16,15 @@ flowchart TD
   Branch -->|no| Stop[/Stop: switch to main first/]
   Branch -->|yes| Scan[Scan all env files,<br/>source code, and .gitignore<br/>8 checks — read-only]
 
-  Scan --> Report[Present findings by category<br/>ENV AUDIT REPORT]
-  Report --> Ask[Ask: which categories to fix?<br/>multi-select]
+  Scan --> Report[Present findings — ENV AUDIT REPORT]
+  Report --> Ask[Ask: which targets to work through?<br/>Env files and/or .gitignore]
 
-  Ask --> Dedicated[Run dedicated flows<br/>regardless of selection]
-  Dedicated --> SecretCleanup{Real secrets<br/>in .env.example?}
-  SecretCleanup -->|yes| ReplaceAsk[Ask: replace all with placeholders?]
-  SecretCleanup -->|no| PlaceholderCheck
+  Ask -->|Env files| EnvFlows[Env-file sub-flows, each with a Skip:<br/>Secret cleanup · Placeholder cleanup ·<br/>Env sync · Missing from env ·<br/>Hardcoded values · Never referenced ·<br/>Env formatting]
+  Ask -->|.gitignore| GitFlows[.gitignore sub-flows, each with a Skip:<br/>Missing entries · Tracked files ·<br/>Entries to remove · Formatting]
+  Ask -->|neither| SkipExit[/Exit: no changes/]
 
-  ReplaceAsk -->|Replace all| AutoReplace[Auto-replace values]
-  ReplaceAsk -->|Other| PartialReplace[Follow dev instructions]
-  ReplaceAsk -->|Skip| PlaceholderCheck
-  AutoReplace --> PlaceholderCheck
-  PartialReplace --> PlaceholderCheck
-
-  PlaceholderCheck{Placeholders in<br/>other env files?}
-  PlaceholderCheck -->|yes| ShowPlaceholders[Show by file — dev fills manually<br/>Wait for Done/Skip]
-  PlaceholderCheck -->|no| NeverRef
-  ShowPlaceholders --> NeverRef
-
-  NeverRef[Show never-referenced keys<br/>with infrastructure/stale hints<br/>Free-text response]
-  NeverRef --> Selected[Apply selected categories]
-
-  Selected --> EnvSync[Env sync<br/>per file — dev adds manually]
-  EnvSync --> MissingEnv[Missing from env<br/>show all — dev adds manually]
-  MissingEnv --> Hardcoded[Hardcoded values<br/>Replace all / Skip / Other]
-  Hardcoded --> CleanupEnv[Cleanup — Env files<br/>auto-fix formatting + groupings]
-  CleanupEnv --> CleanupGit[Cleanup — Gitignore<br/>missing entries + tracked files +<br/>entries to remove + formatting]
-
-  CleanupGit --> Commit[Ask: commit now?]
+  EnvFlows --> Commit[Ask: commit now?]
+  GitFlows --> Commit
   Commit --> Done([Report: ENV COMPLETE])
 ```
 
@@ -71,31 +51,28 @@ Eight read-only checks across all env files, source code, and `.gitignore`. Neve
 
 ### 3. Report
 
-Findings presented as a single `ENV AUDIT REPORT` grouped by category. Includes a total issue count and a multi-select to choose which categories to fix. Four categories are selectable: **Env sync**, **Missing from env**, **Hardcoded values**, and **Cleanup**. Secret/placeholder and Never referenced always run their own dedicated flows in Step 4.
+Findings presented as a single `ENV AUDIT REPORT` grouped by category. Includes a total issue count and a multi-select to choose which **targets** to work through — **Env files** and/or **.gitignore**. Selecting a target runs every one of its sub-flows in Step 4 (each with its own Skip); selecting neither exits without changes. The report still lists every finding regardless of what's selected.
 
 ### 4. Apply fixes
 
-Each section runs in order and must complete fully before the next begins.
+Run the selected target's sub-flows, one at a time, each completing fully before the next. Each sub-flow runs only if it has findings and offers a Skip.
 
-**Secret cleanup (.env.example)** — runs automatically if real secrets were found. Shows each flagged key with its planned placeholder replacement. Single-select: Replace all, Skip, or Other (free-text). Does not touch any other env file.
+**Env files sub-flows** (if "Env files" selected):
 
-**Placeholder cleanup (other env files)** — runs automatically if unfilled placeholders were found. Shows all findings grouped by file. Dev fills in values manually, then marks done.
+- **Secret cleanup (.env.example)** — shows each flagged real secret with its planned placeholder replacement. Single-select: Replace all, Skip, or Other (free-text). Does not touch any other env file.
+- **Placeholder cleanup (other env files)** — shows unfilled placeholders grouped by file. Dev fills in values manually, then marks done.
+- **Env sync** — per file. Shows which keys are missing and where they exist in other files. Dev adds them manually per file, marks done before moving to the next.
+- **Missing from env** — all at once. Keys referenced in code but absent from all env files, with file:line locations. Dev adds them manually, marks done.
+- **Hardcoded values** — shows all findings with severity, file:line, redacted value, and suggested env var name. Single-select: Replace all, Skip, or Other. If Replace all and more than 10 findings: processes one source file at a time, committing after each.
+- **Never referenced** — lists keys with no code reference, with a hint on whether each looks infrastructure-only or stale. Dev responds in free text — delete some, keep some, or wire up to code.
+- **Env formatting** — single-select: Proceed or Skip. Fixes formatting, removes duplicate keys (keep last), adds category groupings consistently across all env files. Preserves existing group order.
 
-**Never referenced** — always shown. Lists keys with no code reference, with a hint on whether each looks infrastructure-only or stale. Dev responds in free text — delete some, keep some, or wire up to code.
+**.gitignore sub-flows** (if ".gitignore" selected):
 
-**Env sync** — per file. Shows which keys are missing and where they exist in other files. Dev adds them manually per file, marks done before moving to the next.
-
-**Missing from env** — all at once. Keys referenced in code but absent from all env files, with file:line locations. Dev adds them manually, marks done.
-
-**Hardcoded values** — shows all findings with severity, file:line, redacted value, and suggested env var name. Single-select: Replace all, Skip, or Other. If Replace all and more than 10 findings: processes one source file at a time, committing after each.
-
-**Cleanup — Env files** — single-select: Proceed or Skip. Fixes formatting, removes duplicate keys (keep last), adds category groupings consistently across all env files. Preserves existing group order.
-
-**Cleanup — Gitignore** — four sub-sections, each gated:
-- *Missing entries*: shows entries with reason, single-select Add all/Skip. If approved, immediately checks for tracked files matching the new patterns.
-- *Tracked files*: per-file confirmation to run `git rm --cached`. Triggered automatically after missing entries are added, and for any pre-existing tracked files found in Step 2.8.
-- *Entries to remove*: shows overly broad or harmful entries with reason, single-select Remove all/Skip.
-- *Formatting*: single-select Proceed/Skip. Fixes formatting, removes duplicates, adds category groupings.
+- **Missing entries** — shows entries with reason, single-select Add all/Skip. If approved, immediately checks for tracked files matching the new patterns.
+- **Tracked files** — per-file confirmation to run `git rm --cached`. Triggered automatically after missing entries are added, and for any pre-existing tracked files found in Step 2.8.
+- **Entries to remove** — shows overly broad or harmful entries with reason, single-select Remove all/Skip.
+- **Gitignore formatting** — single-select Proceed/Skip. Fixes formatting, removes duplicates, adds category groupings.
 
 ### 5. Commit
 
@@ -103,13 +80,13 @@ After all fixes are applied, asks whether to commit. Stages only the files modif
 
 ### 6. Completion report
 
-Summarises every category: counts replaced, added, or fixed. Lists skipped tracked files and never-referenced keys under manual action for follow-up.
+Summarises the outcome grouped by target (Env files, .gitignore): counts replaced, added, or fixed. Lists skipped tracked files and never-referenced keys under manual action for follow-up.
 
 ## Stop conditions
 
 - **Not on `main` or `master`.** Switch back first.
-- **No findings in any category.** Nothing to fix — the report shows a clean audit.
-- **User picks Skip on every prompt.** Clean exit, no changes written.
+- **No findings at all.** Nothing to fix — the report shows a clean audit.
+- **User selects neither target, or Skips every sub-flow.** Clean exit, no changes written.
 
 ## See also
 
