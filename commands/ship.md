@@ -32,7 +32,7 @@ Discover environment branches via: git branch -r
 Filter for known environment names (staging, production, or similar).
 
 Check `environment-promotion` in CLAUDE.md Project Config (see git.md's Environment Branches section; absence defaults to `fan-out`):
-- **fan-out**: offer every discovered environment branch below.
+- **fan-out**: offer every discovered environment branch below. AskUserQuestion caps at 4 options — if more than 4 branches qualify, offer only the first 4 (recognized tier names first — staging/stage/uat/preprod, then production/prod, then any others alphabetically) and note in the question that remaining branches need a follow-up run.
 - **chain**: offer only first-tier branches (staging, stage, uat, preprod) — second-tier branches (production, prod) are never a direct deploy target from main in chain mode; they're only reached later via Step 5's promotion from the first tier. If only second-tier branches exist (no first tier to promote through), offer none and inform the human why: "production-tier branches require a pre-production tier to promote through in chain mode; none found."
 
 If no environment branches exist (after filtering):
