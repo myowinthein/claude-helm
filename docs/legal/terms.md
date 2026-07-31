@@ -1,6 +1,6 @@
 # Terms of Service
 
-**Last updated:** 2026-07-07
+**Last updated:** 2026-08-01
 
 ## Acceptance of Terms
 

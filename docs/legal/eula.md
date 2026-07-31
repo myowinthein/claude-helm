@@ -1,6 +1,6 @@
 # End User License Agreement
 
-**Last updated:** 2026-07-07
+**Last updated:** 2026-08-01
 
 ## Grant of License
 
