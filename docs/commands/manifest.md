@@ -117,7 +117,7 @@ Reads commit messages first. Reads file changes only for significant commits. Fo
 
 For each significant change, identifies the affected README section. Updates only those sections. Does not rewrite unaffected sections.
 
-If `readme-style: standard`: sections remain in spec order after updates.
+If `readme-style: standard`: sections remain in spec order after updates. A significant change can also add a newly-relevant optional section (e.g. a first public API) in its spec position, or remove one whose justification went away (e.g. the API was removed) — never inventing a section outside the spec.
 If `readme-style: custom`: preserves existing section order and naming.
 
 Proposes the changes per section, asks for confirmation, then writes. Bumps the saved hash to HEAD.

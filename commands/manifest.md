@@ -160,7 +160,9 @@ changed CLI commands, new env vars, removed functionality.
 For each significant change, identify which README section is affected.
 Update only those sections. Do not rewrite unaffected sections.
 
-If `readme-style: standard`: sections must remain in spec order after updates.
+If `readme-style: standard`:
+  Sections must remain in spec order after updates.
+  If a significant change makes an optional section newly relevant (per Step 2's "include when relevant" list — e.g. a first public API, a newly meaningful limitation), add it in its spec-ordered position. If a change removes what justified an existing optional section (e.g. the public API is removed), remove that section. Do not invent sections outside the spec.
 If `readme-style: custom`: preserve existing section order and naming.
 
 Update the saved commit hash at the end of the file to current HEAD.
