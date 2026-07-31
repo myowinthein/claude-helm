@@ -58,7 +58,7 @@ If environment branches exist (after filtering), use AskUserQuestion:
 
 Skip this step if on environment branch — proceed directly to Step 5.
 
-Detect version file by scanning for package.json, composer.json, VERSION file — needed later in Step 4 regardless of whether a tag exists.
+Detect version file by scanning for `.claude-plugin/plugin.json` (Claude Code plugin format), package.json, composer.json, or VERSION file, in that priority order if more than one exists — a `.claude-plugin/plugin.json` is a strong, deliberate signal that this repo's canonical version lives there, not in an incidental package.json. Needed later in Step 4 regardless of whether a tag exists.
 
 Run: git describe --tags --abbrev=0
 If no tag exists:
@@ -149,9 +149,12 @@ Bump version in detected version file to {version}.
 Scan README.md for version references (badges, inline mentions).
 If found, update to {version}. Skip silently if none found.
 
+If the detected version file is `.claude-plugin/plugin.json`, also check `.claude-plugin/marketplace.json` for a `plugins[]` entry whose `name` matches plugin.json's own `name` field, and bump that entry's `version` to {version} too — marketplace metadata drifting from the actual plugin version is exactly the kind of staleness this step exists to prevent. Skip silently if `marketplace.json` doesn't exist or has no matching entry.
+
 Commit, tag, and push:
 - git add {version_file}
 - git add README.md  (only if README was updated in the step above)
+- git add .claude-plugin/marketplace.json  (only if it was updated in the step above)
 - git add {any files the Step 3 linter/formatter modified}  (per git.md: fold formatting changes into the last commit; never git add -A)
 - git commit -m "chore(release): bump version to {version}"
 - git tag -a v{version} -m "Release v{version}"
