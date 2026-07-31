@@ -32,7 +32,7 @@ Detect the project's language and framework, then scan source files for env var 
 
 ### 1.4 — Cross-reference code vs env files
 
-Using findings from 2.2 and 2.3:
+Using findings from 1.2 and 1.3:
 
 **Missing from env files:** Keys referenced in source code that do not appear in any env file (completely missing, not just missing from some). Keys missing from some but not all env files are covered by the Env sync check. These would silently fail or use undefined values at runtime.
 
@@ -59,11 +59,21 @@ Exclude test fixtures, mock data, and constants that are genuinely environment-a
 
 Check each env file for formatting issues. Also check whether comment-based category groupings exist and whether all keys belong to the right group.
 
-### 1.8 — Scan .gitignore
+### 1.8 — Check for missing .gitignore entries
 
-Check `.gitignore` for formatting issues, missing stack-appropriate entries, and entries that should not be ignored (overly broad or harmful patterns).
+Detect the project's stack and check `.gitignore` for missing stack-appropriate entries.
+
+### 1.9 — Check for tracked files matching .gitignore
 
 Run `git ls-files` and cross-check against `.gitignore` patterns — flag any tracked file that matches, since gitignore will not protect already-tracked files.
+
+### 1.10 — Check for entries that should not be ignored
+
+Flag overly broad or harmful `.gitignore` entries (e.g. patterns that would exclude source files or committed application code).
+
+### 1.11 — Check .gitignore formatting
+
+Check `.gitignore` for formatting issues and whether comment-based category groupings exist.
 
 ---
 
@@ -430,7 +440,7 @@ If Skip selected: skip to next section.
 
 Run this section in two cases:
 - Automatically after Missing entries if new entries were added — check for tracked files matching those new patterns
-- If pre-existing tracked files were found in Step 1.8 — handle those too
+- If pre-existing tracked files were found in Step 1.9 — handle those too
 
 For each tracked file, ask:
 
@@ -449,7 +459,7 @@ If Skip selected → note it in the Step 5 report under manual action.
 
 ### Entries to remove
 
-Only run this section if overly broad or harmful entries were found in Step 1.8.
+Only run this section if overly broad or harmful entries were found in Step 1.10.
 
 Display all entries to remove with a reason:
 
@@ -477,7 +487,7 @@ If Skip selected: no changes.
 
 ### Gitignore formatting
 
-Only run this section if formatting issues were found in Step 1.8.
+Only run this section if formatting issues were found in Step 1.11.
 
 AskUserQuestion:
   question: "Fix .gitignore formatting?"
