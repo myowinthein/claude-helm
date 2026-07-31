@@ -2325,11 +2325,11 @@
       "file": "docs/commands/env.md",
       "line": 80,
       "description": "Step 4 doc text says commits are gated by git.md's Auto-Commit rule with a confirmation prompt, but the real commands/env.md Step 4 has no AskUserQuestion and commits unconditionally every time \u2014 docs describe gated behavior that doesn't exist.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "acfb1bf076719b3896445dc89cff179c076b3ea5",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0099",
