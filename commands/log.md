@@ -15,6 +15,7 @@ description: Update CLAUDE.md with a full scan or gap update since last review
 - Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
 - Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b docs/log-{YYYYMMDD}` from it. This happens unconditionally — CLAUDE.md is always scanned from main's own state, never from a feature branch's unmerged work. If a feature branch changes something CLAUDE.md should reflect, re-run `/helm:log` after that branch merges to main.
 - Call this branch `{branch}` for the rest of this command.
+- If this command exits at any point without writing anything — the user selects Skip at any prompt, or CLAUDE.md is already up to date — delete `{branch}` and return to `{original_branch}` before exiting. This applies everywhere in this command, not just at the specific case called out later: never leave the user stranded on an empty temporary branch it created. (Gap Update's Outcome A does not qualify — it still bumps the last-reviewed hash, a real change that needs the normal commit path in Step 5.)
 
 ## Scope
 
@@ -70,7 +71,7 @@ If CLAUDE.md is absent, empty, or has no saved commit hash:
         description: "No update needed"
 
 If CLAUDE.md exists with a saved commit hash and schema is intact, and there are no meaningful commits since the hash (`git log {hash}..HEAD` is empty, or only noise commits):
-  CLAUDE.md is already current. Inform the user: "CLAUDE.md is up to date — no meaningful commits since last review." Do not present any prompt.
+  CLAUDE.md is already current. Inform the user: "CLAUDE.md is up to date — no meaningful commits since last review." Do not present any prompt. Proceed to Step 5 — it writes nothing but still needs to run its GitHub Flow cleanup (delete `{branch}`, return to `{original_branch}`) if a temporary branch was created.
 
 If CLAUDE.md exists with a saved commit hash, and either schema is broken or there are meaningful commits since the hash:
   Determine recommendation:
@@ -226,7 +227,9 @@ Ask for confirmation before writing.
 
 ## Step 5 — Commit and finalize
 
-Commit per git.md's Auto-Commit rule — this also governs whether the sequence below needs confirmation before proceeding: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
+If nothing was written (the "CLAUDE.md is already up to date" case in Step 1, or the user selected Skip anywhere): skip commit, merge, and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` (per Before starting's cleanup rule) — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
+
+Otherwise, commit per git.md's Auto-Commit rule — this also governs whether the sequence below needs confirmation before proceeding: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
 
 **Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this update:
 

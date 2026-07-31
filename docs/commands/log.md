@@ -28,11 +28,11 @@ flowchart TD
   Schema -->|no| Mode4["Ask: full scan (default),<br/>gap update, or skip?<br/>(names missing sections)"]
   Schema -->|yes| Gap{Gap significance<br/>since last review?}
 
-  Gap -->|none — only noise| UpToDate[/Exit: CLAUDE.md up to date/]
+  Gap -->|none — only noise| UpToDate[/Exit: CLAUDE.md up to date<br/>still runs Step 5 cleanup/]
   Gap -->|small or moderate| Mode2["Ask: gap update (default),<br/>full scan, or skip?"]
   Gap -->|large or significant| Mode3["Ask: full scan (default),<br/>gap update, or skip?"]
 
-  Mode1 -->|skip| Skip[/Exit: no update needed/]
+  Mode1 -->|skip| Skip[/Exit: no update needed<br/>still runs Step 5 cleanup/]
   Mode1 -->|full| Full
   Mode2 -->|skip| Skip
   Mode2 -->|full| Full
@@ -73,6 +73,8 @@ Rewrites `CLAUDE.md` from the project's state, so it needs the full merged, stab
 
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/log-{date}`) — regardless of what the starting branch was. CLAUDE.md is always scanned from main's own state, never from a feature branch's unmerged work; if a feature branch changes something CLAUDE.md should reflect, re-run `/helm:log` after that branch merges to main. Returns to the original branch at the end (see Step 5).
+
+If the command exits at any point without writing anything — Skip selected at any prompt, or CLAUDE.md already up to date — this cleanup still runs: delete the temporary branch and return to the original branch. This applies everywhere in the command, not just the specific case called out below, so the user is never left stranded on an empty temporary branch it created. (Gap Update's Outcome A doesn't count as "nothing written" — it still bumps the last-reviewed hash, so it goes through the normal commit path in Step 5.)
 
 ### 1. Assessment
 
@@ -129,7 +131,9 @@ Only updates if all three answers are yes. Every change is bound to one of the e
 
 ### 5. Commit and finalize
 
-Commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
+If nothing was written (the "CLAUDE.md is already up to date" case, or Skip selected anywhere): skips commit, merge, and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
+
+Otherwise commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
 
 If environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
 
@@ -149,6 +153,8 @@ CLAUDE.md is descriptive project knowledge (orientation layer). `.claude/rules/`
 - **CLAUDE.md is up to date.** Schema intact and no meaningful commits since the last-reviewed hash — clean exit, no prompt.
 - **User picks Skip.** Clean exit, no changes.
 - **Gap update finds no durable knowledge.** Outcome A: only the hash advances.
+
+Every exit above still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created — see Before starting.
 
 ## See also
 
