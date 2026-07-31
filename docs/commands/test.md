@@ -62,7 +62,7 @@ The ledger stores:
 
 ### 3. Assess coverage and recent activity
 
-Uses the same commit-range diff as the Catch Up step to identify recently changed files: `git diff {last_test_run_commit}..HEAD --name-only`, falling back to `HEAD~1..HEAD` or the working tree diff if no ledger commit is stored, or if the stored commit no longer resolves (e.g. a squash-merged branch was deleted). Scans for existing test files and estimates gap-in-recent-changes and overall coverage.
+Uses the same commit-range diff as the Catch Up step to identify recently changed files: `git diff {last_test_run_commit}..HEAD --name-only`, falling back to `HEAD~1..HEAD` or the working tree diff if no ledger commit is stored. Scans for existing test files and estimates gap-in-recent-changes and overall coverage.
 
 Four scenarios, with the recommendation depending on what it finds:
 
@@ -77,7 +77,7 @@ The clean exit in scenario 3 is the key distinction: if nothing has changed and 
 
 Identifies changed files using a commit-range diff:
 
-- If `last_test_run_commit` is in the ledger and still resolves: runs `git diff {last_test_run_commit}..HEAD` to capture all committed changes since the last run — not just uncommitted working-tree changes. If it no longer resolves (e.g. a squash-merged branch was deleted), falls back the same way as an absent commit.
+- If `last_test_run_commit` is in the ledger: runs `git diff {last_test_run_commit}..HEAD` to capture all committed changes since the last run — not just uncommitted working-tree changes.
 - If the ledger has no stored commit (first run): falls back to `git diff HEAD~1..HEAD`, or the working tree diff if uncommitted changes exist.
 
 Cross-checks the file list against `skipped-by-user` ledger entries and drops those files from the plan, unless they have been modified since they were skipped.
