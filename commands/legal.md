@@ -7,17 +7,7 @@ description: Scan project and generate GDPR-compliant legal documents based on w
 Scan the project and generate legal documents based on what the
 project actually does. Only generate documents that apply.
 
-## Step 1 — Branch check
-
-Only proceed if on main or master.
-If on any other branch, stop and inform user:
-
-"legal must be run on main or master.
-Current branch is {branch}. Please switch and re-run."
-
----
-
-## Step 2 — Project scan
+## Step 1 — Project scan
 
 Scan the codebase to understand the project's legal profile:
 
@@ -125,7 +115,7 @@ Record all findings before proceeding.
 
 ---
 
-## Step 3 — Determine which documents to generate
+## Step 2 — Determine which documents to generate
 
 Based on scan findings, mark each document as Recommended if it applies:
 
@@ -175,7 +165,7 @@ Wait for both responses before proceeding.
 
 ---
 
-## Step 4 — Generate documents
+## Step 3 — Generate documents
 
 Generate each selected document in plain English, GDPR compliant.
 Use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
@@ -201,7 +191,7 @@ For HTML (`.html`):
 - Include `<meta charset="UTF-8">` and `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
 - Set `<title>` to the document title (e.g. "Privacy Policy")
 
-**Date format:** Use `YYYY-MM-DD` (e.g. `2026-07-07`) for all "Last updated" dates.
+**Last updated (all documents):** Begin every document with a `**Last updated:** {current date}` line directly below the title, before the first section. Use the current date in `YYYY-MM-DD` format (e.g. `2026-07-07`).
 
 **Contact section (all documents):** End every document with a `## Contact` section
 using this exact wording:
@@ -231,7 +221,6 @@ Required sections in order:
 10. `## Supervisory Authority` — inform users of their right to lodge a complaint with a data protection authority (GDPR Art. 77); mandatory
 11. `## Changes to This Policy` — how and when users are notified of updates
 12. `## Contact` — standard contact wording
-13. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
 
 ---
 
@@ -254,7 +243,6 @@ Required sections in order:
 11. `## Governing Law and Dispute Resolution` — jurisdiction and how disputes are handled
 12. `## Changes to These Terms` — how users are notified of updates
 13. `## Contact` — standard contact wording
-14. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
 
 ---
 
@@ -276,7 +264,6 @@ Required sections in order:
 5. `## Your Consent and How to Withdraw It` — how consent was obtained and how to withdraw it; withdrawal must be as easy as giving consent; mandatory under ePrivacy Directive
 6. `## Managing Cookies in Your Browser` — link or instructions for browser cookie controls
 7. `## Contact` — standard contact wording
-8. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
 
 ---
 
@@ -293,7 +280,6 @@ Required sections in order:
 5. `## How Refunds Are Issued` — method (original payment method, credit, etc.) and timeline
 6. `## Non-Refundable Items` — what is explicitly excluded
 7. `## Contact` — standard contact wording
-8. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
 
 ---
 
@@ -312,7 +298,6 @@ Required sections in order:
 7. `## Termination` — conditions for termination; what happens on termination (cease use, delete copies)
 8. `## Governing Law` — jurisdiction
 9. `## Contact` — standard contact wording
-10. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
 
 ---
 
@@ -329,11 +314,10 @@ Required sections in order:
 5. `## Limitation of Liability` — owner is not liable for decisions made based on the output
 6. `## Changes to This Disclaimer` — owner may update this disclaimer; continued use implies acceptance
 7. `## Contact` — standard contact wording
-8. `**Last updated:** YYYY-MM-DD` — at the very top, below the title
 
 ---
 
-## Step 5 — Commit
+## Step 4 — Commit
 
 Before committing, present the list of documents written and ask for confirmation:
 
@@ -347,7 +331,7 @@ Before committing, present the list of documents written and ask for confirmatio
       - label: "Cancel"
         description: "Leave documents written but uncommitted — commit manually when ready"
 
-If Cancel selected → exit without committing.
+If Cancel selected → leave the documents written but uncommitted, then proceed to the completion report (which records that nothing was committed).
 
 If Commit selected, commit all generated documents:
   docs(legal): generate legal documents
@@ -357,7 +341,7 @@ the default (`legal/` Markdown), so future runs have context.
 
 ---
 
-## Step 6 — Confirm completion
+## Step 5 — Confirm completion
 
 Report:
 
@@ -369,7 +353,7 @@ Location:     {resolved output path}
 Format:       {Markdown / MDX / HTML}
 Jurisdiction: GDPR
 Tone:         plain English
-Committed:    yes
+Committed:    yes / no
 
 Note: These documents are AI-generated starting points.
 Review before publishing. Consult a lawyer for high-stakes products.
