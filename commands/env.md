@@ -8,27 +8,17 @@ Scan `.env` files, `.gitignore`, and source code to find and fix environment con
 
 ---
 
-## Step 1 — Branch check
-
-Only proceed if on `main` or `master`.
-If on any other branch, stop and inform the user:
-
-"env must be run on main or master.
-Current branch is {branch}. Please switch and re-run."
-
----
-
-## Step 2 — Scan
+## Step 1 — Scan
 
 Read-only. Do not modify anything in this step.
 
 Scan all env files and source files completely before proceeding. Never stop early — a partial scan produces an incomplete report and missed findings will silently persist.
 
-### 2.1 — Detect env files
+### 1.1 — Detect env files
 
 Find all `.env*` files in the project. For each file found, infer its purpose from the filename and context. If purpose cannot be determined, label as unknown.
 
-### 2.2 — Compare entries across env files
+### 1.2 — Compare entries across env files
 
 For each env file, extract all key names (ignore values).
 
@@ -36,11 +26,11 @@ Build a matrix of all keys across all files. Find mismatches:
 - Keys present in one file but missing from others
 - For each mismatch, note which files have the key and which don't
 
-### 2.3 — Scan source code for env var references
+### 1.3 — Scan source code for env var references
 
 Detect the project's language and framework, then scan source files for env var access patterns appropriate for the detected stack. Collect every unique key referenced in source code.
 
-### 2.4 — Cross-reference code vs env files
+### 1.4 — Cross-reference code vs env files
 
 Using findings from 2.2 and 2.3:
 
@@ -48,7 +38,7 @@ Using findings from 2.2 and 2.3:
 
 **Never referenced in code:** Keys present in env files that do not appear anywhere in source code. These may be stale or only used at the infrastructure level — flag but do not auto-remove.
 
-### 2.5 — Check secret vs placeholder correctness
+### 1.5 — Check secret vs placeholder correctness
 
 Two complementary checks:
 
@@ -59,17 +49,17 @@ Flag any value that looks like a real credential. Redact flagged values in the r
 **All other env files — no placeholders allowed**
 Flag any key whose value looks like an unfilled placeholder. These would cause silent failures at runtime.
 
-### 2.6 — Scan for hardcoded values in source code
+### 1.6 — Scan for hardcoded values in source code
 
 Scan source files for values that should be env vars. For each finding, suggest a descriptive env var name.
 
 Exclude test fixtures, mock data, and constants that are genuinely environment-agnostic.
 
-### 2.7 — Check env file formatting
+### 1.7 — Check env file formatting
 
 Check each env file for formatting issues. Also check whether comment-based category groupings exist and whether all keys belong to the right group.
 
-### 2.8 — Scan .gitignore
+### 1.8 — Scan .gitignore
 
 Check `.gitignore` for formatting issues, missing stack-appropriate entries, and entries that should not be ignored (overly broad or harmful patterns).
 
@@ -77,7 +67,7 @@ Run `git ls-files` and cross-check against `.gitignore` patterns — flag any tr
 
 ---
 
-## Step 3 — Report
+## Step 2 — Report
 
 Present all findings grouped by category. Use this format:
 
@@ -180,13 +170,13 @@ AskUserQuestion:
     - label: ".gitignore"
       description: "All .gitignore findings: missing entries, tracked files, overly-broad entries, formatting"
 
-Selecting a target walks through each of its findings in Step 4 — every sub-flow shows what it found and asks, so you can skip any you do not want. Selecting neither exits without changes (the report above already lists everything).
+Selecting a target walks through each of its findings in Step 3 — every sub-flow shows what it found and asks, so you can skip any you do not want. Selecting neither exits without changes (the report above already lists everything).
 
 Wait for response before proceeding.
 
 ---
 
-## Step 4 — Apply fixes
+## Step 3 — Apply fixes
 
 Run the sub-flows for each selected target: the **Env files** sub-flows if "Env files" was selected, the **.gitignore** sub-flows if ".gitignore" was selected. Within a selected target, run a sub-flow only if it has findings — each shows its findings and asks, with a Skip.
 
@@ -223,7 +213,7 @@ AskUserQuestion:
 
 If Replace all selected: replace each flagged key's value with `<YOUR_{KEY_NAME}>`.
 If user selects Other and types instructions: follow their instructions exactly. Apply only what was explicitly requested.
-If Skip selected: note in Step 6 report under manual action.
+If Skip selected: note in Step 5 report under manual action.
 
 Do not touch values in any other env file during this section.
 
@@ -404,7 +394,7 @@ If Skip selected: no changes to env files.
 
 ### Missing entries
 
-Only run this section if missing entries were found in Step 2.8.
+Only run this section if missing entries were found in Step 1.8.
 
 Display all missing entries with a reason:
 
@@ -435,7 +425,7 @@ If Skip selected: skip to next section.
 
 Run this section in two cases:
 - Automatically after Missing entries if new entries were added — check for tracked files matching those new patterns
-- If pre-existing tracked files were found in Step 2.8 — handle those too
+- If pre-existing tracked files were found in Step 1.8 — handle those too
 
 For each tracked file, ask:
 
@@ -450,11 +440,11 @@ AskUserQuestion:
       description: "Leave it tracked — handle manually later"
 
 If Untrack selected → run `git rm --cached {file}`.
-If Skip selected → note it in the Step 6 report under manual action.
+If Skip selected → note it in the Step 5 report under manual action.
 
 ### Entries to remove
 
-Only run this section if overly broad or harmful entries were found in Step 2.8.
+Only run this section if overly broad or harmful entries were found in Step 1.8.
 
 Display all entries to remove with a reason:
 
@@ -482,7 +472,7 @@ If Skip selected: no changes.
 
 ### Gitignore formatting
 
-Only run this section if formatting issues were found in Step 2.8.
+Only run this section if formatting issues were found in Step 1.8.
 
 AskUserQuestion:
   question: "Fix .gitignore formatting?"
@@ -503,7 +493,7 @@ If Skip selected: no changes.
 
 ---
 
-## Step 5 — Commit
+## Step 4 — Commit
 
 After all fixes are applied, ask:
 
@@ -523,7 +513,7 @@ If Commit selected:
 
 ---
 
-## Step 6 — Confirm completion
+## Step 5 — Confirm completion
 
 Report:
 

@@ -12,9 +12,7 @@ Audit `.env` files, `.gitignore`, and source code to find and fix environment co
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:env]) --> Branch{On main or master?}
-  Branch -->|no| Stop[/Stop: switch to main first/]
-  Branch -->|yes| Scan[Scan all env files,<br/>source code, and .gitignore<br/>8 checks — read-only]
+  Start([User runs /helm:env]) --> Scan[Scan all env files,<br/>source code, and .gitignore<br/>8 checks — read-only]
 
   Scan --> Report[Present findings — ENV AUDIT REPORT]
   Report --> Ask[Ask: which targets to work through?<br/>Env files and/or .gitignore]
@@ -30,11 +28,7 @@ flowchart TD
 
 ## Steps
 
-### 1. Branch check
-
-Only runs from `main` or `master`. Halts on any other branch.
-
-### 2. Scan
+### 1. Scan
 
 Eight read-only checks across all env files, source code, and `.gitignore`. Never stops early — a partial scan produces missed findings that silently persist.
 
@@ -49,11 +43,11 @@ Eight read-only checks across all env files, source code, and `.gitignore`. Neve
 | 2.7 Env formatting | Duplicate keys, spacing, missing category groupings |
 | 2.8 Gitignore | Missing entries, overly broad entries, tracked files matching patterns, formatting |
 
-### 3. Report
+### 2. Report
 
-Findings presented as a single `ENV AUDIT REPORT` grouped by category. Includes a total issue count and a multi-select to choose which **targets** to work through — **Env files** and/or **.gitignore**. Selecting a target runs every one of its sub-flows in Step 4 (each with its own Skip); selecting neither exits without changes. The report still lists every finding regardless of what's selected.
+Findings presented as a single `ENV AUDIT REPORT` grouped by category. Includes a total issue count and a multi-select to choose which **targets** to work through — **Env files** and/or **.gitignore**. Selecting a target runs every one of its sub-flows in Step 3 (each with its own Skip); selecting neither exits without changes. The report still lists every finding regardless of what's selected.
 
-### 4. Apply fixes
+### 3. Apply fixes
 
 Run the selected target's sub-flows, one at a time, each completing fully before the next. Each sub-flow runs only if it has findings and offers a Skip.
 
@@ -70,21 +64,20 @@ Run the selected target's sub-flows, one at a time, each completing fully before
 **.gitignore sub-flows** (if ".gitignore" selected):
 
 - **Missing entries** — shows entries with reason, single-select Add all/Skip. If approved, immediately checks for tracked files matching the new patterns.
-- **Tracked files** — per-file confirmation to run `git rm --cached`. Triggered automatically after missing entries are added, and for any pre-existing tracked files found in Step 2.8.
+- **Tracked files** — per-file confirmation to run `git rm --cached`. Triggered automatically after missing entries are added, and for any pre-existing tracked files found in Step 1.8.
 - **Entries to remove** — shows overly broad or harmful entries with reason, single-select Remove all/Skip.
 - **Gitignore formatting** — single-select Proceed/Skip. Fixes formatting, removes duplicates, adds category groupings.
 
-### 5. Commit
+### 4. Commit
 
 After all fixes are applied, asks whether to commit. Stages only the files modified during this command — never `git add -A`. Commit message: `chore(env): audit and fix env configuration`.
 
-### 6. Completion report
+### 5. Completion report
 
 Summarises the outcome grouped by target (Env files, .gitignore): counts replaced, added, deleted, or fixed for each sub-flow — including how many never-referenced keys were deleted vs kept. Lists any skipped tracked files under manual action for follow-up.
 
 ## Stop conditions
 
-- **Not on `main` or `master`.** Switch back first.
 - **No findings at all.** Nothing to fix — the report shows a clean audit.
 - **User selects neither target, or Skips every sub-flow.** Clean exit, no changes written.
 
