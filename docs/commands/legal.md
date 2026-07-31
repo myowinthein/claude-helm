@@ -12,7 +12,14 @@ Scan the project's legal profile, detect the output format based on the web fram
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:legal]) --> Scan[Scan project profile:<br/>app type, data, sensitive data, minors,<br/>third parties, email/marketing,<br/>monetization, content, AI features]
+  Start([User runs /helm:legal]) --> Strategy{git-strategy?}
+  Strategy -->|Solo| SoloCheck{On main/master?}
+  SoloCheck -->|no| StopSolo[/Stop: switch to main first/]
+  SoloCheck -->|yes| Scan
+  Strategy -->|GitHub Flow| Fresh[Record original branch<br/>Checkout fresh branch from main:<br/>docs/legal-date]
+  Fresh --> Scan
+
+  Scan[Scan project profile:<br/>app type, data, sensitive data, minors,<br/>third parties, email/marketing,<br/>monetization, content, AI features]
 
   Scan --> Framework[Detect framework and output format:<br/>SSG → .md<br/>SSR/SSG JS → .mdx<br/>SPA/plain HTML → .html<br/>no web project → ask user]
 
@@ -31,17 +38,34 @@ flowchart TD
   Generate{Any docs selected?}
   Generate -->|no| Cancel[/Exit: nothing generated/]
   Generate -->|yes| Write[Write each selected doc<br/>to resolved output path<br/>plain English, GDPR compliant]
-  Write --> Commit["Confirm, then commit:<br/>docs(legal): generate legal documents"]
-  Commit --> Done([Report: docs generated])
+  Write --> CommitAsk["Confirm (states full consequence<br/>under GitHub Flow)"]
+  CommitAsk -->|cancel| DoneUncommitted([Report: written, not committed])
+  CommitAsk -->|confirm| CommitDocs["Commit: docs(legal):<br/>generate legal documents"]
+
+  CommitDocs --> SoloOrFlow{Which mode?}
+  SoloOrFlow -->|Solo| Promote
+  SoloOrFlow -->|GitHub Flow| MergeMain[Merge branch into main<br/>Push main]
+  MergeMain --> Promote
+
+  Promote{Environment<br/>branches exist?}
+  Promote -->|yes| PromoteAsk[Ask: which to promote?<br/>Merge main into each selected]
+  Promote -->|no| Cleanup
+  PromoteAsk --> Cleanup
+
+  Cleanup{GitHub Flow?}
+  Cleanup -->|yes| DeleteBranch[Delete docs/legal-date branch<br/>Return to original branch]
+  Cleanup -->|no| Done
+  DeleteBranch --> Done([Report: docs generated])
 ```
 
 ## Steps
 
 ### Before starting
 
-Generates canonical, public-facing legal documents from the project's data profile, so it needs the full merged state. Runs from `main`/`master`, or from any branch that is **up-to-date with main** (main is an ancestor of `HEAD`, checked with `git merge-base --is-ancestor`). If the current branch is behind main, it stops and asks you to merge or rebase main in first — otherwise the documents would miss integrations already on main and collide at merge time.
+Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md):
 
-Being up-to-date with main doesn't rule out *extra*, unmerged work on the branch — only *missing* merged work. Running from an in-progress feature branch instead of a fresh one risks describing data collection or integrations that aren't live yet. If the branch has commits beyond main, cutting a fresh branch from main first is recommended.
+- **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
+- **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/legal-{date}`) — regardless of what the starting branch was. The generated documents are always scanned from main's own content, never from whatever branch happened to be checked out, so there's nothing to validate about the starting branch itself. The command returns to the original branch at the end (see Step 4).
 
 ### 1. Project scan
 
@@ -122,18 +146,23 @@ Each selected document is written in plain English, GDPR compliant, to the resol
 | `eula` | `# End User License Agreement` | Grant of License, License Restrictions, IP Ownership, Updates and Modifications, No Warranty, Limitation of Liability, Termination, Governing Law, Contact |
 | `disclaimer` | `# Disclaimer` | No Professional Advice (legal/financial/medical), AI-Generated Content, Accuracy and Completeness, External Links, Limitation of Liability, Changes, Contact |
 
-### 4. Commit
+### 4. Commit and finalize
 
-Presents the list of generated files for review and waits for confirmation before committing — always, even under `git-auto-commit: true`. Generated documents are public, legally-binding text, so this is a deliberate exception to the normal auto-commit flow (see [`safety.md`](../rules/safety.md#agent-execution-boundaries)).
+Presents the list of generated files for review and waits for confirmation before committing — always, even under `git-auto-commit: true`. Generated documents are public, legally-binding text, so this is a deliberate exception to the normal auto-commit flow (see [`safety.md`](../rules/safety.md#agent-execution-boundaries)). Under GitHub Flow, the confirmation prompt states the full consequence up front — commit, merge to main, promote to environments, delete the temporary branch, and return to the original branch — since one confirmation covers the entire sequence, not just the commit.
 
-Single commit of the generated documents plus the updated `.claude/legal-manifest.json`: `docs(legal): generate legal documents`. If the output path or format differs from the default (`legal/` Markdown), the commit body notes it for future runs. If the user cancels, the documents stay written but uncommitted — the command still proceeds to the completion report.
+Single commit of the generated documents plus the updated `.claude/legal-manifest.json`: `docs(legal): generate legal documents`. If the output path or format differs from the default (`legal/` Markdown), the commit body notes it for future runs. If the user cancels, the documents stay written but uncommitted — under GitHub Flow this also means no merge, no branch deletion, and no return to the original branch; the command still proceeds to the completion report either way.
+
+**Environment promotion** (both modes, after a successful commit): if environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the documents, then merges main into each selected branch and pushes — matching ship.md's promotion mechanics exactly, just with a commit message scoped to legal document updates.
+
+**GitHub Flow only** — after committing on the temporary branch: merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if it was pushed), and returns to whichever branch the command was originally run from. **Solo Mode** commits directly to main, so none of this branch dance is needed — it goes straight to environment promotion.
 
 ### 5. Confirm completion
 
-Reports which documents were generated, the output path, format, jurisdiction, tone, and whether the changes were committed. Reminds the user that these are AI-generated starting points: review before publishing and consult a lawyer for high-stakes products.
+Reports which documents were generated, the output path, format, jurisdiction, tone, whether the changes were committed, and which environments were promoted. Under GitHub Flow, also reports the temporary branch's fate (merged and deleted, or left in place if cancelled) and confirms which branch you were returned to. Reminds the user that these are AI-generated starting points: review before publishing and consult a lawyer for high-stakes products.
 
 ## Stop conditions
 
+- **Solo Mode, not on main/master.** Switch to main or master and re-run.
 - **User selects nothing.** Nothing written.
 
 ## See also

@@ -9,12 +9,15 @@ project actually does. Only generate documents that apply.
 
 ## Before starting
 
-`/helm:legal` generates canonical, public-facing legal documents from the project's data profile, so it needs the full merged state — otherwise the documents miss integrations already on main and collide with other branches' output at merge:
-- On `main` or `master` → proceed.
-- On another branch → proceed only if it is up-to-date with main (main is an ancestor of `HEAD`, so no merged work is missing). Check `git merge-base --is-ancestor <main> HEAD` (use `origin/main` when a remote exists).
-- If the branch is behind main → stop: "legal needs the current main state. {branch} is behind main — merge or rebase main in first, then re-run."
+`/helm:legal` generates canonical, public-facing legal documents from the project's data profile, so it needs the full merged state and a clean landing path to main. Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md).
 
-Being up-to-date with main only guarantees nothing merged is missing — it says nothing about extra, unmerged work sitting on top. If run from an in-progress feature branch rather than a fresh one, the generated documents could describe data collection or integrations that aren't live yet. If the current branch has commits beyond main (not just behind, but ahead with unrelated work), recommend cutting a fresh branch from main instead — don't scan an in-progress feature branch's unmerged changes into a legal document.
+**Solo Mode** (`git-strategy: solo`):
+- Only proceed if on `main` or `master`. If on any other branch, stop: "legal must be run on main or master in Solo Mode. Current branch is {branch} — switch and re-run."
+
+**GitHub Flow** (`git-strategy: github-flow`, or absent):
+- Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
+- Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b docs/legal-{YYYYMMDD}` from it. This happens unconditionally, regardless of what `{original_branch}` was — the generated documents are always scanned from main's own content, never from whatever the starting branch happened to contain, so there is nothing to check or reject about the starting branch itself.
+- Call this branch `{branch}` for the rest of this command.
 
 ## Step 1 — Project scan
 
@@ -412,9 +415,31 @@ Required sections in order:
 
 ---
 
-## Step 4 — Commit
+## Step 4 — Commit and finalize
 
 Always confirm before committing, even when `git-auto-commit: true` is set — these are public, legally-binding documents, so this is a deliberate exception to the normal auto-commit flow (same category as the boundaries in safety.md's Agent Execution Boundaries: never skip review just because autonomy is high).
+
+**Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive these documents:
+
+  AskUserQuestion:
+    question: "main will be updated. Which environment branches should also receive these documents?"
+    header:   "Promote to environments"
+    multiSelect: true
+    options: one entry per discovered environment branch, e.g.:
+      - label: "staging"
+        description: "Merge main into staging"
+      - label: "production"
+        description: "Merge main into production"
+
+  For each selected environment:
+  - git checkout {environment}
+  - git merge main --no-ff -m "chore(deploy): promote main to {environment} for legal document updates"
+  - git push origin {environment}
+  - git checkout main
+
+  If no environment branches exist, or the user selects none, skip silently.
+
+**Solo Mode:**
 
 Present the list of documents written and ask for confirmation:
 
@@ -428,14 +453,35 @@ Present the list of documents written and ask for confirmation:
       - label: "Cancel"
         description: "Leave documents written but uncommitted — commit manually when ready"
 
-If Cancel selected → leave the documents written but uncommitted, then proceed to the completion report (which records that nothing was committed).
+If Cancel selected → leave the documents written but uncommitted, then proceed to Step 5 (records that nothing was committed; skip environment promotion).
 
-If Commit selected, commit all generated documents together with the updated `.claude/legal-manifest.json`:
-  docs(legal): generate legal documents
+If Commit selected:
+- Stage the generated documents and the updated `.claude/legal-manifest.json`; do not use `git add -A`.
+- Commit: `docs(legal): generate legal documents` (include the resolved output path and format in the body if they differ from the default).
+- Run Environment promotion above.
 
-Stage the generated documents and the manifest; do not use `git add -A`.
-Include the resolved output path and format in the commit body if they differ from
-the default (`legal/` Markdown), so future runs have context.
+**GitHub Flow:**
+
+Present the list of documents written and ask for confirmation, stating plainly what confirming will trigger — this covers the whole sequence, not just the commit:
+
+  AskUserQuestion:
+    question: "The following documents were written to {resolved-path}: {list}. Confirming will commit on {branch}, merge it into main, promote to any environment branches you select next, delete {branch}, and return you to {original_branch}."
+    header:   "Commit"
+    multiSelect: false
+    options:
+      - label: "Commit and finish (Recommended)"
+        description: "docs(legal): generate legal documents"
+      - label: "Cancel"
+        description: "Leave documents written but uncommitted on {branch} — finish manually when ready"
+
+If Cancel selected → leave the documents written but uncommitted on `{branch}`. Do not merge, delete, or switch branches. Proceed to Step 5 (records that nothing was committed and that `{branch}` was left in place).
+
+If Commit and finish selected:
+1. Stage the generated documents and the updated `.claude/legal-manifest.json` on `{branch}`; do not use `git add -A`. Commit: `docs(legal): generate legal documents` (include the resolved output path and format in the body if they differ from the default).
+2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "docs(legal): generate legal documents"`, `git push origin main`.
+3. Run Environment promotion above.
+4. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
+5. Return to where you started: `git checkout {original_branch}`.
 
 ---
 
@@ -452,6 +498,11 @@ Format:       {Markdown / MDX / HTML}
 Jurisdiction: GDPR
 Tone:         plain English
 Committed:    yes / no
+Environments promoted: {list or none}
+
+GitHub Flow only:
+Branch:       {branch} — merged to main and deleted / left in place, uncommitted (if cancelled)
+Returned to:  {original_branch}
 
 Note: These documents are AI-generated starting points.
 Review before publishing. Consult a lawyer for high-stakes products.
