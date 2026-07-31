@@ -154,7 +154,23 @@ Commit, tag, and push:
 - git push origin HEAD
 - git push origin v{version}
 
-For each selected environment branch:
+Before promoting to any selected environment, check CI status for the commit just pushed to main — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting to next environment"):
+- If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check silently — proceed straight to the promotion loop below.
+- Otherwise: `gh run list --branch main --limit 1 --json status,conclusion`.
+  - If conclusion is "success" → proceed to the promotion loop below silently.
+  - Otherwise (queued, in progress, failed, or no run found yet for this commit):
+      AskUserQuestion:
+        question: "CI for this release hasn't reported success yet (status: {status}, conclusion: {conclusion, or 'none yet' if no run found}). Promote to the selected environments anyway?"
+        header:   "CI status"
+        multiSelect: false
+        options:
+          - label: "Skip promotion for now"
+            description: "main stays tagged and pushed; no environment branches are touched this run"
+          - label: "Promote anyway"
+            description: "Proceed without waiting for CI"
+      If "Skip promotion for now" selected → skip the promotion loop below entirely, note it in the Step 6 report.
+
+For each selected environment branch (unless skipped above):
 - git checkout {environment}
 - git merge main --no-ff -m "chore(deploy): promote main to {environment} for v{version}"
 - git push origin {environment}
@@ -195,13 +211,17 @@ Determine next environment in promotion chain:
   staging    → production
   production → no further promotion, inform human and exit
 
-If next environment exists, confirm before mutating anything (per safety.md: never push without confirmation):
+If next environment exists, first check CI status for {current_branch} — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting to next environment"):
+- If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check — proceed to the confirmation below with no CI line in the question.
+- Otherwise: `gh run list --branch {current_branch} --limit 1 --json status,conclusion`. Fold the result into the confirmation question below rather than asking separately.
+
+Confirm before mutating anything (per safety.md: never push without confirmation):
   AskUserQuestion:
-    question: "Promote {current_branch} to {next_environment}? This merges {current_branch} into {next_environment} and pushes both branches."
+    question: "Promote {current_branch} to {next_environment}? This merges {current_branch} into {next_environment} and pushes both branches. {CI: {conclusion}, if checked above}"
     header:   "Promote"
     multiSelect: false
     options:
-      - label: "Promote to {next_environment} (Recommended)"
+      - label: "Promote to {next_environment} (Recommended if CI passed)"
         description: "Merge {current_branch} into {next_environment} and push"
       - label: "Cancel"
         description: "Exit without promoting"
@@ -230,7 +250,7 @@ If on main or master:
   - Version tagged:        v{version}
   - Tag pushed:            yes
   - README updated:        yes/no
-  - Environments promoted: {list or none}
+  - Environments promoted: {list, or "none" if none selected, or "none — skipped, CI had not passed" if skipped for that reason}
   - GitHub Release:        created / skipped / not GitHub
   - Deployment triggered:  yes/no (based on CI/CD presence)
 

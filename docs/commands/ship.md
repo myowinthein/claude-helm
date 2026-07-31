@@ -28,15 +28,20 @@ flowchart TD
   AskVersion --> Tests
 
   Tests[Run lint + tests] -->|fail| TestStop[/Stop: fix tests first/]
-  Tests -->|pass| Release[Bump version file<br/>Commit, tag, push<br/>Promote to selected envs]
-  Release --> GHCheck{Remote is<br/>github.com?}
+  Tests -->|pass| Release[Bump version file<br/>Commit, tag, push]
+  Release --> CICheck{CI configured<br/>and not yet passed?}
+  CICheck -->|no, or CI passed| Promote[Promote to selected envs]
+  CICheck -->|yes| CIAsk[Ask: promote anyway<br/>or skip for now?]
+  CIAsk -->|skip for now| GHCheck
+  CIAsk -->|promote anyway| Promote
+  Promote --> GHCheck{Remote is<br/>github.com?}
   GHCheck -->|no| MainDone
   GHCheck -->|yes| GHConfirm[Ask: create GitHub Release?]
   GHConfirm -->|skip| MainDone
   GHConfirm -->|create| GHRelease[gh release create<br/>--notes extracted_notes]
   GHRelease --> MainDone([Report: tagged + promoted + release])
 
-  EnvNext -->|staging → production| EnvConfirm[Ask: confirm promotion?]
+  EnvNext -->|staging → production| EnvConfirm[Ask: confirm promotion?<br/>shows CI status if available]
   EnvNext -->|already on production| EnvStop[/Stop: nothing to promote/]
   EnvConfirm -->|cancel| EnvCancelExit[/Exit: no changes/]
   EnvConfirm -->|confirm| EnvMerge[Push current branch<br/>merge into next environment<br/>push next environment]
@@ -69,7 +74,9 @@ Only reached on the main-branch path — Step 1's redirect sends the environment
 
 ### 4. Execute release
 
-Only on `main`. Bumps the version in the detected version file (`package.json`, `composer.json`, or `VERSION`), updates any inline version references in the README, then stages the version file, the README (if changed), and any files the linter/formatter touched in Step 3 — folding formatting changes into the release commit per git.md, never `git add -A`. Commits as `chore(release): bump version to {version}`, creates an annotated tag `v{version}`, and pushes both the commit and tag. For each selected environment branch, merges `main` in with a `--no-ff` deploy commit and pushes.
+Only on `main`. Bumps the version in the detected version file (`package.json`, `composer.json`, or `VERSION`), updates any inline version references in the README, then stages the version file, the README (if changed), and any files the linter/formatter touched in Step 3 — folding formatting changes into the release commit per git.md, never `git add -A`. Commits as `chore(release): bump version to {version}`, creates an annotated tag `v{version}`, and pushes both the commit and tag.
+
+Before promoting to any selected environment, checks CI status for the commit just pushed — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting to next environment"). If the repo isn't on GitHub or no workflow files exist, this check is skipped silently. Otherwise it checks the latest run for `main` via `gh run list`; if it reported success, promotion proceeds silently. If it hasn't (still running, failed, or no run found yet), asks whether to promote anyway or skip promotion for this run — main stays tagged and pushed either way. Once cleared, merges `main` into each selected environment branch with a `--no-ff` deploy commit and pushes.
 
 After pushing, checks whether the remote origin URL contains `github.com`. If not, this sub-step is skipped silently. If yes, asks whether to create a GitHub Release. On confirmation, extracts `feat` and `fix` commits from `git log v{last_tag}..HEAD` and runs `gh release create v{version} --title "v{version}" --notes "{extracted_notes}"`, which publishes a release on GitHub with the curated commit list.
 
@@ -77,11 +84,11 @@ After pushing, checks whether the remote origin URL contains `github.com`. If no
 
 ### 5. Promotion path
 
-Only on an environment branch. Determines the next environment in the chain (`staging → production`) and stops if already on the final environment. Otherwise confirms before mutating anything (per safety.md: never push without confirmation), then pushes the current branch, merges it into the next environment branch with a `--no-ff` deploy commit, pushes that branch too, and returns to the current branch.
+Only on an environment branch. Determines the next environment in the chain (`staging → production`) and stops if already on the final environment. Otherwise checks CI status for the current branch the same way Step 4 does (skipped silently if not on GitHub or no CI configured), folds the result into the confirmation prompt rather than asking twice, and confirms before mutating anything (per safety.md: never push without confirmation). On confirm, pushes the current branch, merges it into the next environment branch with a `--no-ff` deploy commit, pushes that branch too, and returns to the current branch.
 
 ### 6. Report
 
-Closes with a summary. On `main`: version tagged, README updated yes or no, environments promoted, GitHub Release created or skipped or not applicable, deployment triggered. On an environment branch: which branch was promoted to which, both branches pushed, deployment triggered.
+Closes with a summary. On `main`: version tagged, README updated yes or no, environments promoted (including "none — skipped, CI had not passed" if that's why), GitHub Release created or skipped or not applicable, deployment triggered. On an environment branch: which branch was promoted to which, both branches pushed, deployment triggered.
 
 ## Stop conditions
 
