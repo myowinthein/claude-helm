@@ -146,7 +146,7 @@ If state = CONFLICT:
       - label: "Review per file (Recommended)"
         description: "For each foreign file, ask whether to overwrite, skip, or show the diff."
       - label: "Reference from CLAUDE.md instead"
-        description: "Leave existing files alone, point CLAUDE.md at the installed plugin path."
+        description: "Point CLAUDE.md at the installed plugin path. You'll be asked per foreign file whether to keep or delete it, since a local copy would coexist with the referenced rules."
       - label: "Cancel"
         description: "Exit without changes."
 
@@ -199,7 +199,23 @@ The Copy or Update and Reference paths both update CLAUDE.md the same way — on
 
 ### Reference path
 
-- If Helm-marked local files exist at `.claude/rules/{name}` (switching from copy/update), delete them so the next scan classifies as REFERENCED, not UPDATE. Leave Foreign (unmarked) files untouched — the CONFLICT → reference path points CLAUDE.md at the plugin without removing user-authored files.
+- Clear any local `.claude/rules/{name}` so it does not sit alongside — and conflict with — the referenced plugin rules:
+  - **Helm-marked files** → delete silently (helm owns them). This also makes the next scan classify as REFERENCED, not UPDATE.
+  - **Foreign (unmarked) files** → helm did not create these, so never delete silently. Warn that the file would coexist with the referenced plugin rules and ask:
+
+    AskUserQuestion:
+      question: "{file} is your own rule file. In reference mode it would sit alongside the plugin's referenced {name} and could conflict. What should happen to it?"
+      header:   "Local rule file"
+      multiSelect: false
+      options:
+        - label: "Keep it (Recommended)"
+          description: "Leave your file in place — it stays active alongside the referenced plugin rules."
+        - label: "Delete it"
+          description: "Remove your file so only the referenced plugin rules apply."
+        - label: "Cancel"
+          description: "Exit without changes."
+
+    On Cancel → exit. Note any kept files in the report as a possible conflict.
 - Use the marketplaces install path: `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`.
 - Update CLAUDE.md's `## Rules` section (see *Updating CLAUDE.md's `## Rules` section* above) with this snippet:
   ```

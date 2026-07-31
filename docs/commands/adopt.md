@@ -83,7 +83,7 @@ Both the Copy or Update and Reference paths update CLAUDE.md's `## Rules` sectio
 
 **Conflict / Review per file**: for each foreign file, asks Overwrite, Skip, or Show diff. Showing the diff loops back to the same prompt so the user can pick after seeing the changes. Overwrite installs the file via the Copy or Update path; Skip leaves it untouched.
 
-**Reference**: when switching from copy or update, first deletes any Helm-marked local files in `.claude/rules/` so the next scan classifies as REFERENCED rather than UPDATE (Foreign, user-authored files are left untouched). The `## Rules` snippet points at `~/.claude/plugins/marketplaces/claude-helm/rules/` — always the latest installed version, auto-updating after `/plugin update helm@claude-helm` — and includes a warning to install the plugin if those paths are missing.
+**Reference**: first clears any local `.claude/rules/` copy that would otherwise sit alongside — and conflict with — the referenced plugin rules. Helm-marked files are deleted silently (so the next scan classifies as REFERENCED rather than UPDATE); Foreign, user-authored files are never deleted silently — the command warns about the coexistence and asks per file whether to keep or delete it. The `## Rules` snippet points at `~/.claude/plugins/marketplaces/claude-helm/rules/` — always the latest installed version, auto-updating after `/plugin update helm@claude-helm` — and includes a warning to install the plugin if those paths are missing.
 
 **No change**: for the no-op choices — "Nothing" (already in sync), "Keep project rules" (project ahead of the installed plugin), or "Keep references" (already in reference mode) — writes nothing and just reports the status.
 
