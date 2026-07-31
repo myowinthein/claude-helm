@@ -199,9 +199,8 @@ The Copy or Update and Reference paths both update CLAUDE.md the same way — on
 
 ### Reference path
 
-- Clear any local `.claude/rules/{name}` so it does not sit alongside — and conflict with — the referenced plugin rules:
-  - **Helm-marked files** → delete silently (helm owns them). This also makes the next scan classify as REFERENCED, not UPDATE.
-  - **Foreign (unmarked) files** → helm did not create these, so never delete silently. Warn that the file would coexist with the referenced plugin rules and ask:
+- Clear any local `.claude/rules/{name}` so it does not sit alongside — and conflict with — the referenced plugin rules. **Gather all decisions before deleting anything**, so a Cancel leaves the project untouched:
+  - **Decide (no changes yet):** for each Foreign (unmarked) file, warn that it would coexist with the referenced plugin rules and ask. Helm did not create these, so never delete them silently.
 
     AskUserQuestion:
       question: "{file} is your own rule file. In reference mode it would sit alongside the plugin's referenced {name} and could conflict. What should happen to it?"
@@ -215,7 +214,8 @@ The Copy or Update and Reference paths both update CLAUDE.md the same way — on
         - label: "Cancel"
           description: "Exit without changes."
 
-    On Cancel → exit. Note any kept files in the report as a possible conflict.
+    If Cancel at any prompt → exit immediately. Nothing has been deleted or written yet.
+  - **Apply (only if no prompt was cancelled):** delete the Helm-marked files (helm owns them — this also makes the next scan classify as REFERENCED, not UPDATE) and any Foreign files marked for deletion. Note any kept Foreign files in the report as a possible conflict.
 - Use the marketplaces install path: `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`.
 - Update CLAUDE.md's `## Rules` section (see *Updating CLAUDE.md's `## Rules` section* above) with this snippet:
   ```
