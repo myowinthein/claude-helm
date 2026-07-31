@@ -108,7 +108,7 @@ docker load < recovery/docker/{service}.tar.gz
 ```
 If `docker load` fails, the tarball is corrupt — re-export before proceeding.
 
-Add `recovery/docker/` to `.gitignore` — tarballs are stored locally alongside the repo, not committed.
+Do not gitignore `recovery/docker/`. The tarballs are the freeze mechanism and must travel with the archive for a clean-machine recovery — Step 5 commits them to the private remote via Git LFS (or, if you decline there, gitignores them and notes that they need separate backup). Leave them in place for now.
 
 Document the recovery commands in `docs/setup.md` (include the data-restore step from Data Persistence below, so recovery does not come up empty):
 
@@ -150,8 +150,7 @@ Whichever mechanism is used, document its exact recovery step in `docs/setup.md`
 7. Verify the project works
 8. Export all images to `recovery/docker/` as gzipped tarballs
 9. Make the restored data recoverable (re-runnable source on startup, or a data-volume tarball) and document its recovery step
-10. Add `recovery/docker/` to `.gitignore`
-11. Record all changes made
+10. Record all changes made (Step 5 decides how the tarballs travel — Git LFS or local-only)
 
 ---
 

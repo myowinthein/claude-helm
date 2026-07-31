@@ -59,7 +59,7 @@ Read-only reconnaissance. Scans the project structure, stack, runtime versions, 
 
 ### [2. Restore and Freeze](archive/2-restore-and-freeze.md)
 
-Gets the project running locally and freezes its environment for long-term recovery. Creates a `Dockerfile` and `docker-compose.yml` if none exist, with all base image versions specifically pinned. Determines the project's data layer first (database-backed, API-consuming frontend, local/file-based storage, or none) and restores accordingly — for database-backed projects, from the best source found (dumps → seeders → migrations), and for the others, the appropriate handling or a clean skip. After successful verification, exports all Docker images as gzipped tarballs to `recovery/docker/` — stored locally alongside the repo, gitignored, never committed. Because a `docker save` captures the engine image but not the data (which lives in a volume), it also makes the restored data recoverable — either by wiring the recovery to re-init from the committed dump/seed on startup, or by exporting the data volume as its own tarball — so `docker-compose up` does not come back empty. Recovery then requires only Docker and the tarballs with no internet or registry dependency. For project types where Docker does not apply (mobile, browser extensions), documents exact SDK and toolchain versions in `docs/setup.md` as the freeze mechanism instead.
+Gets the project running locally and freezes its environment for long-term recovery. Creates a `Dockerfile` and `docker-compose.yml` if none exist, with all base image versions specifically pinned. Determines the project's data layer first (database-backed, API-consuming frontend, local/file-based storage, or none) and restores accordingly — for database-backed projects, from the best source found (dumps → seeders → migrations), and for the others, the appropriate handling or a clean skip. After successful verification, exports all Docker images as gzipped tarballs to `recovery/docker/`. These are the freeze mechanism, so they are meant to travel with the archive (committed via Git LFS in Step 5) rather than being gitignored — otherwise a clean clone has no tarballs and would have to rebuild from registries that may no longer exist. Because a `docker save` captures the engine image but not the data (which lives in a volume), it also makes the restored data recoverable — either by wiring the recovery to re-init from the committed dump/seed on startup, or by exporting the data volume as its own tarball — so `docker-compose up` does not come back empty. Recovery then requires only Docker and the tarballs with no internet or registry dependency. For project types where Docker does not apply (mobile, browser extensions), documents exact SDK and toolchain versions in `docs/setup.md` as the freeze mechanism instead.
 
 ### [3. Postman Collection](archive/3-postman.md)
 
@@ -71,7 +71,7 @@ Writes fresh, archive-focused documentation using verified information from all 
 
 ### [5. Finalize](archive/5-finalize.md)
 
-Prepares and seals the archive. Verifies the Git remote and guides you through removing non-personal remotes and setting the private archive URL if origin still points to a company or client repository. Deletes all branches except main or master locally and remotely after explicit approval. Sets up Git LFS for any files over 100 MB. Consolidates archive-worthy assets scattered across the project into `recovery/assets/`, checking for code references before moving anything. Stops all running project services (Docker containers, dev servers). After a final confirmation, commits everything accumulated across the full workflow with a single `chore(archive): seal project archive` commit and pushes to the private remote.
+Prepares and seals the archive. Verifies the Git remote and guides you through removing non-personal remotes and setting the private archive URL if origin still points to a company or client repository. Deletes all branches except main or master locally and remotely after explicit approval. Handles the recovery tarballs: reports their size and asks whether to commit them to the remote via Git LFS (recommended — keeps the archive self-contained and clean-machine-recoverable) or keep them local only (with a separate-backup note); other files over 100 MB are LFS-tracked too. Consolidates archive-worthy assets scattered across the project into `recovery/assets/`, checking for code references before moving anything. Stops all running project services (Docker containers, dev servers). After a final confirmation, commits everything accumulated across the full workflow with a single `chore(archive): seal project archive` commit and pushes to the private remote.
 
 ## Output
 
@@ -94,7 +94,7 @@ README.md         ← fresh archive-focused index
 - **Approve declined at any gate.** The command halts cleanly with no further changes.
 - **Step 1 complexity rated Blocked.** User can still approve to proceed, but is warned.
 
-The command stops and waits for explicit approval at nine points:
+The command stops and waits for explicit approval at ten points:
 
 1. After Step 1 — before anything is modified
 2. After Step 2 — with a warning if restoration was not fully successful
@@ -102,9 +102,10 @@ The command stops and waits for explicit approval at nine points:
 4. Before Step 4 executes — consolidation plan review
 5. After Step 4 — before proceeding to finalize
 6. Before branch deletion in Step 5
-7. Before stopping all running services (Docker containers, dev servers) in Step 5
-8. Before asset moves in Step 5 if referenced files are found
-9. Before the final commit and push in Step 5
+7. Before choosing how the recovery tarballs travel (Git LFS or local only) in Step 5
+8. Before stopping all running services (Docker containers, dev servers) in Step 5
+9. Before asset moves in Step 5 if referenced files are found
+10. Before the final commit and push in Step 5
 
 ## See also
 

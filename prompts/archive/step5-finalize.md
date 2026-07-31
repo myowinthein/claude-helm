@@ -61,18 +61,37 @@ Once approved:
 
 ---
 
-## Task 3 — Git LFS for Large Files
+## Task 3 — Git LFS and Recovery Tarballs
 
-Scan for files larger than 100 MB — both tracked and untracked.
+The Docker image and data tarballs in `recovery/docker/` are the freeze mechanism. For a clean-machine recovery years later they must travel with the archive — otherwise a fresh clone has no tarballs and would have to rebuild from registries that may no longer exist. They are large, so they go through Git LFS.
 
-For each file found: report path, size, type, and whether it is currently tracked by Git.
+Report the total size of `recovery/docker/` and any other files over 100 MB (tracked or untracked): path, size, type.
 
-If large files exist:
-- Set up Git LFS if not already configured
-- Track large files with appropriate LFS patterns in `.gitattributes`
-- Stage `.gitattributes` changes
+Then confirm how the tarballs travel, since committing multi-GB binaries has storage and quota implications on the remote:
 
-If no large files exist: skip silently.
+AskUserQuestion:
+  question: "The recovery tarballs are {total_size}. Commit them to the archive remote via Git LFS so the project recovers on a clean machine? (Requires an LFS-capable remote with enough quota.)"
+  header:   "Recovery tarballs"
+  multiSelect: false
+  options:
+    - label: "Commit via Git LFS (Recommended)"
+      description: "Track recovery/docker/ with LFS and push — the archive stays self-contained and recovers without rebuilding from registries."
+    - label: "Keep local only"
+      description: "Gitignore recovery/docker/ — smaller repo, but you must back the tarballs up separately; a clean clone will not have them."
+    - label: "Cancel"
+      description: "Stop — decide later."
+
+If **Commit via Git LFS**:
+- Set up Git LFS if not already configured.
+- Track `recovery/docker/*.tar.gz` — and any other file over 100 MB found above — with patterns in `.gitattributes`.
+- Stage `.gitattributes`.
+
+If **Keep local only**:
+- Add `recovery/docker/` to `.gitignore`.
+- Note in the report that the tarballs are excluded from the archive, must be backed up separately, and must be placed back in `recovery/docker/` before `docker load` on recovery.
+- Still LFS-track any other over-100 MB files that are staying in the repo.
+
+If **Cancel** → stop.
 
 ---
 
@@ -133,10 +152,11 @@ If Cancel → stop and leave changes as-is. Do not commit or push.
 
 If Commit and push: stage all tracked and new files explicitly — do not use `git add -A` blindly. Check `git status` first and stage only the files accumulated during this workflow:
 ```
-git add -u                                  # stage all tracked modifications
-git add recovery/ docs/ README.md .gitignore  # stage new files created this session
+git add -u                                             # stage all tracked modifications
+git add recovery/ docs/ README.md .gitignore .gitattributes  # stage new files created this session
 git commit -m "chore(archive): seal project archive"
 ```
+If the tarballs are LFS-tracked (Task 3), confirm they are staged as LFS pointers (`git lfs status`) before committing — not as raw blobs.
 
 Push to origin using the branch identified in Task 2:
 ```
@@ -155,8 +175,8 @@ Previous remote(s) removed. New origin confirmed as private archive remote.
 ## Branch Cleanup
 Branches deleted locally and remotely. Confirmation that local and remote main/master are in sync.
 
-## Git LFS
-Files tracked with LFS and `.gitattributes` changes. If none: state no large files were found.
+## Recovery Tarballs & Git LFS
+How the tarballs travel: committed via Git LFS, or kept local only (with the separate-backup note). Total tarball size. Other files tracked with LFS and `.gitattributes` changes. If no large files at all: state so.
 
 ## Asset Consolidation
 Assets moved to `recovery/assets/`. Assets that could not be moved due to code references and why. If none: state no assets were consolidated.
@@ -177,12 +197,15 @@ Archive date, archive remote URL, and restoration complexity from Step 1.
 To restore this project:
 
 ```
-git clone {archive_remote_url}
+git clone {archive_remote_url}   # install git-lfs first so the recovery tarballs download with the clone
 ```
+
+If the tarballs were kept local only (not committed), place them back in `recovery/docker/` before the next step.
 
 If Docker was used:
 ```
 docker load < recovery/docker/{service}.tar.gz
+# restore data — per docs/setup.md (auto-init from the committed dump, or restore the data-volume tarball first)
 docker-compose up
 ```
 
