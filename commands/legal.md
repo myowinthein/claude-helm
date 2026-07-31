@@ -131,22 +131,23 @@ After resolving the format and path, confirm with the user before continuing:
 Legal documents must give users a real way to reach the owner (mandatory under GDPR Art. 13). Resolve it now — do not generate anything until a valid contact point is confirmed. Never fall back to a bare placeholder.
 
 Infer candidates from the project:
+- Existing contact page — a contact / contact-us page in the project (e.g. `contact.html`, `contact.md`, a `/contact` route, `pages/contact.*`, `src/pages/contact.*`). Use its site URL or path.
 - Repo issues URL — from the git remote, `package.json`, or `composer.json`.
 - Support/contact email — from `package.json` (`bugs.email`, `author.email`), `composer.json` (`authors.email`), or a `SECURITY.md` / `CONTACT` file.
 
-Ask which to use:
+Ask which to use. Build the option list from the candidates found (include one option per candidate, in the order above), keeping the question at 2–4 options; if fewer than two candidates were found, add an "Enter a contact manually" option so there are at least two:
 
   AskUserQuestion:
     question: "How should users contact the owner in the legal documents? Required — a legal document needs a real contact."
     header:   "Contact point"
     multiSelect: false
     options:
-      - label: "Open a repo issue"          ← include only if an issues URL was found; show the URL in the description
+      - label: "Contact page"                ← include only if a contact page was found; show its URL/path in the description
+        description: "Point users to {contact page URL}"
+      - label: "Open a repo issue"           ← include only if an issues URL was found; show the URL in the description
         description: "Users open an issue at {issues URL}"
-      - label: "Email"                       ← include only if an email was found; show it in the description
+      - label: "Email"                        ← include only if an email was found; show it in the description
         description: "Users email {email}"
-      - label: "Enter a contact manually"    ← always include, so the question has at least two options
-        description: "Type an email, contact page URL, or postal address"
 
   The built-in Other option also lets the developer type any contact. Whatever is chosen or typed must be a valid contact — an email address, a URL, or a postal address. If the response is empty or not a recognisable contact, re-ask; do not proceed without one.
 
@@ -279,8 +280,9 @@ For HTML (`.html`):
 **Contact section (all documents):** End every document with a `## Contact` section, using the contact point resolved in Step 1 and wording that matches its type:
 
   Email → "For questions about this {Document Title}, contact us at {email}."
+  Contact page → "For questions about this {Document Title}, visit our contact page at {url}."
   Repo issue URL → "For questions about this {Document Title}, open an issue at {issues URL}."
-  Contact page or other URL → "For questions about this {Document Title}, reach us at {url}."
+  Other URL → "For questions about this {Document Title}, reach us at {url}."
   Postal address → "For questions about this {Document Title}, write to us at {address}."
 
   Never emit a placeholder here — Step 1 has already guaranteed a valid contact.
