@@ -38,6 +38,10 @@ This license terminates automatically if you breach its terms. On termination, y
 
 This agreement is governed by the laws of the jurisdiction in which the author resides, without regard to conflict of law principles.
 
+## Changes to This Agreement
+
+This agreement itself may be revised from time to time, separately from plugin version updates. The "Last updated" date at the top reflects the most recent revision. Continued use of claude-helm after changes are published constitutes acceptance of the updated agreement.
+
 ## Contact
 
 For questions about this End User License Agreement, open an issue at [github.com/myowinthein/claude-helm/issues](https://github.com/myowinthein/claude-helm/issues).
