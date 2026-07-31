@@ -2101,11 +2101,11 @@
       "file": "prompts/archive/step3-postman.md",
       "line": 30,
       "description": "Depends on an implicit \"is the app running\" signal from Step 2's report prose, which has no dedicated field for it \u2014 inferred rather than stated; the fallback (mark requests unverified) makes this a minor gap, not a hard bug.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "09277fe8c6479b4f0faff7c61ad553d62fa83c94",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0041",
