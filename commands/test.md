@@ -4,6 +4,20 @@ description: Detect test framework and write missing tests for recent changes or
 
 # test
 
+## Before starting
+
+Check `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md).
+
+**Solo Mode** (`git-strategy: solo`):
+- Only proceed if on `main` or `master`. If on any other branch, stop: "test must be run on main or master in Solo Mode. Current branch is {branch} — switch and re-run."
+- No branch is created — every commit in Steps 4–6 lands directly on main as it happens.
+
+**GitHub Flow** (`git-strategy: github-flow`, or absent):
+- Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
+- Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b test/{YYYYMMDD}` from it.
+- Call this branch `{branch}` for the rest of this command. Every commit in Steps 4–6 lands on `{branch}`, mirroring `/helm:refactor`'s single-branch-per-run model — Step 7 merges it back to main once at the end, rather than each cluster's commit pushing to main individually.
+- If this command exits at any point without writing anything, delete `{branch}` and return to `{original_branch}` before exiting — never leave the user stranded on an empty temporary branch it created.
+
 ## Scope
 
 Tests must reflect actual proven behavior — not speculative edge cases.
@@ -279,7 +293,7 @@ Then use AskUserQuestion for priority selection:
       - label: "Low Priority"
         description: "{N} areas — everything else"
 
-  Selecting none = skip the Writing tests section below — no tests get written, but the scan itself already ran and still needs to be recorded: proceed to Step 6 to update the ledger (the coverage check and priority judgment happened regardless of what's selected here), then Step 7 to report. Do not add an explicit All or Skip option.
+  Selecting none = skip the Writing tests section below — no tests get written, but the scan itself already ran and still needs to be recorded: proceed to Step 6 to update the ledger (the coverage check and priority judgment happened regardless of what's selected here), then Step 7. Do not add an explicit All or Skip option.
 
 Wait for response before proceeding.
 
@@ -316,7 +330,71 @@ Commit the ledger:
 
 ---
 
-## Step 7 — Confirm completion
+## Step 7 — Merge and cleanup
+
+Only relevant under GitHub Flow — Solo Mode made every commit directly on main as it happened, so there is nothing to merge.
+
+If nothing was committed this run (up to date, or Skip/Cancel selected anywhere before any test was written): under GitHub Flow, delete `{branch}` and return to `{original_branch}` — do not skip that part. Under Solo Mode there is nothing further to do. Either way, proceed to Step 8 to report the outcome.
+
+**Solo Mode:** before pushing, confirm — push always requires its own confirmation regardless of `git-auto-commit`, per git.md's Auto-Commit rule and rules/safety.md's unconditional push-confirmation requirement:
+
+  AskUserQuestion:
+    question: "Push main now? This publishes {N} commit(s) made this run to origin."
+    header:   "Push"
+    multiSelect: false
+    options:
+      - label: "Push (Recommended)"
+        description: "git push origin main"
+      - label: "Cancel"
+        description: "Leave main committed locally but unpushed — push manually when ready"
+
+If Cancel selected → stop here. Do not push or promote. Proceed to Step 8 to report the outcome, noting main is committed locally but unpushed.
+
+If Push selected: `git push origin main`, then run Environment promotion below.
+
+**GitHub Flow:**
+1. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "test(project): write tests {catch-up / full-scan}"`. Before pushing, confirm:
+
+   AskUserQuestion:
+     question: "Push main now? This publishes the merged commit to origin."
+     header:   "Push"
+     multiSelect: false
+     options:
+       - label: "Push (Recommended)"
+         description: "git push origin main"
+       - label: "Cancel"
+         description: "Leave main merged locally but unpushed — push manually when ready"
+
+   If Cancel selected → stop here. Do not push, promote, or clean up. Proceed to Step 8 to report the outcome, noting main is merged locally but unpushed.
+
+   If Push selected: `git push origin main`.
+2. Run Environment promotion below.
+3. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
+4. Return to where you started: `git checkout {original_branch}`.
+
+**Environment promotion** — shared by both modes. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive these tests:
+
+  AskUserQuestion:
+    question: "main has been updated. Which environment branches should also receive these tests?"
+    header:   "Promote to environments"
+    multiSelect: true
+    options: one entry per discovered environment branch, e.g.:
+      - label: "staging"
+        description: "Merge main into staging"
+      - label: "production"
+        description: "Merge main into production"
+
+  For each selected environment:
+  - git checkout {environment}
+  - git merge main --no-ff -m "chore(deploy): promote main to {environment} for test updates"
+  - git push origin {environment}
+  - git checkout main
+
+  If no environment branches exist, or the user selects none, skip silently.
+
+---
+
+## Step 8 — Confirm completion
 
 Report:
 
@@ -326,3 +404,6 @@ Report:
 - Commits made: {N}
 - Tests passing: {yes/no, or N/A if nothing was run}
 - Ledger: {N} skipped-by-user, {N} ambiguous, {N} resolved this run
+- Pushed: {yes / no — push manually when ready / N/A, nothing committed}
+- Environments promoted: {list or none}
+- If GitHub Flow: temporary branch's fate ({merged and deleted / left as-is}) and which branch you were returned to.
