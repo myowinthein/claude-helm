@@ -60,7 +60,7 @@ Third-party services the project depends on. Note which are required for basic o
 List documentation files found. For each: what it covers and whether it appears current or outdated.
 
 ## Git & Repository Safety
-Archiving from: {current branch name} — Step 5's branch cleanup reads this field directly rather than inferring it from prose, since a resumable, multi-session workflow could otherwise lose track of which branch was original.
+Archiving from: {current branch name}
 Remotes and their URLs. Branch list. Any safety concerns (production remotes, CI/CD that auto-deploys on push, sensitive history). Whether any other branch looks more recently active or complete than the current one — state "none" if the current branch is clearly the most current.
 
 ## Setup & Restoration Approach
@@ -82,5 +82,7 @@ Rate as: Easy / Medium / Complex / Blocked — one sentence explaining why.
 What to watch out for or resolve before proceeding to Step 2.
 
 ---
+
+The "Archiving from:" field is read directly by Step 5's branch cleanup, rather than inferred from the surrounding prose — a resumable, multi-session workflow could otherwise lose track of which branch was original. State it explicitly, on its own line, exactly as shown in the template above.
 
 Output the report and stop. Wait for explicit approval before proceeding to Step 2.
