@@ -178,7 +178,6 @@ At the end of the file, append:
 `<!-- last-reviewed: {current HEAD commit hash} -->`
 
 Be concise. Target under 150 lines. Do not pad.
-Use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
 Write directly — no approval needed.
 
 ---
@@ -268,4 +267,5 @@ Commit per git.md's Auto-Commit rule — this also governs whether the sequence 
 CLAUDE.md = descriptive project knowledge (orientation layer).
 .claude/rules/ = prescriptive rules (architecture, safety, git, testing).
 Keep them consistent. Project-specific safety rules live in CLAUDE.md's `## Hard Safety Rules` section (written here, loaded with CLAUDE.md) — proposed, not auto-written. Never auto-edit the adopt-managed `.claude/rules` files (`git.md`, `safety.md`); they are overwritten by `/helm:adopt`, so propose any needed change to those instead.
+Whenever writing to CLAUDE.md, in any step: use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
 

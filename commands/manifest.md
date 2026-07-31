@@ -154,7 +154,6 @@ If `readme-style: custom`:
 At the end of the file, append:
 `<!-- last-reviewed: {current HEAD commit hash} -->`
 
-Use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
 Write directly — no approval needed.
 
 ---
@@ -220,3 +219,4 @@ Commit per git.md's Auto-Commit rule — this also governs whether the sequence 
 README.md = human-facing documentation (contributors, GitHub visitors, new users).
 Not a changelog. Not a technical spec. Not a deployment manual.
 Audience is humans, not future Claude sessions — keep it clear and scannable.
+Whenever writing to README.md, in any step: use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
