@@ -70,7 +70,7 @@ Run the selected target's sub-flows, one at a time, each completing fully before
 
 ### 4. Commit
 
-After all fixes are applied, asks whether to commit. Stages only the safe artifacts — `.env.example` (placeholders), changed source files, `.gitignore`, `.gitattributes` — and **never** `.env` or any other real-value env file (those hold secrets and must not be committed). Never `git add -A`. Before committing, if a real-value env file is found tracked (a live leak), it doesn't silently proceed: it offers to untrack it (`git rm --cached`) first, or flags it under manual action if declined. Then commits the safe artifacts with `chore(env): audit and fix env configuration`.
+After all fixes are applied, asks whether to commit. Stages only the files modified during this command — never `git add -A`. Commit message: `chore(env): audit and fix env configuration`.
 
 ### 5. Completion report
 
