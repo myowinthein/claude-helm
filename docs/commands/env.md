@@ -80,7 +80,7 @@ After all fixes are applied, asks whether to commit. Stages only the files modif
 
 ### 6. Completion report
 
-Summarises the outcome grouped by target (Env files, .gitignore): counts replaced, added, or fixed. Lists skipped tracked files and never-referenced keys under manual action for follow-up.
+Summarises the outcome grouped by target (Env files, .gitignore): counts replaced, added, deleted, or fixed for each sub-flow — including how many never-referenced keys were deleted vs kept. Lists any skipped tracked files under manual action for follow-up.
 
 ## Stop conditions
 

@@ -536,14 +536,14 @@ Env files
   Env sync:         {N} keys added across {N} files
   Missing from env: {N} keys identified — added manually
   Hardcoded values: {N} replaced, {N} skipped
+  Never referenced: {N} deleted, {N} kept
   Env formatting:   {N} files fixed
 .gitignore
-  Entries:          {N} added, {N} removed
+  Entries:          {N} missing added, {N} overly-broad removed
   Tracked files:    {N} untracked, {N} skipped
   Formatting:       {N} duplicates removed, groupings added: yes/no
 ─────────────────────────────────
 Needs manual action:
-- Never referenced: {N} flagged — review and remove if stale
 - Tracked files skipped: {list} — run git rm --cached to untrack manually
 ─────────────────────────────────
 Committed: yes / no
