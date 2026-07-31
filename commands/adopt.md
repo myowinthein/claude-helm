@@ -144,7 +144,7 @@ If state = CONFLICT:
     multiSelect: false
     options:
       - label: "Review per file (Recommended)"
-        description: "For each foreign file, ask whether to overwrite, skip, or show the diff."
+        description: "For each foreign file, ask whether to overwrite it or skip it."
       - label: "Reference from CLAUDE.md instead"
         description: "Point CLAUDE.md at the installed plugin path. You'll be asked per foreign file whether to keep or delete it, since a local copy would coexist with the referenced rules."
       - label: "Cancel"
