@@ -2677,11 +2677,11 @@
       "file": "commands/normalize.md",
       "line": 159,
       "description": "git filter-repo removes the origin remote by default after a rewrite (a documented safety measure assuming a disposable clone) but Step 7's git push origin {branch} --force and git push origin --tags --force assume origin still exists \u2014 the preferred rewrite path leaves the force-push step unable to run.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "502dcb57d1abbb97fa15ea85d8d64b652c35b0e4",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0121",
