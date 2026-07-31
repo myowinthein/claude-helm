@@ -2117,11 +2117,11 @@
       "file": "README.md",
       "line": 45,
       "description": "Command table lists only 9 of the 10 commands \u2014 /helm:adopt is missing from the table entirely, only mentioned later in prose.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3c7dac57c248be13b42092cc778f573f76dfa7b8",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0042",
@@ -2133,11 +2133,11 @@
       "file": ".claude-plugin/marketplace.json",
       "line": 15,
       "description": "The files array still lists \"steps/\", which no longer exists (renamed to prompts/ earlier this session) \u2014 packaging via this manifest would omit the step files /helm:archive actually needs.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3c7dac57c248be13b42092cc778f573f76dfa7b8",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0043",
@@ -2149,11 +2149,11 @@
       "file": "_config.yml",
       "line": 30,
       "description": "Jekyll exclude list still has \"steps/\" instead of \"prompts/\" \u2014 the real prompts/archive/*.md step files aren't excluded, so they'll be pulled into the built site as pages instead of being skipped.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3c7dac57c248be13b42092cc778f573f76dfa7b8",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0044",
