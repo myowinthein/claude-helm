@@ -99,7 +99,7 @@ Looks for `.claude/refactor-log.json` — the command's persistent memory.
 
 **First run (no ledger):** skips the mode question and runs Deep Mode automatically to build a baseline.
 
-**Later runs:** computes commits and days elapsed since the last scan and the number of open findings, then recommends a mode:
+**Later runs:** first verifies `last_scanned_commit` still resolves — a squash-merged branch's hash becomes unreachable once the branch is deleted, in which case this run is treated as a first run instead. Otherwise, computes commits and days elapsed since the last scan and the number of open findings, then recommends a mode:
 - **Fix Backlog** if there are open findings and zero commits since last scan — nothing new to scan for
 - **Deep Mode** if 40+ commits, 60+ days, or two Quick Mode scans in a row (`consecutive_quick_count >= 2`)
 - **Quick Mode** otherwise

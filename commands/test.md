@@ -70,8 +70,8 @@ Schema:
 
 Check recent git activity and existing test coverage:
 - Identify recently changed files using the same commit-range diff as Step 4:
-  - If `last_test_run_commit` is in the ledger: run `git diff {last_test_run_commit}..HEAD --name-only`
-  - If absent: fall back to `git diff HEAD~1..HEAD --name-only`, or the working tree diff if uncommitted changes exist
+  - If `last_test_run_commit` is in the ledger and resolves (`git cat-file -e {commit}^{commit}`): run `git diff {last_test_run_commit}..HEAD --name-only`
+  - If absent, or present but no longer resolves (e.g. a squash-merged branch was deleted): fall back to `git diff HEAD~1..HEAD --name-only`, or the working tree diff if uncommitted changes exist
 - Scan for existing test files
 - Estimate coverage gaps in recently changed code
 - Estimate overall project test coverage
@@ -140,8 +140,8 @@ Based on current state, pick one of four scenarios:
 ## Step 4 — Catch Up
 
 Identify changed files using the ledger's `last_test_run_commit`:
-- If `last_test_run_commit` is present: run `git diff {last_test_run_commit}..HEAD` to get all files changed since the last run.
-- If `last_test_run_commit` is absent (first run or missing ledger): fall back to `git diff HEAD~1..HEAD`, or the working tree diff if uncommitted changes exist.
+- If `last_test_run_commit` is present and resolves (`git cat-file -e {commit}^{commit}`): run `git diff {last_test_run_commit}..HEAD` to get all files changed since the last run.
+- If absent (first run or missing ledger), or present but no longer resolves (e.g. a squash-merged branch was deleted): fall back to `git diff HEAD~1..HEAD`, or the working tree diff if uncommitted changes exist.
 
 Focus only on files that were added or modified.
 

@@ -42,7 +42,7 @@ Check README.md:
 - Does it exist?
 - Does it have content?
 - Is there a saved commit hash? (look for `<!-- last-reviewed: {hash} -->`)
-- If hash exists, run `git log {hash}..HEAD --oneline` to see the gap
+- If hash exists, verify it still resolves (`git cat-file -e {hash}^{commit}`) — a squash-merged branch's hash becomes unreachable once the branch is deleted. If it resolves, run `git log {hash}..HEAD --oneline` to see the gap. If it doesn't, treat README.md as having no saved hash.
 - How significant is the gap? (ignore: bug fixes, styling, dependency updates, routine CRUD)
 - If `readme-style: standard` and the file exists and has content, check whether all mandatory sections are present:
   `Title`, `Short Description`, `Install`, `Usage`, `Contributing`, `License`

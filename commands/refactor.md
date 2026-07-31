@@ -103,6 +103,8 @@ Proceed to Step 3.4, then Step 4, Deep Mode.
 
 ### 3.3 Later runs — ledger found
 
+First verify `last_scanned_commit` still resolves (`git cat-file -e {commit}^{commit}`) — a squash-merged branch's hash becomes unreachable once the branch is deleted. If it no longer resolves, treat this as a first run instead (skip to 3.2) rather than computing against a stale hash.
+
 Compute, since `last_scanned_commit`:
 - number of commits on the current branch
 - number of days since `last_scan_date`

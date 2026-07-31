@@ -53,7 +53,7 @@ Rewrites `CLAUDE.md` from the project's state, so it needs the full merged state
 
 ### 1. Assessment
 
-Reads the current `CLAUDE.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, runs `git log {hash}..HEAD --oneline` to measure the gap. Categorizes the gap as small/moderate or large/significant, ignoring noise commits (bug fixes, styling, dependency updates, routine CRUD).
+Reads the current `CLAUDE.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, verifies the hash still resolves before using it — a squash-merged branch's hash becomes unreachable once the branch is deleted, in which case it's treated as absent. If it resolves, runs `git log {hash}..HEAD --oneline` to measure the gap. Categorizes the gap as small/moderate or large/significant, ignoring noise commits (bug fixes, styling, dependency updates, routine CRUD).
 
 Also checks whether all eight required sections are present (`## Project Identity`, `## Project Config`, `## Dev Commands`, `## Architecture Pointers`, `## Domain Rules`, `## Behavior Rules`, `## Hard Safety Rules`, `## Known Traps`). A missing section means the schema is broken, regardless of gap size.
 

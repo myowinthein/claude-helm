@@ -59,7 +59,7 @@ Rewrites `README.md` from the project's state, so it needs the full merged state
 
 First determines the README style by reading `readme-style` from CLAUDE.md Project Config. If the flag is absent, asks the user once and saves the choice (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md before continuing.
 
-Then reads the current `README.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, runs `git log {hash}..HEAD --oneline` to measure the gap. Ignores noise commits.
+Then reads the current `README.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, verifies it still resolves before using it — a squash-merged branch's hash becomes unreachable once the branch is deleted, in which case it's treated as absent. If it resolves, runs `git log {hash}..HEAD --oneline` to measure the gap. Ignores noise commits.
 
 When `readme-style: standard` and a hash exists, also checks whether all mandatory sections are present. If any are missing, recommends a full scan regardless of gap size and states which sections are missing.
 
