@@ -6,14 +6,7 @@ description: Install or update helm rule files (git.md, safety.md) into the curr
 
 Install or update the helm rule files (`git.md`, `safety.md`) into the current project. Setup helper, not a workflow command.
 
-## Before starting
-
-`/helm:adopt` installs project-wide rule files and rewrites CLAUDE.md's `## Rules` pointer, so it should run from the merged project state — otherwise two branches adopt in parallel and collide at merge:
-- On `main` or `master` → proceed.
-- On another branch → proceed only if it is up-to-date with main (main is an ancestor of `HEAD`, so no merged work is missing). Check `git merge-base --is-ancestor <main> HEAD` (use `origin/main` when a remote exists).
-- If the branch is behind main → stop: "adopt writes project-wide rules. {branch} is behind main — merge or rebase main in first, then re-run."
-
-(No git repo yet — a fresh setup with no commits — skips this check: there is no main to diverge from.)
+No branch requirement — run from any branch. Unlike log/legal/manifest, adopt's output (the rule files and the `## Rules` pointer) is static content templated from the plugin's own version, not a synthesis of the project's current state, so branch staleness can't corrupt it. Any merge conflict this creates is small and self-contained (a version marker, a short pointer section) — resolve it like any other conflict.
 
 ## Step 1 — Sanity check
 

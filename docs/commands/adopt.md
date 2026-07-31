@@ -51,9 +51,7 @@ flowchart TD
 
 ## Steps
 
-### Before starting
-
-Installs project-wide rule files and rewrites CLAUDE.md's `## Rules` pointer, so it should run from the merged project state. Runs from `main`/`master`, or from any branch that is **up-to-date with main** (main is an ancestor of `HEAD`, checked with `git merge-base --is-ancestor`). If the current branch is behind main, it stops and asks you to merge or rebase main in first, so two branches don't adopt in parallel and collide at merge. A fresh setup with no git repo yet skips this check — there is no main to diverge from.
+No branch requirement — run from any branch. Unlike [`/helm:log`](log.md), [`/helm:legal`](legal.md), and [`/helm:manifest`](manifest.md), adopt's output (the rule files and the `## Rules` pointer) is static content templated from the plugin's own version, not a synthesis of the project's current state, so branch staleness can't corrupt it. Any merge conflict this creates is small and self-contained (a version marker, a short pointer section) — resolve it like any other conflict.
 
 ### 1. Sanity check
 
