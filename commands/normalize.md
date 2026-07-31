@@ -23,7 +23,7 @@ Current branch is {branch}. Please switch and re-run."
 Before doing anything else, present this warning using AskUserQuestion:
 
   AskUserQuestion:
-    question: "This command rewrites git history. Understand the consequences before continuing:\n\n- Every rewritten commit gets a new SHA — history is permanently altered\n- Only branches that exist locally are rewritten. Environment branches (staging, production) or others that exist only on the remote are NOT included and will diverge from the new history — fetch and check them out locally first if they need the same treatment\n- Every rewritten local branch, not just the current one, needs a force push to sync its remote copy\n- Tags pointing at rewritten commits become orphaned — they will be re-created\n- Anyone else who has cloned this repo will have a broken history\n\nThis is safe for solo developers on private repos with no active collaborators."
+    question: "This command rewrites git history. Understand the consequences before continuing:\n\n- Every rewritten commit gets a new SHA — history is permanently altered\n- Only local branches are rewritten and force-pushed; anything remote-only (e.g. an environment branch) will diverge unless fetched and checked out first\n- Tags pointing at rewritten commits become orphaned — they will be re-created\n- Anyone else who has cloned this repo will have a broken history\n\nThis is safe for solo developers on private repos with no active collaborators."
     header:   "Risk"
     multiSelect: false
     options:

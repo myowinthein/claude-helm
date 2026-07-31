@@ -49,8 +49,7 @@ Only runs from `main` or `master`. Refuses to rewrite history from a feature bra
 Unconditional first gate. Presents a plain-language summary of what history rewriting means:
 
 - Every rewritten commit gets a new SHA — history is permanently altered
-- Only branches that exist **locally** are rewritten — an environment branch (staging, production) or a teammate's branch that only exists on the remote is not included, and will diverge from the new history unless fetched and checked out first
-- Every rewritten local branch, not just the current one, needs its own force push to sync its remote copy
+- Only local branches are rewritten and force-pushed; anything remote-only (e.g. an environment branch) will diverge unless fetched and checked out first
 - Tags pointing at rewritten commits become orphaned (handled in Step 5)
 - Anyone else who has cloned the repo will have a broken history
 
