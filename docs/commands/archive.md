@@ -11,6 +11,8 @@ The archival command. Runs a five-step workflow to restore an old project, freez
 
 The workflow is **resumable**. Progress and each step's report are persisted under a gitignored `.archive/` directory: a `state.json` cursor tracks the last completed step, and each step writes its report to `.archive/step{N}-{name}.md`. Later steps read those reports by name rather than relying on conversation memory — so the workflow survives context compaction and can resume across the approval gates, even in a new session. On start it reads `state.json` and continues from the next step (or reports that the archive already completed). Step 1 stays read-only: nothing is written until after its approval.
 
+**Before starting**, it must be on `main` or `master` — archive seals the *canonical* project and deletes non-main branches, so it halts on any other branch. Because main must hold the latest work, it also lists any unmerged local branches (`git branch --no-merged`) and warns that their work will not be captured, so you can merge what should be kept before sealing. It never merges on your behalf.
+
 ## Flow
 
 ```mermaid

@@ -37,6 +37,10 @@ flowchart TD
 
 ## Steps
 
+### Before starting
+
+Generates canonical, public-facing legal documents from the project's data profile, so it needs the full merged state. Runs from `main`/`master`, or from any branch that is **up-to-date with main** (main is an ancestor of `HEAD`, checked with `git merge-base --is-ancestor`). If the current branch is behind main, it stops and asks you to merge or rebase main in first — otherwise the documents would miss integrations already on main and collide at merge time.
+
 ### 1. Project scan
 
 Reads the codebase to build a legal profile:

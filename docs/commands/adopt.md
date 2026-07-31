@@ -51,6 +51,10 @@ flowchart TD
 
 ## Steps
 
+### Before starting
+
+Installs project-wide rule files and rewrites CLAUDE.md's `## Rules` pointer, so it should run from the merged project state. Runs from `main`/`master`, or from any branch that is **up-to-date with main** (main is an ancestor of `HEAD`, checked with `git merge-base --is-ancestor`). If the current branch is behind main, it stops and asks you to merge or rebase main in first, so two branches don't adopt in parallel and collide at merge. A fresh setup with no git repo yet skips this check — there is no main to diverge from.
+
 ### 1. Sanity check
 
 Looks for `.git/`, `CLAUDE.md`, or a recognised manifest (`package.json`, `composer.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`). Proceeds when markers are found, and also when the directory is empty (a plausible fresh-project setup with nothing to clobber). Only prompts to confirm or cancel when the directory is non-empty but has no project markers — the case that suggests a wrong directory.

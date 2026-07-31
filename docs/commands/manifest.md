@@ -12,8 +12,8 @@ Keep `README.md` in sync with the codebase. Full scan on first run, gap update o
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:manifest]) --> Branch{On main or master?}
-  Branch -->|no| Stop[/Stop: switch to main first/]
+  Start([User runs /helm:manifest]) --> Branch{On main, or<br/>up-to-date with main?}
+  Branch -->|behind main| Stop[/Stop: sync main first/]
   Branch -->|yes| Exists{README.md exists<br/>with content?}
 
   Exists -->|no| Mode1[Ask: full scan or skip?]
@@ -51,11 +51,11 @@ flowchart TD
 
 ## Steps
 
-### 1. Branch check
+### Before starting
 
-Only runs from `main` or `master`. Halts on any other branch.
+Rewrites `README.md` from the project's state, so it needs the full merged state. Runs from `main`/`master`, or from any branch that is **up-to-date with main** (main is an ancestor of `HEAD`, checked with `git merge-base --is-ancestor`). If the current branch is behind main, it stops and asks you to merge or rebase main in first — otherwise the regenerated README would miss work already on main and collide at merge time.
 
-### 2. Assessment
+### 1. Assessment
 
 First determines the README style by reading `readme-style` from CLAUDE.md Project Config. If the flag is absent, asks the user once and saves the choice (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md before continuing.
 
@@ -63,7 +63,7 @@ Then reads the current `README.md`, checks for a saved `<!-- last-reviewed: {has
 
 When `readme-style: standard` and a hash exists, also checks whether all mandatory sections are present. If any are missing, recommends a full scan regardless of gap size and states which sections are missing.
 
-### 3. Pick mode
+### 2. Pick mode
 
 Three modes, default depending on assessment:
 
@@ -72,7 +72,7 @@ Three modes, default depending on assessment:
 - **Small to moderate gap**: Gap update (recommended), full scan, or skip.
 - **Large gap**: Full scan (recommended), gap update, or skip.
 
-### 4. Full scan
+### 3. Full scan
 
 Investigates: business purpose and target audience, stack and dependencies, installation steps, core usage patterns and CLI commands, public API surface, license, contributing model, maintainers.
 
@@ -88,7 +88,7 @@ If `readme-style: custom`: reads the existing README structure first. Rewrites c
 
 Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
 
-### 5. Gap update
+### 4. Gap update
 
 Reads commit messages first. Reads file changes only for significant commits. Focuses on new features, API changes, new install steps, changed usage, changed CLI commands, new env vars, and removed functionality.
 
@@ -105,7 +105,7 @@ README.md is human-facing documentation for contributors, GitHub visitors, and n
 
 ## Stop conditions
 
-- **Not on `main` or `master`.** Switch back first.
+- **Behind main.** The branch is missing work already merged to main; sync main in first, then re-run.
 - **User picks Skip.** Clean exit, no changes.
 - **User cancels at the proposed-changes confirmation.** No write.
 

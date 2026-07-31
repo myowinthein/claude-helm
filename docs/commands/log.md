@@ -12,7 +12,9 @@ Keep `CLAUDE.md` in sync with the codebase. Acts as the captain's log of the pro
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:log]) --> Exists{CLAUDE.md exists<br/>with content?}
+  Start([User runs /helm:log]) --> Branch{On main, or<br/>up-to-date with main?}
+  Branch -->|behind main| StopSync[/Stop: sync main first/]
+  Branch -->|yes| Exists{CLAUDE.md exists<br/>with content?}
 
   Exists -->|no| Mode1[Ask: full scan or skip?]
   Exists -->|yes, no hash| Mode1
@@ -44,6 +46,10 @@ flowchart TD
 ```
 
 ## Steps
+
+### Before starting
+
+Rewrites `CLAUDE.md` from the project's state, so it needs the full merged state. Runs from `main`/`master`, or from any branch that is **up-to-date with main** (main is an ancestor of `HEAD`, checked with `git merge-base --is-ancestor`). If the current branch is behind main, it stops and asks you to merge or rebase main in first — otherwise the regenerated CLAUDE.md would miss work already on main and collide at merge time.
 
 ### 1. Assessment
 
@@ -108,6 +114,7 @@ CLAUDE.md is descriptive project knowledge (orientation layer). `.claude/rules/`
 
 ## Stop conditions
 
+- **Behind main.** The branch is missing work already merged to main; sync main in first, then re-run.
 - **CLAUDE.md is up to date.** Schema intact and no meaningful commits since the last-reviewed hash — clean exit, no prompt.
 - **User picks Skip.** Clean exit, no changes.
 - **Gap update finds no durable knowledge.** Outcome A: only the hash advances.

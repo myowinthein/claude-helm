@@ -4,18 +4,16 @@ description: Update README.md with a full scan or gap update since last review
 
 # manifest
 
-## Step 1 — Branch check
+## Before starting
 
-Before doing anything, check current branch.
-Only proceed if on `main` or `master`.
-If on any other branch, stop and inform the user:
-
-"manifest must be run on main or master.
-Current branch is {branch}. Please switch and re-run."
+`/helm:manifest` rewrites README.md from the project's state, so it needs the full merged state — otherwise it captures a partial branch and collides with other branches' updates at merge:
+- On `main` or `master` → proceed.
+- On another branch → proceed only if it is up-to-date with main (main is an ancestor of `HEAD`, so no merged work is missing). Check `git merge-base --is-ancestor <main> HEAD` (use `origin/main` when a remote exists).
+- If the branch is behind main → stop: "manifest needs the current main state. {branch} is behind main — merge or rebase main in first, then re-run."
 
 ---
 
-## Step 2 — Assessment
+## Step 1 — Assessment
 
 **Determine readme-style:**
 
@@ -121,7 +119,7 @@ If README.md exists with a saved commit hash and (structure is intact or `readme
 
 ---
 
-## Step 3 — Full Project Scan
+## Step 2 — Full Project Scan
 
 Before writing anything, investigate:
 - Business purpose and target audience
@@ -171,7 +169,7 @@ Write directly — no approval needed.
 
 ---
 
-## Step 4 — Gap Update
+## Step 3 — Gap Update
 
 Read commit messages first to get the shape of what changed.
 Then read file changes only for significant commits — skip: bug fixes,

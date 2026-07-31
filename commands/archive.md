@@ -12,6 +12,8 @@ If on any other branch, stop and inform the user:
 "archive must be run on main or master.
 Current branch is {branch}. Please switch and re-run."
 
+Archive seals the **canonical** project, so main must hold the latest work. Before proceeding, list any unmerged local branches (`git branch --no-merged`); if any exist, warn the user that their work is not on main and will not be captured — merge what should be kept first, then re-run. Do not merge on their behalf.
+
 ## State tracking
 
 Progress and each step's report are persisted under `.archive/` so the workflow can resume across the approval gates and survive context loss between sessions.

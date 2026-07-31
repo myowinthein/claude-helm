@@ -4,6 +4,13 @@ description: Update CLAUDE.md with a full scan or gap update since last review
 
 # log
 
+## Before starting
+
+`/helm:log` rewrites CLAUDE.md from the project's state, so it needs the full merged state — otherwise it captures a partial branch and collides with other branches' updates at merge:
+- On `main` or `master` → proceed.
+- On another branch → proceed only if it is up-to-date with main (main is an ancestor of `HEAD`, so no merged work is missing). Check `git merge-base --is-ancestor <main> HEAD` (use `origin/main` when a remote exists).
+- If the branch is behind main → stop: "log needs the current main state. {branch} is behind main — merge or rebase main in first, then re-run."
+
 ## CLAUDE.md Schema
 
 CLAUDE.md uses these eight sections, in order. Both a full scan and a gap update work only within them — never add a new heading, and a finding that fits none of them does not belong in CLAUDE.md.

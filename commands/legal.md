@@ -7,6 +7,13 @@ description: Scan project and generate GDPR-compliant legal documents based on w
 Scan the project and generate legal documents based on what the
 project actually does. Only generate documents that apply.
 
+## Before starting
+
+`/helm:legal` generates canonical, public-facing legal documents from the project's data profile, so it needs the full merged state — otherwise the documents miss integrations already on main and collide with other branches' output at merge:
+- On `main` or `master` → proceed.
+- On another branch → proceed only if it is up-to-date with main (main is an ancestor of `HEAD`, so no merged work is missing). Check `git merge-base --is-ancestor <main> HEAD` (use `origin/main` when a remote exists).
+- If the branch is behind main → stop: "legal needs the current main state. {branch} is behind main — merge or rebase main in first, then re-run."
+
 ## Step 1 — Project scan
 
 Scan the codebase to understand the project's legal profile:
