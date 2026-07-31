@@ -69,7 +69,7 @@ flowchart TD
 
 ### Before starting
 
-Rewrites `CLAUDE.md` from the project's state, so it needs the full merged, stable state — never an in-progress feature branch. Behavior depends on `git-strategy`:
+Rewrites `CLAUDE.md` from the project's state, so it needs the full merged, stable state — never an in-progress feature branch. Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md):
 
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/log-{date}`) — regardless of what the starting branch was. CLAUDE.md is always scanned from main's own state, never from a feature branch's unmerged work; if a feature branch changes something CLAUDE.md should reflect, re-run `/helm:log` after that branch merges to main. Returns to the original branch at the end (see Step 5).
