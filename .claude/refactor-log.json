@@ -1605,11 +1605,11 @@
       "file": "commands/refactor.md",
       "line": 310,
       "description": "Commit-scope-inference paragraph is duplicated verbatim across refactor.md and test.md instead of being centralized once in rules/git.md's Conventional Commits section and referenced by name.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "PENDING",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0010",
@@ -1621,11 +1621,11 @@
       "file": "commands/test.md",
       "line": 199,
       "description": "Same scope-inference duplication as refactor.md \u2014 this is one of two copies in test.md.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "PENDING",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0011",

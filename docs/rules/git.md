@@ -143,6 +143,8 @@ fix(payment): resolve stripe timeout
 refactor(orders): extract service layer
 ```
 
+**Scope inference** — for commands that infer scope from a diff or cluster of changed files (e.g. `/helm:refactor`, `/helm:test`): use the primary module, folder, or domain actually touched, never a command's own internal category/priority taxonomy (e.g. "architecture", "high-priority"), which is a report/selection grouping, not a commit scope. Dominant area wins if a change spans multiple; `project` or `core` if truly cross-cutting.
+
 **Breaking changes**: append `!` to the type and include a `BREAKING CHANGE:` footer.
 
 ```

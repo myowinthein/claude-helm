@@ -196,7 +196,7 @@ Place test files according to project's existing test organization.
 
 Write cluster by cluster. For each cluster:
 - Run tests after writing — fix if failing before committing.
-- Commit, with scope inferred from the cluster's primary module, folder, or domain — per git.md's Conventional Commits convention (the actual code touched, e.g. `orders`, `auth`), not a generic label. If the cluster spans multiple areas, use the dominant one; if truly cross-cutting, use `project` or `core`:
+- Commit, with scope inferred from this cluster's files per git.md's Scope inference convention:
   test({scope}): add tests for {feature}
 
 ---
@@ -294,7 +294,7 @@ For each priority, cluster by cluster:
 - If a cluster is large enough to strain one agent's context, batch it sequentially (write a chunk, commit, continue) — no planning or dependency system needed
 - Run tests — stop and inform if failing
 - Fix before proceeding to the next cluster
-- Commit, with scope inferred from the cluster's primary module, folder, or domain — same convention as Step 4 (not the priority label itself):
+- Commit, with scope inferred from this cluster's files per git.md's Scope inference convention (not the priority label itself):
   test({scope}): add missing {priority}-priority tests for {brief summary of this cluster}
 
 ---

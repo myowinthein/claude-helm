@@ -307,7 +307,7 @@ Work through the current wave's clusters one at a time, in order. For each clust
   If skipped, this finding's ledger `status` becomes `skipped-by-user` (not `open`), so it stops resurfacing every run. Only re-surface it later if the surrounding code changes enough that the original suggestion may no longer apply.
 
 - Once the cluster's edits are complete: run tests — stop and inform if tests fail, do not move to the next cluster until resolved. Run lint and formatter.
-- Infer the commit scope from the primary module, folder, or domain area touched by this cluster's files — per git.md's Conventional Commits convention (module/feature/domain, e.g. `orders`, `auth`, `payment`), not this command's five-category taxonomy (architecture/quality/performance/tests/dependencies), which is a report and selection grouping, not a commit scope. If the cluster spans multiple areas, use the dominant one; if truly cross-cutting, use `project` or `core`. Keep it lowercase, one word or hyphenated.
+- Infer the commit scope from this cluster's files per git.md's Scope inference convention — not this command's five-category taxonomy (architecture/quality/performance/tests/dependencies), which is a report and selection grouping, not a commit scope.
 - Commit:
   refactor({scope}): {brief summary of this cluster's changes}
 - Update the ledger immediately for every finding in this cluster: `status` to `fixed` or `skipped-by-user`, with `resolved_commit` and `resolved_date` set.

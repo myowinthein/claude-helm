@@ -147,6 +147,8 @@ All commits must follow this format:
   fix(payment): resolve stripe timeout
   refactor(orders): extract service layer
 
+**Scope inference** (for commands that infer it from a diff or cluster of changed files, e.g. `/helm:refactor`, `/helm:test`): use the primary module, folder, or domain area actually touched — never a command's own internal category/priority taxonomy (e.g. "architecture", "high-priority"), which is a report/selection grouping, not a commit scope. If the change spans multiple areas, use the dominant one; if truly cross-cutting, use `project` or `core`. Keep it lowercase, one word or hyphenated.
+
 **Breaking changes:**
   feat(auth)!: replace session with JWT
 
