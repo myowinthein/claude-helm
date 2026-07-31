@@ -91,14 +91,11 @@ are applied globally or scoped:
 
   Scoped or utility-first CSS (styles tied to components or utility classes,
   where unstyled semantic HTML receives no visual treatment):
-  → Output bare semantic HTML AND prepend this comment inside `<body>`:
-
-    <!-- TODO: wrap this content in your site's prose or layout container.
-         Styles are scoped or utility-first — bare semantic HTML will not
-         inherit your site's visual design without a wrapper. -->
+  → Find the prose or layout container used by existing pages and wrap the
+  generated semantic HTML in the same element and classes inside `<body>`.
 
   Cannot determine:
-  → Add the comment as a safe default.
+  → Wrap the generated semantic HTML in `<main>` as a safe default.
 
 Record the resolved format and output path before proceeding.
 
