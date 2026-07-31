@@ -1637,11 +1637,11 @@
       "file": "commands/env.md",
       "line": 511,
       "description": "Step 4's final blanket commit bundles secret cleanup, gitignore edits, sync fixes, and formatting into one multi-concern commit, and doesn't account for files the hardcoded-values sub-flow may have already committed per-file earlier in the same run.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "1bbd7a5ef6900b1961e796a6142368afeda9fbac",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0012",
