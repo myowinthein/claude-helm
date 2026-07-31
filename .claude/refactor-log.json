@@ -2650,6 +2650,22 @@
       "first_found_date": "2026-08-01",
       "resolved_commit": "dc8f8486948603d3b0745a7dbf9fd0296754623a",
       "resolved_date": "2026-08-01"
+    },
+    {
+      "id": "f-0119",
+      "category": "architecture",
+      "priority": "high",
+      "risk": "safe",
+      "cluster_id": "c-064",
+      "depends_on": [],
+      "file": "docs/commands/test.md",
+      "line": 51,
+      "description": "Says 'No branch requirement \u2014 runs from any branch... isn't git-strategy-aware', directly contradicting the new Before-starting section just added to the real commands/test.md this run (f-0095). Also missing the new Step 7 (merge/cleanup), with Confirm completion still labeled Step 7 instead of Step 8. A regression introduced by this run's own fix, caught by Step 6.4's verification pass.",
+      "status": "fixed",
+      "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
+      "first_found_date": "2026-08-01",
+      "resolved_commit": "b11b10d4354a3b1e718568a0669bc8d5cabf17e3",
+      "resolved_date": "2026-08-01"
     }
   ]
 }
