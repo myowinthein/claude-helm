@@ -80,7 +80,7 @@ Rewrites `README.md` from the project's state, so it needs the full merged, stab
 
 ### 1. Assessment
 
-First determines the README style by reading `readme-style` from CLAUDE.md Project Config. If the flag is absent, asks the user once and saves the choice (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md before continuing.
+First determines the README style by reading `readme-style` from CLAUDE.md Project Config. If the flag is absent, checks whether README.md already exists with content and asks accordingly — the question and the Custom option's description differ depending on whether there's an existing README to be "custom" relative to, since a brand-new project has nothing yet. Saves the choice (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md before continuing.
 
 Then reads the current `README.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, runs `git log {hash}..HEAD --oneline` to measure the gap. Ignores noise commits.
 
@@ -107,7 +107,7 @@ Optional sections when relevant: badges, long description, background, API, limi
 
 Skipped unless specifically needed: banner, security, thanks, maintainers, extra sections.
 
-If `readme-style: custom`: reads the existing README structure first. Rewrites content within each section based on the project scan. Does not add, remove, or rename sections without explicit approval.
+If `readme-style: custom` and README.md already has content: reads the existing structure first, rewrites content within each section based on the project scan, and does not add, remove, or rename sections without explicit approval. If README.md is absent or empty, there's nothing to preserve yet — establishes a minimal, sensible structure from the project scan (at minimum title, short description, install, usage, license) rather than forcing the Standard Readme spec's full section set; future runs preserve whatever gets established here.
 
 Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
 
@@ -118,7 +118,7 @@ Reads commit messages first. Reads file changes only for significant commits. Fo
 For each significant change, identifies the affected README section. Updates only those sections. Does not rewrite unaffected sections.
 
 If `readme-style: standard`: sections remain in spec order after updates. A significant change can also add a newly-relevant optional section (e.g. a first public API) in its spec position, or remove one whose justification went away (e.g. the API was removed) — never inventing a section outside the spec.
-If `readme-style: custom`: preserves existing section order and naming.
+If `readme-style: custom`: preserves existing section order and naming, and — matching Step 2 — does not add, remove, or rename sections without explicit approval. If a significant change doesn't fit any existing section, asks whether to add a new one or fold it into the closest existing section rather than deciding silently.
 
 Proposes the changes per section, asks for confirmation, then writes. Bumps the saved hash to HEAD.
 

@@ -25,15 +25,29 @@ description: Update README.md with a full scan or gap update since last review
 Check CLAUDE.md Project Config for `readme-style`.
 
 If `readme-style` is absent:
-  AskUserQuestion:
-    question: "README.md exists with no known style. Which style should this project use?"
-    header:   "README style"
-    multiSelect: false
-    options:
-      - label: "Standard Readme spec"
-        description: "Enforce the Standard Readme spec structure when writing or updating."
-      - label: "Custom style"
-        description: "Follow the existing README structure — never rewrite into the spec."
+  Check whether README.md exists and has content — the question below depends on it.
+
+  If README.md exists with content:
+    AskUserQuestion:
+      question: "README.md exists with no known style. Which style should this project use?"
+      header:   "README style"
+      multiSelect: false
+      options:
+        - label: "Standard Readme spec"
+          description: "Enforce the Standard Readme spec structure when writing or updating."
+        - label: "Custom style"
+          description: "Follow the existing README structure — never rewrite into the spec."
+
+  If README.md is absent or empty (nothing to be "custom" relative to yet):
+    AskUserQuestion:
+      question: "No README.md yet. Which style should this project use?"
+      header:   "README style"
+      multiSelect: false
+      options:
+        - label: "Standard Readme spec"
+          description: "Write README.md following the Standard Readme spec structure."
+        - label: "Custom style"
+          description: "No existing structure to follow — establishes a minimal structure now instead of the full spec, which future runs then preserve rather than rewrite."
 
   Write the chosen value (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md Project Config before continuing.
 
@@ -136,10 +150,13 @@ If `readme-style: standard`:
   Do not invent sections outside the spec.
 
 If `readme-style: custom`:
-  Read the existing README structure before writing.
-  Preserve the existing section order and naming.
-  Rewrite content within each section based on the project scan.
-  Do not add, remove, or rename sections without explicit approval.
+  If README.md already exists with content:
+    Read the existing README structure before writing.
+    Preserve the existing section order and naming.
+    Rewrite content within each section based on the project scan.
+    Do not add, remove, or rename sections without explicit approval.
+  If README.md is absent or empty (nothing to preserve yet):
+    Establish a minimal, sensible structure based on the project scan — at minimum a title, a short description, install steps (if applicable), usage, and license. Do not force the Standard Readme spec's full section set or ordering; this is a starting point, not a spec to satisfy. Future runs preserve whatever structure is established here.
 
 At the end of the file, append:
 `<!-- last-reviewed: {current HEAD commit hash} -->`
@@ -163,7 +180,10 @@ Update only those sections. Do not rewrite unaffected sections.
 If `readme-style: standard`:
   Sections must remain in spec order after updates.
   If a significant change makes an optional section newly relevant (per Step 2's "include when relevant" list — e.g. a first public API, a newly meaningful limitation), add it in its spec-ordered position. If a change removes what justified an existing optional section (e.g. the public API is removed), remove that section. Do not invent sections outside the spec.
-If `readme-style: custom`: preserve existing section order and naming.
+If `readme-style: custom`:
+  Preserve existing section order and naming.
+  Do not add, remove, or rename sections without explicit approval — matching Step 2.
+  If a significant change does not fit any existing section, ask whether to add a new section (and where) or fold it into the closest existing one; do not decide silently.
 
 Update the saved commit hash at the end of the file to current HEAD.
 
