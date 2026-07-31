@@ -6,10 +6,15 @@ description: Update CLAUDE.md with a full scan or gap update since last review
 
 ## Before starting
 
-`/helm:log` rewrites CLAUDE.md from the project's state, so it needs the full merged state — otherwise it captures a partial branch and collides with other branches' updates at merge:
-- On `main` or `master` → proceed.
-- On another branch → proceed only if it is up-to-date with main (main is an ancestor of `HEAD`, so no merged work is missing). Check `git merge-base --is-ancestor <main> HEAD` (use `origin/main` when a remote exists).
-- If the branch is behind main → stop: "log needs the current main state. {branch} is behind main — merge or rebase main in first, then re-run."
+`/helm:log` rewrites CLAUDE.md from the project's state, so it needs the full merged, stable state — never an in-progress feature branch. Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md).
+
+**Solo Mode** (`git-strategy: solo`):
+- Only proceed if on `main` or `master`. If on any other branch, stop: "log must be run on main or master in Solo Mode. Current branch is {branch} — switch and re-run."
+
+**GitHub Flow** (`git-strategy: github-flow`, or absent):
+- Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
+- Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b docs/log-{YYYYMMDD}` from it. This happens unconditionally — CLAUDE.md is always scanned from main's own state, never from a feature branch's unmerged work. If a feature branch changes something CLAUDE.md should reflect, re-run `/helm:log` after that branch merges to main.
+- Call this branch `{branch}` for the rest of this command.
 
 ## CLAUDE.md Schema
 
@@ -220,6 +225,41 @@ Outcome B — update required
 Describe what was learned, why it belongs in project memory,
 and the exact changes to make. Propose as a diff per section.
 Ask for confirmation before writing.
+
+---
+
+## Step 5 — Commit and finalize
+
+Commit per git.md's Auto-Commit rule — this also governs whether the sequence below needs confirmation before proceeding: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
+
+**Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this update:
+
+  AskUserQuestion:
+    question: "main will be updated. Which environment branches should also receive this CLAUDE.md update?"
+    header:   "Promote to environments"
+    multiSelect: true
+    options: one entry per discovered environment branch, e.g.:
+      - label: "staging"
+        description: "Merge main into staging"
+      - label: "production"
+        description: "Merge main into production"
+
+  For each selected environment:
+  - git checkout {environment}
+  - git merge main --no-ff -m "chore(deploy): promote main to {environment} for CLAUDE.md update"
+  - git push origin {environment}
+  - git checkout main
+
+  If no environment branches exist, or the user selects none, skip silently.
+
+**Solo Mode:** commit directly to main, then run Environment promotion above.
+
+**GitHub Flow:**
+1. Commit on `{branch}`.
+2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "{same message as the commit above}"`, `git push origin main`.
+3. Run Environment promotion above.
+4. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
+5. Return to where you started: `git checkout {original_branch}`.
 
 ---
 

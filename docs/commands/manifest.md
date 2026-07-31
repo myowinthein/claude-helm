@@ -12,9 +12,14 @@ Keep `README.md` in sync with the codebase. Full scan on first run, gap update o
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:manifest]) --> Branch{On main, or<br/>up-to-date with main?}
-  Branch -->|behind main| Stop[/Stop: sync main first/]
-  Branch -->|yes| Exists{README.md exists<br/>with content?}
+  Start([User runs /helm:manifest]) --> Strategy{git-strategy?}
+  Strategy -->|Solo| SoloCheck{On main/master?}
+  SoloCheck -->|no| StopSolo[/Stop: switch to main first/]
+  SoloCheck -->|yes| Exists
+  Strategy -->|GitHub Flow| Fresh[Record original branch<br/>Checkout fresh branch from main:<br/>docs/manifest-date]
+  Fresh --> Exists
+
+  Exists{README.md exists<br/>with content?}
 
   Exists -->|no| Mode1[Ask: full scan or skip?]
   Exists -->|yes| StyleFlag{readme-style<br/>in CLAUDE.md?}
@@ -43,8 +48,23 @@ flowchart TD
   Mode3 -->|full| Full
   Mode3 -->|gap| GapPath
 
-  Full["Investigate project<br/>Write per readme-style<br/>Append last-reviewed hash"] --> Done
-  GapPath["Identify affected sections<br/>Propose per-section changes<br/>Confirm, then write per style"] --> Done
+  Full["Investigate project<br/>Write per readme-style<br/>Append last-reviewed hash"] --> Commit
+  GapPath["Identify affected sections<br/>Propose per-section changes<br/>Confirm, then write per style"] --> Commit
+
+  Commit["Commit (per git-auto-commit)"] --> SoloOrFlow{Which mode?}
+  SoloOrFlow -->|Solo| Promote
+  SoloOrFlow -->|GitHub Flow| MergeMain[Merge branch into main<br/>Push main]
+  MergeMain --> Promote
+
+  Promote{Environment<br/>branches exist?}
+  Promote -->|yes| PromoteAsk[Ask: which to promote?<br/>Merge main into each selected]
+  Promote -->|no| Cleanup
+  PromoteAsk --> Cleanup
+
+  Cleanup{GitHub Flow?}
+  Cleanup -->|yes| DeleteBranch[Delete docs/manifest-date branch<br/>Return to original branch]
+  Cleanup -->|no| Done
+  DeleteBranch --> Done
 
   Done([Updated README.md])
 ```
@@ -53,7 +73,10 @@ flowchart TD
 
 ### Before starting
 
-Rewrites `README.md` from the project's state, so it needs the full merged state. Runs from `main`/`master`, or from any branch that is **up-to-date with main** (main is an ancestor of `HEAD`, checked with `git merge-base --is-ancestor`). If the current branch is behind main, it stops and asks you to merge or rebase main in first — otherwise the regenerated README would miss work already on main and collide at merge time.
+Rewrites `README.md` from the project's state, so it needs the full merged, stable state — never an in-progress feature branch. Behavior depends on `git-strategy`:
+
+- **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
+- **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/manifest-{date}`) — regardless of what the starting branch was. README.md is always scanned from main's own state, never from a feature branch's unmerged work; if a feature branch changes something README.md should reflect, re-run `/helm:manifest` after that branch merges to main. Returns to the original branch at the end (see Step 5).
 
 ### 1. Assessment
 
@@ -99,13 +122,21 @@ If `readme-style: custom`: preserves existing section order and naming.
 
 Proposes the changes per section, asks for confirmation, then writes. Bumps the saved hash to HEAD.
 
+### 5. Commit and finalize
+
+Commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
+
+If environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
+
+**Solo Mode** commits directly to main, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
+
 ## Scope
 
 README.md is human-facing documentation for contributors, GitHub visitors, and new users. It is not a changelog, not a technical spec, and not a deployment manual. Keep it clear and scannable.
 
 ## Stop conditions
 
-- **Behind main.** The branch is missing work already merged to main; sync main in first, then re-run.
+- **Solo Mode, not on main/master.** Switch to main or master and re-run.
 - **User picks Skip.** Clean exit, no changes.
 - **User cancels at the proposed-changes confirmation.** No write.
 

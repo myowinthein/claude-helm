@@ -12,9 +12,14 @@ Keep `CLAUDE.md` in sync with the codebase. Acts as the captain's log of the pro
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:log]) --> Branch{On main, or<br/>up-to-date with main?}
-  Branch -->|behind main| StopSync[/Stop: sync main first/]
-  Branch -->|yes| Exists{CLAUDE.md exists<br/>with content?}
+  Start([User runs /helm:log]) --> Strategy{git-strategy?}
+  Strategy -->|Solo| SoloCheck{On main/master?}
+  SoloCheck -->|no| StopSolo[/Stop: switch to main first/]
+  SoloCheck -->|yes| Exists
+  Strategy -->|GitHub Flow| Fresh[Record original branch<br/>Checkout fresh branch from main:<br/>docs/log-date]
+  Fresh --> Exists
+
+  Exists{CLAUDE.md exists<br/>with content?}
 
   Exists -->|no| Mode1[Ask: full scan or skip?]
   Exists -->|yes, no hash| Mode1
@@ -39,8 +44,23 @@ flowchart TD
   Mode4 -->|full| Full
   Mode4 -->|gap| GapPath
 
-  Full["Investigate project<br/>Q1: git-strategy?<br/>Q2: auto-commit yes or no?<br/>Q3: merge strategy? (GitHub Flow only)<br/>write 7-section CLAUDE.md<br/>append last-reviewed hash"] --> Done
-  GapPath[Review commits since hash<br/>apply 3-question filter<br/>update sections or report<br/>no change, bump hash] --> Done
+  Full["Investigate project<br/>Q1: git-strategy?<br/>Q2: auto-commit yes or no?<br/>Q3: merge strategy? (GitHub Flow only)<br/>write 7-section CLAUDE.md<br/>append last-reviewed hash"] --> Commit
+  GapPath[Review commits since hash<br/>apply 3-question filter<br/>update sections or report<br/>no change, bump hash] --> Commit
+
+  Commit["Commit (per git-auto-commit)"] --> SoloOrFlow{Which mode?}
+  SoloOrFlow -->|Solo| Promote
+  SoloOrFlow -->|GitHub Flow| MergeMain[Merge branch into main<br/>Push main]
+  MergeMain --> Promote
+
+  Promote{Environment<br/>branches exist?}
+  Promote -->|yes| PromoteAsk[Ask: which to promote?<br/>Merge main into each selected]
+  Promote -->|no| Cleanup
+  PromoteAsk --> Cleanup
+
+  Cleanup{GitHub Flow?}
+  Cleanup -->|yes| DeleteBranch[Delete docs/log-date branch<br/>Return to original branch]
+  Cleanup -->|no| Done
+  DeleteBranch --> Done
 
   Done([Updated CLAUDE.md])
 ```
@@ -49,7 +69,10 @@ flowchart TD
 
 ### Before starting
 
-Rewrites `CLAUDE.md` from the project's state, so it needs the full merged state. Runs from `main`/`master`, or from any branch that is **up-to-date with main** (main is an ancestor of `HEAD`, checked with `git merge-base --is-ancestor`). If the current branch is behind main, it stops and asks you to merge or rebase main in first — otherwise the regenerated CLAUDE.md would miss work already on main and collide at merge time.
+Rewrites `CLAUDE.md` from the project's state, so it needs the full merged, stable state — never an in-progress feature branch. Behavior depends on `git-strategy`:
+
+- **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
+- **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/log-{date}`) — regardless of what the starting branch was. CLAUDE.md is always scanned from main's own state, never from a feature branch's unmerged work; if a feature branch changes something CLAUDE.md should reflect, re-run `/helm:log` after that branch merges to main. Returns to the original branch at the end (see Step 5).
 
 ### 1. Assessment
 
@@ -104,9 +127,17 @@ Applies a three-question filter to each candidate change:
 
 Only updates if all three answers are yes. Every change is bound to one of the eight schema sections — the schema defines what each holds, so each finding lands in its section and never in a new heading; a finding that fits no section is left out. Then either reports **Outcome A** (no durable knowledge introduced, just bump the hash) or **Outcome B** (proposes per-section changes and asks for confirmation before writing).
 
-### 5. Confirm completion
+### 5. Commit and finalize
 
-Reports what was changed, what the new last-reviewed hash is, and whether any rule files in `.claude/rules` should also be revisited.
+Commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
+
+If environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
+
+**Solo Mode** commits directly to main, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
+
+### 6. Confirm completion
+
+Reports what was changed, what the new last-reviewed hash is, which environments were promoted, and whether any rule files in `.claude/rules` should also be revisited. Under GitHub Flow, also reports the temporary branch's fate and which branch you were returned to.
 
 ## Scope
 
@@ -114,7 +145,7 @@ CLAUDE.md is descriptive project knowledge (orientation layer). `.claude/rules/`
 
 ## Stop conditions
 
-- **Behind main.** The branch is missing work already merged to main; sync main in first, then re-run.
+- **Solo Mode, not on main/master.** Switch to main or master and re-run.
 - **CLAUDE.md is up to date.** Schema intact and no meaningful commits since the last-reviewed hash — clean exit, no prompt.
 - **User picks Skip.** Clean exit, no changes.
 - **Gap update finds no durable knowledge.** Outcome A: only the hash advances.

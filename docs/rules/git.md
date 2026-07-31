@@ -193,10 +193,12 @@ Environment branches are long-lived branches that are not `main`, `master`, or f
 
 **Promotion flow**: `main → {environment branches in order}`.
 
-The `/helm:ship` command detects environment branches automatically and offers a multi-select for which to promote alongside the main release. `/helm:legal` does the same after committing generated legal documents, so environment branches don't fall behind main on legally-binding content.
+The `/helm:ship` command detects environment branches automatically and offers a multi-select for which to promote alongside the main release. `/helm:legal`, `/helm:log`, and `/helm:manifest` do the same after committing their generated content, so environment branches don't fall behind main on legal documents, `CLAUDE.md`, or `README.md`.
 
 ## See also
 
 - [`safety.md`](safety.md) - the operational risks file that pairs with this one
 - [`/helm:ship`](../commands/ship.md) - reads Conventional Commits and promotes to env branches
 - [`/helm:legal`](../commands/legal.md) - promotes generated legal documents to env branches the same way
+- [`/helm:log`](../commands/log.md) - promotes `CLAUDE.md` updates to env branches the same way
+- [`/helm:manifest`](../commands/manifest.md) - promotes `README.md` updates to env branches the same way
