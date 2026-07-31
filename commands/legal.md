@@ -270,11 +270,14 @@ Do not write any marker into the documents themselves — they are published to 
 
 ```
 {
+  "schema_version": 1,
   "documents": [
     { "file": "legal/privacy-policy.md", "generated_at": "YYYY-MM-DD", "generated_at_commit": "abc1234" }
   ]
 }
 ```
+
+`schema_version` — bumped only if this manifest's structure changes in a future release. Lets a future version of this command detect an older-shaped file and handle it explicitly instead of misreading it. Treat a missing `schema_version` as `1` (every manifest written before this field existed). Always write it going forward.
 
 Keep entries for documents that still exist; add or refresh entries for the ones written this run (the refreshed `generated_at_commit` resets their staleness baseline).
 
