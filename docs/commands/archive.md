@@ -96,7 +96,8 @@ README.md         ← fresh archive-focused index
 ## Stop conditions
 
 - **Approve declined at any gate.** The command halts cleanly with no further changes.
-- **Step 1 complexity rated Blocked.** User can still approve to proceed, but is warned.
+
+Note: Step 1 complexity rated Blocked is a warning, not a stop condition — the user can still approve and proceed; it isn't listed above since, unlike the points below, declining isn't the only way past it.
 
 The command stops and waits for explicit approval at ten points:
 
