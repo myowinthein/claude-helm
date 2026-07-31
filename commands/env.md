@@ -337,7 +337,7 @@ AskUserQuestion:
       description: "Leave all hardcoded values as-is"
 
 If Replace all selected:
-- If there are more than 10 findings, process one source file at a time and commit after each file before moving to the next.
+- If there are more than 10 findings, process one source file at a time and commit after each file before moving to the next — per `git-auto-commit` in CLAUDE.md Project Config (see git.md Auto-Commit): commit without asking if `true`, otherwise confirm before each file's commit.
 - For each finding:
   - Replace the hardcoded value in source with the env var access pattern for the detected stack
   - Add the key + real value to `.env` and all other non-example env files if absent
@@ -495,7 +495,13 @@ If Skip selected: no changes.
 
 ## Step 4 — Commit
 
-After all fixes are applied, ask:
+After all fixes are applied, commit per `git-auto-commit` in CLAUDE.md Project Config (see git.md Auto-Commit):
+
+If `git-auto-commit: true`:
+  Stage only the files modified during this command. Never use `git add -A`.
+  git commit -m "chore(env): audit and fix env configuration"
+
+Otherwise, ask:
 
 AskUserQuestion:
   question: "Fixes applied. Commit now?"
