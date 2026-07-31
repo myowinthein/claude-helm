@@ -2869,11 +2869,11 @@
       "file": "rules/git.md",
       "line": 208,
       "description": "The Promotion model's 'always fan-out regardless of setting' exception list names only /helm:legal, /helm:log, /helm:manifest, /helm:adopt, but commands/env.md and commands/test.md implement the exact same unconditional fan-out behavior in their Environment promotion sections without checking environment-promotion/chain-vs-fan-out \u2014 neither is mentioned in the documented list.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d977d0be8704c0ed0d3ca44254bf8de07141fef8",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0134",
