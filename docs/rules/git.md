@@ -204,7 +204,7 @@ Environment branches are long-lived branches that are not `main`, `master`, or f
 
 `/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` always use fan-out for promoting their own generated content (legal documents, `CLAUDE.md`, `README.md`, rule files), regardless of this setting — those are content syncs, not a release pipeline, so there's no tier for a document to pass through.
 
-The `/helm:ship` command detects environment branches automatically and offers a multi-select for which to promote alongside the main release (filtered to first-tier branches only under `chain` mode). `/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` do the same after committing their generated content, so environment branches don't fall behind main on legal documents, `CLAUDE.md`, `README.md`, or the installed rule files.
+The [`/helm:ship`](../commands/ship.md) command detects environment branches automatically and offers a multi-select for which to promote alongside the main release (filtered to first-tier branches only under `chain` mode). [`/helm:legal`](../commands/legal.md), [`/helm:log`](../commands/log.md), [`/helm:manifest`](../commands/manifest.md), and [`/helm:adopt`](../commands/adopt.md) do the same after committing their generated content, so environment branches don't fall behind main on legal documents, `CLAUDE.md`, `README.md`, or the installed rule files.
 
 ## See also
 
