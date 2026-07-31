@@ -54,6 +54,7 @@ The step reads source code, configuration files, manifests, env files, and any e
 **Git and repository safety**
 - All remotes and their URLs
 - Branch list
+- Records the current branch explicitly as "Archiving from:" in its own field — Step 5's branch cleanup reads this directly rather than inferring it from prose, since a resumed multi-session archive could otherwise lose track of which branch was original
 - Compares the current branch against every other local and remote branch; flags it (informational only, never blocking) if another branch looks more recently active or complete — archive candidates are often neglected, so the checked-out branch isn't always the real latest state
 - CI/CD pipelines that could auto-deploy on push
 

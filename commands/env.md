@@ -528,7 +528,10 @@ After all fixes are applied, stage what's left — do not use `git add -A` blind
   git add .env.example          # only if newly created this run
   git add .gitignore             # only if newly created this run (e.g. the Missing entries sub-flow created a project's first .gitignore)
 
-If nothing is staged (the Hardcoded values sub-flow already committed everything per-file above, and no other fixes were applied): skip commit, merge, and environment promotion below — there is nothing left to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` — do not skip that part. Proceed to Step 5 to report the outcome.
+If nothing is staged (the Hardcoded values sub-flow already committed everything per-file above, and no other fixes were applied):
+
+- **Solo Mode**: skip commit and environment promotion below — there is nothing left to act on, since any Hardcoded values commits already landed directly on main. Proceed to Step 5 to report the outcome.
+- **GitHub Flow**: check whether `{branch}` has any commits ahead of main (`git rev-list --count main..{branch}`). If none, delete `{branch}`, return to `{original_branch}`, and proceed to Step 5 — truly nothing to act on. If it does have commits (the Hardcoded values sub-flow committed real work there, even though Step 4 itself has nothing new to stage), do not delete the branch — skip straight to step 2 of the GitHub Flow sequence below (merge). There's nothing to commit in step 1, but the branch's already-committed work still needs to reach main before cleanup.
 
 Otherwise, commit per git.md's Auto-Commit rule: silent if `git-auto-commit: true`, otherwise ask for confirmation before committing, merging, and pushing together. Either way, push itself always requires its own confirmation regardless of `git-auto-commit` — git.md's Auto-Commit rule states this as an explicit exception, and rules/safety.md lists `git push` as always requiring confirmation with no exceptions. Environment promotion's branch-selection prompt below already serves as that confirmation for environment-branch pushes; under GitHub Flow, confirm separately before step 2's `git push origin main`, even when the commit above was silent.
 
@@ -543,6 +546,8 @@ Otherwise, commit per git.md's Auto-Commit rule: silent if `git-auto-commit: tru
         description: "Merge main into staging"
       - label: "production"
         description: "Merge main into production"
+
+  AskUserQuestion caps at 4 options. If more than 4 branches qualify, offer only the first 4 (recognized tier names first — staging/stage/uat/preprod, then production/prod, then any others alphabetically) and note in the question that remaining branches need a follow-up run.
 
   For each selected environment:
   - git checkout {environment}
@@ -569,8 +574,8 @@ If Cancel selected → stop here. Do not push or promote. Proceed to Step 5 to r
 If Push selected: `git push origin main`, then run Environment promotion above.
 
 **GitHub Flow:**
-1. Commit on `{branch}` (this also covers any per-file commits already made by the Hardcoded values sub-flow above, which run on whatever branch is currently checked out).
-2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "{same message as the commit above}"`. Before pushing, confirm:
+1. Commit on `{branch}` (this also covers any per-file commits already made by the Hardcoded values sub-flow above, which run on whatever branch is currently checked out). Skip this step if nothing was staged — see the branch-check above.
+2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "{same message as the commit above, or a generic 'chore(env): merge hardcoded-value fixes' if step 1 was skipped}"`. Before pushing, confirm:
 
    AskUserQuestion:
      question: "Push main now? This publishes the merged commit to origin."

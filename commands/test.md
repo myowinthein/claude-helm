@@ -142,7 +142,7 @@ Based on current state, pick one of four scenarios:
         description: "No tests needed"
 
 **Scenario 3 — Tests exist, full scan done, no changes since last run, no outstanding ambiguous findings:**
-  Inform the user: "No changes since last run — tests are up to date." Do not present any AskUserQuestion. Proceed to Step 7 to report the outcome — nothing was written, but this is still an outcome worth confirming.
+  Inform the user: "No changes since last run — tests are up to date." Do not present any AskUserQuestion. Proceed to Step 7 (which forwards straight to Step 8, since nothing was committed) to report the outcome — nothing was written, but this is still an outcome worth confirming.
 
 **Scenario 4 — Tests exist, and either recent changes are detected or ambiguous findings are outstanding:**
   Recommend Full Scan if `consecutive_catchup_count >= 5` (many Catch Ups have piled up since the last full look) OR the diff identified above touches 50+ files (this one batch is already big enough to warrant a full check). Otherwise recommend Catch Up. Outstanding ambiguous findings alone (no other changes) still route here — Catch Up will pick them up via Step 4's ambiguous-entry union, giving the user another pass through the Behavior Clarity Check.
@@ -174,7 +174,7 @@ Based on current state, pick one of four scenarios:
       - label: "Skip"
         description: "No tests needed"
 
-If Skip selected in any of Scenarios 1, 2, or 4 → nothing to write. Proceed to Step 7 to report the outcome.
+If Skip selected in any of Scenarios 1, 2, or 4 → nothing to write. Proceed to Step 7 (which forwards straight to Step 8, since nothing was committed) to report the outcome.
 
 ---
 
@@ -206,7 +206,7 @@ Before writing, present test plan:
       - label: "Cancel"
         description: "Exit without writing tests"
 
-If Cancel selected → nothing to write. Proceed to Step 7 to report the outcome.
+If Cancel selected → nothing to write. Proceed to Step 7 (which forwards straight to Step 8, since nothing was committed) to report the outcome.
 
 Wait for response before proceeding.
 
@@ -391,6 +391,8 @@ If Push selected: `git push origin main`, then run Environment promotion below.
         description: "Merge main into staging"
       - label: "production"
         description: "Merge main into production"
+
+  AskUserQuestion caps at 4 options. If more than 4 branches qualify, offer only the first 4 (recognized tier names first — staging/stage/uat/preprod, then production/prod, then any others alphabetically) and note in the question that remaining branches need a follow-up run.
 
   For each selected environment:
   - git checkout {environment}

@@ -447,6 +447,8 @@ Otherwise, always confirm before committing, even when `git-auto-commit: true` i
       - label: "production"
         description: "Merge main into production"
 
+  AskUserQuestion caps at 4 options. If more than 4 branches qualify, offer only the first 4 (recognized tier names first — staging/stage/uat/preprod, then production/prod, then any others alphabetically) and note in the question that remaining branches need a follow-up run.
+
   For each selected environment:
   - git checkout {environment}
   - git merge main --no-ff -m "chore(deploy): promote main to {environment} for legal document updates"

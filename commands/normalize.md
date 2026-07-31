@@ -141,6 +141,11 @@ Before doing anything else, capture the full history's current commit count for 
 git log --oneline --all | wc -l
 ```
 
+Also capture the `origin` remote's URL, if one exists — `git filter-repo` removes it by default after a rewrite (a safety measure that assumes it's operating on a disposable clone), and Step 7's force push needs it back:
+```
+git remote get-url origin
+```
+
 Build the rewrite map as a JSON object: `{ "original_message": "conventional_message", ... }`
 Include only non-compliant commits. Messages not in the map pass through unchanged.
 **Every key must be `.strip()`-equivalent** (leading/trailing whitespace and newlines removed) — the callbacks below strip the incoming message the same way before looking it up. If the map's keys aren't normalized identically, lookups silently miss and the commit passes through unrewritten with no error.
@@ -180,7 +185,12 @@ print(rewrite_map.get(msg, msg))
 "' --tag-name-filter cat -- --all
 ```
 
-After rewrite completes, verify a representative sample across the full history — use `--all` here too, matching the rewrite's actual scope (every local branch), not just whichever branch is currently checked out:
+After rewrite completes, restore `origin` if `git filter-repo` removed it — idempotent, safe to run regardless of which rewrite path was used or whether a remote existed in the first place:
+```
+git remote get-url origin >/dev/null 2>&1 || { [ -n "{origin_url}" ] && git remote add origin {origin_url}; }
+```
+
+Then verify a representative sample across the full history — use `--all` here too, matching the rewrite's actual scope (every local branch), not just whichever branch is currently checked out:
 ```
 git log --oneline --all | head -20
 git log --oneline --all | tail -20

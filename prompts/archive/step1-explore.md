@@ -42,7 +42,8 @@ Goal: Understand the project well enough to make an informed decision about arch
 Output the report in this format:
 
 ## Overview
-Project name, purpose, and business domain. One short paragraph.
+Project name: {name}
+Purpose and business domain. One short paragraph.
 
 ## Technology Stack
 Framework, language, runtime versions, package manager, database type.
@@ -84,5 +85,7 @@ What to watch out for or resolve before proceeding to Step 2.
 ---
 
 The "Archiving from:" field is read directly by Step 5's branch cleanup, rather than inferred from the surrounding prose — a resumable, multi-session workflow could otherwise lose track of which branch was original. State it explicitly, on its own line, exactly as shown in the template above.
+
+The "Project name:" field is read directly by Step 3 (Postman collection filenames) and Step 4 (README content), rather than extracted from the Overview prose. State it explicitly, on its own line.
 
 Output the report and stop. Wait for explicit approval before proceeding to Step 2.

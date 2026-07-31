@@ -68,6 +68,7 @@ Use **Postman Collection Format v2.1** (`schema: "https://schema.getpostman.com/
 Output the report in this format:
 
 ## Applicability
+Postman collection generated: yes/no
 Whether a collection was generated or skipped and why.
 
 ## Existing Collection
@@ -92,5 +93,7 @@ Requests that could not be safely verified. Reason for each.
 Endpoints that could not be covered, external dependencies, or gaps in coverage.
 
 ---
+
+The "Postman collection generated:" field is read directly by Step 4 (`docs/archive-metadata.md`'s structured snapshot), rather than inferred from the Applicability prose. State it explicitly, on its own line.
 
 Do not commit or push. Output the report and stop. Wait for explicit approval before proceeding to Step 4.

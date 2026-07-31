@@ -130,7 +130,7 @@ Both the Copy or Update and Reference paths update CLAUDE.md's `## Rules` sectio
 
 ### 5. Commit and finalize
 
-**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.html): there's no branch to clean up, since none was created. If Step 4 wrote anything, commits it per [git.md's Auto-Commit rule](../rules/git.html#auto-commit) and stops — no merge, promotion, or branch cleanup applies. If Step 4 made no changes, there's nothing to do at all.
+**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.md): there's no branch to clean up, since none was created. If Step 4 wrote anything, commits it per [git.md's Auto-Commit rule](../rules/git.html#auto-commit) and stops — no merge, promotion, or branch cleanup applies. If Step 4 made no changes, there's nothing to do at all.
 
 **Normal flow**: if Step 4 made no changes (No-change or Cancel path), skips commit, merge, and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
 
