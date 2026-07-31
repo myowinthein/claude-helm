@@ -12,7 +12,8 @@ Detect the test framework, load the run ledger, assess existing coverage and rec
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:test]) --> Framework{Test framework<br/>detected?}
+  Start([User runs /helm:test]) --> Branch[Solo Mode: require main/master<br/>GitHub Flow: branch off main<br/>test/date, all commits land there]
+  Branch --> Framework{Test framework<br/>detected?}
   Framework -->|no| AskFW[Ask: which framework<br/>to set up?]
   AskFW -->|skip| FWStop[/Exit: set up framework<br/>manually then re-run/]
   AskFW -->|chosen| FWSetup[Install as dev dependency]
@@ -24,7 +25,7 @@ flowchart TD
 
   Assess{Existing tests, recent changes,<br/>or ambiguous findings outstanding?}
   Assess -->|no tests, or full scan never run| FullOrSkip["Ask: full scan or skip?"]
-  Assess -->|up to date, nothing outstanding| Report(["Report outcome<br/>(Step 7)"])
+  Assess -->|up to date, nothing outstanding| Report(["Report outcome<br/>(Step 8)"])
   Assess -->|changes or ambiguous outstanding| Choice["Ask: Catch Up, Full, or Skip?"]
 
   FullOrSkip -->|skip| Report
@@ -43,14 +44,22 @@ flowchart TD
   FullPlan -->|priorities selected| FWrite["Behavior Clarity Check per test<br/>Group into clusters within each priority<br/>Write · run · commit, cluster by cluster"]
   FWrite --> UpdateLedger
 
-  UpdateLedger["Update .claude/test-log.json<br/>commit ledger"] --> Report
+  UpdateLedger["Update .claude/test-log.json<br/>commit ledger"] --> Merge[GitHub Flow: merge to main<br/>Ask: push main now?]
+  Merge --> Promote[Ask: promote to<br/>environment branches?]
+  Promote --> Cleanup[GitHub Flow: delete temp branch]
+  Cleanup --> Report
 ```
 
 ## Steps
 
 ### Before starting
 
-No branch requirement — runs from any branch. Writing tests for the code you're currently working on is useful regardless of branch, so this isn't git-strategy-aware the way `/helm:log` or `/helm:manifest` are.
+Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.html):
+
+- **Solo Mode**: runs only on `main`/`master`. Halts on any other branch. No branch is created — every commit lands directly on main as it happens.
+- **GitHub Flow**: records the current branch, then checks out a fresh branch from main's current tip (`test/{date}`). Every commit (per cluster, per priority tier, the ledger) lands on this branch — mirroring `/helm:refactor`'s single-branch-per-run model, merged back to main once at the end (see Step 7) rather than pushing to main after each cluster. Returns to the original branch at the end.
+
+If the command exits at any point without writing anything, this cleanup still runs: delete the temporary branch and return to the original branch.
 
 ### 1. Detect test framework
 
@@ -121,22 +130,29 @@ After tests are written, run, and committed:
 - Sets `schema_version` to `2` if not already present, including when converting an old-shaped ledger on load.
 - **Catch Up run**: sets `last_run_commit` to current HEAD and increments `consecutive_catchup_count` by 1.
 - **Full Scan run**: sets `last_run_commit` to current HEAD, sets `full_scan_ever_run` to `true`, resets `consecutive_catchup_count` to `0`. Persists all `priority`/`last_judged_commit` changes into `files` (new entries, updated priorities, entries removed for files that no longer exist).
-- For files skipped at the confirmation step: sets `user_status: "skipped-by-user"` on that file's entry, without touching any `priority` fields already there.
-- For files flagged during the Behavior Clarity Check: sets `user_status: "ambiguous"` the same way.
+- For files flagged during the Behavior Clarity Check: sets `user_status: "ambiguous"` on that file's entry, without touching any `priority` fields already there. `skipped-by-user` has no writer in the current flow — the plan confirmation and priority selection are all-or-nothing/tier-level, not per-file — but a pre-existing `skipped-by-user` entry (e.g. from a schema migration or manual edit) is still honored by the Catch Up path's drop-from-plan check.
 - For files resolved this run: clears `user_status`/`note`/`recorded_commit`/`recorded_date` from the entry, but keeps the entry (and its `priority` data) unless nothing is left on it at all.
 
 Commits the ledger with `test(log): update test ledger after {catch-up / full-scan}`.
 
-### 7. Confirm completion
+### 7. Merge and cleanup
 
-Reports the outcome (up to date / catch up written / full scan written / skipped), the mode used, how many tests were written and where, commits made, whether tests are passing, and the ledger's skipped-by-user/ambiguous/resolved counts. Runs even when nothing was written — Scenario 3's clean exit and any Skip choice both still reach this step to report the outcome, rather than exiting silently. When a Full Scan's scan ran but no priorities were selected for writing, the scan itself is still recorded in the ledger and reported here.
+Only relevant under GitHub Flow — Solo Mode made every commit directly on main as it happened, so there's nothing to merge. If nothing was committed this run, still runs GitHub Flow's branch cleanup (delete the temporary branch, return to the original branch) before proceeding to report.
+
+Otherwise, merges the temporary branch into main (`test(project): write tests {catch-up / full-scan}`). Push always requires its own confirmation regardless of `git-auto-commit`, per git.md's Auto-Commit exception and rules/safety.md's unconditional push-confirmation rule — Solo Mode confirms directly, GitHub Flow confirms after the merge. If cancelled, the command stops there: no promotion, no branch cleanup, leaving the commit (or merge) in place locally for a manual push later.
+
+If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive these tests, then merges main into each selected branch and pushes. GitHub Flow then deletes the temporary branch (locally and remotely if pushed) and returns to the original branch.
+
+### 8. Confirm completion
+
+Reports the outcome (up to date / catch up written / full scan written / skipped), the mode used, how many tests were written and where, commits made, whether tests are passing, the ledger's skipped-by-user/ambiguous/resolved counts, whether the commit was pushed, which environments were promoted, and — under GitHub Flow — the temporary branch's fate and which branch the command returned to. Runs even when nothing was written — Scenario 3's clean exit and any Skip choice both still reach this step to report the outcome, rather than exiting silently. When a Full Scan's scan ran but no priorities were selected for writing, the scan itself is still recorded in the ledger and reported here.
 
 ## Stop conditions
 
 - **No framework, user skips setup.** Configure a framework and re-run.
-- **No changes since last run, full scan already done, and no ambiguous findings outstanding.** Tests are up to date — reports via Step 7, no tests written.
-- **User cancels at the test plan.** No tests written — reports via Step 7.
-- **No priorities or no scope selected.** No tests written — reports via Step 7.
+- **No changes since last run, full scan already done, and no ambiguous findings outstanding.** Tests are up to date — reports via Step 8, no tests written.
+- **User cancels at the test plan.** No tests written — reports via Step 8.
+- **No priorities or no scope selected.** No tests written — reports via Step 8.
 - **Written tests fail.** The command stops before committing and waits for the user to fix the failure.
 
 ## See also
