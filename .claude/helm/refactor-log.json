@@ -2885,11 +2885,11 @@
       "file": "prompts/archive/step4-documentation.md",
       "line": 98,
       "description": "docs/archive-metadata.md requires a 'Postman collection generated: yes / no' field sourced from Step 3, but step3-postman.md's report format has no explicit yes/no field for this \u2014 only free-text prose under Applicability \u2014 forcing Step 4 to infer a structured field from prose, inconsistent with the explicit-field convention used elsewhere (Archiving from:, App running:).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "f81c07c0a44d218fb36b4f3dcfaf8f40e9739eb2",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0135",
