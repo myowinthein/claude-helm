@@ -109,12 +109,12 @@ After resolving the format and path, confirm with the user before continuing:
 **Existing legal documents**
 - Check whether the resolved output path exists.
 - List which documents are already present using the resolved file extension.
-- Read `.claude/legal-manifest.json` if it exists — it records which documents a previous run generated. Classify each present document:
-  - **Helm-generated** — its path is listed in the manifest. Safe to regenerate.
+- Read `.claude/legal-manifest.json` if it exists — it records which documents a previous run generated and the commit each was generated at. Classify each present document:
+  - **Helm-generated** — its path is listed in the manifest. Safe to regenerate. Check whether it is stale: run `git log {generated_at_commit}..HEAD` and look for changes that could shift the legal profile scanned above in this step — new analytics, payment processors, auth providers, third-party integrations, or data collection (dependency manifests, config, integration code). If any are found, mark the document **may be outdated**. Do not edit it in place — regeneration is always a full rewrite.
   - **Foreign** — present on disk but not in the manifest. Likely hand-written or lawyer-reviewed; must not be overwritten without explicit confirmation.
 - The published legal documents carry no marker of their own — this manifest is the only record of what helm generated, so end-user-facing files stay clean.
 
-Record all findings, including the per-document classification, before proceeding.
+Record all findings, including each document's classification and staleness, before proceeding.
 
 ---
 
@@ -160,7 +160,12 @@ Question 2 — conditional documents (only ask if applicable based on scan findi
   Skip Question 2 entirely if neither cookie-policy nor refund-policy is applicable
   based on scan findings (no analytics, no payments detected).
 
-In the labels above, append `(exists)` to a Helm-generated document and `(exists — not helm-generated)` to a Foreign one, so the user can tell an auto-generated file from a hand-edited one.
+In the labels above, reflect each existing document's classification:
+- up-to-date Helm-generated → append `(exists)`
+- Helm-generated flagged **may be outdated** → append `(exists — may be outdated)` and mark it Recommended, so the user regenerates it
+- Foreign → append `(exists — not helm-generated)`
+
+so the user can tell an auto-generated file from a hand-edited one, and a current file from a stale one.
 
 Generate only the documents selected across both questions.
 If nothing is selected, exit without generating anything.
@@ -194,17 +199,17 @@ Write to the resolved output path using the resolved format.
 
 Do not write any marker into the documents themselves — they are published to end users and must stay clean.
 
-**After generating**, write/update `.claude/legal-manifest.json` so future runs can tell helm-generated documents from hand-edited ones. Record each document actually written, with its path and the current date:
+**After generating**, write/update `.claude/legal-manifest.json` so future runs can tell helm-generated documents from hand-edited ones and detect staleness. Record each document actually written, with its path, the current date, and the current HEAD commit:
 
 ```
 {
   "documents": [
-    { "file": "legal/privacy-policy.md", "generated_at": "YYYY-MM-DD" }
+    { "file": "legal/privacy-policy.md", "generated_at": "YYYY-MM-DD", "generated_at_commit": "abc1234" }
   ]
 }
 ```
 
-Keep entries for documents that still exist; add or refresh entries for the ones written this run.
+Keep entries for documents that still exist; add or refresh entries for the ones written this run (the refreshed `generated_at_commit` resets their staleness baseline).
 
 **Format rules**
 
