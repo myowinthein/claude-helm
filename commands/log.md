@@ -198,6 +198,20 @@ styling, dependency updates, routine CRUD.
 Focus on: architectural changes, new modules, new conventions, domain
 rule changes, new operational knowledge, newly discovered traps.
 
+**Stay within the eight-section schema (Step 3).** Every change must land in one
+of the existing sections — never add a new heading or section. Map each finding
+to its home:
+- architecture, new modules → Architecture Pointers
+- business, lifecycle, permission rules → Domain Rules
+- conventions, autonomy, confirmation gates → Behavior Rules
+- install / run / test / migrate / ops commands → Dev Commands
+- name, stack, purpose changes → Project Identity
+- config flags → Project Config (via the Config Check)
+- gotchas → Known Traps
+- never-do invariants → Hard Safety Rules
+
+If a finding fits none of the eight sections, it does not belong in CLAUDE.md — leave it out.
+
 Before adding anything, apply the three-question filter:
 1. Will a future session struggle to find this from the codebase?
 2. Would knowing it improve future development decisions?

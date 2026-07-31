@@ -94,7 +94,7 @@ Applies a three-question filter to each candidate change:
 2. Would knowing it improve future development decisions?
 3. Will it stay true for weeks or months?
 
-Only updates if all three answers are yes. Then either reports **Outcome A** (no durable knowledge introduced, just bump the hash) or **Outcome B** (proposes per-section changes and asks for confirmation before writing).
+Only updates if all three answers are yes. Every change is bound to one of the eight schema sections — it maps each finding to its home (architecture → Architecture Pointers, domain/business rules → Domain Rules, gotchas → Known Traps, and so on) and never adds a new heading; a finding that fits no section is left out. Then either reports **Outcome A** (no durable knowledge introduced, just bump the hash) or **Outcome B** (proposes per-section changes and asks for confirmation before writing).
 
 ### 5. Confirm completion
 
