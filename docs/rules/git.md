@@ -83,6 +83,8 @@ Types mirror Conventional Commits types. Lowercase, hyphens only, no spaces.
 
 ## Auto-Commit
 
+Governs every commit made by any command in this plugin, by default — individual commands don't restate this, only follow it, unless an explicit exception applies (see below).
+
 Set with `git-auto-commit: true` in `CLAUDE.md`. Independent of git strategy — works with both Solo and GitHub Flow. Absence defaults to off — ask for confirmation before every commit.
 
 When active:

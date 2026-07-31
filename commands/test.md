@@ -168,7 +168,7 @@ Follow existing test conventions and file structure in the project.
 Place test files according to project's existing test organization.
 
 Run tests after writing — fix if failing before committing.
-Commit per git.md's Auto-Commit rule:
+Commit:
   test({scope}): add tests for {feature}
 
 ---
@@ -264,7 +264,7 @@ For each priority:
 - If a priority tier is large enough to strain one agent's context, batch it sequentially (write a chunk, commit, continue) — no planning or dependency system needed
 - Run tests — stop and inform if failing
 - Fix before proceeding to next priority
-- Commit per git.md's Auto-Commit rule:
+- Commit:
   test({scope}): add missing tests for {priority} priority areas
 
 ---
@@ -279,7 +279,7 @@ After tests are written, run, and committed:
 - Add new `ambiguous` entries recorded during the Behavior Clarity Check.
 - Remove or update entries for files resolved this run (test written successfully, or ambiguity clarified).
 
-Commit the ledger per git.md's Auto-Commit rule:
+Commit the ledger:
   test(log): update test ledger after {catch-up / full-scan}
 
 ---

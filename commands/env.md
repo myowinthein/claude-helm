@@ -495,8 +495,7 @@ If Skip selected: no changes.
 
 ## Step 4 — Commit
 
-After all fixes are applied, commit per git.md's Auto-Commit rule.
-Stage only the files modified during this command. Never use `git add -A`.
+After all fixes are applied:
   git commit -m "chore(env): audit and fix env configuration"
 
 ---

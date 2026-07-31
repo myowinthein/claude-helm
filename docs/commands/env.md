@@ -70,7 +70,7 @@ Run the selected target's sub-flows, one at a time, each completing fully before
 
 ### 4. Commit
 
-After all fixes are applied, commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit). Stages only the files modified during this command — never `git add -A`. Commit message: `chore(env): audit and fix env configuration`.
+After all fixes are applied, commits (per [git.md's Auto-Commit rule](../rules/git.md#auto-commit), which governs every commit this plugin makes). Commit message: `chore(env): audit and fix env configuration`.
 
 ### 5. Completion report
 

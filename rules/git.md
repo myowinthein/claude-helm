@@ -74,6 +74,10 @@ Use lowercase, hyphens only, no spaces.
 
 ## Auto-Commit
 
+Governs every commit made by any command in this plugin, by default — a
+command's own commit step never needs to restate this, only follow it. State
+an explicit exception only where one exists (see below).
+
 Set with `git-auto-commit` in CLAUDE.md (Project Config section):
   git-auto-commit: true   → commit automatically after each task
 
