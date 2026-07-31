@@ -76,7 +76,7 @@ manifests, folder structure, and any other available signals to decide:
 
   No web project detected (pure library, CLI tool, or non-web repo):
   AskUserQuestion:
-    question: "No web framework detected. Where should legal documents be written?"
+    question: "No web framework detected. Where should legal documents be written, and in what format?"
     header:   "Output"
     multiSelect: false
     options:
@@ -85,7 +85,9 @@ manifests, folder structure, and any other available signals to decide:
       - label: "legal/ as HTML"
         description: "Bare semantic HTML — suitable for plain HTML sites"
       - label: "Custom path"
-        description: "Specify a path manually"
+        description: "Specify a path and format manually"
+
+  This question is itself the output-location choice for non-web repos — skip the "Confirm output location" step below when it was asked.
 
 **CSS style detection (HTML output only)**
 
@@ -106,6 +108,8 @@ are applied globally or scoped:
 Record the resolved format and output path before proceeding.
 
 **Confirm output location**
+
+Run this only for the auto-detected scenarios (SSG, JS framework, SPA/plain HTML), where the path and format were resolved without asking. Skip it for the no-web case — the "No web project detected" question already served as the location choice.
 
 After resolving the format and path, confirm with the user before continuing:
 
