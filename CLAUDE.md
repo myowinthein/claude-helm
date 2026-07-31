@@ -11,6 +11,7 @@
 
 git-strategy: solo
 git-auto-commit: true
+readme-style: custom
 
 ## Dev Commands
 
