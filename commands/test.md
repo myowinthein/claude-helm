@@ -124,9 +124,7 @@ Based on current state, pick one of four scenarios:
         description: "No tests needed"
 
 **Scenario 3 — Tests exist, full scan done, no changes since last run, no outstanding ambiguous findings:**
-  Exit cleanly. Inform the user:
-  "No changes since last run — tests are up to date."
-  Do not present any AskUserQuestion.
+  Inform the user: "No changes since last run — tests are up to date." Do not present any AskUserQuestion. Proceed to Step 7 to report the outcome — nothing was written, but this is still an outcome worth confirming.
 
 **Scenario 4 — Tests exist, and either recent changes are detected or ambiguous findings are outstanding:**
   Recommend Full Scan if `consecutive_catchup_count >= 5` (many Catch Ups have piled up since the last full look) OR the diff identified above touches 50+ files (this one batch is already big enough to warrant a full check). Otherwise recommend Catch Up. Outstanding ambiguous findings alone (no other changes) still route here — Catch Up will pick them up via Step 4's ambiguous-entry union, giving the user another pass through the Behavior Clarity Check.
@@ -158,6 +156,8 @@ Based on current state, pick one of four scenarios:
       - label: "Skip"
         description: "No tests needed"
 
+If Skip selected in any of Scenarios 1, 2, or 4 → nothing to write. Proceed to Step 7 to report the outcome.
+
 ---
 
 ## Step 4 — Catch Up
@@ -187,6 +187,8 @@ Before writing, present test plan:
         description: "Proceed with the test plan above"
       - label: "Cancel"
         description: "Exit without writing tests"
+
+If Cancel selected → nothing to write. Proceed to Step 7 to report the outcome.
 
 Wait for response before proceeding.
 
@@ -277,7 +279,7 @@ Then use AskUserQuestion for priority selection:
       - label: "Low Priority"
         description: "{N} areas — everything else"
 
-  Selecting none = skip. Do not add an explicit All or Skip option.
+  Selecting none = skip the Writing tests section below — no tests get written, but the scan itself already ran and still needs to be recorded: proceed to Step 6 to update the ledger (the coverage check and priority judgment happened regardless of what's selected here), then Step 7 to report. Do not add an explicit All or Skip option.
 
 Wait for response before proceeding.
 
@@ -312,3 +314,16 @@ After tests are written, run, and committed:
 
 Commit the ledger:
   test(log): update test ledger after {catch-up / full-scan}
+
+---
+
+## Step 7 — Confirm completion
+
+Report:
+
+- Outcome: {up to date / catch up written / full scan written / skipped}
+- Mode: {Catch Up / Full Scan / N/A}
+- Tests written: {N}, covering {list of files or clusters}
+- Commits made: {N}
+- Tests passing: {yes/no, or N/A if nothing was run}
+- Ledger: {N} skipped-by-user, {N} ambiguous, {N} resolved this run
