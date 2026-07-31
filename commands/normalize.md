@@ -19,7 +19,7 @@ No branch requirement — run from any branch. `git filter-repo` (and the `git f
 Before doing anything else, present this warning using AskUserQuestion:
 
   AskUserQuestion:
-    question: "This command rewrites git history. Understand the consequences before continuing:\n\n- Every rewritten commit gets a new SHA — history is permanently altered\n- Only local branches are rewritten and force-pushed; anything remote-only (e.g. an environment branch) will diverge unless fetched and checked out first\n- Tags pointing at rewritten commits become orphaned — they will be re-created\n- Anyone else who has cloned this repo will have a broken history\n\nThis is safe for solo developers on private repos with no active collaborators."
+    question: "This command rewrites git history. Understand the consequences before continuing:\n\n- Every rewritten commit gets a new SHA — history is permanently altered\n- Only local branches are rewritten and force-pushed; anything remote-only (e.g. an environment branch) will diverge unless fetched and checked out first\n- Tags move to their rewritten commits automatically — verified, not manually reconstructed\n- Anyone else who has cloned this repo will have a broken history\n\nThis is safe for solo developers on private repos with no active collaborators."
     header:   "Risk"
     multiSelect: false
     options:
@@ -89,7 +89,7 @@ Otherwise, present the plan using AskUserQuestion:
     multiSelect: false
     options:
       - label: "Rewrite {non_compliant_count} commits (Recommended)"
-        description: "Apply all rewrites and re-create orphaned tags"
+        description: "Apply all rewrites; tags move to their rewritten commits automatically"
       - label: "Cancel"
         description: "Exit without making any changes"
 
@@ -125,7 +125,7 @@ return rewrite_map.get(decoded, decoded).encode("utf-8")
 
 **Fallback: git filter-branch** (deprecated since Git 2.36, but still functional)
 
-Only use if `git filter-repo` is not installed:
+Only use if `git filter-repo` is not installed. Includes `--tag-name-filter cat` — without it, filter-branch leaves every tag pointing at its old, pre-rewrite commit instead of moving it to the rewritten one, since (unlike filter-repo) it doesn't touch tags by default:
 ```
 git filter-branch -f --msg-filter '
 python3 -c "
@@ -135,7 +135,7 @@ with open(\"/tmp/normalize-rewrite-map.json\") as f:
 import sys
 msg = sys.stdin.read().strip()
 print(rewrite_map.get(msg, msg))
-"' -- --all
+"' --tag-name-filter cat -- --all
 ```
 
 After rewrite completes, verify a representative sample across the full history — use `--all` here too, matching the rewrite's actual scope (every local branch), not just whichever branch is currently checked out:
@@ -147,25 +147,20 @@ git log --oneline --all | wc -l  # compare against {total} from Step 2 — must 
 
 ---
 
-## Step 5 — Re-create orphaned tags
+## Step 5 — Verify tags
 
-Run this step regardless of which tool Step 4 used. `git filter-repo` rewrites all refs it processes — including tags — as part of its normal operation, so tags usually come out already pointing at the correct new commits; this step is then just a confirming pass, not required work. The `git filter-branch` fallback shown in Step 4 has no `--tag-name-filter`, so tags genuinely go orphaned there and this step is load-bearing.
+Both `git filter-repo` (by default) and the `git filter-branch` fallback (via `--tag-name-filter cat` in Step 4) move tags to their rewritten commits automatically as part of the rewrite itself — this step confirms that worked, rather than manually detecting and reconstructing orphaned tags.
 
 Run: git tag
 Collect all tags.
 
-For each tag:
-1. Run: git rev-list -n 1 {tag} to get the original commit SHA
-2. Check if that SHA exists in the new history: git cat-file -t {sha}
-3. If the SHA no longer exists (orphaned): find the corresponding new SHA via the rewrite mapping and re-create the tag
-
-Re-create each orphaned tag:
+For each tag, confirm it resolves to a commit reachable from at least one local branch collected in Step 2:
 ```
-git tag -d {tag}
-git tag -a {tag} {new_sha} -m "Release {tag}"
+git merge-base --is-ancestor {tag} {branch}
 ```
+Check against each local branch until one succeeds (exit code 0). If none succeed for a given tag, the rewrite did not correctly move it — report it to the user as needing manual attention rather than guessing at a fix.
 
-If no tags are orphaned: skip silently.
+If every tag resolves correctly: skip silently.
 
 ---
 
@@ -205,7 +200,7 @@ Total commits scanned:   {total}
 Already compliant:       {compliant_count}
 Rewritten:               {non_compliant_count}
 Local branches rewritten: {branch_list from Step 2}
-Tags re-created:         {tag_count} (or "none")
+Tags verified:           {tag_count} correctly moved (or "none" if no tags exist); {N} needing manual attention, if any
 Force pushed:            yes / no (manual) — {branch_list} + tags
 ─────────────────────────────────
 

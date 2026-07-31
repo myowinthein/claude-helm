@@ -12,7 +12,7 @@ Rewrites every non-conventional commit message in the repository's history to fo
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:normalize]) --> Warn[Warn: history rewrite,<br/>force push required,<br/>tags orphaned]
+  Start([User runs /helm:normalize]) --> Warn[Warn: history rewrite,<br/>force push required]
 
   Warn -->|cancel| Cancel[/Exit: no changes/]
   Warn -->|continue| Scan[Collect local branches<br/>Scan all commits<br/>git log --oneline --all]
@@ -26,7 +26,7 @@ flowchart TD
   ShowPlan -->|cancel| Cancel
   ShowPlan -->|confirm| Rewrite[git filter-repo --force --message-callback<br/>rewrite map read from temp file]
 
-  Rewrite --> Tags[Detect orphaned tags<br/>re-create at new SHAs]
+  Rewrite --> Tags[Verify tags moved<br/>git merge-base --is-ancestor]
   Tags --> PushGate[Ask: force push or skip?]
 
   PushGate -->|force push| Push[Force push every rewritten<br/>local branch, then tags]
@@ -48,7 +48,7 @@ Unconditional first gate. Presents a plain-language summary of what history rewr
 
 - Every rewritten commit gets a new SHA — history is permanently altered
 - Only local branches are rewritten and force-pushed; anything remote-only (e.g. an environment branch) will diverge unless fetched and checked out first
-- Tags pointing at rewritten commits become orphaned (handled in Step 5)
+- Tags move to their rewritten commits automatically — verified, not manually reconstructed (Step 5)
 - Anyone else who has cloned the repo will have a broken history
 
 Cancel is equally prominent. The command exits cleanly if the user declines.
@@ -79,17 +79,17 @@ The user sees exactly what will change before confirming. Cancel exits cleanly w
 
 ### 4. Rewrite
 
-Uses `git filter-repo --force --message-callback` (preferred) with a JSON rewrite map, falling back to `git filter-branch --msg-filter` if `git filter-repo` is not installed. `--force` is required — filter-repo otherwise refuses to run on anything it doesn't recognize as a fresh clone, and this command runs on the developer's existing working repo. The rewrite map is built during the scan phase and read from a temp file rather than embedded inline, since commit messages can contain quotes, newlines, or unicode that would break a string substituted directly into the callback. Applied in a single pass — no interactive prompts per commit, no partial rewrites. Messages not in the map pass through unchanged.
+Uses `git filter-repo --force --message-callback` (preferred) with a JSON rewrite map, falling back to `git filter-branch --msg-filter --tag-name-filter cat -- --all` if `git filter-repo` is not installed. `--force` is required — filter-repo otherwise refuses to run on anything it doesn't recognize as a fresh clone, and this command runs on the developer's existing working repo. `--tag-name-filter cat` is required on the fallback path — unlike filter-repo, filter-branch doesn't touch tags by default, so without it every tag is left pointing at its old, pre-rewrite commit. The rewrite map is built during the scan phase and read from a temp file rather than embedded inline, since commit messages can contain quotes, newlines, or unicode that would break a string substituted directly into the callback. Applied in a single pass — no interactive prompts per commit, no partial rewrites. Messages not in the map pass through unchanged.
 
 Both callbacks strip the incoming message before looking it up, so the map's keys are built with the same `.strip()`-equivalent normalization when captured in Step 2 — otherwise a mismatched key silently misses the lookup and that commit passes through unrewritten with no error.
 
 Verifies the result across every local branch (`git log --all`, matching the rewrite's actual scope) by sampling the first 20, last 20, and comparing the total commit count against Step 2's scanned total before continuing.
 
-### 5. Re-create orphaned tags
+### 5. Verify tags
 
-Runs regardless of which tool Step 4 used, but does different amounts of work depending on which: `git filter-repo` rewrites all refs it processes, including tags, as part of its normal operation, so this is usually just a confirming pass. The `git filter-branch` fallback has no `--tag-name-filter`, so tags genuinely go orphaned there and this step is load-bearing for that path.
+Both `git filter-repo` (by default) and the `git filter-branch` fallback (via `--tag-name-filter cat` in Step 4) move tags to their rewritten commits automatically as part of the rewrite itself, so this step confirms that worked rather than manually detecting and reconstructing orphaned tags.
 
-Collects all tags via `git tag`. For each tag, checks whether the original commit SHA still exists in the rewritten history. Orphaned tags (pointing at rewritten SHAs) are deleted and re-created at the corresponding new SHA with the same name and message.
+Collects all tags via `git tag`. For each tag, confirms it resolves to a commit reachable from at least one local branch collected in Step 2, via `git merge-base --is-ancestor {tag} {branch}` checked against each branch until one succeeds. A tag that doesn't resolve against any branch means the rewrite didn't correctly move it — reported to the user as needing manual attention rather than guessed at.
 
 ### 6. Force push
 
@@ -102,7 +102,7 @@ git push origin --tags --force
 
 ### 7. Report
 
-Closes with a structured summary: total commits scanned, rewritten count, which local branches were rewritten, tags re-created, force push status per branch. Any commits Claude could not classify with high confidence are listed separately as uncertain rewrites so the user can review them manually.
+Closes with a structured summary: total commits scanned, rewritten count, which local branches were rewritten, tags verified (plus any needing manual attention), force push status per branch. Any commits Claude could not classify with high confidence are listed separately as uncertain rewrites so the user can review them manually.
 
 ## Stop conditions
 
