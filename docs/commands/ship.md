@@ -87,7 +87,7 @@ Only on `main`. Bumps the version in the detected version file (`package.json`, 
 
 Before promoting to any selected environment, checks CI status for the commit just pushed — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting"). If the repo isn't on GitHub or no workflow files exist, this check is skipped silently. Otherwise it matches `gh run list` results against the pushed commit's exact SHA (`headSha`) rather than just the single most recent run — a push can trigger several workflow runs, and checking only the latest one risks missing a still-failing run, or catching a stale run from before this commit was even registered. If every matching run succeeded, promotion proceeds silently; otherwise (still running, failed, or none found yet) it asks whether to promote anyway or skip promotion for this run — main stays tagged and pushed either way. Once cleared, merges `main` into each selected environment branch with a `--no-ff` deploy commit and pushes.
 
-After pushing, checks whether the remote origin URL contains `github.com`. If not, this sub-step is skipped silently. If yes, asks whether to create a GitHub Release. On confirmation, extracts `feat` and `fix` commits from `git log v{last_tag}..HEAD` and runs `gh release create v{version} --title "v{version}" --notes "{extracted_notes}"`, which publishes a release on GitHub with the curated commit list.
+After pushing, checks whether the remote origin URL contains `github.com`. If not, this sub-step is skipped silently. If yes, asks whether to create a GitHub Release. On confirmation, extracts `feat` and `fix` commits from `git log v{last_tag}..HEAD` and runs `gh release create v{version} --title "v{version}" --notes "{extracted_notes}"`, which publishes a release on GitHub with the curated commit list — the printed release URL is captured for the final report.
 
 **Prerequisite:** `gh release create` requires the GitHub CLI to be authenticated. Run `gh auth login` once before using this feature. If `gh` is not authenticated, the command will fail with an auth error and the ship command will surface the manual fix rather than silently failing.
 
@@ -103,7 +103,7 @@ Then checks CI status for the current branch's tip commit the same way Step 4 do
 
 ### 6. Report
 
-Closes with a summary. On `main`: version tagged, README updated yes or no, environments promoted (including "none — skipped, CI had not passed" if that's why), GitHub Release created or skipped or not applicable, deployment triggered. On an environment branch: fan-out mode reports the branch pushed; chain mode reports which branch was promoted to which and both branches pushed. Either way, deployment triggered.
+Closes with a summary. On `main`: the release commit's SHA, version tagged, README updated yes or no, environments promoted (or "none — skipped" if CI hadn't passed), the GitHub Release URL if one was created, deployment triggered. If any environment was promoted via "Promote anyway" despite CI not reporting success, adds a note saying so. If promotion was skipped for that reason, adds a note that re-running `/helm:ship` would cut a new version rather than retry the promotion, with the manual merge steps instead. On an environment branch: fan-out mode reports the branch pushed; chain mode reports which branch was promoted to which, both branches pushed, and the same CI-override note if the promotion went ahead without a passing run. Either way, deployment triggered.
 
 ## Stop conditions
 

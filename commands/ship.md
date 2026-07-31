@@ -158,9 +158,11 @@ Commit, tag, and push:
 - git push origin HEAD
 - git push origin v{version}
 
+Capture the commit SHA (`git rev-parse HEAD`) as {commit_sha} for the Step 6 report.
+
 Before promoting to any selected environment, check CI status for the commit just pushed to main — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting"):
 - If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check silently — proceed straight to the promotion loop below.
-- Otherwise: capture the pushed commit's SHA (`git rev-parse HEAD`), then run `gh run list --branch main --limit 20 --json headSha,status,conclusion` and filter to runs whose `headSha` matches. A single push can trigger multiple workflow runs, and querying only the single most recent run risks catching a stale run from a previous commit before GitHub has registered this one — matching on `headSha` avoids both problems.
+- Otherwise: using {commit_sha} captured above, run `gh run list --branch main --limit 20 --json headSha,status,conclusion` and filter to runs whose `headSha` matches {commit_sha}. A single push can trigger multiple workflow runs, and querying only the single most recent run risks catching a stale run from a previous commit before GitHub has registered this one — matching on `headSha` avoids both problems.
   - If no matching runs found → treat as "none yet" (CI hasn't registered this commit).
   - If every matching run has conclusion "success" → proceed to the promotion loop below silently.
   - Otherwise (any matching run queued, in progress, failed, or none found yet):
@@ -202,6 +204,7 @@ If hosted on GitHub, use AskUserQuestion:
   - Build release notes from git log:
     git log v{last_tag}..HEAD --pretty=format:"- %s" | grep -E "^- (feat|fix)"
   - Run: gh release create v{version} --title "v{version}" --notes "{extracted_notes}"
+  - On success, `gh release create` prints the release URL to stdout — capture it as {release_url} for the Step 6 report.
   - If the command fails with an auth error, inform human:
     "gh is not authenticated. Run: gh auth login
     Then re-run /helm:ship or create the release manually."
@@ -268,12 +271,16 @@ If no next environment (already on the last tier):
 
 If on main or master:
   Report:
+  - Commit:                {commit_sha} "chore(release): bump version to {version}"
   - Version tagged:        v{version}
   - Tag pushed:            yes
   - README updated:        yes/no
-  - Environments promoted: {list, or "none" if none selected, or "none — skipped, CI had not passed" if skipped for that reason}
-  - GitHub Release:        created / skipped / not GitHub
+  - Environments promoted: {list, or "none" if none selected, or "none — skipped" if skipped for CI reasons}
+  - GitHub Release:        {release_url, if created} / skipped / not GitHub
   - Deployment triggered:  yes/no (based on CI/CD presence)
+
+  If any environment was promoted after choosing "Promote anyway" despite CI not reporting success: add a line — "Note: promoted to {list of those environments} without a passing CI run (manually overridden)."
+  If promotion was skipped because CI hadn't passed: add a line — "To promote later: checkout the environment branch, merge main in manually, and push — re-running /helm:ship would cut a new version rather than retry this promotion."
 
 If on environment branch, fan-out mode:
   Report:
@@ -285,3 +292,5 @@ If on environment branch, chain mode:
   - Promoted:              {current_branch} → {next_environment}
   - Branches pushed:       {current_branch}, {next_environment}
   - Deployment triggered:  yes/no (based on CI/CD presence)
+
+  If the CI check ran and did not find success (regardless of which run states it was) before the user confirmed promotion: add a line — "Note: promoted without a passing CI run (manually confirmed anyway)."
