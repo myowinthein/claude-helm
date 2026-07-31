@@ -208,9 +208,13 @@ If hosted on GitHub, use AskUserQuestion:
 
 Only run this step if on environment branch.
 
-Determine next environment in promotion chain:
-  staging    → production
-  production → no further promotion, inform human and exit
+Determine next environment in promotion chain. git.md recognizes these environment names; treat names within the same tier as equivalent, matching {current_branch} against whichever it is:
+  Tier 1 (pre-production): staging, stage, uat, preprod
+  Tier 2 (production):     production, prod
+
+If {current_branch} matches Tier 1: the next environment is whichever Tier 2 branch actually exists on the remote (discover via `git branch -r`, same detection as Step 1). If no Tier 2 branch exists, treat as no further promotion.
+If {current_branch} matches Tier 2: no further promotion, inform human and exit.
+If {current_branch} matches neither tier (a long-lived branch that still qualifies as an environment branch per git.md, just outside the recognized name list): ask the human which branch it should promote to, rather than guessing.
 
 If next environment exists, first check CI status for {current_branch} — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting to next environment"):
 - If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check — proceed to the confirmation below with no CI line in the question.
@@ -233,6 +237,7 @@ Confirm before mutating anything (per safety.md: never push without confirmation
   - git push origin {current_branch}
   - git checkout {next_environment}
   - git merge {current_branch} --no-ff -m "chore(deploy): promote {current_branch} to {next_environment}"
+    - If the merge conflicts: run `git merge --abort` to restore a clean state, then `git checkout {current_branch}` to return to the starting branch. Inform the human: "Merge conflict promoting {current_branch} to {next_environment}. Aborted — {next_environment} is unchanged. Resolve the conflict manually (e.g. merge {current_branch} into {next_environment} in a local checkout, fix conflicts, push), then re-run." Stop here — do not proceed to the push/checkout below.
   - git push origin {next_environment}
   - git checkout {current_branch}
   - Inform human:

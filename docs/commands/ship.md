@@ -41,11 +41,16 @@ flowchart TD
   GHConfirm -->|create| GHRelease[gh release create<br/>--notes extracted_notes]
   GHRelease --> MainDone([Report: tagged + promoted + release])
 
-  EnvNext -->|staging → production| EnvConfirm[Ask: confirm promotion?<br/>shows CI status if available]
-  EnvNext -->|already on production| EnvStop[/Stop: nothing to promote/]
+  EnvNext -->|pre-production tier| EnvConfirm[Ask: confirm promotion?<br/>shows CI status if available]
+  EnvNext -->|production tier| EnvStop[/Stop: nothing to promote/]
+  EnvNext -->|unrecognized name| EnvAsk[Ask: which branch<br/>to promote to?]
+  EnvAsk --> EnvConfirm
   EnvConfirm -->|cancel| EnvCancelExit[/Exit: no changes/]
-  EnvConfirm -->|confirm| EnvMerge[Push current branch<br/>merge into next environment<br/>push next environment]
-  EnvMerge --> EnvDone([Report: promoted + pushed])
+  EnvConfirm -->|confirm| EnvMerge[Push current branch<br/>merge into next environment]
+  EnvMerge -->|conflict| EnvAbort[Abort merge<br/>return to current branch]
+  EnvAbort --> EnvConflictDone([Report: conflict,<br/>manual resolution needed])
+  EnvMerge -->|success| EnvPush2[Push next environment<br/>return to current branch]
+  EnvPush2 --> EnvDone([Report: promoted + pushed])
 ```
 
 ## Steps
@@ -84,7 +89,9 @@ After pushing, checks whether the remote origin URL contains `github.com`. If no
 
 ### 5. Promotion path
 
-Only on an environment branch. Determines the next environment in the chain (`staging → production`) and stops if already on the final environment. Otherwise checks CI status for the current branch's tip commit the same way Step 4 does — matched by `headSha`, all matching runs must succeed (skipped silently if not on GitHub or no CI configured) — folds the result into the confirmation prompt rather than asking twice, and confirms before mutating anything (per safety.md: never push without confirmation). On confirm, pushes the current branch, merges it into the next environment branch with a `--no-ff` deploy commit, pushes that branch too, and returns to the current branch.
+Only on an environment branch. Matches the current branch against two tiers of git.md's recognized environment names — pre-production (`staging`, `stage`, `uat`, `preprod`) and production (`production`, `prod`) — treating names within a tier as equivalent rather than requiring an exact match. From the pre-production tier, the next environment is whichever production-tier branch actually exists on the remote; stops if already on the production tier. If the current branch is a long-lived branch outside both recognized tiers, asks which branch to promote to instead of guessing.
+
+Otherwise checks CI status for the current branch's tip commit the same way Step 4 does — matched by `headSha`, all matching runs must succeed (skipped silently if not on GitHub or no CI configured) — folds the result into the confirmation prompt rather than asking twice, and confirms before mutating anything (per safety.md: never push without confirmation). On confirm, pushes the current branch, merges it into the next environment branch with a `--no-ff` deploy commit. If the merge conflicts, aborts it, returns to the current branch, and reports that manual resolution is needed rather than leaving the repo mid-merge. On a clean merge, pushes the next environment branch and returns to the current branch.
 
 ### 6. Report
 
