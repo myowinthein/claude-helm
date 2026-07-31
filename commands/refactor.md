@@ -366,16 +366,20 @@ Wait for response before proceeding.
 - Merge refactor/{timestamp} into main --no-ff
   with message: refactor(project): apply refactoring {timestamp}
 - Push main
-- **Environment promotion**: if environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this refactor:
+- **Environment promotion**: if environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), first check CI status for the commit just pushed to main — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting"), same mechanics as ship.md's Step 5:
+    - If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check — proceed to the confirmation below with no CI line in the question.
+    - Otherwise: capture the pushed commit's SHA, then run `gh run list --branch main --limit 20 --json headSha,status,conclusion` and filter to runs whose `headSha` matches — a single push can trigger multiple workflow runs, so checking only the most recent entry could miss one still failing or in progress. Fold the result (all matching runs succeeded / not yet / none found) into the confirmation question below rather than asking separately.
+
+  Ask which environments should also receive this refactor:
 
     AskUserQuestion:
-      question: "main has been updated. Which environment branches should also receive this refactor?"
+      question: "main has been updated. Which environment branches should also receive this refactor? {CI: {conclusion}, if checked above}"
       header:   "Promote to environments"
       multiSelect: true
       options: one entry per discovered environment branch, e.g.:
-        - label: "staging"
+        - label: "staging (Recommended if CI passed)"
           description: "Merge main into staging"
-        - label: "production"
+        - label: "production (Recommended if CI passed)"
           description: "Merge main into production"
 
   For each selected environment:
