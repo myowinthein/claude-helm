@@ -60,6 +60,7 @@ Third-party services the project depends on. Note which are required for basic o
 List documentation files found. For each: what it covers and whether it appears current or outdated.
 
 ## Git & Repository Safety
+Archiving from: {current branch name} — Step 5's branch cleanup reads this field directly rather than inferring it from prose, since a resumable, multi-session workflow could otherwise lose track of which branch was original.
 Remotes and their URLs. Branch list. Any safety concerns (production remotes, CI/CD that auto-deploys on push, sensitive history). Whether any other branch looks more recently active or complete than the current one — state "none" if the current branch is clearly the most current.
 
 ## Setup & Restoration Approach

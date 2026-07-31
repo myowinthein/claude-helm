@@ -40,7 +40,7 @@ Do not proceed to any other task until origin is confirmed as the private archiv
 
 ## Task 2 — Branch Cleanup
 
-List all local and remote branches. The branch this workflow was run from (per Step 1) is the one being archived — it becomes the single branch to keep, renamed to `main` if it isn't already named `main` or `master`. No merging happens here: nothing is combined, the archived branch is simply relabeled as canonical and everything else is discarded.
+List all local and remote branches. The branch this workflow was run from is the one being archived — read it from Step 1's report's explicit "Archiving from:" field, not the current branch (a resumed session may have started on a different branch than the original run). It becomes the single branch to keep, renamed to `main` if it isn't already named `main` or `master`. No merging happens here: nothing is combined, the archived branch is simply relabeled as canonical and everything else is discarded.
 
 Present the plan and wait for explicit approval:
 
