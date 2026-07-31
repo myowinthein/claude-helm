@@ -15,9 +15,10 @@ flowchart TD
   Start([User runs /helm:test]) --> Framework{Test framework<br/>detected?}
   Framework -->|no| AskFW[Ask: which framework<br/>to set up?]
   AskFW -->|skip| FWStop[/Exit: set up framework<br/>manually then re-run/]
-  AskFW -->|chosen| FWSetup[Inform user how to install]
+  AskFW -->|chosen| FWSetup[Install as dev dependency]
+  FWSetup -->|fails| FWFail[/Stop: report install error/]
   Framework -->|yes| Ledger
-  FWSetup --> Ledger
+  FWSetup -->|succeeds| Ledger
 
   Ledger["Load .claude/test-log.json<br/>(empty if not found)"] --> Assess
 
@@ -50,6 +51,8 @@ flowchart TD
 ### 1. Detect test framework
 
 Scans for known config files and dependencies (e.g. `vitest.config`, `jest.config`, `phpunit.xml`). Also detects the project's coverage tool (`coverage.py`, `nyc`, `jest --coverage`, etc.) for use in the Full Scan step. If a framework is found, proceeds to the ledger load. If not found, proposes the best-fit framework for the detected stack and lets the user pick or skip.
+
+If a framework is chosen, installs it directly as a dev dependency — detecting the package manager from the project's lockfile (`package-lock.json` → npm, `yarn.lock` → yarn, `pnpm-lock.yaml` → pnpm, `composer.lock` → composer, `poetry.lock` → poetry, `requirements.txt` → pip, `Gemfile.lock` → bundler) rather than just telling the user how to install it themselves. If the install fails, stops and reports the error instead of proceeding with a framework that isn't actually installed.
 
 ### 2. Load ledger
 

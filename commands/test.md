@@ -28,7 +28,11 @@ If no framework detected, use AskUserQuestion:
 
 If Skip selected → exit and inform user:
   "Configure a test framework and re-run /test."
-If framework selected → inform user how to install, then proceed to Step 2.
+
+If framework selected:
+- Detect the project's package manager from its lockfile (e.g. `package-lock.json` → npm, `yarn.lock` → yarn, `pnpm-lock.yaml` → pnpm, `composer.lock` → composer, `poetry.lock` → poetry, `requirements.txt` → pip, `Gemfile.lock` → bundler) and run the matching install command for the chosen framework as a dev dependency (e.g. `npm install --save-dev {framework}`).
+- If the install fails, stop and inform the user with the error — do not proceed to Step 2 with a framework that isn't actually installed.
+- If it succeeds, proceed to Step 2.
 
 ---
 
