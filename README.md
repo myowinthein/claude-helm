@@ -8,7 +8,7 @@ permalink: /
 
 Take the helm.
 
-<img src="docs/images/banner.jpg" alt="claude-helm" width="600">
+<img src="https://myowinthein.github.io/claude-helm/docs/images/banner.jpg" alt="claude-helm" width="600">
 
 A Claude Code plugin pack for solo developers. Ten slash commands and two rule files covering shipping, refactoring, testing, documenting, auditing, and archiving your own work.
 
@@ -44,27 +44,27 @@ Links below go to detail pages. Command logic lives in `commands/*.md`.
 
 | Command | What it does |
 |---|---|
-| [`/helm:ship`](docs/commands/ship.html) | Cut a release: calculate version, test, tag, push, and create a GitHub Release. |
-| [`/helm:test`](docs/commands/test.html) | Assess coverage and write missing tests. |
-| [`/helm:refactor`](docs/commands/refactor.html) | Run a project-wide refactor on a dedicated branch. |
-| [`/helm:env`](docs/commands/env.html) | Audit and fix `.env` files and `.gitignore`: sync, formatting, missing vars, hardcoded values. |
-| [`/helm:log`](docs/commands/log.html) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
-| [`/helm:manifest`](docs/commands/manifest.html) | Sync `README.md` to the current codebase. The vessel's manifest. |
-| [`/helm:legal`](docs/commands/legal.html) | Generate GDPR-aware legal documents from a project scan. |
-| [`/helm:normalize`](docs/commands/normalize.html) | Rewrite non-conventional commit messages across full repo history. |
-| [`/helm:archive`](docs/commands/archive.html) | Archive an old project for long-term storage and future recovery. |
-| [`/helm:adopt`](docs/commands/adopt.html) | Install or update the rule files into the current project. Setup helper, not a workflow command — see below. |
+| [`/helm:ship`](https://myowinthein.github.io/claude-helm/docs/commands/ship.html) | Cut a release: calculate version, test, tag, push, and create a GitHub Release. |
+| [`/helm:test`](https://myowinthein.github.io/claude-helm/docs/commands/test.html) | Assess coverage and write missing tests. |
+| [`/helm:refactor`](https://myowinthein.github.io/claude-helm/docs/commands/refactor.html) | Run a project-wide refactor on a dedicated branch. |
+| [`/helm:env`](https://myowinthein.github.io/claude-helm/docs/commands/env.html) | Audit and fix `.env` files and `.gitignore`: sync, formatting, missing vars, hardcoded values. |
+| [`/helm:log`](https://myowinthein.github.io/claude-helm/docs/commands/log.html) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
+| [`/helm:manifest`](https://myowinthein.github.io/claude-helm/docs/commands/manifest.html) | Sync `README.md` to the current codebase. The vessel's manifest. |
+| [`/helm:legal`](https://myowinthein.github.io/claude-helm/docs/commands/legal.html) | Generate GDPR-aware legal documents from a project scan. |
+| [`/helm:normalize`](https://myowinthein.github.io/claude-helm/docs/commands/normalize.html) | Rewrite non-conventional commit messages across full repo history. |
+| [`/helm:archive`](https://myowinthein.github.io/claude-helm/docs/commands/archive.html) | Archive an old project for long-term storage and future recovery. |
+| [`/helm:adopt`](https://myowinthein.github.io/claude-helm/docs/commands/adopt.html) | Install or update the rule files into the current project. Setup helper, not a workflow command — see below. |
 
 ### Rules
 
 | Rule | What it does |
 |---|---|
-| [`git.md`](docs/rules/git.html) | Git workflow rules covering branching strategy, commit conventions, code quality gates, and environment promotion. |
-| [`safety.md`](docs/rules/safety.html) | Operational safety scan covering deployment, git, secrets, and destructive operations. |
+| [`git.md`](https://myowinthein.github.io/claude-helm/docs/rules/git.html) | Git workflow rules covering branching strategy, commit conventions, code quality gates, and environment promotion. |
+| [`safety.md`](https://myowinthein.github.io/claude-helm/docs/rules/safety.html) | Operational safety scan covering deployment, git, secrets, and destructive operations. |
 
 ## Using the rules
 
-Claude Code does not auto-load a plugin's rule files into projects. Use [`/helm:adopt`](docs/commands/adopt.html) to install the rules into the current project. Two modes:
+Claude Code does not auto-load a plugin's rule files into projects. Use [`/helm:adopt`](https://myowinthein.github.io/claude-helm/docs/commands/adopt.html) to install the rules into the current project. Two modes:
 
 - **Copy**: writes the rules into `.claude/rules/`. Self-contained and committed with the repo.
 - **Reference**: adds a `## Rules` section to `CLAUDE.md` pointing at the installed plugin path.
