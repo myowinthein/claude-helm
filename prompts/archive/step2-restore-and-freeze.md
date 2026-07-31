@@ -110,13 +110,32 @@ If `docker load` fails, the tarball is corrupt — re-export before proceeding.
 
 Add `recovery/docker/` to `.gitignore` — tarballs are stored locally alongside the repo, not committed.
 
-Document the recovery commands in `docs/setup.md`:
+Document the recovery commands in `docs/setup.md` (include the data-restore step from Data Persistence below, so recovery does not come up empty):
 
 ```
 docker load < recovery/docker/web.tar.gz
 docker load < recovery/docker/db.tar.gz
+# restore data — see Data Persistence (auto-init from the committed dump, or restore the data-volume tarball first)
 docker-compose up
 ```
+
+---
+
+## Data Persistence
+
+Exporting the service images does not capture the restored data. A database keeps its data in a **volume**, not its image — so `docker save postgres` preserves the engine, not your rows. Without an extra step, recovery via `docker load` + `docker-compose up` comes up with an empty database.
+
+Skip this section for the non-database data layers (API-consuming frontend, no data layer). For **database-backed** and **local/file-based** projects, make the restored data recoverable — pick the mechanism that fits the source:
+
+- **Re-runnable source in the repo** (dump, seed, or migrations — the common case from the priority list): the source already travels with the repo. Wire the recovery so the database restores from it on startup — mount the dump into the image's init directory (e.g. `/docker-entrypoint-initdb.d/` for Postgres/MySQL) or document the exact restore command. Keeps the data human-readable and portable across future DB versions.
+- **No re-runnable source** (data exists only in the live volume — e.g. restored from an existing localhost DB): export the data volume to `recovery/docker/` as a gzipped tarball, and validate it is non-empty:
+  ```
+  docker run --rm -v {db_volume}:/data -v "$(pwd)/recovery/docker:/backup" alpine tar czf /backup/{db}-data.tar.gz -C /data .
+  [ -s recovery/docker/{db}-data.tar.gz ] || echo "ERROR: data tarball is empty — re-export before proceeding"
+  ```
+  Recovery restores the volume from this tarball before `docker-compose up`.
+
+Whichever mechanism is used, document its exact recovery step in `docs/setup.md` alongside the image-load commands.
 
 ---
 
@@ -130,8 +149,9 @@ docker-compose up
 6. Build and start the containers
 7. Verify the project works
 8. Export all images to `recovery/docker/` as gzipped tarballs
-9. Add `recovery/docker/` to `.gitignore`
-10. Record all changes made
+9. Make the restored data recoverable (re-runnable source on startup, or a data-volume tarball) and document its recovery step
+10. Add `recovery/docker/` to `.gitignore`
+11. Record all changes made
 
 ---
 
@@ -145,6 +165,9 @@ Base images used with exact pinned versions. Services defined. Whether Dockerfil
 
 ## Image Exports
 Images exported to `recovery/docker/`. Size of each tarball. Recovery commands.
+
+## Data Persistence
+How the restored data is made recoverable: re-runnable source on startup, or an exported data-volume tarball. State "not applicable" for non-database data layers. The exact recovery step documented in `docs/setup.md`.
 
 ## Data & Database
 Data source selected and why. How data was restored. Demo accounts or sample data available if any.

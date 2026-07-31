@@ -60,9 +60,10 @@ The single reference for everything needed to restore, run, and demonstrate this
 Original runtime requirements. Verified restoration environment from Step 2 — note differences from original if any. Environment variables required.
 
 **Restore & Run**
-Step-by-step procedure to restore the project locally. Use exact commands from Step 2:
+Step-by-step procedure to restore the project locally. Use exact commands from Step 2, including the data-restore step so recovery does not come up empty:
 ```
 docker load < recovery/docker/{service}.tar.gz
+# restore data — auto-init from the committed dump, or restore the data-volume tarball first (per Step 2 Data Persistence)
 docker-compose up
 ```
 Access points — URLs and ports for web projects, run commands for CLI tools, build steps for mobile or desktop.
