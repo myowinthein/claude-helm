@@ -408,6 +408,7 @@ REFACTORING COMPLETE
 ─────────────────────────────────
 Branch:   refactor/{timestamp}
 Mode:     {Deep/Quick/Fix Backlog}
+Scanned:  {new_count} new findings, {still_open_count} carried over, {auto_resolved_count} auto-resolved this run
 Applied:
 - Architecture: {N} changes
 - Code Quality: {N} changes
@@ -421,3 +422,10 @@ Commits made:   {N}
 Tests passing:  yes/no
 Outcome:        {merged to main / PR pending / branch left intact}
 ─────────────────────────────────
+
+Sample of fixes applied:
+- {description} — {file}
+- {description} — {file}
+- ... (up to 5 examples, drawn from findings marked `fixed` this run)
+
+For Fix Backlog mode, omit the Scanned line entirely — no scan occurred this run.

@@ -147,7 +147,7 @@ Asks how to land the work:
 
 ### 8. Confirm completion
 
-Closes with a structured summary: branch, mode, changes per category, ledger state (still open / auto-resolved / newly fixed / skipped by user), verification result (confirmed resolved / newly introduced), commits made, tests passing, outcome.
+Closes with a structured summary: branch, mode, scan scope (new / carried-over / auto-resolved findings this run — omitted for Fix Backlog, since no scan occurred), changes per category, ledger state (still open / auto-resolved / newly fixed / skipped by user), verification result (confirmed resolved / newly introduced), commits made, tests passing, outcome. Ends with a sample of up to 5 applied fixes (description and file) so the closing report shows what was actually done, not just how many.
 
 ## Stop conditions
 
