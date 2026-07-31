@@ -35,7 +35,7 @@ claude-helm is provided "as is" without warranty of any kind, express or implied
 
 ## Limitation of Liability
 
-To the maximum extent permitted by law, the author shall not be liable for any direct, indirect, incidental, special, or consequential damages arising from your use of claude-helm, even if advised of the possibility of such damages.
+The author's total liability for any claim related to claude-helm shall not exceed the amount you paid for the software. Because claude-helm is free, that amount is zero. To the maximum extent permitted by law, the author shall not be liable for any direct, indirect, incidental, special, or consequential damages arising from your use of claude-helm, even if advised of the possibility of such damages.
 
 ## Indemnification
 
