@@ -2517,11 +2517,11 @@
       "file": "prompts/archive/step5-finalize.md",
       "line": 43,
       "description": "Reads Step 1's 'Archiving from:' field with no defined fallback if an older Step1 report (created before this field was added) lacks it \u2014 contrast with step3-postman.md, which explicitly handles the analogous case for Step 2's 'App running' field.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a87a41a7f754c8c7321b28f48e70061418b03bed",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0111",
@@ -2549,11 +2549,11 @@
       "file": "prompts/archive/step1-explore.md",
       "line": 63,
       "description": "The output-format template embeds prompt-authoring rationale inline with the literal field value the executing model should produce (e.g. 'Archiving from: {current branch name} \u2014 Step 5's branch cleanup reads this field directly...') \u2014 risk the executing model echoes the explanatory aside verbatim into the generated report. Also affects step2-restore-and-freeze.md's App running field.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "a87a41a7f754c8c7321b28f48e70061418b03bed",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0113",
