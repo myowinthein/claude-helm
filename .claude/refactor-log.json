@@ -1957,11 +1957,11 @@
       "file": "docs/rules/safety.md",
       "line": 27,
       "description": "Asserts \"Projects can extend the list, never shrink it\" for the Agent Execution Boundaries list \u2014 this explicit prohibition doesn't exist anywhere in the actual rules/safety.md, which only says to document project-specific additions.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "17ed533e811f5dcfaff2bb86a15dd3a3b8ce9fdc",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0032",
