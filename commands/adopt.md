@@ -262,7 +262,7 @@ AskUserQuestion:
 
 If Step 4 made no changes (No-change path or Cancel path): skip commit, merge, and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
 
-Otherwise, commit per git.md's Auto-Commit rule — this also governs whether the sequence below needs confirmation before proceeding: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
+Otherwise, commit per git.md's Auto-Commit rule: silent if `git-auto-commit: true`, otherwise ask for confirmation before committing, merging, and pushing together. Either way, push itself always requires its own confirmation regardless of `git-auto-commit` — git.md's Auto-Commit rule states this as an explicit exception, and rules/safety.md lists `git push` as always requiring confirmation with no exceptions. Environment promotion's branch-selection prompt below already serves as that confirmation for environment-branch pushes; under GitHub Flow, confirm separately before step 2's `git push origin main`, even when the commit above was silent.
 
 **Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this update:
 
@@ -288,7 +288,21 @@ Otherwise, commit per git.md's Auto-Commit rule — this also governs whether th
 
 **GitHub Flow:**
 1. Commit on `{branch}`.
-2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "{same message as the commit above}"`, `git push origin main`.
+2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "{same message as the commit above}"`. Before pushing, confirm:
+
+   AskUserQuestion:
+     question: "Push main now? This publishes the merged commit to origin."
+     header:   "Push"
+     multiSelect: false
+     options:
+       - label: "Push (Recommended)"
+         description: "git push origin main"
+       - label: "Cancel"
+         description: "Leave main merged locally but unpushed — push manually when ready"
+
+   If Cancel selected → stop here. Do not push, promote, or clean up. Proceed to Step 6 to report the outcome, noting main is merged locally but unpushed.
+
+   If Push selected: `git push origin main`.
 3. Run Environment promotion above.
 4. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
 5. Return to where you started: `git checkout {original_branch}`.
