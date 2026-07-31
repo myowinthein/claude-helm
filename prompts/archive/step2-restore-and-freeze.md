@@ -87,6 +87,8 @@ If restoration requires a network, VPN-accessible, or cloud database: do not con
 
 After the project is verified as running:
 
+If this step was interrupted and is being re-run, check each service for a pre-existing tarball before exporting: if `recovery/docker/{service}.tar.gz` already exists, is non-empty, and passes `docker load` (see validation below), skip re-exporting that service — it already succeeded. Only export services that are missing or fail that check.
+
 Export all Docker images to `recovery/docker/` as gzipped tarballs:
 
 ```
