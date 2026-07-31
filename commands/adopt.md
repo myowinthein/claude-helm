@@ -6,7 +6,19 @@ description: Install or update helm rule files (git.md, safety.md) into the curr
 
 Install or update the helm rule files (`git.md`, `safety.md`) into the current project. Setup helper, not a workflow command.
 
-No branch requirement — run from any branch. Unlike log/legal/manifest, adopt's output (the rule files and the `## Rules` pointer) is static content templated from the plugin's own version, not a synthesis of the project's current state, so branch staleness can't corrupt it. Any merge conflict this creates is small and self-contained (a version marker, a short pointer section) — resolve it like any other conflict.
+## Before starting
+
+Check `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md).
+
+If there is no git repository yet, or CLAUDE.md does not exist yet (so `git-strategy` cannot be read) — skip the rest of this section and proceed directly to Step 1. This is a fresh bootstrap: there is no main to branch from, and Step 5 later skips its branch/merge/promote logic for the same reason.
+
+**Solo Mode** (`git-strategy: solo`):
+- Only proceed if on `main` or `master`. If on any other branch, stop: "adopt must be run on main or master in Solo Mode. Current branch is {branch} — switch and re-run."
+
+**GitHub Flow** (`git-strategy: github-flow`, or absent):
+- Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
+- Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b chore/adopt-{YYYYMMDD}` from it.
+- Call this branch `{branch}` for the rest of this command.
 
 ## Step 1 — Sanity check
 
@@ -241,7 +253,42 @@ AskUserQuestion:
 - "Update rules" (behind) and "Roll back to v{current_version}" (ahead) both run the Copy or Update path.
 - "Switch to reference mode" runs the Reference path.
 
-## Step 5 — Report
+## Step 5 — Commit and finalize
+
+Skip this step entirely if Step 4 made no changes (No-change path or Cancel path), or if Before starting's branch-strategy setup was skipped (fresh bootstrap, no repo, or no pre-existing CLAUDE.md) — commit whatever was written per git.md's Auto-Commit rule and stop there; there is no main, no temporary branch, and no environment branches to consider yet.
+
+Otherwise, commit per git.md's Auto-Commit rule — this also governs whether the sequence below needs confirmation before proceeding: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
+
+**Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this update:
+
+  AskUserQuestion:
+    question: "main will be updated. Which environment branches should also receive these rule files?"
+    header:   "Promote to environments"
+    multiSelect: true
+    options: one entry per discovered environment branch, e.g.:
+      - label: "staging"
+        description: "Merge main into staging"
+      - label: "production"
+        description: "Merge main into production"
+
+  For each selected environment:
+  - git checkout {environment}
+  - git merge main --no-ff -m "chore(deploy): promote main to {environment} for helm rule updates"
+  - git push origin {environment}
+  - git checkout main
+
+  If no environment branches exist, or the user selects none, skip silently.
+
+**Solo Mode:** commit directly to main, then run Environment promotion above.
+
+**GitHub Flow:**
+1. Commit on `{branch}`.
+2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "{same message as the commit above}"`, `git push origin main`.
+3. Run Environment promotion above.
+4. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
+5. Return to where you started: `git checkout {original_branch}`.
+
+## Step 6 — Report
 
 For Copy/Update, verify the written files before reporting: read `.claude/rules/git.md` and `.claude/rules/safety.md` and confirm each file exists and contains the `<!-- helm-rule: claude-helm@v{current_version} -->` marker. If a file is missing or the marker is absent, report the error instead of ADOPT COMPLETE.
 

@@ -14,7 +14,16 @@ Unlike the workflow commands, `/helm:adopt` configures how helm relates to a pro
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:adopt]) --> Sanity{Directory state?}
+  Start([User runs /helm:adopt]) --> Bootstrap{No repo yet, or<br/>no CLAUDE.md?}
+  Bootstrap -->|yes| Sanity
+  Bootstrap -->|no| Strategy{git-strategy?}
+  Strategy -->|Solo| SoloCheck{On main/master?}
+  SoloCheck -->|no| StopSolo[/Stop: switch to main first/]
+  SoloCheck -->|yes| Sanity
+  Strategy -->|GitHub Flow| Fresh2[Record original branch<br/>Checkout fresh branch from main:<br/>chore/adopt-date]
+  Fresh2 --> Sanity
+
+  Sanity{Directory state?}
   Sanity -->|non-empty, no project markers| AskContinue[Ask: continue or cancel?]
   AskContinue -->|cancel| Cancel[/Exit: no changes/]
   AskContinue -->|continue| Scan
@@ -42,16 +51,40 @@ flowchart TD
   Conflict -->|review per file| PerFile[Per file:<br/>overwrite or skip]
   Conflict -->|reference| Reference
 
-  Copy[Copy from plugin install path<br/>prepend helm-rule version marker<br/>write to .claude/rules/] --> Done
-  PerFile --> Done
-  Reference[Set the Rules section in CLAUDE.md<br/>to absolute plugin paths<br/>or print the snippet for paste] --> Done
+  Copy[Copy from plugin install path<br/>prepend helm-rule version marker<br/>write to .claude/rules/] --> CommitWrite
+  PerFile --> CommitWrite
+  Reference[Set the Rules section in CLAUDE.md<br/>to absolute plugin paths<br/>or print the snippet for paste] --> CommitWrite
+
+  CommitWrite{Changes written,<br/>and not a fresh bootstrap?}
+  CommitWrite -->|no| Done
+  CommitWrite -->|yes| Commit["Commit (per git-auto-commit)"]
+
+  Commit --> SoloOrFlow{Which mode?}
+  SoloOrFlow -->|Solo| Promote
+  SoloOrFlow -->|GitHub Flow| MergeMain[Merge branch into main<br/>Push main]
+  MergeMain --> Promote
+
+  Promote{Environment<br/>branches exist?}
+  Promote -->|yes| PromoteAsk[Ask: which to promote?<br/>Merge main into each selected]
+  Promote -->|no| Cleanup
+  PromoteAsk --> Cleanup
+
+  Cleanup{GitHub Flow?}
+  Cleanup -->|yes| DeleteBranch[Delete chore/adopt-date branch<br/>Return to original branch]
+  Cleanup -->|no| Done
+  DeleteBranch --> Done
 
   Done([Report: what landed where])
 ```
 
 ## Steps
 
-No branch requirement — run from any branch. Unlike [`/helm:log`](log.md), [`/helm:legal`](legal.md), and [`/helm:manifest`](manifest.md), adopt's output (the rule files and the `## Rules` pointer) is static content templated from the plugin's own version, not a synthesis of the project's current state, so branch staleness can't corrupt it. Any merge conflict this creates is small and self-contained (a version marker, a short pointer section) — resolve it like any other conflict.
+### Before starting
+
+Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md) — skipped entirely on a fresh bootstrap (no git repo yet, or no CLAUDE.md to read the flag from):
+
+- **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
+- **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`chore/adopt-{date}`) — regardless of what the starting branch was. Returns to the original branch at the end (see Step 5).
 
 ### 1. Sanity check
 
@@ -89,7 +122,17 @@ Both the Copy or Update and Reference paths update CLAUDE.md's `## Rules` sectio
 
 **No change**: for the no-op choices — "Nothing" (already in sync), "Keep project rules" (project ahead of the installed plugin), or "Keep references" (already in reference mode) — writes nothing and just reports the status.
 
-### 5. Report
+### 5. Commit and finalize
+
+Skipped entirely if Step 4 wrote nothing (No change or Cancel), or if Before starting's branch-strategy setup was skipped (fresh bootstrap) — in that case whatever was written just commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) and stops there.
+
+Otherwise, commits per that same rule, which also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
+
+If environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
+
+**Solo Mode** commits directly to main, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
+
+### 6. Report
 
 For Copy or Update installs, verifies the written files before reporting: reads `.claude/rules/git.md` and `.claude/rules/safety.md` and confirms each exists and contains the `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker. If a file is missing or the marker is absent, reports the error instead of success.
 
@@ -97,6 +140,7 @@ Final summary line per file describing what was written, updated, skipped, or re
 
 ## Stop conditions
 
+- **Solo Mode, not on main/master (and not a fresh bootstrap).** Switch to main or master and re-run.
 - **Directory is non-empty without project markers and user cancels.**
 - **User picks Cancel at any of the install-mode prompts.**
 - **No `CLAUDE.md` and Reference mode chosen, user declines to create it**: the snippet is printed but nothing is written; user takes over.
@@ -112,3 +156,4 @@ Final summary line per file describing what was written, updated, skipped, or re
 - [`git.md`](../rules/git.md) - one of the two rule files this command installs
 - [`safety.md`](../rules/safety.md) - the other rule file
 - [`/helm:log`](log.md) - the related command that updates `CLAUDE.md` content; if you add a `## Rules` section via Reference mode, `/helm:log` will respect it
+- [`/helm:ship`](ship.md) - environment-branch promotion in Step 5 uses the same detection and merge mechanics
