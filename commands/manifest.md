@@ -117,6 +117,7 @@ Before writing anything, investigate:
 - Core usage patterns and CLI commands
 - Public API surface (if any)
 - License, contributing model, maintainers
+- Project motivation or history (if non-obvious) and any meaningful limitations worth surfacing
 
 If `readme-style: standard`:
   Write README.md following the Standard Readme spec section order.

@@ -97,7 +97,7 @@ Three modes, default depending on assessment:
 
 ### 3. Full scan
 
-Investigates: business purpose and target audience, stack and dependencies, installation steps, core usage patterns and CLI commands, public API surface, license, contributing model, maintainers.
+Investigates: business purpose and target audience, stack and dependencies, installation steps, core usage patterns and CLI commands, public API surface, license, contributing model, maintainers, and project motivation/limitations worth surfacing.
 
 If `readme-style: standard`: writes `README.md` following the Standard Readme spec section order.
 
