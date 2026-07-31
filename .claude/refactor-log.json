@@ -1525,11 +1525,11 @@
       "file": "commands/refactor.md",
       "line": 362,
       "description": "Step 7's auto-merge promotes real application code to environment branches with no CI-status gate at all, unlike ship.md's Steps 4/5 which explicitly check gh run list before promoting.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "4be51a1564b92afdaa25ec099fbe97b6ac3dc271",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0005",
