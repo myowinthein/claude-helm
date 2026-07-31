@@ -36,7 +36,7 @@ flowchart TD
   Q2ask --> Generate
 
   Generate{Any docs selected?}
-  Generate -->|no| Cancel[/Exit: nothing generated/]
+  Generate -->|no| Cancel[/Exit: nothing generated<br/>still runs Step 4 cleanup/]
   Generate -->|yes| Write[Write each selected doc<br/>to resolved output path<br/>plain English, GDPR compliant]
   Write --> CommitAsk["Confirm (states full consequence<br/>under GitHub Flow)"]
   CommitAsk -->|cancel| DoneUncommitted([Report: written, not committed])
@@ -66,6 +66,8 @@ Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaul
 
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/legal-{date}`) — regardless of what the starting branch was. The generated documents are always scanned from main's own content, never from whatever branch happened to be checked out, so there's nothing to validate about the starting branch itself. The command returns to the original branch at the end (see Step 4).
+
+If the command exits having written nothing at all (Step 2's "nothing selected" case), this cleanup still runs: delete the temporary branch and return to the original branch. This does **not** apply once documents have actually been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; real drafted work is never auto-deleted.
 
 ### 1. Project scan
 
@@ -121,7 +123,7 @@ AskUserQuestion has a 4-option limit, so this step uses two questions.
 
 Question 2 is skipped entirely if the scan found no analytics and no payment processing.
 
-All documents are opt-in: the user can deselect any recommended document or add ones the scan did not flag. If nothing is selected across both questions, the command exits without writing anything. Selected documents that already exist are overwritten.
+All documents are opt-in: the user can deselect any recommended document or add ones the scan did not flag. If nothing is selected across both questions, the command exits without writing anything — proceeding to Step 4, which writes nothing but still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created. Selected documents that already exist are overwritten.
 
 ### 3. Generate documents
 
@@ -148,7 +150,9 @@ Each selected document is written in plain English, GDPR compliant, to the resol
 
 ### 4. Commit and finalize
 
-Presents the list of generated files for review and waits for confirmation before committing — always, even under `git-auto-commit: true`. Generated documents are public, legally-binding text, so this is a deliberate exception to the normal auto-commit flow (see [`safety.md`](../rules/safety.md#agent-execution-boundaries)). Under GitHub Flow, the confirmation prompt states the full consequence up front — commit, merge to main, promote to environments, delete the temporary branch, and return to the original branch — since one confirmation covers the entire sequence, not just the commit.
+If Step 2 selected nothing: skips the commit confirmation and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
+
+Otherwise presents the list of generated files for review and waits for confirmation before committing — always, even under `git-auto-commit: true`. Generated documents are public, legally-binding text, so this is a deliberate exception to the normal auto-commit flow (see [`safety.md`](../rules/safety.md#agent-execution-boundaries)). Under GitHub Flow, the confirmation prompt states the full consequence up front — commit, merge to main, promote to environments, delete the temporary branch, and return to the original branch — since one confirmation covers the entire sequence, not just the commit.
 
 Single commit of the generated documents plus the updated `.claude/legal-manifest.json`: `docs(legal): generate legal documents`. If the output path or format differs from the default (`legal/` Markdown), the commit body notes it for future runs. If the user cancels, the documents stay written but uncommitted — under GitHub Flow this also means no merge, no branch deletion, and no return to the original branch; the command still proceeds to the completion report either way.
 
@@ -163,7 +167,7 @@ Reports which documents were generated, the output path, format, jurisdiction, t
 ## Stop conditions
 
 - **Solo Mode, not on main/master.** Switch to main or master and re-run.
-- **User selects nothing.** Nothing written.
+- **User selects nothing.** Nothing written — GitHub Flow cleanup still runs (delete the temporary branch, return to the original branch) if one was created.
 
 ## See also
 

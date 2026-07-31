@@ -18,6 +18,7 @@ project actually does. Only generate documents that apply.
 - Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
 - Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b docs/legal-{YYYYMMDD}` from it. This happens unconditionally, regardless of what `{original_branch}` was — the generated documents are always scanned from main's own content, never from whatever the starting branch happened to contain, so there is nothing to check or reject about the starting branch itself.
 - Call this branch `{branch}` for the rest of this command.
+- If this command exits without writing anything at all (Step 2's "nothing selected" case), delete `{branch}` and return to `{original_branch}` before exiting — never leave the user stranded on an empty temporary branch it created. This does **not** apply once documents have been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; do not delete real drafted work.
 
 ## Step 1 — Project scan
 
@@ -224,7 +225,7 @@ Question 2 — conditional documents (only ask if applicable based on scan findi
   based on scan findings (no analytics, no payments detected).
 
 Generate only the documents selected across both questions.
-If nothing is selected, exit without generating anything.
+If nothing is selected, exit without generating anything — proceed to Step 4, which writes nothing but still needs to run its GitHub Flow cleanup (delete `{branch}`, return to `{original_branch}`) if a temporary branch was created.
 Selected Helm-generated documents that already exist are overwritten. Selected Foreign documents are confirmed individually before overwriting (see Step 3).
 
 Wait for both responses before proceeding.
@@ -417,7 +418,9 @@ Required sections in order:
 
 ## Step 4 — Commit and finalize
 
-Always confirm before committing, even when `git-auto-commit: true` is set — these are public, legally-binding documents, so this is a deliberate exception to the normal auto-commit flow (same category as the boundaries in safety.md's Agent Execution Boundaries: never skip review just because autonomy is high).
+If Step 2 selected nothing (no documents to generate): skip the commit confirmation and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` (per Before starting's cleanup rule) — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
+
+Otherwise, always confirm before committing, even when `git-auto-commit: true` is set — these are public, legally-binding documents, so this is a deliberate exception to the normal auto-commit flow (same category as the boundaries in safety.md's Agent Execution Boundaries: never skip review just because autonomy is high).
 
 **Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive these documents:
 
