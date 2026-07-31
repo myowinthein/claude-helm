@@ -135,23 +135,28 @@ ENV FORMATTING    {X issues}
 - Trailing whitespace on 1 line
 
 ─────────────────────────────────
-GITIGNORE         {X issues}
+GITIGNORE MISSING ENTRIES   {X issues}
 ─────────────────────────────────
-Missing entries (stack: Node.js):
-- node_modules/
-- .env.local
-- dist/
+node_modules/     (stack: Node.js)
+.env.local
+dist/
 
-Tracked files matching gitignore patterns:
-- .env.local      already tracked by git — run git rm --cached .env.local to untrack
+─────────────────────────────────
+GITIGNORE TRACKED FILES     {X issues}
+─────────────────────────────────
+.env.local        already tracked by git — run git rm --cached .env.local to untrack
 
-Entries that should not be ignored:
-- *.js             overly broad — would exclude source files
-- config/          matches committed application code — likely added by mistake
+─────────────────────────────────
+GITIGNORE ENTRIES TO REMOVE {X issues}
+─────────────────────────────────
+*.js              overly broad — would exclude source files
+config/           matches committed application code — likely added by mistake
 
-Formatting:
-- 3 duplicate entries found
-- Missing category groupings
+─────────────────────────────────
+GITIGNORE FORMATTING        {X issues}
+─────────────────────────────────
+3 duplicate entries found
+Missing category groupings
 
 ─────────────────────────────────
 TOTAL: {N} issues across {N} categories
