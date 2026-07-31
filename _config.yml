@@ -14,6 +14,7 @@ footer_content: "claude-helm &mdash; MIT License"
 plugins:
   - jekyll-seo-tag
   - jekyll-remote-theme
+  - jekyll-include-cache
 
 # Every new top-level directory must be added here manually or Jekyll will include it in the site build.
 exclude:
