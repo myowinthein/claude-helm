@@ -11,10 +11,11 @@ Run periodically on mature codebases to maintain code quality.
 
 ## Before starting
 
-Only proceed if on main or master.
+Proceed if on main, master, or an existing refactor/* branch — resuming a session left via Step 7's "Leave branch" option happens directly from that branch, not via a manual switch back to main first.
+
 If on any other branch, stop and inform user:
 
-"refactor must be run on main or master.
+"refactor must be run on main, master, or an existing refactor branch.
 Current branch is {branch}. Please switch and re-run."
 
 ---
@@ -141,10 +142,11 @@ If an existing refactor/* branch was found in Step 1, ask:
       - label: "Continue on {branch} (Recommended)"
         description: "Switch to the existing branch and continue refactoring"
       - label: "Create new branch"
-        description: "Start a new refactor/{YYYYMMDD-HHMMSS} branch"
-  Then switch to the chosen branch, or create and switch to the new one.
+        description: "Start a new refactor/{YYYYMMDD-HHMMSS} branch from main"
+  "Continue on {branch}": switch to it — a no-op if it's already the current branch, e.g. a resumed session.
+  "Create new branch": switch to main or master first, even if the current branch is the old refactor/* branch, then create and switch to refactor/{YYYYMMDD-HHMMSS} from there. Never branch off the old refactor branch.
 
-If no existing refactor branch was found: create and switch to refactor/{YYYYMMDD-HHMMSS}.
+If no existing refactor branch was found: switch to main or master first if not already there, then create and switch to refactor/{YYYYMMDD-HHMMSS}.
 
 ---
 

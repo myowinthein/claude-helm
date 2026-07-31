@@ -12,8 +12,8 @@ Branch off `main`, scan the project for refactoring opportunities, apply selecte
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:refactor]) --> Branch{On main or master?}
-  Branch -->|no| Stop[/Stop: switch to main first/]
+  Start([User runs /helm:refactor]) --> Branch{On main, master, or an<br/>existing refactor/* branch?}
+  Branch -->|no| Stop[/Stop: switch to one first/]
   Branch -->|yes| ExistingCheck{Existing refactor/* branch?}
 
   ExistingCheck -->|yes| NoteExisting[Note branch name for later]
@@ -24,7 +24,7 @@ flowchart TD
   Ledger -->|no — first run| DeepAuto["Inform: running Deep Mode<br/>to build baseline"]
   Ledger -->|yes| ModeAsk["Ask: Deep Mode, Quick Mode,<br/>or Fix Backlog?\nrecommendation based on commits,<br/>days elapsed, and open_count"]
 
-  DeepAuto --> CreateBranch["Create refactor/{timestamp}\n(or ask to continue existing)"]
+  DeepAuto --> CreateBranch["Switch to main if needed<br/>create refactor/{timestamp}<br/>(or ask to continue existing)"]
   ModeAsk -->|Deep| CreateBranch
   ModeAsk -->|Quick| CreateBranch
   ModeAsk -->|Fix Backlog| CreateBranch
@@ -83,7 +83,7 @@ flowchart TD
 
 ### Before starting
 
-Only runs from `main` or `master`. Halts on any other branch.
+Runs from `main`, `master`, or an existing `refactor/*` branch — resuming a session left via Step 7's "Leave as-is" option happens directly from that branch, not via a manual switch back to main first. Halts on any other branch.
 
 ### 1. Check for existing refactor branch
 
@@ -130,11 +130,9 @@ For Fix Backlog mode, only **Still Open** is shown — no New or Auto-Resolved s
 
 Each finding is tagged `[New]`/`[Still Open]`, priority (`High`/`Medium`/`Low`), and risk (`Safe`/`Needs Review`). Total count at the bottom shows new vs still-open separately.
 
-### 6. Select categories
+Then presents a multi-select prompt with only categories that have at least one `new` or `still open` finding (max 4 options — smallest two merge if more than four qualify). Categories with only auto-resolved findings are excluded. Performance findings are reported but folded into whichever category it merges with if all five categories have issues. Selecting nothing is a clean skip with no harm done.
 
-Multi-select prompt with only categories that have at least one `new` or `still open` finding (max 4 options — smallest two merge if more than four qualify). Categories with only auto-resolved findings are excluded. Performance findings are reported but folded into whichever category it merges with if all five categories have issues. Selecting nothing is a clean skip with no harm done.
-
-### 7. Apply category by category
+### 6. Apply category by category
 
 For each selected category in turn:
 
@@ -143,24 +141,22 @@ For each selected category in turn:
 3. **Needs-review findings** — presented one at a time (or batched if closely related) for the user to approve or skip. Skipped findings are marked `skipped-by-user` in the ledger and stop resurfacing unless the surrounding code changes significantly enough to warrant a second look.
 4. **Test, lint, commit** — run tests after each category; if they fail, halt and wait for resolution. Then lint, format, and commit: `refactor({category}): {summary}`. Update ledger statuses: `fixed` with `resolved_commit` and `resolved_date`, or `skipped-by-user`.
 
-### 7.5 Scoped verification pass
+**Scoped verification pass (Step 6.4)** — after all selected categories are applied, re-checks only the files touched this session, not a fresh full scan. Confirms each `fixed` finding is actually gone, and catches anything new the fixes themselves introduced. Updates the ledger accordingly. Results surface in the final report.
 
-After all selected categories are applied, re-checks only the files touched this session — not a fresh full scan. Confirms each `fixed` finding is actually gone, and catches anything new the fixes themselves introduced. Updates the ledger accordingly. Results surface in the final report.
-
-### 8. Merge, PR, or leave
+### 7. Merge, PR, or leave
 
 Asks how to land the work:
 - **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, delete the refactor branch, push
 - **Open PR** — push the branch (with updated ledger) and prompt the user to open a PR
 - **Leave as-is** — branch stays locally for manual review
 
-### 9. Confirm completion
+### 8. Confirm completion
 
 Closes with a structured summary: branch, mode, changes per category, ledger state (still open / auto-resolved / newly fixed / skipped by user), verification result (confirmed resolved / newly introduced), commits made, tests passing, outcome.
 
 ## Stop conditions
 
-- **Not on `main` or `master`.** Switch back to the trunk first.
+- **Not on `main`, `master`, or an existing `refactor/*` branch.** Switch to one first.
 - **Tests fail mid-apply.** Resolve before the next category continues.
 - **No categories selected.** Clean exit, ledger unchanged.
 - **Quick Mode diff exceeds 50 files.** Prompted to switch to Deep Mode or continue.
