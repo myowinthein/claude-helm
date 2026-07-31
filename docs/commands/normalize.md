@@ -15,7 +15,7 @@ flowchart TD
   Start([User runs /helm:normalize]) --> Warn[Warn: history rewrite,<br/>force push required,<br/>tags orphaned]
 
   Warn -->|cancel| Cancel[/Exit: no changes/]
-  Warn -->|continue| Scan[Collect local branches<br/>Scan all commits<br/>git log --oneline]
+  Warn -->|continue| Scan[Collect local branches<br/>Scan all commits<br/>git log --oneline --all]
 
   Scan --> Classify[For each commit:<br/>classify compliant vs non-compliant<br/>read diff to infer type + scope]
   Classify --> Count{Non-compliant<br/>count?}
@@ -55,7 +55,7 @@ Cancel is equally prominent. The command exits cleanly if the user declines.
 
 ### 2. Scan and classify
 
-Runs `git branch --list` to collect every local branch — the only branches this rewrite can affect, since `git filter-repo` rewrites all refs it can see and remote-only branches aren't visible to it. Runs `git log --oneline --no-decorate` to collect every commit from the beginning of the repo. For each commit, checks whether the message already matches the `type(scope): description` format.
+Runs `git branch --list` to collect every local branch — the only branches this rewrite can affect, since `git filter-repo` rewrites all refs it can see and remote-only branches aren't visible to it. Runs `git log --oneline --no-decorate --all` to collect every commit reachable from any local branch, not just the current one — matching the rewrite's actual scope; a plain `git log` would miss commits unique to other local branches, which would then pass through the rewrite with their messages untouched even though their SHAs still change. Commits reachable from more than one branch are deduplicated by SHA automatically. For each commit, checks whether the message already matches the `type(scope): description` format.
 
 For non-compliant commits, reads the diff via `git show {sha} --stat` to infer the correct type and scope:
 

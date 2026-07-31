@@ -37,8 +37,8 @@ If Cancel → exit silently.
 Run: git branch --list
 Collect every local branch — these are the only branches this rewrite will affect (git filter-repo rewrites all refs it can see, and only local ones are visible to it). List them in the Step 3 plan so the developer can fetch and check out any remote-only branch (e.g. an environment branch) that also needs the same treatment, before confirming.
 
-Run: git log --oneline --no-decorate
-Collect every commit SHA and message from the beginning of the repo to HEAD.
+Run: git log --oneline --no-decorate --all
+Collect every commit SHA and message reachable from any local branch — `--all` matches the rewrite's actual scope (every local branch, not just the current one); a plain `git log` would only see the current branch's history and miss commits unique to other local branches, even though those commits still get new SHAs from the rewrite regardless. Commits reachable from more than one branch are naturally deduplicated by SHA, not double-counted.
 
 For each commit, classify as:
 - **Compliant** — message already matches `type(scope): description` format
