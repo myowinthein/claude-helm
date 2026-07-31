@@ -123,6 +123,6 @@ Any commits Claude could not classify with high confidence are listed separately
 
 ## See also
 
-- [`git.md`](../rules/git.md) — the rule file that enforces Conventional Commits on all future commits
-- [`/helm:ship`](ship.md) — the release command that reads commit history to calculate the next version; normalize ensures its version calculation works on repos with messy pre-convention history
-- [`/helm:adopt`](adopt.md) — installs the git rules into a project so future commits follow the convention automatically
+- [`git.md`](../rules/git.html) — the rule file that enforces Conventional Commits on all future commits
+- [`/helm:ship`](ship.html) — the release command that reads commit history to calculate the next version; normalize ensures its version calculation works on repos with messy pre-convention history
+- [`/helm:adopt`](adopt.html) — installs the git rules into a project so future commits follow the convention automatically

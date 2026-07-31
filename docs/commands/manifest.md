@@ -74,7 +74,7 @@ flowchart TD
 
 ### Before starting
 
-Rewrites `README.md` from the project's state, so it needs the full merged, stable state — never an in-progress feature branch. Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md):
+Rewrites `README.md` from the project's state, so it needs the full merged, stable state — never an in-progress feature branch. Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.html):
 
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/manifest-{date}`) — regardless of what the starting branch was. README.md is always scanned from main's own state, never from a feature branch's unmerged work; if a feature branch changes something README.md should reflect, re-run `/helm:manifest` after that branch merges to main. Returns to the original branch at the end (see Step 5).
@@ -126,7 +126,7 @@ Reads commit messages first. Reads file changes only for significant commits. Fo
 
 For each significant change, identifies the affected README section. Updates only those sections. Does not rewrite unaffected sections.
 
-If no significant changes are found despite the initial gap estimate: reports that no update is needed — the equivalent of [`/helm:log`](log.md)'s Outcome A — and skips the proposal and confirmation below; only the hash advances.
+If no significant changes are found despite the initial gap estimate: reports that no update is needed — the equivalent of [`/helm:log`](log.html)'s Outcome A — and skips the proposal and confirmation below; only the hash advances.
 
 If `readme-style: standard`: sections remain in spec order after updates. A significant change can also add a newly-relevant optional section (e.g. a first public API) in its spec position, or remove one whose justification went away (e.g. the API was removed) — never inventing a section outside the spec.
 If `readme-style: custom`: preserves existing section order and naming, and — matching Step 2 — does not add, remove, or rename sections without explicit approval. If a significant change doesn't fit any existing section, asks whether to add a new one or fold it into the closest existing section rather than deciding silently.
@@ -137,9 +137,9 @@ Proposes the changes per section, asks for confirmation, then writes. Bumps the 
 
 If Full scan wrote nothing (the custom-mode, absent-README case): skips commit, merge, and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
 
-Otherwise commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
+Otherwise commits per [git.md's Auto-Commit rule](../rules/git.html#auto-commit) — this also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together, rather than prompting at each stage.
 
-If environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
+If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
 
 **Solo Mode** commits directly to main, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
 
@@ -159,5 +159,5 @@ Every exit above still runs GitHub Flow cleanup (delete the temporary branch, re
 
 ## See also
 
-- [`/helm:log`](log.md) - same lifecycle for `CLAUDE.md` (the agent-facing version)
-- [`/helm:ship`](ship.md) - typically run before shipping so the manifest reflects the release
+- [`/helm:log`](log.html) - same lifecycle for `CLAUDE.md` (the agent-facing version)
+- [`/helm:ship`](ship.html) - typically run before shipping so the manifest reflects the release

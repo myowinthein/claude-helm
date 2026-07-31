@@ -62,7 +62,7 @@ flowchart TD
 
 ### Before starting
 
-Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md):
+Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.html):
 
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/legal-{date}`) — regardless of what the starting branch was. The generated documents are always scanned from main's own content, never from whatever branch happened to be checked out, so there's nothing to validate about the starting branch itself. The command returns to the original branch at the end (see Step 4).
@@ -152,11 +152,11 @@ Each selected document is written in plain English, GDPR compliant, to the resol
 
 If Step 2 selected nothing: skips the commit confirmation and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
 
-Otherwise presents the list of generated files for review and waits for confirmation before committing — always, even under `git-auto-commit: true`. Generated documents are public, legally-binding text, so this is a deliberate exception to the normal auto-commit flow (see [`safety.md`](../rules/safety.md#agent-execution-boundaries)). Under GitHub Flow, the confirmation prompt states the full consequence up front — commit, merge to main, promote to environments, delete the temporary branch, and return to the original branch — since one confirmation covers the entire sequence, not just the commit.
+Otherwise presents the list of generated files for review and waits for confirmation before committing — always, even under `git-auto-commit: true`. Generated documents are public, legally-binding text, so this is a deliberate exception to the normal auto-commit flow (see [`safety.md`](../rules/safety.html#agent-execution-boundaries)). Under GitHub Flow, the confirmation prompt states the full consequence up front — commit, merge to main, promote to environments, delete the temporary branch, and return to the original branch — since one confirmation covers the entire sequence, not just the commit.
 
 Single commit of the generated documents plus the updated `.claude/legal-manifest.json`: `docs(legal): generate legal documents`. If the output path or format differs from the default (`legal/` Markdown), the commit body notes it for future runs. If the user cancels, the documents stay written but uncommitted — under GitHub Flow this also means no merge, no branch deletion, and no return to the original branch; the command still proceeds to the completion report either way.
 
-**Environment promotion** (both modes, after a successful commit): if environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the documents, then merges main into each selected branch and pushes — matching ship.md's promotion mechanics exactly, just with a commit message scoped to legal document updates.
+**Environment promotion** (both modes, after a successful commit): if environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the documents, then merges main into each selected branch and pushes — matching ship.md's promotion mechanics exactly, just with a commit message scoped to legal document updates.
 
 **GitHub Flow only** — after committing on the temporary branch: merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if it was pushed), and returns to whichever branch the command was originally run from. **Solo Mode** commits directly to main, so none of this branch dance is needed — it goes straight to environment promotion.
 
@@ -171,5 +171,5 @@ Reports which documents were generated, the output path, format, jurisdiction, t
 
 ## See also
 
-- [`/helm:log`](log.md) — reflect legal additions in `CLAUDE.md`
-- [`/helm:manifest`](manifest.md) — reference the legal pages from `README.md` if relevant
+- [`/helm:log`](log.html) — reflect legal additions in `CLAUDE.md`
+- [`/helm:manifest`](manifest.html) — reference the legal pages from `README.md` if relevant

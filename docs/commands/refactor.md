@@ -111,7 +111,7 @@ The Fix Backlog option only appears when there are open findings. The user picks
 
 **Fix Backlog** — skips scanning entirely. Loads every finding with `status: open` from the ledger and proceeds directly to presenting findings. Scan metadata (`last_scanned_commit`, `last_mode`, `consecutive_quick_count`) is left untouched since no scan was performed.
 
-Deep and Quick Mode commit the updated ledger before moving on: `chore(refactor): update ledger after {deep/quick} scan`, per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) like every commit this command makes.
+Deep and Quick Mode commit the updated ledger before moving on: `chore(refactor): update ledger after {deep/quick} scan`, per [git.md's Auto-Commit rule](../rules/git.html#auto-commit) like every commit this command makes.
 
 ### 5. Present findings
 
@@ -141,8 +141,8 @@ For each selected category in turn:
 ### 7. Merge, PR, or leave
 
 Asks how to land the work:
-- **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, push, then — if environment branches exist (same detection [`/helm:ship`](ship.md) uses) — ask which should also receive the refactor and merge main into each selected one, before deleting the refactor branch
-- **Open PR** — push the branch (with updated ledger), then, if the repo is hosted on GitHub, attempt `gh pr create` directly (same pattern as [`/helm:ship`](ship.md)'s GitHub Release step). Falls back to a manual "open a PR yourself" instruction if the repo isn't on GitHub, `gh` isn't installed, or it isn't authenticated
+- **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, push, then — if environment branches exist (same detection [`/helm:ship`](ship.html) uses) — ask which should also receive the refactor and merge main into each selected one, before deleting the refactor branch
+- **Open PR** — push the branch (with updated ledger), then, if the repo is hosted on GitHub, attempt `gh pr create` directly (same pattern as [`/helm:ship`](ship.html)'s GitHub Release step). Falls back to a manual "open a PR yourself" instruction if the repo isn't on GitHub, `gh` isn't installed, or it isn't authenticated
 - **Leave as-is** — branch stays locally for manual review
 
 ### 8. Confirm completion
@@ -163,5 +163,5 @@ It also carries a `schema_version` field, bumped only if this structure changes 
 
 ## See also
 
-- [`/helm:test`](test.md) — the test framework setup that this command relies on between categories
-- [`/helm:ship`](ship.md) — ship the merged refactor as a release
+- [`/helm:test`](test.html) — the test framework setup that this command relies on between categories
+- [`/helm:ship`](ship.html) — ship the merged refactor as a release

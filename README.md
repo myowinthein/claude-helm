@@ -44,27 +44,27 @@ Links below go to detail pages. Command logic lives in `commands/*.md`.
 
 | Command | What it does |
 |---|---|
-| [`/helm:ship`](docs/commands/ship.md) | Cut a release: calculate version, test, tag, push, and create a GitHub Release. |
-| [`/helm:test`](docs/commands/test.md) | Assess coverage and write missing tests. |
-| [`/helm:refactor`](docs/commands/refactor.md) | Run a project-wide refactor on a dedicated branch. |
-| [`/helm:env`](docs/commands/env.md) | Audit and fix `.env` files and `.gitignore`: sync, formatting, missing vars, hardcoded values. |
-| [`/helm:log`](docs/commands/log.md) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
-| [`/helm:manifest`](docs/commands/manifest.md) | Sync `README.md` to the current codebase. The vessel's manifest. |
-| [`/helm:legal`](docs/commands/legal.md) | Generate GDPR-aware legal documents from a project scan. |
-| [`/helm:normalize`](docs/commands/normalize.md) | Rewrite non-conventional commit messages across full repo history. |
-| [`/helm:archive`](docs/commands/archive.md) | Archive an old project for long-term storage and future recovery. |
-| [`/helm:adopt`](docs/commands/adopt.md) | Install or update the rule files into the current project. Setup helper, not a workflow command — see below. |
+| [`/helm:ship`](docs/commands/ship.html) | Cut a release: calculate version, test, tag, push, and create a GitHub Release. |
+| [`/helm:test`](docs/commands/test.html) | Assess coverage and write missing tests. |
+| [`/helm:refactor`](docs/commands/refactor.html) | Run a project-wide refactor on a dedicated branch. |
+| [`/helm:env`](docs/commands/env.html) | Audit and fix `.env` files and `.gitignore`: sync, formatting, missing vars, hardcoded values. |
+| [`/helm:log`](docs/commands/log.html) | Sync `CLAUDE.md` to the current codebase. The captain's log. |
+| [`/helm:manifest`](docs/commands/manifest.html) | Sync `README.md` to the current codebase. The vessel's manifest. |
+| [`/helm:legal`](docs/commands/legal.html) | Generate GDPR-aware legal documents from a project scan. |
+| [`/helm:normalize`](docs/commands/normalize.html) | Rewrite non-conventional commit messages across full repo history. |
+| [`/helm:archive`](docs/commands/archive.html) | Archive an old project for long-term storage and future recovery. |
+| [`/helm:adopt`](docs/commands/adopt.html) | Install or update the rule files into the current project. Setup helper, not a workflow command — see below. |
 
 ### Rules
 
 | Rule | What it does |
 |---|---|
-| [`git.md`](docs/rules/git.md) | Git workflow rules covering branching strategy, commit conventions, code quality gates, and environment promotion. |
-| [`safety.md`](docs/rules/safety.md) | Operational safety scan covering deployment, git, secrets, and destructive operations. |
+| [`git.md`](docs/rules/git.html) | Git workflow rules covering branching strategy, commit conventions, code quality gates, and environment promotion. |
+| [`safety.md`](docs/rules/safety.html) | Operational safety scan covering deployment, git, secrets, and destructive operations. |
 
 ## Using the rules
 
-Claude Code does not auto-load a plugin's rule files into projects. Use [`/helm:adopt`](docs/commands/adopt.md) to install the rules into the current project. Two modes:
+Claude Code does not auto-load a plugin's rule files into projects. Use [`/helm:adopt`](docs/commands/adopt.html) to install the rules into the current project. Two modes:
 
 - **Copy**: writes the rules into `.claude/rules/`. Self-contained and committed with the repo.
 - **Reference**: adds a `## Rules` section to `CLAUDE.md` pointing at the installed plugin path.
@@ -77,6 +77,6 @@ Issues and pull requests are welcome at [github.com/myowinthein/claude-helm/issu
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/myowinthein/claude-helm/blob/main/LICENSE)
 
 <!-- last-reviewed: 70ef10b96785f06789f1c0df9c45840ca3076a9c -->

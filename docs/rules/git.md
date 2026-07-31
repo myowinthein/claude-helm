@@ -100,7 +100,7 @@ When active:
 - Push still requires confirmation — same rule as Universal Rules → Safety below, restated here since it's the exception auto-commit doesn't override.
 - If the task spans multiple logical units, commit each unit separately before moving on.
 
-**Exception:** commits covered by [`safety.md`](safety.md#agent-execution-boundaries)'s Agent Execution Boundaries — e.g. committing generated legal documents ([`/helm:legal`](../commands/legal.md)) — always ask for confirmation regardless of this setting. Those are public or otherwise high-stakes content where autonomy level should never skip review.
+**Exception:** commits covered by [`safety.md`](safety.html#agent-execution-boundaries)'s Agent Execution Boundaries — e.g. committing generated legal documents ([`/helm:legal`](../commands/legal.html)) — always ask for confirmation regardless of this setting. Those are public or otherwise high-stakes content where autonomy level should never skip review.
 
 ## Universal Rules
 
@@ -204,13 +204,13 @@ Environment branches are long-lived branches that are not `main`, `master`, or f
 
 `/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` always use fan-out for promoting their own generated content (legal documents, `CLAUDE.md`, `README.md`, rule files), regardless of this setting — those are content syncs, not a release pipeline, so there's no tier for a document to pass through.
 
-The [`/helm:ship`](../commands/ship.md) command detects environment branches automatically and offers a multi-select for which to promote alongside the main release (filtered to first-tier branches only under `chain` mode). [`/helm:legal`](../commands/legal.md), [`/helm:log`](../commands/log.md), [`/helm:manifest`](../commands/manifest.md), and [`/helm:adopt`](../commands/adopt.md) do the same after committing their generated content, so environment branches don't fall behind main on legal documents, `CLAUDE.md`, `README.md`, or the installed rule files.
+The [`/helm:ship`](../commands/ship.html) command detects environment branches automatically and offers a multi-select for which to promote alongside the main release (filtered to first-tier branches only under `chain` mode). [`/helm:legal`](../commands/legal.html), [`/helm:log`](../commands/log.html), [`/helm:manifest`](../commands/manifest.html), and [`/helm:adopt`](../commands/adopt.html) do the same after committing their generated content, so environment branches don't fall behind main on legal documents, `CLAUDE.md`, `README.md`, or the installed rule files.
 
 ## See also
 
-- [`safety.md`](safety.md) - the operational risks file that pairs with this one
-- [`/helm:ship`](../commands/ship.md) - reads Conventional Commits and promotes to env branches
-- [`/helm:legal`](../commands/legal.md) - promotes generated legal documents to env branches the same way
-- [`/helm:log`](../commands/log.md) - promotes `CLAUDE.md` updates to env branches the same way
-- [`/helm:manifest`](../commands/manifest.md) - promotes `README.md` updates to env branches the same way
-- [`/helm:adopt`](../commands/adopt.md) - promotes installed rule files to env branches the same way
+- [`safety.md`](safety.html) - the operational risks file that pairs with this one
+- [`/helm:ship`](../commands/ship.html) - reads Conventional Commits and promotes to env branches
+- [`/helm:legal`](../commands/legal.html) - promotes generated legal documents to env branches the same way
+- [`/helm:log`](../commands/log.html) - promotes `CLAUDE.md` updates to env branches the same way
+- [`/helm:manifest`](../commands/manifest.html) - promotes `README.md` updates to env branches the same way
+- [`/helm:adopt`](../commands/adopt.html) - promotes installed rule files to env branches the same way

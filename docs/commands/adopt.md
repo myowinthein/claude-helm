@@ -84,7 +84,7 @@ flowchart TD
 
 ### Before starting
 
-Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md) — skipped entirely on a fresh bootstrap (no git repo yet, or no CLAUDE.md to read the flag from):
+Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.html) — skipped entirely on a fresh bootstrap (no git repo yet, or no CLAUDE.md to read the flag from):
 
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`chore/adopt-{date}`) — regardless of what the starting branch was. Returns to the original branch at the end (see Step 5).
@@ -129,13 +129,13 @@ Both the Copy or Update and Reference paths update CLAUDE.md's `## Rules` sectio
 
 ### 5. Commit and finalize
 
-**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.md): there's no branch to clean up, since none was created. If Step 4 wrote anything, commits it per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) and stops — no merge, promotion, or branch cleanup applies. If Step 4 made no changes, there's nothing to do at all.
+**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.html): there's no branch to clean up, since none was created. If Step 4 wrote anything, commits it per [git.md's Auto-Commit rule](../rules/git.html#auto-commit) and stops — no merge, promotion, or branch cleanup applies. If Step 4 made no changes, there's nothing to do at all.
 
 **Normal flow**: if Step 4 made no changes (No-change or Cancel path), skips commit, merge, and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
 
 Otherwise, commits per that same rule, which also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
 
-If environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
+If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
 
 **Solo Mode** commits directly to main, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
 
@@ -162,7 +162,7 @@ Every exit above still runs GitHub Flow cleanup (delete the temporary branch, re
 
 ## See also
 
-- [`git.md`](../rules/git.md) - one of the two rule files this command installs
-- [`safety.md`](../rules/safety.md) - the other rule file
-- [`/helm:log`](log.md) - the related command that updates `CLAUDE.md` content; if you add a `## Rules` section via Reference mode, `/helm:log` will respect it
-- [`/helm:ship`](ship.md) - environment-branch promotion in Step 5 uses the same detection and merge mechanics
+- [`git.md`](../rules/git.html) - one of the two rule files this command installs
+- [`safety.md`](../rules/safety.html) - the other rule file
+- [`/helm:log`](log.html) - the related command that updates `CLAUDE.md` content; if you add a `## Rules` section via Reference mode, `/helm:log` will respect it
+- [`/helm:ship`](ship.html) - environment-branch promotion in Step 5 uses the same detection and merge mechanics

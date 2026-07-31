@@ -34,7 +34,7 @@ Run at project bootstrap, and re-run whenever the operational risk surface chang
 
 Only document risks supported by evidence in the repository. No assumptions, no speculation.
 
-**Output:** Documented findings — the Risk/Instruction pairs, environment classifications, and any project-specific boundary additions — go into CLAUDE.md's `## Hard Safety Rules` section as the project's concrete never-do list. Propose the findings first and write them only on confirmation — never auto-write a safety rule without review. They belong in `## Hard Safety Rules` (written by `/helm:log`, loaded with CLAUDE.md), not the adopt-managed `## Rules` section (rewritten each run) and not the shipped `git.md` / `safety.md` (overwritten on update).
+**Output:** Documented findings — the Risk/Instruction pairs, environment classifications, and any project-specific boundary additions — go into CLAUDE.md's `## Hard Safety Rules` section as the project's concrete never-do list. Propose the findings first and write them only on confirmation — never auto-write a safety rule without review. They belong in `## Hard Safety Rules` (written by `/helm:log`, loaded with CLAUDE.html), not the adopt-managed `## Rules` section (rewritten each run) and not the shipped `git.md` / `safety.md` (overwritten on update).
 
 ## Scan Targets
 
@@ -120,5 +120,5 @@ Examples: unit tests, feature tests, linting, static analysis, frontend build, g
 
 ## See also
 
-- [`git.md`](git.md) - the workflow rules that reference safety boundaries
-- [`/helm:log`](../commands/log.md) - the command that surfaces and proposes what belongs in this file
+- [`git.md`](git.html) - the workflow rules that reference safety boundaries
+- [`/helm:log`](../commands/log.html) - the command that surfaces and proposes what belongs in this file

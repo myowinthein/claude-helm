@@ -77,7 +77,7 @@ Run the selected target's sub-flows, one at a time, each completing fully before
 
 ### 4. Commit
 
-After all fixes are applied, commits (per [git.md's Auto-Commit rule](../rules/git.md#auto-commit), which governs every commit this plugin makes). Commit message: `chore(env): audit and fix env configuration`.
+After all fixes are applied, commits (per [git.md's Auto-Commit rule](../rules/git.html#auto-commit), which governs every commit this plugin makes). Commit message: `chore(env): audit and fix env configuration`.
 
 ### 5. Completion report
 
@@ -90,5 +90,5 @@ Summarises the outcome grouped by target (Env files, .gitignore): counts replace
 
 ## See also
 
-- [`/helm:ship`](ship.md) — run env before shipping to catch missing vars before they reach production
-- [`/helm:refactor`](refactor.md) — broader code quality pass that pairs with env for a full pre-release sweep
+- [`/helm:ship`](ship.html) — run env before shipping to catch missing vars before they reach production
+- [`/helm:refactor`](refactor.html) — broader code quality pass that pairs with env for a full pre-release sweep

@@ -6,7 +6,7 @@ nav_order: 4
 
 # /helm:test
 
-Detect the test framework, load the run ledger, assess existing coverage and recent activity, then write tests scoped to recent changes or the full project. Commits per scope with `test({scope}):` messages, per [git.md's Auto-Commit rule](../rules/git.md#auto-commit).
+Detect the test framework, load the run ledger, assess existing coverage and recent activity, then write tests scoped to recent changes or the full project. Commits per scope with `test({scope}):` messages, per [git.md's Auto-Commit rule](../rules/git.html#auto-commit).
 
 ## Flow
 
@@ -141,5 +141,5 @@ Reports the outcome (up to date / catch up written / full scan written / skipped
 
 ## See also
 
-- [`/helm:refactor`](refactor.md) — pairs naturally; refactor first, then write tests to lock the new behavior in
-- [`/helm:ship`](ship.md) — runs the test suite as part of the release gate
+- [`/helm:refactor`](refactor.html) — pairs naturally; refactor first, then write tests to lock the new behavior in
+- [`/helm:ship`](ship.html) — runs the test suite as part of the release gate
