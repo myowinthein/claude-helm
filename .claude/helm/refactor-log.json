@@ -2853,11 +2853,11 @@
       "file": "docs/commands/archive/5-finalize.md",
       "line": 62,
       "description": "Says the archived branch is 'the branch this workflow was run from,' but the real prompts/archive/step5-finalize.md reads this from Step 1's explicit 'Archiving from:' field (with a fallback for older reports), specifically not the current branch, since a resumed session may have started elsewhere. This resumability mechanism is also undocumented in docs/commands/archive/1-explore.md.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d0571921c5b571d2eb24b5fc8d6047e3fb309763",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0133",
