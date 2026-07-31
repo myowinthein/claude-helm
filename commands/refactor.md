@@ -41,7 +41,7 @@ Scan all project files except:
 - migration files
 - .env files
 - generated or compiled files
-- .claude/refactor-log.json (the memory ledger itself — never treat it as source code)
+- .claude/helm/ (this plugin's own ledger files, including the memory ledger itself — never treat them as source code)
 
 Include test files — test quality degrades fastest and matters most.
 
@@ -51,7 +51,9 @@ Include test files — test quality degrades fastest and matters most.
 
 ### 3.1 Load the ledger
 
-Look for `.claude/refactor-log.json`. This file is the command's memory across runs.
+Look for `.claude/helm/refactor-log.json`. This file is the command's memory across runs.
+
+If not found, check the legacy path `.claude/refactor-log.json` (this plugin's ledgers used to live flat in `.claude/`, which risks colliding with another plugin's own files of the same generic name). If a legacy file exists, load it from there — this is a one-time migration: the next time the ledger is written (Step 4A.7 or 4B.5), it moves to the new `.claude/helm/` path and the old file is removed as part of the same commit. If neither path has a file, this is the first run.
 
 Schema:
 ```json
@@ -98,7 +100,7 @@ Schema:
 
 ### 3.2 First run — no ledger found
 
-If `.claude/refactor-log.json` does not exist, this is the first run. Do not ask which mode to use.
+If neither ledger path from 3.1 has a file, this is the first run. Do not ask which mode to use.
 Inform user:
 
 "No refactor history found — running Deep Mode to build a baseline."
@@ -175,10 +177,11 @@ If no existing refactor branch was found: switch to main or master first if not 
    - Assign `risk` (`safe` or `needs-review`) to every new finding.
    - Group findings that touch the same or directly-related files into a shared `cluster_id`.
    - Where one finding's fix is a precondition for another (e.g. extract-before-dedupe), record it in `depends_on`.
-6. Update `.claude/refactor-log.json`: set `schema_version` to `1` if not already present, set `last_scanned_commit` to current HEAD, `last_mode` to `deep`, `last_scan_date` to today, reset `consecutive_quick_count` to 0, and save the merged findings list.
-7. Commit the ledger immediately:
+6. Update the ledger: set `schema_version` to `1` if not already present, set `last_scanned_commit` to current HEAD, `last_mode` to `deep`, `last_scan_date` to today, reset `consecutive_quick_count` to 0, and save the merged findings list.
+7. Write it to `.claude/helm/refactor-log.json` (creating `.claude/helm/` if it doesn't exist yet), then commit — if this run migrated a legacy `.claude/refactor-log.json` (3.1), remove it in the same commit:
    ```
-   git add .claude/refactor-log.json
+   git add .claude/helm/refactor-log.json
+   git rm .claude/refactor-log.json   # only if migrating this run
    git commit -m "chore(refactor): update ledger after deep scan"
    ```
 
@@ -191,9 +194,10 @@ If no existing refactor branch was found: switch to main or master first if not 
    - File touched but not heavily rewritten (the common case — a few unrelated lines added or removed elsewhere in the file): re-verify the finding's pattern still exists near its recorded `line`, and update `line` to its current position before carrying the finding forward as `open`. A stale line number left unchecked here is a real risk, not just noise — `risk: safe` findings get auto-applied with no human review in Step 6.2, so an unverified line pointing at the wrong code could silently apply a fix to unrelated lines.
 3. Scan only the changed files (single thread, no sub-agents needed) across all categories for new issues. Before adding any finding, cross-check it against the ledger's existing `open` findings for that same file — if it matches one already there, do not create a duplicate, just leave the existing entry as-is. Only genuinely new issues get added. Assign `risk`, `cluster_id`, and `depends_on` to any new findings the same way Deep Mode does.
 4. Update the ledger: set `schema_version` to `1` if not already present. Add new findings as `open`, keep carried-forward entries as-is, mark auto-resolved ones. Set `last_scanned_commit` to current HEAD, `last_mode` to `quick`, `last_scan_date` to today, increment `consecutive_quick_count` by 1.
-5. Commit the ledger immediately:
+5. Write it to `.claude/helm/refactor-log.json` (creating `.claude/helm/` if it doesn't exist yet), then commit — if this run migrated a legacy `.claude/refactor-log.json` (3.1), remove it in the same commit:
    ```
-   git add .claude/refactor-log.json
+   git add .claude/helm/refactor-log.json
+   git rm .claude/refactor-log.json   # only if migrating this run
    git commit -m "chore(refactor): update ledger after quick scan"
    ```
 
@@ -392,7 +396,7 @@ Wait for response before proceeding.
   "Branch pushed. Open a PR to merge into main when ready."
 - If hosted on GitHub, attempt to open the PR:
   ```
-  gh pr create --title "refactor(project): apply refactoring {timestamp}" --base main --head refactor/{timestamp} --body "Applied categories: {category_list}. See .claude/refactor-log.json for the full ledger of findings, fixes, and skipped items."
+  gh pr create --title "refactor(project): apply refactoring {timestamp}" --base main --head refactor/{timestamp} --body "Applied categories: {category_list}. See .claude/helm/refactor-log.json for the full ledger of findings, fixes, and skipped items."
   ```
   If this fails with an auth error, inform user:
   "Branch pushed. gh is not authenticated — run `gh auth login`.

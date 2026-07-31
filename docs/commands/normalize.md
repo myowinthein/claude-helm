@@ -15,7 +15,7 @@ flowchart TD
   Start([User runs /helm:normalize]) --> Warn[Warn: history rewrite,<br/>force push required]
 
   Warn -->|cancel| CancelEarly[/Exit: no changes,<br/>ledger untouched/]
-  Warn -->|continue| Ledger[Load .claude/normalize-log.json<br/>diff branch list against it:<br/>new · dropped · carried forward]
+  Warn -->|continue| Ledger[Load .claude/helm/normalize-log.json<br/>diff branch list against it:<br/>new · dropped · carried forward]
 
   Ledger --> Scan[git log {branches} --not {last_checked_commit}s<br/>incremental — full history on first run<br/>or if a stored commit no longer exists]
 
@@ -60,7 +60,7 @@ Cancel is equally prominent. The command exits cleanly if the user declines.
 
 ### 2. Load ledger, scan, and classify
 
-Reads `.claude/normalize-log.json` if it exists — the command's memory across runs, so each run only has to scan commits added since the last check instead of the full history every time. First run (no file): informs the user and scans everything, same as before this ledger existed.
+Reads `.claude/helm/normalize-log.json` if it exists — the command's memory across runs, so each run only has to scan commits added since the last check instead of the full history every time. First run (no file): informs the user and scans everything, same as before this ledger existed.
 
 The ledger stores one entry per local branch: `last_checked_commit` (that branch's tip SHA as of the end of the last run that updated the ledger) and `last_checked_date`. Because `git filter-repo`/`filter-branch` change every commit's SHA from the first rewritten commit onward — not just the ones whose message actually changed — `last_checked_commit` is always the branch's **post-rewrite** tip whenever the run that recorded it performed a rewrite.
 
@@ -106,7 +106,7 @@ Collects all tags via `git tag`. For each tag, confirms it resolves to a commit 
 
 Reached whenever the ledger should actually advance: Step 3's "nothing to do" exit routes straight here, and a completed rewrite (Steps 4–5) also routes here. Cancelling in Step 1 or Step 3 skips this step entirely — see those steps for why.
 
-Captures each current local branch's tip SHA (`git rev-parse {branch}`) — the post-rewrite tip if Step 4 ran, or the branch's unchanged tip if Step 3 exited on "all compliant." Writes `.claude/normalize-log.json` with `branches` set to exactly the current local branch list — new branches get an entry, branches removed since the last run are dropped, matching Step 2's diff. Commits the ledger (`chore(normalize): update ledger after {scan / rewrite}`) on whichever branch is currently checked out, so it travels with that branch's push in Step 7 like any other commit made this run.
+Captures each current local branch's tip SHA (`git rev-parse {branch}`) — the post-rewrite tip if Step 4 ran, or the branch's unchanged tip if Step 3 exited on "all compliant." Writes `.claude/helm/normalize-log.json` with `branches` set to exactly the current local branch list — new branches get an entry, branches removed since the last run are dropped, matching Step 2's diff. Commits the ledger (`chore(normalize): update ledger after {scan / rewrite}`) on whichever branch is currently checked out, so it travels with that branch's push in Step 7 like any other commit made this run.
 
 ### 7. Force push
 
@@ -135,7 +135,7 @@ Any commits Claude could not classify with high confidence are listed separately
 
 - `git filter-branch` rewrites the full history including merge commits. `git rebase -i` is not used because it requires interactive input per commit and does not handle merge commits cleanly.
 - The rewrite map is built from Claude's diff analysis before any git commands run. If the scan is interrupted, nothing has been modified.
-- `.claude/normalize-log.json` tracks each local branch's last-checked commit so re-runs only scan new commits, not the entire history every time. Because a rewrite changes every commit's SHA from the first rewritten one onward, this value is always the branch's tip *after* the most recent rewrite, not before.
+- `.claude/helm/normalize-log.json` tracks each local branch's last-checked commit so re-runs only scan new commits, not the entire history every time. Because a rewrite changes every commit's SHA from the first rewritten one onward, this value is always the branch's tip *after* the most recent rewrite, not before.
 - After a successful normalize + force push, `git pull` on any other clone of the repo will fail. Each clone needs a `git fetch --all` followed by `git reset --hard origin/main`.
 - Only branches that existed **locally** at rewrite time are covered. An environment branch (staging, production) or any branch that only ever existed on the remote is left pointing at the old history entirely — its ancestry no longer has anything in common with the rewritten main. Fetch and check out any such branch before running normalize if it needs the same treatment; otherwise plan to handle it separately (e.g. delete and recreate it from the new main).
 

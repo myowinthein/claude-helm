@@ -36,7 +36,7 @@ If Cancel → exit silently.
 
 ### 2.1 Load the ledger
 
-Look for `.claude/normalize-log.json`. This is the command's memory across runs — it lets each run scan only commits added since the last check, instead of the full history every time.
+Look for `.claude/helm/normalize-log.json`. This is the command's memory across runs — it lets each run scan only commits added since the last check, instead of the full history every time. This plugin's ledgers live under `.claude/helm/` rather than flat in `.claude/`, to avoid colliding with another plugin's own files of the same generic name.
 
 Schema:
 ```json
@@ -216,11 +216,11 @@ git rev-parse {branch}
 ```
 If Step 4 ran, this is the post-rewrite tip; if Step 3 exited on "all compliant" without a rewrite, it's simply the branch's unchanged tip.
 
-Write `.claude/normalize-log.json`: set `schema_version` to `1` if not already present, and set `branches` to exactly the current local branch list from 2.2 — this naturally drops entries for branches removed since the last run and adds entries for new ones, each with `last_checked_commit` set to the SHA just captured and `last_checked_date` to today.
+Set `schema_version` to `1` if not already present, and set `branches` to exactly the current local branch list from 2.2 — this naturally drops entries for branches removed since the last run and adds entries for new ones, each with `last_checked_commit` set to the SHA just captured and `last_checked_date` to today.
 
-Commit the ledger:
+Write it to `.claude/helm/normalize-log.json` (creating `.claude/helm/` if it doesn't exist yet), then commit:
 ```
-git add .claude/normalize-log.json
+git add .claude/helm/normalize-log.json
 git commit -m "chore(normalize): update ledger after {scan / rewrite}"
 ```
 This commit lands on whichever branch is currently checked out — it travels with that branch's force push in Step 7 like any other commit made during this run.

@@ -6,7 +6,7 @@ nav_order: 5
 
 # /helm:refactor
 
-Branch off `main`, scan the project for refactoring opportunities, apply selected categories one at a time with tests passing after each, then merge, open a PR, or leave the branch for review. A persistent ledger (`.claude/refactor-log.json`) tracks findings across runs so the same issue never surfaces twice and progress is visible over time.
+Branch off `main`, scan the project for refactoring opportunities, apply selected categories one at a time with tests passing after each, then merge, open a PR, or leave the branch for review. A persistent ledger (`.claude/helm/refactor-log.json`) tracks findings across runs so the same issue never surfaces twice and progress is visible over time.
 
 ## Flow
 
@@ -20,7 +20,7 @@ flowchart TD
   ExistingCheck -->|no| Ledger
   NoteExisting --> Ledger
 
-  Ledger{.claude/refactor-log.json<br/>exists?}
+  Ledger{.claude/helm/refactor-log.json<br/>exists?}
   Ledger -->|no — first run| DeepAuto["Inform: running Deep Mode<br/>to build baseline"]
   Ledger -->|yes| ModeAsk["Ask: Deep Mode, Quick Mode,<br/>or Fix Backlog?\nrecommendation based on commits,<br/>days elapsed, changed files,<br/>and open_count"]
 
@@ -86,11 +86,11 @@ Runs `git branch --list 'refactor/*'` and records any existing branch name. No b
 
 ### 2. Scan boundaries
 
-Reads the project but skips `vendor/`, `node_modules/`, `public/`, `storage/`, migration files, `.env` files, generated or compiled files, and `.claude/refactor-log.json` itself. Tests are included on purpose because test quality degrades fastest.
+Reads the project but skips `vendor/`, `node_modules/`, `public/`, `storage/`, migration files, `.env` files, generated or compiled files, and `.claude/helm/` itself — this plugin's own ledgers, never treated as source. Tests are included on purpose because test quality degrades fastest.
 
 ### 3. Load history and choose mode
 
-Looks for `.claude/refactor-log.json` — the command's persistent memory.
+Looks for `.claude/helm/refactor-log.json` — the command's persistent memory. Falls back to the legacy flat path `.claude/refactor-log.json` if the new one isn't found; a legacy file gets migrated to `.claude/helm/` and removed the next time the ledger is written.
 
 **First run (no ledger):** skips the mode question and runs Deep Mode automatically to build a baseline.
 
@@ -157,7 +157,7 @@ Closes with a structured summary: branch, mode, scan scope (new / carried-over /
 
 ## The ledger
 
-`.claude/refactor-log.json` is committed alongside code changes on the refactor branch and travels with the branch to `main` on merge. It tracks every finding ever surfaced: when it was first found, when it was resolved (and in which commit), whether the user skipped it, and whether it auto-resolved because the code was rewritten. This is what makes progress visible across runs instead of repeating the same flat list every time.
+`.claude/helm/refactor-log.json` is committed alongside code changes on the refactor branch and travels with the branch to `main` on merge. It tracks every finding ever surfaced: when it was first found, when it was resolved (and in which commit), whether the user skipped it, and whether it auto-resolved because the code was rewritten. This is what makes progress visible across runs instead of repeating the same flat list every time.
 
 It also carries a `schema_version` field, bumped only if this structure changes in a future release, so a future version of the command can detect and handle an older-shaped file explicitly rather than misreading it. A missing `schema_version` means `1`.
 

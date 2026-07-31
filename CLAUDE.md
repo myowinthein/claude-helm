@@ -28,7 +28,7 @@ Reload locally: `/reload-plugins` after any change
 - `docs/commands/*.md` (+ `docs/commands/archive/`) — human-readable detail pages per command, published as Jekyll site content; not command source
 - `docs/rules/` — detail pages for the two rule files
 - `docs/legal/*.md` — this repo's own generated legal documents (privacy policy, terms, disclaimer, EULA); excluded from the Jekyll build and not yet linked from the site or README
-- `.claude/refactor-log.json` — this repo's own `/helm:refactor` ledger (memory across scan runs); append-only, never overwritten wholesale
+- `.claude/helm/*.json` — this plugin's own ledgers (`refactor-log.json`, `test-log.json`, `legal-manifest.json`; `normalize-log.json` once `/helm:normalize` runs here). Namespaced under `helm/` rather than flat in `.claude/` to avoid colliding with another plugin's own generically-named files. Commands transparently migrate a legacy flat-path file on first run after update.
 - `.claude-plugin/plugin.json` — the version file; bump this on every release
 - `.claude-plugin/marketplace.json` — marketplace registration metadata; `/helm:ship` keeps its `plugins[].version` in sync with `plugin.json` automatically
 - `_config.yml` + `Gemfile` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
@@ -37,7 +37,7 @@ Reload locally: `/reload-plugins` after any change
 
 - `docs/commands/*.md` are detail pages, not command source — editing them never changes command behavior; the real definitions live in `commands/*.md`.
 - `prompts/archive/*.md` must never move into `commands/` — that would make each step appear as its own standalone slash command, breaking `/helm:archive`'s single-entry orchestration.
-- Ledger files (`.claude/refactor-log.json`, and `.claude/test-log.json` if a project runs `/helm:test`) are append-only audit trails — a scan appends new findings, it never overwrites the array.
+- Ledger files (`.claude/helm/refactor-log.json`, and `.claude/helm/test-log.json` if a project runs `/helm:test`) are append-only audit trails — a scan appends new findings, it never overwrites the array.
 - Docs pages (`docs/commands/`, `docs/rules/`) must stay behaviorally consistent with the command/rule files they describe, but nothing enforces this automatically — drift is caught only by manual review or a `/helm:refactor` pass.
 
 ## Behavior Rules

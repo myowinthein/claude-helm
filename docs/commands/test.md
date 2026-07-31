@@ -21,7 +21,7 @@ flowchart TD
   Framework -->|yes| Ledger
   FWSetup -->|succeeds| Ledger
 
-  Ledger["Load .claude/test-log.json<br/>(empty if not found)"] --> Assess
+  Ledger["Load .claude/helm/test-log.json<br/>(empty if not found)"] --> Assess
 
   Assess{Existing tests, recent changes,<br/>or ambiguous findings outstanding?}
   Assess -->|no tests, or full scan never run| FullOrSkip["Ask: full scan or skip?"]
@@ -44,7 +44,7 @@ flowchart TD
   FullPlan -->|priorities selected| FWrite["Behavior Clarity Check per test<br/>Group into clusters within each priority<br/>Write · run · commit, cluster by cluster"]
   FWrite --> UpdateLedger
 
-  UpdateLedger["Update .claude/test-log.json<br/>commit ledger"] --> Merge[GitHub Flow: merge to main<br/>Ask: push main now?]
+  UpdateLedger["Update .claude/helm/test-log.json<br/>commit ledger"] --> Merge[GitHub Flow: merge to main<br/>Ask: push main now?]
   Merge --> Promote[Ask: promote to<br/>environment branches?]
   Promote --> Cleanup[GitHub Flow: delete temp branch]
   Cleanup --> Report
@@ -69,7 +69,7 @@ If a framework is chosen, installs it directly as a dev dependency — detecting
 
 ### 2. Load ledger
 
-Reads `.claude/test-log.json` if it exists. A missing file is not an error — the command proceeds as if the ledger is empty.
+Reads `.claude/helm/test-log.json` if it exists, falling back to the legacy flat path `.claude/test-log.json` if the new one isn't found — a legacy file gets migrated to `.claude/helm/` and removed the next time the ledger is written. A missing file at either path is not an error — the command proceeds as if the ledger is empty.
 
 The ledger stores:
 - **`schema_version`** — bumped only if this structure changes in a future release. A ledger with `schema_version: 1` or none at all (the shape before this field existed — separate `findings`/`full_scan_findings` arrays and `last_test_run_commit`/`last_full_scan_commit` fields) is converted into the current shape on load rather than misread, and persisted in that shape from then on. `full_scan_ever_run` is derived from whether `last_full_scan_commit` held an actual SHA, not merely whether the key was present — it could legitimately be `null` for a repo where a full scan had never run yet.
