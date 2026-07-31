@@ -46,7 +46,7 @@ For each commit, classify as:
 
 To classify each non-compliant commit:
 1. Run: git show {sha} --stat --format="%B"
-2. Read the commit message and the file diff summary
+2. Read the commit message and the file diff summary. Record the raw message text exactly as `%B` printed it, before any trimming — the exact normalization applied here must match Step 4's lookup normalization (`.strip()`), see below.
 3. Infer the correct Conventional Commits type and scope from the diff
 
 Use this inference logic:
@@ -101,6 +101,7 @@ If Cancel → exit silently.
 
 Build the rewrite map as a JSON object: `{ "original_message": "conventional_message", ... }`
 Include only non-compliant commits. Messages not in the map pass through unchanged.
+**Every key must be `.strip()`-equivalent** (leading/trailing whitespace and newlines removed) — the callbacks below strip the incoming message the same way before looking it up. If the map's keys aren't normalized identically, lookups silently miss and the commit passes through unrewritten with no error.
 
 Write the rewrite map to an actual temp file (e.g. `/tmp/normalize-rewrite-map.json`) — do not embed the JSON inline in a shell-quoted script. Commit messages can contain quotes, newlines, or unicode that would break a string substituted directly into the callback; reading from a file avoids that entirely. Delete the temp file once the rewrite below completes.
 
@@ -137,11 +138,11 @@ print(rewrite_map.get(msg, msg))
 "' -- --all
 ```
 
-After rewrite completes, verify a representative sample across the full history:
+After rewrite completes, verify a representative sample across the full history — use `--all` here too, matching the rewrite's actual scope (every local branch), not just whichever branch is currently checked out:
 ```
-git log --oneline | head -20
-git log --oneline | tail -20
-git log --oneline | wc -l  # confirm total commit count is unchanged
+git log --oneline --all | head -20
+git log --oneline --all | tail -20
+git log --oneline --all | wc -l  # compare against {total} from Step 2 — must match exactly
 ```
 
 ---

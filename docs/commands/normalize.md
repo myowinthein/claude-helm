@@ -81,7 +81,9 @@ The user sees exactly what will change before confirming. Cancel exits cleanly w
 
 Uses `git filter-repo --force --message-callback` (preferred) with a JSON rewrite map, falling back to `git filter-branch --msg-filter` if `git filter-repo` is not installed. `--force` is required — filter-repo otherwise refuses to run on anything it doesn't recognize as a fresh clone, and this command runs on the developer's existing working repo. The rewrite map is built during the scan phase and read from a temp file rather than embedded inline, since commit messages can contain quotes, newlines, or unicode that would break a string substituted directly into the callback. Applied in a single pass — no interactive prompts per commit, no partial rewrites. Messages not in the map pass through unchanged.
 
-Verifies the result by sampling the first 20, last 20, and total count of commits before continuing.
+Both callbacks strip the incoming message before looking it up, so the map's keys are built with the same `.strip()`-equivalent normalization when captured in Step 2 — otherwise a mismatched key silently misses the lookup and that commit passes through unrewritten with no error.
+
+Verifies the result across every local branch (`git log --all`, matching the rewrite's actual scope) by sampling the first 20, last 20, and comparing the total commit count against Step 2's scanned total before continuing.
 
 ### 5. Re-create orphaned tags
 
