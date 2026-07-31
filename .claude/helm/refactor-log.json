@@ -2773,11 +2773,11 @@
       "file": "commands/ship.md",
       "line": 89,
       "description": "'Only fix/perf/patch types \u2192 patch bump' refers to 'patch types' as a defined Conventional Commit type category, but no such type exists in the type list given a few lines above \u2014 could mislead a reader into thinking there's a patch: commit prefix.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "f6d87a55379a7efca61f84e83f5b8bbb83e59e60",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0127",
