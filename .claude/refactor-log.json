@@ -1765,11 +1765,11 @@
       "file": "docs/commands/manifest.md",
       "line": 136,
       "description": "Missing a \"Confirm completion\" closing section describing the final report \u2014 log.md, manifest.md's declared twin, has one (### 6); manifest.md jumps straight from Step 5 to Stop conditions.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "d6c2985",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0020",
@@ -1781,11 +1781,11 @@
       "file": "docs/commands/test.md",
       "line": 1,
       "description": "No final \"Report\" section describing what the closing report contains, despite the page's own mermaid diagram ending in Done([Report: tests added]) \u2014 every other multi-step command doc has one.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b7aacec",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0021",
