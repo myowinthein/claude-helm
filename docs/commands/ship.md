@@ -55,7 +55,7 @@ Only on `main`. Discovers remote environment branches via `git branch -r`, filte
 
 ### 2. Calculate version
 
-Only on `main`. Versions follow [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Scans every commit since the last tag (`git log {last_tag}..HEAD`, unbounded) for Conventional Commits patterns. If detected, the same commit list proposes the next version: `BREAKING CHANGE` or `feat!` bumps major, `feat` (no breaking change) bumps minor, only `fix` bumps patch. `chore`, `docs`, `style`, `ci`, and `build` are ignored for version calculation. The user confirms or enters a custom version. If Conventional Commits are not in use, the command asks the human for the version directly.
+Only on `main`. Versions follow [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Scans every commit since the last tag (`git log {last_tag}..HEAD`, unbounded) for Conventional Commits patterns. If detected, the same commit list proposes the next version, covering every type in git.md's Conventional Commits list: `BREAKING CHANGE` or `feat!` bumps major, `feat` (no breaking change) bumps minor, `fix` or `perf` bumps patch (`perf` is a real improvement to shipped behavior, not treated as a no-op). `chore`, `docs`, `style`, `ci`, `build`, `refactor`, `test`, and `revert` are ignored for version calculation — no behavior change from the user's perspective. The user confirms or enters a custom version. If Conventional Commits are not in use, the command asks the human for the version directly.
 
 If no tag exists, the base version is read from the version file (`package.json`, `composer.json`, `VERSION`). If no version is found there either, `0.1.0` is used as the starting point.
 

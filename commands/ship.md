@@ -73,16 +73,16 @@ Use this single output for both detection and version calculation:
 If Conventional Commits detected:
   Read commit messages and scan file changes.
 
-  Triage by commit type:
+  Triage by commit type (covers every type in git.md's Conventional Commits list):
   - feat              → minor bump candidate
-  - fix               → patch bump candidate
+  - fix, perf         → patch bump candidate — perf is a real improvement to shipped behavior, not a no-op
   - feat! or BREAKING CHANGE → major bump candidate
-  - chore, docs, style, ci, build → ignore for version calculation
+  - chore, docs, style, ci, build, refactor, test, revert → ignore for version calculation — no behavior change from the user's perspective
 
   Calculate next version based on highest-priority commit type:
   - Any BREAKING CHANGE or feat! → major bump
   - Any feat (no breaking change) → minor bump
-  - Only fix/patch types → patch bump
+  - Only fix/perf/patch types → patch bump
 
   Present to human:
 
