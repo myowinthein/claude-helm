@@ -86,7 +86,7 @@ If Conventional Commits detected:
   Calculate next version based on highest-priority commit type:
   - Any BREAKING CHANGE or feat! → major bump
   - Any feat (no breaking change) → minor bump
-  - Only fix/perf/patch types → patch bump
+  - Only fix/perf commits (the patch-bump-triggering types) → patch bump
 
   Present to human:
 
