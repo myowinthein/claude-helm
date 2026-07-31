@@ -53,6 +53,7 @@ Links below go to detail pages. Command logic lives in `commands/*.md`.
 | [`/helm:legal`](docs/commands/legal.md) | Generate GDPR-aware legal documents from a project scan. |
 | [`/helm:normalize`](docs/commands/normalize.md) | Rewrite non-conventional commit messages across full repo history. |
 | [`/helm:archive`](docs/commands/archive.md) | Archive an old project for long-term storage and future recovery. |
+| [`/helm:adopt`](docs/commands/adopt.md) | Install or update the rule files into the current project. Setup helper, not a workflow command — see below. |
 
 ### Rules
 
