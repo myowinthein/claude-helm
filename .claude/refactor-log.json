@@ -2245,11 +2245,11 @@
       "file": "commands/test.md",
       "line": 311,
       "description": "Step 6 instructs setting user_status: skipped-by-user 'for files the user chose to skip in the confirmation step', but no per-file skip mechanism exists anywhere in the flow (Step 4 is all-or-nothing, Step 5 is tier-level) \u2014 this status has no writer.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "db40d3d4b6e35c5a91073b0143cd3db2c01fc7f4",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0094",
