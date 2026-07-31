@@ -54,6 +54,7 @@ The step reads source code, configuration files, manifests, env files, and any e
 **Git and repository safety**
 - All remotes and their URLs
 - Branch list
+- Compares the current branch against every other local and remote branch; flags it (informational only, never blocking) if another branch looks more recently active or complete — archive candidates are often neglected, so the checked-out branch isn't always the real latest state
 - CI/CD pipelines that could auto-deploy on push
 
 **Archive assets**

@@ -6,13 +6,9 @@ description: Explore, restore, containerize, document, and seal a project for lo
 
 ## Before starting
 
-Only proceed if on `main` or `master`.
-If on any other branch, stop and inform the user:
+Run from whatever branch you consider the real, complete state of the project — archive candidates are often old or neglected, so `main` is not always the branch that was actually last worked on. There is no branch-name requirement; Step 5 makes whichever branch you archived from the sole surviving branch, renamed to `main` if it isn't already.
 
-"archive must be run on main or master.
-Current branch is {branch}. Please switch and re-run."
-
-Archive seals the **canonical** project, so main must hold the latest work. Before proceeding, list any unmerged local branches (`git branch --no-merged`); if any exist, warn the user that their work is not on main and will not be captured — merge what should be kept first, then re-run. Do not merge on their behalf.
+List any unmerged local branches (`git branch --no-merged`); if any exist, warn the user that their work is not on the current branch and will not be captured — merge what should be kept into the current branch first, then re-run. Do not merge on their behalf.
 
 ## State tracking
 

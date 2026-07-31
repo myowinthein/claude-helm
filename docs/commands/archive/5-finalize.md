@@ -19,11 +19,11 @@ flowchart TD
   RemoteApproval -->|no| StopRemote([Stop])
   RemoteApproval -->|yes| SetRemote[Remove non-personal remotes\nSet origin to private URL]
 
-  SetRemote --> BranchPlan["Present branch cleanup plan:\nKeep main/master\nDelete everything else\n(local + remote)"]
+  SetRemote --> BranchPlan["Present branch cleanup plan:\nRename archived branch to main\nDelete everything else\n(local + remote)"]
 
   BranchPlan --> BranchApproval{Developer\napproves?}
   BranchApproval -->|no| StopBranch([Stop])
-  BranchApproval -->|yes| DeleteBranches[Delete all branches\nexcept main/master]
+  BranchApproval -->|yes| DeleteBranches[Rename archived branch to main\nDelete all other branches]
 
   DeleteBranches --> LFS{Files larger\nthan 100 MB?}
   LFS -->|yes| SetupLFS[Set up Git LFS\nTrack in .gitattributes]
@@ -56,17 +56,17 @@ All non-personal remotes are removed. Origin is set to the provided private URL.
 
 ## Task 2 — Branch cleanup
 
-All local and remote branches are listed. A deletion plan is presented for explicit approval:
+All local and remote branches are listed. The branch this workflow was run from is the one being archived — it becomes the single surviving branch, renamed to `main` if it isn't already. No merging: nothing is combined, the archived branch is simply relabeled as canonical and everything else is discarded. A plan is presented for explicit approval:
 
 ```
 BRANCH CLEANUP
 
-Keep:     main
-Delete:   feature/user-auth   (local + remote)
-Delete:   fix/payment-bug     (local + remote)
+Archiving from:  feature/rewrite  → renamed to main
+Delete:          main (superseded)   (local + remote)
+Delete:          fix/payment-bug     (local + remote)
 ```
 
-If local and remote main/master have diverged, the step stops for approval before resolving the divergence.
+If local and remote `main` have diverged after the push, the step stops for approval before resolving the divergence.
 
 After deletion, runs `git ls-remote --heads origin` to confirm the deleted branches no longer appear on the remote.
 
@@ -94,7 +94,7 @@ All changes accumulated across the full workflow are committed in a single commi
 chore(archive): seal project archive
 ```
 
-Pushed to origin using the branch confirmed in Task 2. The step confirms the push was successful and closes with the archive date, remote URL, and a quick-start recovery snippet.
+Pushed to origin as `main` — the branch kept and renamed in Task 2. The step confirms the push was successful and closes with the archive date, remote URL, and a quick-start recovery snippet.
 
 ## Rules
 

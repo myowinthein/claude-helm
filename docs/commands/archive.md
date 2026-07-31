@@ -13,7 +13,7 @@ The workflow is **resumable**. Progress and each step's report are persisted und
 
 `.archive/` is gitignored scratch, so it has no trace on a fresh clone of an already-archived project. If `state.json` is absent, the command falls back to checking for `docs/archive-metadata.md` — the committed, permanent record Step 4 writes — before assuming this is a genuine fresh run. If that file exists, it confirms with you before restarting the whole workflow, rather than silently re-running everything from Step 1.
 
-**Before starting**, it must be on `main` or `master` — archive seals the *canonical* project and deletes non-main branches, so it halts on any other branch. Because main must hold the latest work, it also lists any unmerged local branches (`git branch --no-merged`) and warns that their work will not be captured, so you can merge what should be kept before sealing. It never merges on your behalf.
+**Before starting**, there is no branch-name requirement — run it from whatever branch you consider the real, complete state of the project. Archive candidates are often old or neglected, so `main` is not always the branch that was actually last worked on; Step 5 makes whichever branch you archived from the sole surviving branch, renamed to `main` if it isn't already. It also lists any unmerged local branches (`git branch --no-merged`) and warns that their work will not be captured, so you can merge what should be kept into the current branch before sealing. It never merges on your behalf.
 
 ## Flow
 
@@ -59,7 +59,7 @@ flowchart TD
 
 ### [1. Explore](archive/1-explore.md)
 
-Read-only reconnaissance. Scans the project structure, stack, runtime versions, database sources, external integrations, existing documentation, and Git remotes. Flags any active credentials found in env files. Produces a structured report and assigns a restoration complexity rating (Easy / Medium / Complex / Blocked) so the developer can decide whether to proceed before anything is touched.
+Read-only reconnaissance. Scans the project structure, stack, runtime versions, database sources, external integrations, existing documentation, and Git remotes. Compares the current branch against every other local and remote branch and flags it (informational only, never blocking) if another branch looks more recently active or complete — a heads-up in case the wrong branch was checked out. Flags any active credentials found in env files. Produces a structured report and assigns a restoration complexity rating (Easy / Medium / Complex / Blocked) so the developer can decide whether to proceed before anything is touched.
 
 ### [2. Restore and Freeze](archive/2-restore-and-freeze.md)
 
@@ -75,7 +75,7 @@ Writes fresh, archive-focused documentation using verified information from all 
 
 ### [5. Finalize](archive/5-finalize.md)
 
-Prepares and seals the archive. Verifies the Git remote and guides you through removing non-personal remotes and setting the private archive URL if origin still points to a company or client repository. Deletes all branches except main or master locally and remotely after explicit approval. Handles the recovery tarballs: reports their size and asks whether to commit them to the remote via Git LFS (recommended — keeps the archive self-contained and clean-machine-recoverable) or keep them local only (with a separate-backup note); other files over 100 MB are LFS-tracked too. Consolidates archive-worthy assets scattered across the project into `recovery/assets/`, checking for code references before moving anything. Stops all running project services (Docker containers, dev servers). After a final confirmation, commits everything accumulated across the full workflow with a single `chore(archive): seal project archive` commit and pushes to the private remote.
+Prepares and seals the archive. Verifies the Git remote and guides you through removing non-personal remotes and setting the private archive URL if origin still points to a company or client repository — this happens first, so every later action in this step, including branch deletion, only ever touches the private archive remote. Renames the branch you archived from to `main` (if it isn't already) and deletes every other branch locally and remotely after explicit approval — no merging, the archived branch simply becomes canonical. Handles the recovery tarballs: reports their size and asks whether to commit them to the remote via Git LFS (recommended — keeps the archive self-contained and clean-machine-recoverable) or keep them local only (with a separate-backup note); other files over 100 MB are LFS-tracked too. Consolidates archive-worthy assets scattered across the project into `recovery/assets/`, checking for code references before moving anything. Stops all running project services (Docker containers, dev servers). After a final confirmation, commits everything accumulated across the full workflow with a single `chore(archive): seal project archive` commit and pushes to the private remote.
 
 ## Output
 

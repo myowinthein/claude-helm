@@ -40,23 +40,26 @@ Do not proceed to any other task until origin is confirmed as the private archiv
 
 ## Task 2 — Branch Cleanup
 
-List all local and remote branches. Identify main or master as the single branch to keep.
+List all local and remote branches. The branch this workflow was run from (per Step 1) is the one being archived — it becomes the single branch to keep, renamed to `main` if it isn't already named `main` or `master`. No merging happens here: nothing is combined, the archived branch is simply relabeled as canonical and everything else is discarded.
 
-Present the deletion plan and wait for explicit approval:
+Present the plan and wait for explicit approval:
 
 ```
 BRANCH CLEANUP
 
-Keep:     main
-Delete:   feature/user-auth   (local + remote)
-Delete:   fix/payment-bug     (local + remote)
-Delete:   chore/cleanup       (local + remote)
+Archiving from:  feature/rewrite  → renamed to main
+Delete:          main (superseded)   (local + remote)
+Delete:          fix/payment-bug     (local + remote)
+Delete:          chore/cleanup       (local + remote)
 ```
 
+If the archived branch is already named `main` or `master`, state that no rename is needed.
+
 Once approved:
-- Delete all branches except main/master locally and remotely
+- If the archived branch is not already named `main`/`master`: rename it to `main` locally (`git branch -m {branch} main`)
+- Delete all other branches locally and remotely, including the old `main`/`master` if it was superseded
 - Verify deletion: run `git ls-remote --heads origin` and confirm the deleted branches no longer appear
-- Verify local main/master is in sync with remote
+- Verify local `main` is in sync with remote after push
 - If local and remote have diverged: report the divergence and stop for approval before resolving
 
 ---
@@ -139,7 +142,7 @@ Show git status — all staged and unstaged changes accumulated across the full 
 Confirm before committing and pushing — this is the final destructive action:
 
 AskUserQuestion:
-  question: "Seal the archive? This commits all accumulated changes and pushes to {archive_remote_url} ({main_or_master})."
+  question: "Seal the archive? This commits all accumulated changes and pushes to {archive_remote_url} (main)."
   header:   "Seal archive"
   multiSelect: false
   options:
@@ -158,9 +161,9 @@ git commit -m "chore(archive): seal project archive"
 ```
 If the tarballs are LFS-tracked (Task 3), confirm they are staged as LFS pointers (`git lfs status`) before committing — not as raw blobs.
 
-Push to origin using the branch identified in Task 2:
+Push to origin using the branch kept in Task 2 (now named `main`):
 ```
-git push origin {main_or_master}
+git push origin main
 ```
 
 Confirm the push was successful.
@@ -173,7 +176,7 @@ Output the report in this format:
 Previous remote(s) removed. New origin confirmed as private archive remote.
 
 ## Branch Cleanup
-Branches deleted locally and remotely. Confirmation that local and remote main/master are in sync.
+Branches deleted locally and remotely, including any rename to `main`. Confirmation that local and remote `main` are in sync.
 
 ## Recovery Tarballs & Git LFS
 How the tarballs travel: committed via Git LFS, or kept local only (with the separate-backup note). Total tarball size. Other files tracked with LFS and `.gitattributes` changes. If no large files at all: state so.
