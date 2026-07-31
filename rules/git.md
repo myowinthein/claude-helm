@@ -87,7 +87,7 @@ When active:
 - After completing a task, commit without asking for confirmation
 - Stage only the files changed for the task. Never use `git add -A` blindly
 - Derive the commit message from the work done; follow Conventional Commits
-- Push still requires confirmation (covered in safety.md)
+- Push still requires confirmation — same rule as Universal Rules → Safety below, restated here since it's the exception auto-commit doesn't override
 - If the task spans multiple logical units, commit each unit separately before moving to the next
 
 **Exception:** commits covered by safety.md's Agent Execution Boundaries — e.g.

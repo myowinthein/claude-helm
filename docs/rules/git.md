@@ -46,10 +46,15 @@ Active when `git-strategy: github-flow` is declared, or when `git-strategy` is a
 
 ```
 main
-feature/*
+feature/*  (or feat/*)
 fix/*
 chore/*
 refactor/*
+docs/*
+test/*
+perf/*
+ci/*
+build/*
 ```
 
 **Rules**
@@ -92,10 +97,10 @@ When active:
 - After completing a task, commit without asking for confirmation.
 - Stage only the files changed for the task. Never use `git add -A` blindly.
 - Derive the commit message from the work done; follow Conventional Commits.
+- Push still requires confirmation — same rule as Universal Rules → Safety below, restated here since it's the exception auto-commit doesn't override.
 - If the task spans multiple logical units, commit each unit separately before moving on.
 
 **Exception:** commits covered by [`safety.md`](safety.md#agent-execution-boundaries)'s Agent Execution Boundaries — e.g. committing generated legal documents ([`/helm:legal`](../commands/legal.md)) — always ask for confirmation regardless of this setting. Those are public or otherwise high-stakes content where autonomy level should never skip review.
-- Push still requires confirmation (cross-references `safety.md`).
 
 ## Universal Rules
 
@@ -184,7 +189,7 @@ Independent of strategy. Applies under both Solo and GitHub Flow.
 
 Independent of strategy. Works alongside Solo and GitHub Flow.
 
-Environment branches are long-lived branches that are not `main`, `master`, or feature branches: `staging`, `stage`, `uat`, `preprod`, `production`, `prod`. The presence of any such branch on the remote activates these rules:
+Environment branches are long-lived branches that are not `main`, `master`, or feature branches — e.g. `staging`, `stage`, `uat`, `preprod`, `production`, `prod`, or similar. The presence of any such branch on the remote activates these rules:
 
 - Environment branches are permanent. Never delete.
 - Nothing merges directly to an environment branch.
