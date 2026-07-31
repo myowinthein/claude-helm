@@ -7,7 +7,7 @@ permalink: /docs/rules
 
 # Rules
 
-Rule files installed into projects via [`/helm:adopt`](/docs/commands/adopt). They govern git workflow and operational safety across all projects that use helm.
+Rule files installed into projects via [`/helm:adopt`](commands/adopt.html). They govern git workflow and operational safety across all projects that use helm.
 
 ## Rule files
 

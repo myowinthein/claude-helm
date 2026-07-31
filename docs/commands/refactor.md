@@ -65,7 +65,7 @@ flowchart TD
   Verify[Scoped verification pass<br/>re-check touched files only<br/>catch newly introduced issues]
   Verify --> Next[Ask: merge, PR, or leave?]
 
-  Next -->|merge| Merge[Switch to main · merge --no-ff · push<br/>ask which environment branches to promote<br/>delete refactor branch]
+  Next -->|merge| Merge[Switch to main · merge --no-ff · push<br/>check CI status for the pushed commit<br/>ask which environment branches to promote<br/>delete refactor branch]
   Next -->|PR| PR[Push branch<br/>attempt gh pr create<br/>fall back to manual if unavailable]
   Next -->|leave| Leave[Leave branch intact locally]
 
@@ -141,7 +141,7 @@ For each selected category in turn:
 ### 7. Merge, PR, or leave
 
 Asks how to land the work:
-- **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, push, then — if environment branches exist (same detection [`/helm:ship`](ship.html) uses) — ask which should also receive the refactor and merge main into each selected one, before deleting the refactor branch
+- **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, push, then — if environment branches exist (same detection [`/helm:ship`](ship.html) uses) — checks CI status for the commit just pushed (same `gh run list`, matched-by-SHA mechanics as [`/helm:ship`](ship.html)'s Step 4; skipped silently if not GitHub-hosted or no workflows exist) and folds the result into the promotion question before asking which environments should also receive the refactor and merging main into each selected one, before deleting the refactor branch
 - **Open PR** — push the branch (with updated ledger), then, if the repo is hosted on GitHub, attempt `gh pr create` directly (same pattern as [`/helm:ship`](ship.html)'s GitHub Release step). Falls back to a manual "open a PR yourself" instruction if the repo isn't on GitHub, `gh` isn't installed, or it isn't authenticated
 - **Leave as-is** — branch stays locally for manual review
 

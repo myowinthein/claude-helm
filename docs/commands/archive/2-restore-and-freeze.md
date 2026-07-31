@@ -84,6 +84,15 @@ docker load < recovery/docker/db.tar.gz
 docker-compose up
 ```
 
+## Data persistence
+
+`docker save` captures the service image, not the database's data — that lives in a volume. Without an extra step, `docker load` + `docker-compose up` comes back with an empty database. Skipped for non-database data layers; for database-backed and local/file-based projects, one of two mechanisms makes the restored data recoverable:
+
+- **Re-runnable source already in the repo** (a dump, seed, or migrations — the common case): wired to restore on startup, e.g. mounted into `/docker-entrypoint-initdb.d/` for Postgres/MySQL.
+- **No re-runnable source** (data only exists in the live volume): the volume itself is exported to `recovery/docker/` as a validated, non-empty gzipped tarball, restored before `docker-compose up`.
+
+Whichever mechanism applies, the exact recovery step is documented in `docs/setup.md` alongside the image-load commands.
+
 ## Rules
 
 - Preserve the original project. Prefer compatibility fixes over upgrades.

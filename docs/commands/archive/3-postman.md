@@ -80,6 +80,8 @@ Saved to `recovery/postman/` using the project name from Step 1:
 
 Requests are organized by functional area (Authentication, Users, Admin, Products, Orders, etc.) with collection variables, environment variables, request descriptions, and authentication notes.
 
+Written in **Postman Collection Format v2.1** (`schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"`) — supported by Postman, Bruno, and most modern API clients. Never v2.0, which Bruno can't import without a conversion step first.
+
 ## Output
 
 The step produces a report with the following sections:

@@ -185,7 +185,7 @@ Exact commands run in order.
 ## Access Points
 How to access or run the project locally (URLs and ports for web projects, commands for CLI tools, entry points for scripts or notebooks). State "not applicable" if the project type has no access point.
 
-App running: yes/no — Step 3 (Postman collection generation) reads this directly rather than inferring it from prose above; state it explicitly even when "not applicable."
+App running: yes/no
 
 ## Verification Results
 What was tested and what the results were. Any critical errors found.
@@ -197,6 +197,8 @@ One of: Fully Restored / Partially Restored / Buildable But Not Runnable / Block
 Anything that prevented full restoration or needs attention before proceeding to Step 3.
 
 ---
+
+The "App running:" field is read directly by Step 3 (Postman collection generation), rather than inferred from the prose above. State it explicitly, on its own line, even when "not applicable."
 
 Do not commit or push. Output the report and stop. Wait for explicit approval before proceeding to Step 3.
 

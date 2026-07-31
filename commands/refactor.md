@@ -82,7 +82,7 @@ Schema:
 }
 ```
 
-`schema_version` — bumped only if this ledger's structure changes in a future release. Lets a future version of this command detect an older-shaped file and handle it explicitly instead of misreading it. Treat a missing `schema_version` as `1` (every ledger written before this field existed).
+`schema_version` — bumped only if this ledger's structure changes in a future release. Lets a future version of this command detect an older-shaped file and handle it explicitly instead of misreading it. Treat a missing `schema_version` as `1` (every ledger written before this field existed). Always write it going forward.
 
 `status` values: `open`, `fixed`, `skipped-by-user`, `auto-resolved`.
 
@@ -263,14 +263,9 @@ Then present multi-select category selection using the AskUserQuestion tool:
 
   Question:    "Which categories to apply?"
   multiSelect: true
-  Options (include only categories that have at least one `new` or `still open` finding; max 4):
-    - Architecture   — "{N} issues: {one-line summary}"
-    - Code Quality   — "{N} issues: {one-line summary}"
-    - Tests          — "{N} issues: {one-line summary}"
-    - Dependencies   — "{N} issues: {one-line summary}"
+  Options: one entry per category that has at least one `new` or `still open` finding, from all 5 (Architecture, Code Quality, Performance, Tests, Dependencies) — "{N} issues: {one-line summary}"
 
-  If more than 4 categories qualify, merge the smallest two into
-  one option (e.g. "Tests & Dependencies").
+  AskUserQuestion caps at 4 options. If more than 4 categories qualify, merge the smallest two into one option (e.g. "Tests & Dependencies") — repeat until at or under 4.
 
   Selecting no options = skip. Do not add an explicit All or Skip option.
 
