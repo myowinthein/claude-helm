@@ -21,11 +21,27 @@ Scan the codebase to understand the project's legal profile:
 - Error tracking (Sentry, Bugsnag)
 - Any personally identifiable information (PII) collected or stored
 
+**Sensitive data (GDPR Art. 9 special category)**
+- Health, medical, or fitness data; biometric or genetic data
+- Race or ethnicity, religion, political views, trade-union membership, sexual orientation
+- Detect from data fields, model schemas, or integrations that handle such data
+- If any is present, the privacy policy must call it out — special-category data needs explicit consent and a stricter legal basis
+
+**Children and minors**
+- Is the service directed at, or knowingly accessible to, children?
+- Age gates, minimum-age checks (13+ / 16+), parental-consent flows, kid-directed content or framing
+- Drives the Children's Privacy section (GDPR Art. 8, and COPPA where US minors are involved)
+
 **Third party integrations**
 - Payment processors (Stripe, PayPal, Paddle)
 - Social auth (Google, GitHub, Facebook OAuth)
 - Cloud services (AWS, GCP, Firebase)
 - Marketing or tracking tools
+
+**Email and marketing communications**
+- Email service providers (Mailchimp, SendGrid, Postmark, Klaviyo, Resend, and similar)
+- Newsletter or marketing-list signup forms
+- Distinguish transactional email (account/receipts) from marketing email — marketing requires consent under GDPR and the ePrivacy rules, and belongs in the privacy policy
 
 **Monetization**
 - Payment processing, subscription logic, pricing pages

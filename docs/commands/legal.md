@@ -12,7 +12,7 @@ Scan the project's legal profile, detect the output format based on the web fram
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:legal]) --> Scan[Scan project profile:<br/>app type, data, third parties,<br/>monetization, content, AI features]
+  Start([User runs /helm:legal]) --> Scan[Scan project profile:<br/>app type, data, sensitive data, minors,<br/>third parties, email/marketing,<br/>monetization, content, AI features]
 
   Scan --> Framework[Detect framework and output format:<br/>SSG → .md<br/>SSR/SSG JS → .mdx<br/>SPA/plain HTML → .html<br/>no web project → ask user]
 
@@ -43,7 +43,10 @@ Reads the codebase to build a legal profile:
 
 - **App type**: web app, mobile, Chrome extension, desktop, open source library.
 - **Data collection**: forms, auth, accounts, analytics (GA, Mixpanel, Hotjar, GTM), error tracking (Sentry, Bugsnag), any PII.
+- **Sensitive data**: GDPR Art. 9 special-category data (health, biometric, race, religion, sexual orientation, political views) — triggers explicit-consent requirements the policy must state.
+- **Children and minors**: whether the service targets or admits children (age gates, 13+/16+ checks, parental consent) — drives the Children's Privacy section (GDPR Art. 8, COPPA).
 - **Third parties**: payment processors (Stripe, PayPal, Paddle), social auth, cloud services, marketing tools.
+- **Email and marketing**: email service providers (Mailchimp, SendGrid, Postmark, …) and newsletter signups — marketing email needs consent (GDPR/ePrivacy), transactional does not.
 - **Monetization**: paid tiers, subscriptions, pricing pages.
 - **Content model**: user-generated content, advice content (financial, health, legal), AI-generated recommendations.
 - **AI features**: AI used to generate recommendations presented as facts, BYOK models.
