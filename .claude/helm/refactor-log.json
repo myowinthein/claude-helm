@@ -2693,11 +2693,11 @@
       "file": "commands/env.md",
       "line": 531,
       "description": "The 'nothing is staged' early-exit explicitly notes the Hardcoded values sub-flow already made real per-file commits on the GitHub Flow temp branch, then still instructs deleting {branch} without merging those commits to main \u2014 silently discarding already-committed work.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0ea656c29a6ba49a2ba3a26dcb3e0f214cfb7c22",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0122",
