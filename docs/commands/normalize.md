@@ -12,9 +12,7 @@ Rewrites every non-conventional commit message in the repository's history to fo
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:normalize]) --> Branch{On main<br/>or master?}
-  Branch -->|no| BranchStop[/Stop: switch to main first/]
-  Branch -->|yes| Warn[Warn: history rewrite,<br/>force push required,<br/>tags orphaned]
+  Start([User runs /helm:normalize]) --> Warn[Warn: history rewrite,<br/>force push required,<br/>tags orphaned]
 
   Warn -->|cancel| Cancel[/Exit: no changes/]
   Warn -->|continue| Scan[Collect local branches<br/>Scan all commits<br/>git log --oneline]
@@ -42,7 +40,7 @@ flowchart TD
 
 ### Before starting
 
-Only runs from `main` or `master`. Refuses to rewrite history from a feature branch — the rebase would diverge from `main` and create a worse mess.
+No branch requirement — runs from any branch. `git filter-repo` (and the `git filter-branch` fallback, invoked with `--all`) rewrite every local branch together in one consistent pass regardless of which one is checked out, so the starting branch has no effect on the result — see Step 2 for the actual scope.
 
 ### 1. Risk warning
 
@@ -106,7 +104,6 @@ Closes with a structured summary: total commits scanned, rewritten count, which 
 
 ## Stop conditions
 
-- **Not on `main` or `master`.** Switch branches and re-run.
 - **Risk warning declined.** No changes made.
 - **Plan confirmation declined.** No changes made.
 - **All commits already compliant.** Nothing to do — exits after the scan.

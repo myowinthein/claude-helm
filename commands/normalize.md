@@ -10,11 +10,7 @@ Rewrite all commit messages in this repository to follow Conventional Commits fo
 
 ## Before starting
 
-Only proceed if on main or master.
-If on any other branch, stop and inform user:
-
-"normalize must be run on main or master.
-Current branch is {branch}. Please switch and re-run."
+No branch requirement — run from any branch. `git filter-repo` (and the `git filter-branch` fallback, invoked with `--all`) rewrite every local branch together in one consistent pass regardless of which one is checked out, so the starting branch has no effect on the result. See Step 2 and Step 3 for the actual scope (every local branch) and Step 1's risk warning for what that means.
 
 ---
 
