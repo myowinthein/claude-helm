@@ -149,7 +149,11 @@ Based on scan findings, mark each document as Recommended if it applies:
 - eula.md — Recommended if Chrome extension, desktop app, or downloadable software detected
 - disclaimer.md — Recommended if financial, health, legal advice or AI recommendations detected
 
-AskUserQuestion supports a maximum of 4 options. Split into two questions:
+AskUserQuestion supports a maximum of 4 options. Split into two questions.
+
+Labeling applies to both questions below:
+- Append `(Recommended)` per each document's recommendation rule (noted inline per option).
+- For an existing document, append its classification suffix from Step 1: `(exists)` for an up-to-date Helm-generated file, `(exists — may be outdated)` for a Helm-generated file flagged stale (also mark it Recommended so the user regenerates it), or `(exists — not helm-generated)` for a Foreign file. This lets the user tell an auto-generated file from a hand-edited one, and a current file from a stale one.
 
 Question 1 — core documents:
   AskUserQuestion:
@@ -157,13 +161,13 @@ Question 1 — core documents:
     header:   "Core documents"
     multiSelect: true
     options:
-      - label: "privacy-policy.md (Recommended)"    ← append "(exists)" if file already present
+      - label: "privacy-policy.md (Recommended)"
         description: "Explains what data is collected and how it is handled"
-      - label: "terms.md (Recommended)"             ← append "(exists)" if file already present
+      - label: "terms.md (Recommended)"
         description: "Acceptable use, IP ownership, liability, governing law"
-      - label: "eula.md"                            ← append "(Recommended)" if downloadable software; "(exists)" if file present
+      - label: "eula.md"                            ← append "(Recommended)" if downloadable software
         description: "License grant, restrictions, and liability for installable software"
-      - label: "disclaimer.md"                      ← append "(Recommended)" if AI content or advice; "(exists)" if file present
+      - label: "disclaimer.md"                      ← append "(Recommended)" if AI content or advice
         description: "No-professional-advice notice and AI-generated content warning"
 
 Question 2 — conditional documents (only ask if applicable based on scan findings):
@@ -172,20 +176,13 @@ Question 2 — conditional documents (only ask if applicable based on scan findi
     header:   "Additional documents"
     multiSelect: true
     options:
-      - label: "cookie-policy.md"                   ← append "(Recommended)" if analytics detected; "(exists)" if file present
+      - label: "cookie-policy.md"                   ← append "(Recommended)" if analytics detected
         description: "Required if non-essential cookies or analytics tools are present"
-      - label: "refund-policy.md"                   ← append "(Recommended)" if payments detected; "(exists)" if file present
+      - label: "refund-policy.md"                   ← append "(Recommended)" if payments detected
         description: "Required if payment processing is present"
 
   Skip Question 2 entirely if neither cookie-policy nor refund-policy is applicable
   based on scan findings (no analytics, no payments detected).
-
-In the labels above, reflect each existing document's classification:
-- up-to-date Helm-generated → append `(exists)`
-- Helm-generated flagged **may be outdated** → append `(exists — may be outdated)` and mark it Recommended, so the user regenerates it
-- Foreign → append `(exists — not helm-generated)`
-
-so the user can tell an auto-generated file from a hand-edited one, and a current file from a stale one.
 
 Generate only the documents selected across both questions.
 If nothing is selected, exit without generating anything.
