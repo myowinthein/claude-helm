@@ -19,6 +19,7 @@ If there is no git repository yet, or CLAUDE.md does not exist yet (so `git-stra
 - Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
 - Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b chore/adopt-{YYYYMMDD}` from it.
 - Call this branch `{branch}` for the rest of this command.
+- If this command exits at any point without writing anything (e.g. Cancel at any prompt, or the No-change path), delete `{branch}` and return to `{original_branch}` before exiting — never leave the user stranded on an empty temporary branch it created.
 
 ## Step 1 — Sanity check
 
@@ -42,7 +43,7 @@ Decide based on what is present:
       - label: "Cancel"
         description: "Exit without changes"
 
-  If Cancel → exit.
+  If Cancel → proceed to Step 5, which correctly handles either outcome: cleans up the GitHub Flow branch if one was created (normal flow), or does nothing further if this was a fresh bootstrap (no branch was created).
 
 ## Step 2 — Scan existing rules
 
@@ -242,11 +243,11 @@ AskUserQuestion:
 
 ### No-change path
 
-- For "Nothing" (in sync), "Keep project rules" (ahead), or "Keep references" (already in reference mode): make no changes and report the status (already up to date, project ahead of the installed plugin, or references kept). No files written.
+- For "Nothing" (in sync), "Keep project rules" (ahead), or "Keep references" (already in reference mode): make no changes and report the status (already up to date, project ahead of the installed plugin, or references kept). No files written. Proceed to Step 5 for cleanup.
 
 ### Cancel path
 
-- Exit silently. No files written.
+- Exit silently. No files written. Proceed to Step 5 for cleanup.
 
 ### Overwrite mapping
 
@@ -255,7 +256,11 @@ AskUserQuestion:
 
 ## Step 5 — Commit and finalize
 
-Skip this step entirely if Step 4 made no changes (No-change path or Cancel path), or if Before starting's branch-strategy setup was skipped (fresh bootstrap, no repo, or no pre-existing CLAUDE.md) — commit whatever was written per git.md's Auto-Commit rule and stop there; there is no main, no temporary branch, and no environment branches to consider yet.
+**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.md): there is no branch to clean up, since none was created. If Step 4 wrote anything, commit it per git.md's Auto-Commit rule and stop — no merge, promotion, or branch cleanup applies here. If Step 4 made no changes, there is nothing to do at all.
+
+**Normal flow** (branch-strategy setup ran in Before starting):
+
+If Step 4 made no changes (No-change path or Cancel path): skip commit, merge, and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
 
 Otherwise, commit per git.md's Auto-Commit rule — this also governs whether the sequence below needs confirmation before proceeding: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
 

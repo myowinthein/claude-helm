@@ -25,7 +25,7 @@ flowchart TD
 
   Sanity{Directory state?}
   Sanity -->|non-empty, no project markers| AskContinue[Ask: continue or cancel?]
-  AskContinue -->|cancel| Cancel[/Exit: no changes/]
+  AskContinue -->|cancel| CommitWrite
   AskContinue -->|continue| Scan
   Sanity -->|project markers, or empty| Scan
 
@@ -36,17 +36,17 @@ flowchart TD
   State -->|helm-marked files| Update[Compare marker vs installed version:<br/>update if behind, keep if in sync,<br/>warn if ahead; or switch to reference]
   State -->|foreign content| Conflict[Ask: review per file,<br/>reference, or cancel?]
 
-  Fresh -->|cancel| Cancel
-  Referenced -->|cancel| Cancel
-  Update -->|cancel| Cancel
-  Conflict -->|cancel| Cancel
+  Fresh -->|cancel| CommitWrite
+  Referenced -->|cancel| CommitWrite
+  Update -->|cancel| CommitWrite
+  Conflict -->|cancel| CommitWrite
 
   Fresh -->|copy| Copy
   Fresh -->|reference| Reference
-  Referenced -->|keep references| Done
+  Referenced -->|keep references| CommitWrite
   Referenced -->|switch to copy| Copy
   Update -->|update / roll back| Copy
-  Update -->|in sync or keep-ahead| Done
+  Update -->|in sync or keep-ahead| CommitWrite
   Update -->|switch to reference| Reference
   Conflict -->|review per file| PerFile[Per file:<br/>overwrite or skip]
   Conflict -->|reference| Reference
@@ -55,9 +55,12 @@ flowchart TD
   PerFile --> CommitWrite
   Reference[Set the Rules section in CLAUDE.md<br/>to absolute plugin paths<br/>or print the snippet for paste] --> CommitWrite
 
-  CommitWrite{Changes written,<br/>and not a fresh bootstrap?}
-  CommitWrite -->|no| Done
-  CommitWrite -->|yes| Commit["Commit (per git-auto-commit)"]
+  CommitWrite{Fresh bootstrap?}
+  CommitWrite -->|yes| BootstrapCommit["If anything was written,<br/>commit it (per git-auto-commit)<br/>no branch, no cleanup"] --> Done
+  CommitWrite -->|no| ChangesCheck{Changes written?}
+
+  ChangesCheck -->|no| Cleanup
+  ChangesCheck -->|yes| Commit["Commit (per git-auto-commit)"]
 
   Commit --> SoloOrFlow{Which mode?}
   SoloOrFlow -->|Solo| Promote
@@ -86,9 +89,11 @@ Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaul
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`chore/adopt-{date}`) — regardless of what the starting branch was. Returns to the original branch at the end (see Step 5).
 
+If the command exits at any point without writing anything — Cancel at any prompt, or the No-change path — this cleanup still runs: delete the temporary branch and return to the original branch. This applies everywhere in the command (not a fresh bootstrap, though — see Step 5).
+
 ### 1. Sanity check
 
-Looks for `.git/`, `CLAUDE.md`, or a recognised manifest (`package.json`, `composer.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`). Proceeds when markers are found, and also when the directory is empty (a plausible fresh-project setup with nothing to clobber). Only prompts to confirm or cancel when the directory is non-empty but has no project markers — the case that suggests a wrong directory.
+Looks for `.git/`, `CLAUDE.md`, or a recognised manifest (`package.json`, `composer.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`). Proceeds when markers are found, and also when the directory is empty (a plausible fresh-project setup with nothing to clobber). Only prompts to confirm or cancel when the directory is non-empty but has no project markers — the case that suggests a wrong directory. Cancelling here still proceeds to Step 5, which cleans up the GitHub Flow branch if one was created (or does nothing further on a fresh bootstrap).
 
 ### 2. Scan existing rules
 
@@ -120,11 +125,13 @@ Both the Copy or Update and Reference paths update CLAUDE.md's `## Rules` sectio
 
 **Reference**: first clears any local `.claude/rules/git.md` / `safety.md` that would otherwise sit alongside — and conflict with — the referenced plugin rules. Helm-marked files are deleted without asking (the mode was already chosen), which also makes the next scan classify as REFERENCED rather than UPDATE. A Foreign, user-authored file at either of those two paths is never deleted silently — the command asks Delete or Skip, and a kept file is flagged in the report as a possible conflict. Any other file in `.claude/rules/` is left untouched. The `## Rules` snippet points at `~/.claude/plugins/marketplaces/claude-helm/rules/` — always the latest installed version, auto-updating after `/plugin update helm@claude-helm` — and includes a warning to install the plugin if those paths are missing.
 
-**No change**: for the no-op choices — "Nothing" (already in sync), "Keep project rules" (project ahead of the installed plugin), or "Keep references" (already in reference mode) — writes nothing and just reports the status.
+**No change**: for the no-op choices — "Nothing" (already in sync), "Keep project rules" (project ahead of the installed plugin), or "Keep references" (already in reference mode) — writes nothing and just reports the status. Proceeds to Step 5 for cleanup, same as Cancel.
 
 ### 5. Commit and finalize
 
-Skipped entirely if Step 4 wrote nothing (No change or Cancel), or if Before starting's branch-strategy setup was skipped (fresh bootstrap) — in that case whatever was written just commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) and stops there.
+**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.md): there's no branch to clean up, since none was created. If Step 4 wrote anything, commits it per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) and stops — no merge, promotion, or branch cleanup applies. If Step 4 made no changes, there's nothing to do at all.
+
+**Normal flow**: if Step 4 made no changes (No-change or Cancel path), skips commit, merge, and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
 
 Otherwise, commits per that same rule, which also governs whether the rest of this step needs confirmation: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
 
@@ -144,6 +151,8 @@ Final summary line per file describing what was written, updated, skipped, or re
 - **Directory is non-empty without project markers and user cancels.**
 - **User picks Cancel at any of the install-mode prompts.**
 - **No `CLAUDE.md` and Reference mode chosen, user declines to create it**: the snippet is printed but nothing is written; user takes over.
+
+Every exit above still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created — see Before starting. Not applicable to a fresh bootstrap, since no branch was ever created there.
 
 ## Notes
 
