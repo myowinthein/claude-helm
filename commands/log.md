@@ -14,7 +14,7 @@ CLAUDE.md uses these eight sections, in order. Both a full scan and a gap update
 4. **Architecture Pointers** — key files and modules with a one-line why, not summaries.
 5. **Domain Rules** — non-obvious business, lifecycle, and permission constraints a change could violate; one line each; write "None" if there are none.
 6. **Behavior Rules** — development conventions, autonomy model, confirmation gates, test requirements.
-7. **Hard Safety Rules** — invariants / never-do list; keep brief and instruct the agent to read and follow `.claude/rules/safety.local.md` every session for the full detail.
+7. **Hard Safety Rules** — this project's concrete never-do list: the real operational risks it carries (what `git push` deploys, which scripts are destructive, which environment is shared). Keep it concise; write "None" if there are no project-specific hazards.
 8. **Known Traps** — gotchas; initially empty or inferred from README warnings.
 
 A `## Rules` section, if present, is **not** part of this schema — it is written and managed by `/helm:adopt` and points at the adopted rule files (`.claude/rules/git.md`, `safety.md`), distinct from the inline Domain / Behavior / Hard Safety Rules above. Preserve it exactly as-is: a full scan or gap update must never write, move, or remove it.
@@ -220,5 +220,5 @@ Ask for confirmation before writing.
 
 CLAUDE.md = descriptive project knowledge (orientation layer).
 .claude/rules/ = prescriptive rules (architecture, safety, git, testing).
-Keep them consistent. When a convention change leaves a rule file out of date, **propose** the update — never auto-edit `.claude/rules`. The helm-managed files (`git.md`, `safety.md`) are overwritten by `/helm:adopt`, so edits there are lost; project-specific safety findings belong in `.claude/rules/safety.local.md`, proposed not auto-written.
+Keep them consistent. Project-specific safety rules live in CLAUDE.md's `## Hard Safety Rules` section (written here, loaded with CLAUDE.md) — proposed, not auto-written. Never auto-edit the adopt-managed `.claude/rules` files (`git.md`, `safety.md`); they are overwritten by `/helm:adopt`, so propose any needed change to those instead.
 

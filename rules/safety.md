@@ -32,14 +32,13 @@ Hard Safety Rules section, but it does not run this scan or write
 Only document risks supported by evidence in the repository — not assumptions.
 
 **Output:** Documented findings — the Risk/Instruction pairs, environment
-classifications, and any project-specific boundary additions — belong in
-`.claude/rules/safety.local.md`, a project-owned file adopt never overwrites so
-findings survive plugin updates. Propose the findings first and write them only
-on confirmation — never auto-write a safety rule without review. In CLAUDE.md's
-`## Hard Safety Rules` section, keep a brief never-do summary and instruct the
-agent to read and follow `.claude/rules/safety.local.md` every session — so the
-findings bind like the base rules. Keep this in Hard Safety Rules, not the
-adopt-managed `## Rules` section, which adopt rewrites on each run.
+classifications, and any project-specific boundary additions — go into CLAUDE.md's
+`## Hard Safety Rules` section as this project's concrete never-do list. Propose
+the findings first and write them only on confirmation — never auto-write a safety
+rule without review. Keep them in `## Hard Safety Rules` (project-owned, written by
+`/helm:log`, loaded with CLAUDE.md), not the adopt-managed `## Rules` section, which
+adopt rewrites on each run, and not the shipped `git.md` / `safety.md`, which adopt
+overwrites on update.
 
 ## Scan Targets
 
