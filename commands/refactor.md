@@ -56,6 +56,7 @@ Look for `.claude/refactor-log.json`. This file is the command's memory across r
 Schema:
 ```json
 {
+  "schema_version": 1,
   "last_scanned_commit": "abc1234",
   "last_mode": "deep",
   "last_scan_date": "2026-06-01",
@@ -80,6 +81,8 @@ Schema:
   ]
 }
 ```
+
+`schema_version` — bumped only if this ledger's structure changes in a future release. Lets a future version of this command detect an older-shaped file and handle it explicitly instead of misreading it. Treat a missing `schema_version` as `1` (every ledger written before this field existed).
 
 `status` values: `open`, `fixed`, `skipped-by-user`, `auto-resolved`.
 
@@ -170,7 +173,7 @@ If no existing refactor branch was found: switch to main or master first if not 
    - Assign `risk` (`safe` or `needs-review`) to every new finding.
    - Group findings that touch the same or directly-related files into a shared `cluster_id`.
    - Where one finding's fix is a precondition for another (e.g. extract-before-dedupe), record it in `depends_on`.
-6. Update `.claude/refactor-log.json`: set `last_scanned_commit` to current HEAD, `last_mode` to `deep`, `last_scan_date` to today, reset `consecutive_quick_count` to 0, and save the merged findings list.
+6. Update `.claude/refactor-log.json`: set `schema_version` to `1` if not already present, set `last_scanned_commit` to current HEAD, `last_mode` to `deep`, `last_scan_date` to today, reset `consecutive_quick_count` to 0, and save the merged findings list.
 7. Commit the ledger immediately:
    ```
    git add .claude/refactor-log.json
@@ -184,7 +187,7 @@ If no existing refactor branch was found: switch to main or master first if not 
    - File deleted or heavily rewritten → mark `auto-resolved`.
    - File untouched → carry forward unchanged, still `open`.
 3. Scan only the changed files (single thread, no sub-agents needed) across all categories for new issues. Before adding any finding, cross-check it against the ledger's existing `open` findings for that same file — if it matches one already there, do not create a duplicate, just leave the existing entry as-is. Only genuinely new issues get added. Assign `risk`, `cluster_id`, and `depends_on` to any new findings the same way Deep Mode does.
-4. Update the ledger: add new findings as `open`, keep carried-forward entries as-is, mark auto-resolved ones. Set `last_scanned_commit` to current HEAD, `last_mode` to `quick`, `last_scan_date` to today, increment `consecutive_quick_count` by 1.
+4. Update the ledger: set `schema_version` to `1` if not already present. Add new findings as `open`, keep carried-forward entries as-is, mark auto-resolved ones. Set `last_scanned_commit` to current HEAD, `last_mode` to `quick`, `last_scan_date` to today, increment `consecutive_quick_count` by 1.
 5. Commit the ledger immediately:
    ```
    git add .claude/refactor-log.json

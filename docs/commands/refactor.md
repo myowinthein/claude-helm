@@ -159,6 +159,8 @@ Closes with a structured summary: branch, mode, scan scope (new / carried-over /
 
 `.claude/refactor-log.json` is committed alongside code changes on the refactor branch and travels with the branch to `main` on merge. It tracks every finding ever surfaced: when it was first found, when it was resolved (and in which commit), whether the user skipped it, and whether it auto-resolved because the code was rewritten. This is what makes progress visible across runs instead of repeating the same flat list every time.
 
+It also carries a `schema_version` field, bumped only if this structure changes in a future release, so a future version of the command can detect and handle an older-shaped file explicitly rather than misreading it. A missing `schema_version` means `1`.
+
 ## See also
 
 - [`/helm:test`](test.md) — the test framework setup that this command relies on between categories

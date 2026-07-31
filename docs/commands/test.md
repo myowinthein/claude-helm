@@ -59,6 +59,7 @@ If a framework is chosen, installs it directly as a dev dependency — detecting
 Reads `.claude/test-log.json` if it exists. A missing file is not an error — the command proceeds as if the ledger is empty.
 
 The ledger stores:
+- **`schema_version`** — bumped only if this ledger's structure changes in a future release, so a future version of the command can detect and handle an older-shaped file explicitly rather than misreading it. Missing means `1`.
 - **`findings`** — user decisions: `skipped-by-user` (not re-prompted next run unless the file changes) and `ambiguous` (resurfaces in a future run rather than silently guessing).
 - **`full_scan_findings`** — sub-agent priority judgments from the last Full Scan, keyed by file with a `last_judged_commit`. Used in Step 5 to skip re-running judgment on unchanged files. Kept separate from `findings` because it is scan data, not a user decision.
 - **`last_test_run_commit`** and **`last_full_scan_commit`** — for scoping the next run's diff.

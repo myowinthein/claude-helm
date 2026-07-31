@@ -43,6 +43,7 @@ Look for `.claude/test-log.json`. If it exists, load it. If it does not exist, p
 Schema:
 ```json
 {
+  "schema_version": 1,
   "last_test_run_commit": "abc1234",
   "last_full_scan_commit": "def5678",
   "findings": [
@@ -63,6 +64,8 @@ Schema:
   ]
 }
 ```
+
+`schema_version` — bumped only if this ledger's structure changes in a future release. Lets a future version of this command detect an older-shaped file and handle it explicitly instead of misreading it. Treat a missing `schema_version` as `1` (every ledger written before this field existed).
 
 `findings` tracks user decisions only: files skipped by the user or flagged as ambiguous. It does not track coverage state.
 
@@ -285,6 +288,7 @@ For each priority, cluster by cluster:
 
 After tests are written, run, and committed:
 
+- Set `schema_version` to `1` if not already present (i.e. this is the first write to a pre-existing ledger from before this field existed, or a brand new ledger).
 - **Catch Up run**: set `last_test_run_commit` to current HEAD.
 - **Full Scan run**: set both `last_full_scan_commit` and `last_test_run_commit` to current HEAD. Persist all `full_scan_findings` changes from Step 5 (new entries, updated priorities, removed stale entries).
 - Add new `skipped-by-user` entries for files the user chose to skip in the confirmation step.
