@@ -6,6 +6,19 @@ description: Audit and fix .env files and .gitignore — sync, format, detect mi
 
 Scan `.env` files, `.gitignore`, and source code to find and fix environment configuration issues.
 
+## Before starting
+
+Check `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub Flow, per git.md).
+
+**Solo Mode** (`git-strategy: solo`):
+- Only proceed if on `main` or `master`. If on any other branch, stop: "env must be run on main or master in Solo Mode. Current branch is {branch} — switch and re-run."
+
+**GitHub Flow** (`git-strategy: github-flow`, or absent):
+- Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
+- Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b chore/env-{YYYYMMDD}` from it.
+- Call this branch `{branch}` for the rest of this command.
+- If this command exits at any point without writing anything, delete `{branch}` and return to `{original_branch}` before exiting — never leave the user stranded on an empty temporary branch it created.
+
 ---
 
 ## Step 1 — Scan
@@ -513,11 +526,68 @@ If Skip selected: no changes.
 After all fixes are applied, stage what's left — do not use `git add -A` blindly:
   git add -u                    # stage modified tracked files (env files, .gitignore, any source files not already committed per-file)
   git add .env.example          # only if newly created this run
+  git add .gitignore             # only if newly created this run (e.g. the Missing entries sub-flow created a project's first .gitignore)
 
-If nothing is staged (the Hardcoded values sub-flow already committed everything per-file above, and no other fixes were applied): skip this commit — there is nothing left to do.
+If nothing is staged (the Hardcoded values sub-flow already committed everything per-file above, and no other fixes were applied): skip commit, merge, and environment promotion below — there is nothing left to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` — do not skip that part. Proceed to Step 5 to report the outcome.
 
-Otherwise:
-  git commit -m "chore(env): audit and fix env configuration"
+Otherwise, commit per git.md's Auto-Commit rule: silent if `git-auto-commit: true`, otherwise ask for confirmation before committing, merging, and pushing together. Either way, push itself always requires its own confirmation regardless of `git-auto-commit` — git.md's Auto-Commit rule states this as an explicit exception, and rules/safety.md lists `git push` as always requiring confirmation with no exceptions. Environment promotion's branch-selection prompt below already serves as that confirmation for environment-branch pushes; under GitHub Flow, confirm separately before step 2's `git push origin main`, even when the commit above was silent.
+
+**Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this update:
+
+  AskUserQuestion:
+    question: "main will be updated. Which environment branches should also receive this env configuration update?"
+    header:   "Promote to environments"
+    multiSelect: true
+    options: one entry per discovered environment branch, e.g.:
+      - label: "staging"
+        description: "Merge main into staging"
+      - label: "production"
+        description: "Merge main into production"
+
+  For each selected environment:
+  - git checkout {environment}
+  - git merge main --no-ff -m "chore(deploy): promote main to {environment} for env configuration update"
+  - git push origin {environment}
+  - git checkout main
+
+  If no environment branches exist, or the user selects none, skip silently.
+
+**Solo Mode:** commit directly to main. Before pushing, confirm:
+
+  AskUserQuestion:
+    question: "Push main now? This publishes the commit to origin."
+    header:   "Push"
+    multiSelect: false
+    options:
+      - label: "Push (Recommended)"
+        description: "git push origin main"
+      - label: "Cancel"
+        description: "Leave main committed locally but unpushed — push manually when ready"
+
+If Cancel selected → stop here. Do not push or promote. Proceed to Step 5 to report the outcome, noting main is committed locally but unpushed.
+
+If Push selected: `git push origin main`, then run Environment promotion above.
+
+**GitHub Flow:**
+1. Commit on `{branch}` (this also covers any per-file commits already made by the Hardcoded values sub-flow above, which run on whatever branch is currently checked out).
+2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "{same message as the commit above}"`. Before pushing, confirm:
+
+   AskUserQuestion:
+     question: "Push main now? This publishes the merged commit to origin."
+     header:   "Push"
+     multiSelect: false
+     options:
+       - label: "Push (Recommended)"
+         description: "git push origin main"
+       - label: "Cancel"
+         description: "Leave main merged locally but unpushed — push manually when ready"
+
+   If Cancel selected → stop here. Do not push, promote, or clean up. Proceed to Step 5 to report the outcome, noting main is merged locally but unpushed.
+
+   If Push selected: `git push origin main`.
+3. Run Environment promotion above.
+4. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
+5. Return to where you started: `git checkout {original_branch}`.
 
 ---
 
@@ -547,4 +617,8 @@ Needs manual action:
 - Tracked files skipped: {list} — run git rm --cached to untrack manually
 ─────────────────────────────────
 Committed: yes / no
+Pushed: yes / no — push manually when ready / N/A (nothing to commit)
+Environments promoted: {list or none}
 ```
+
+If GitHub Flow: also report the temporary branch's fate ({merged and deleted / left as-is, uncommitted or unpushed}) and which branch you were returned to.
