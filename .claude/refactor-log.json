@@ -2581,11 +2581,11 @@
       "file": "_config.yml",
       "line": 14,
       "description": "plugins: whitelist lists jekyll-seo-tag and jekyll-remote-theme but not jekyll-include-cache (added to Gemfile this session). Verified local `bundle exec jekyll build` works fine without it (non-safe-mode Jekyll auto-requires all installed plugin gems), but GitHub Pages' hosted build runs in safe mode where the plugins: list does matter, and that path has never been tested (no CI) \u2014 adding it defensively removes the doubt.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b3637d1b0ae9756dc6466d13ec885d7c8b55f0b8",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0115",
