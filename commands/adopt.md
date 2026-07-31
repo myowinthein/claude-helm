@@ -199,24 +199,20 @@ AskUserQuestion:
 
 ### Reference path
 
-- Resolve any local `.claude/rules/{name}` that would otherwise sit alongside — and conflict with — the referenced plugin rules. Helm-marked files are removed; Foreign files are the user's call. **Gather all decisions before deleting anything**, so a Cancel leaves the project untouched:
-  - **Decide (no changes yet):** for each Foreign (unmarked) file, warn that it would coexist with the referenced plugin rules and ask. Helm did not create these, so never delete them silently.
+- Delete the Helm-marked local files at `.claude/rules/git.md` and `.claude/rules/safety.md` — no need to ask, the user already chose reference mode. This also makes the next scan classify as REFERENCED, not UPDATE.
+- If `.claude/rules/git.md` or `.claude/rules/safety.md` is Foreign (unmarked) — the user's own file sitting at helm's path — ask before removing it, since it would coexist with and conflict with the referenced rule of the same name. Only these two names; leave any other file in `.claude/rules/` untouched.
 
-    AskUserQuestion:
-      question: "{file} is your own rule file. In reference mode it would sit alongside the plugin's referenced {name} and could conflict. What should happen to it?"
-      header:   "Local rule file"
-      multiSelect: false
-      options:
-        - label: "Keep it (Recommended)"
-          description: "Leave your file in place — it stays active alongside the referenced plugin rules."
-        - label: "Delete it"
-          description: "Remove your file so only the referenced plugin rules apply."
-        - label: "Cancel"
-          description: "Exit without changes."
+  AskUserQuestion:
+    question: "{file} is your own rule file. In reference mode it would sit alongside the plugin's referenced {name} and could conflict. Delete it?"
+    header:   "Local rule file"
+    multiSelect: false
+    options:
+      - label: "Delete it"
+        description: "Remove your file so only the referenced plugin rules apply."
+      - label: "Skip"
+        description: "Keep your file — it stays active alongside the referenced rules."
 
-    If Cancel at any prompt → exit immediately. Nothing has been deleted or written yet.
-  - **Apply (only if no prompt was cancelled):** delete the Helm-marked files (helm owns them — this also makes the next scan classify as REFERENCED, not UPDATE) and any Foreign files marked for deletion. Note any kept Foreign files in the report as a possible conflict.
-- Use the marketplaces install path: `~/.claude/plugins/marketplaces/claude-helm/rules/`. This path always reflects the latest installed version and updates automatically after `/plugin update helm@claude-helm`.
+  On Skip, note the kept file in the Report as a possible conflict.
 - Update CLAUDE.md's `## Rules` section (see *Updating CLAUDE.md's `## Rules` section* above) with this snippet:
   ```
   ## Rules
