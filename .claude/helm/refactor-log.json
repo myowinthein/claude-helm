@@ -2789,11 +2789,11 @@
       "file": "docs/rules/safety.md",
       "line": 37,
       "description": "'loaded with CLAUDE.html' should read 'CLAUDE.md' \u2014 the real project config file, never rendered as a Jekyll doc page. Verified: leftover artifact from the earlier .md-to-.html link-conversion pass, which matched '.md)' as plain text instead of scoping to markdown link syntax.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3b6453677977ed2726d4b85b6a17760736416a08",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0128",
@@ -2805,11 +2805,11 @@
       "file": "docs/commands/log.md",
       "line": 82,
       "description": "Same 'CLAUDE.html' should read 'CLAUDE.md' mistake as docs/rules/safety.md, same root cause.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3b6453677977ed2726d4b85b6a17760736416a08",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0129",
@@ -2821,11 +2821,11 @@
       "file": "docs/commands/adopt.md",
       "line": 133,
       "description": "Same 'CLAUDE.html' should read 'CLAUDE.md' mistake, same root cause.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3b6453677977ed2726d4b85b6a17760736416a08",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0130",
