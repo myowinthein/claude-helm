@@ -33,7 +33,7 @@ flowchart TD
   Choice -->|Catch Up| CatchUp
   Choice -->|Full| FullScan
 
-  CatchUp["git diff {last_test_run_commit}..HEAD<br/>union in outstanding ambiguous entries<br/>drop unchanged skipped-by-user files<br/>group into clusters by module/domain"] --> CatchPlan["Show test plan · ask: write or cancel?"]
+  CatchUp["git diff {last_run_commit}..HEAD<br/>union in outstanding ambiguous entries<br/>drop unchanged skipped-by-user files<br/>group into clusters by module/domain"] --> CatchPlan["Show test plan · ask: write or cancel?"]
   CatchPlan -->|cancel| Cancel[/Exit: no tests written/]
   CatchPlan -->|write| CWrite["Behavior Clarity Check per test<br/>Write · run · commit, cluster by cluster"]
   CWrite --> UpdateLedger
@@ -59,21 +59,21 @@ If a framework is chosen, installs it directly as a dev dependency — detecting
 Reads `.claude/test-log.json` if it exists. A missing file is not an error — the command proceeds as if the ledger is empty.
 
 The ledger stores:
-- **`schema_version`** — bumped only if this ledger's structure changes in a future release, so a future version of the command can detect and handle an older-shaped file explicitly rather than misreading it. Missing means `1`.
-- **`findings`** — user decisions: `skipped-by-user` (not re-prompted next run unless the file changes) and `ambiguous` (resurfaces in a future run rather than silently guessing).
-- **`full_scan_findings`** — sub-agent priority judgments from the last Full Scan, keyed by file with a `last_judged_commit`. Used in Step 5 to skip re-running judgment on unchanged files. Kept separate from `findings` because it is scan data, not a user decision.
-- **`last_test_run_commit`** and **`last_full_scan_commit`** — for scoping the next run's diff.
+- **`schema_version`** — bumped only if this structure changes in a future release. A ledger with `schema_version: 1` or none at all (the shape before this field existed — separate `findings`/`full_scan_findings` arrays and `last_test_run_commit`/`last_full_scan_commit` fields) is converted into the current shape on load rather than misread, and persisted in that shape from then on.
+- **`files`** — one entry per file, everything currently known about it. `priority` and `last_judged_commit` come from sub-agent scan judgment (Full Scan only); `user_status` (`skipped-by-user` or `ambiguous`), `note`, `recorded_commit`, and `recorded_date` come from an actual human decision (the Behavior Clarity Check, or a skip choice). These two sets of fields are independent — a file can have either, both, or neither, and updating one never clobbers the other.
+- **`last_run_commit`** — for scoping the next run's diff.
+- **`full_scan_ever_run`** and **`consecutive_catchup_count`** — drive Step 3's scenario decision and Full Scan recommendation (see below).
 
 ### 3. Assess coverage and recent activity
 
-Uses the same commit-range diff as the Catch Up step to identify recently changed files: `git diff {last_test_run_commit}..HEAD --name-only`, falling back to `HEAD~1..HEAD` or the working tree diff if no ledger commit is stored. Also counts ledger `findings` entries with `status: ambiguous`, regardless of whether they appear in that diff — these are outstanding from a previous run, not just files that happen to have changed again. Scans for existing test files and estimates gap-in-recent-changes and overall coverage.
+Uses the same commit-range diff as the Catch Up step to identify recently changed files: `git diff {last_run_commit}..HEAD --name-only`, falling back to `HEAD~1..HEAD` or the working tree diff if no ledger commit is stored. Also counts `files` entries with `user_status: ambiguous`, regardless of whether they appear in that diff — these are outstanding from a previous run, not just files that happen to have changed again. Scans for existing test files and estimates gap-in-recent-changes and overall coverage.
 
 Four scenarios, with the recommendation depending on what it finds:
 
 - **No tests yet**: Full scan or skip.
-- **Tests exist, full scan never run**: Full scan recommended — coverage gaps may exist that catch-up never touched.
+- **Tests exist, full scan never run** (`full_scan_ever_run` false or absent): Full scan recommended — coverage gaps may exist that catch-up never touched.
 - **Tests exist, full scan done, no changes since last run, no ambiguous findings outstanding**: exits cleanly with "tests are up to date." No prompt shown.
-- **Tests exist, and either recent changes are detected or ambiguous findings are outstanding**: Catch Up, Full, or skip — recommendation based on gap significance. Outstanding ambiguous findings alone (no other changes) still route here, since Catch Up picks them up via its ambiguous-entry union and gives the user another pass through the Behavior Clarity Check.
+- **Tests exist, and either recent changes are detected or ambiguous findings are outstanding**: Catch Up, Full, or skip. Recommends Full Scan if `consecutive_catchup_count >= 5` (many Catch Ups since the last full look) or the diff touches 50+ files (this batch alone is big enough to warrant one); otherwise recommends Catch Up. Outstanding ambiguous findings alone (no other changes) still route here, since Catch Up picks them up via its ambiguous-entry union and gives the user another pass through the Behavior Clarity Check.
 
 The clean exit in scenario 3 is the key distinction: if nothing has changed, a full scan was already done, and no ambiguous findings are waiting for another look, there is nothing for the developer to act on.
 
@@ -81,12 +81,12 @@ The clean exit in scenario 3 is the key distinction: if nothing has changed, a f
 
 Identifies changed files using a commit-range diff:
 
-- If `last_test_run_commit` is in the ledger: runs `git diff {last_test_run_commit}..HEAD` to capture all committed changes since the last run — not just uncommitted working-tree changes.
+- If `last_run_commit` is in the ledger: runs `git diff {last_run_commit}..HEAD` to capture all committed changes since the last run — not just uncommitted working-tree changes.
 - If the ledger has no stored commit (first run): falls back to `git diff HEAD~1..HEAD`, or the working tree diff if uncommitted changes exist.
 
-Unions in any ledger `findings` entries with `status: ambiguous`, even if they don't appear in that diff — they're outstanding from a previous run and get another pass through the Behavior Clarity Check, rather than sitting unresolved indefinitely until the file happens to change again.
+Unions in any `files` entries with `user_status: ambiguous`, even if they don't appear in that diff — they're outstanding from a previous run and get another pass through the Behavior Clarity Check, rather than sitting unresolved indefinitely until the file happens to change again.
 
-Cross-checks the file list against `skipped-by-user` ledger entries and drops those files from the plan, unless they have been modified since they were skipped. Ambiguous entries are exempt from this drop — they're always re-included regardless of whether they changed.
+Cross-checks the file list against `files` entries with `user_status: skipped-by-user` and drops those files from the plan, unless they have been modified since they were skipped. Ambiguous entries are exempt from this drop — they're always re-included regardless of whether they changed.
 
 Groups the remaining files into clusters by module or domain (same folder, or a direct dependency, e.g. a controller and its service) — the same clustering `/helm:refactor` uses. Files in unrelated areas never share a cluster, since git.md requires one commit per logical unit.
 
@@ -98,13 +98,13 @@ Applied in both Catch Up and Full Scan before writing a test for any piece of co
 
 If the expected behavior is clear from the code, docs, or existing tests: write the test directly.
 
-If it is ambiguous (undocumented edge case, unclear intended behavior, behavior contradicts docs): stop and ask the user to clarify or skip. If the user clarifies, proceed. If they skip, record the file in the ledger with `status: "ambiguous"` and a short note — never guess and encode a guess as a test.
+If it is ambiguous (undocumented edge case, unclear intended behavior, behavior contradicts docs): stop and ask the user to clarify or skip. If the user clarifies, proceed. If they skip, set `user_status: "ambiguous"` and a short note on that file's `files` entry (without touching any `priority` fields already there) — never guess and encode a guess as a test.
 
 ### 5. Full Scan path
 
 **Coverage check**: runs the project's coverage tool across the full project on every run — never partial, never skipped.
 
-**Priority judgment**: splits the project into folder/module chunks and spawns one sub-agent per chunk (capped at 8), each returning a priority label for untested areas. Before spawning, each file is checked against `full_scan_findings` in the ledger: unchanged since `last_judged_commit` → carry the stored priority forward; changed or not yet recorded → include in the sub-agent run and update the ledger entry; no longer exists in the repo → remove the entry.
+**Priority judgment**: splits the project into folder/module chunks and spawns one sub-agent per chunk (capped at 8), each returning a priority label for untested areas. Before spawning, each file is checked against `files` in the ledger: a `priority` unchanged since `last_judged_commit` → carry it forward; no `priority` yet or changed since → include in the sub-agent run and update the entry (creating one if needed, without touching any `user_status` fields already on it); the file no longer exists in the repo → remove the entry entirely, priority and user decision alike.
 
 Builds a coverage report grouped into High / Medium / Low priority with file-level notes, then asks which priorities to cover via multi-select.
 
@@ -114,11 +114,12 @@ Applies the **Behavior Clarity Check** before writing each test. Writes tests pr
 
 After tests are written, run, and committed:
 
-- **Catch Up run**: sets `last_test_run_commit` to current HEAD.
-- **Full Scan run**: sets both `last_full_scan_commit` and `last_test_run_commit` to current HEAD. Persists all `full_scan_findings` changes (new entries, updated priorities, removed stale entries).
-- Adds new `skipped-by-user` entries for files the user skipped at the confirmation step.
-- Adds new `ambiguous` entries from the Behavior Clarity Check.
-- Removes or updates entries for files resolved this run.
+- Sets `schema_version` to `2` if not already present, including when converting an old-shaped ledger on load.
+- **Catch Up run**: sets `last_run_commit` to current HEAD and increments `consecutive_catchup_count` by 1.
+- **Full Scan run**: sets `last_run_commit` to current HEAD, sets `full_scan_ever_run` to `true`, resets `consecutive_catchup_count` to `0`. Persists all `priority`/`last_judged_commit` changes into `files` (new entries, updated priorities, entries removed for files that no longer exist).
+- For files skipped at the confirmation step: sets `user_status: "skipped-by-user"` on that file's entry, without touching any `priority` fields already there.
+- For files flagged during the Behavior Clarity Check: sets `user_status: "ambiguous"` the same way.
+- For files resolved this run: clears `user_status`/`note`/`recorded_commit`/`recorded_date` from the entry, but keeps the entry (and its `priority` data) unless nothing is left on it at all.
 
 Commits the ledger with `test(log): update test ledger after {catch-up / full-scan}`.
 
