@@ -2757,11 +2757,11 @@
       "file": "commands/test.md",
       "line": 145,
       "description": "'Proceed to Step 7 to report the outcome' mislabels Step 7 (titled Merge and cleanup) as the reporting step; the actual report happens in Step 8 (Confirm completion). Functionally harmless since Step 7 forwards to Step 8, but inconsistent with equivalent phrasing elsewhere.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "eead743d7ac9c5975c722215cca6534bd58fbda1",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "5826af91f2c50ad2041ed130967bf0b4a01abfc9",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0126",
