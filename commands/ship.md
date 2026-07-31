@@ -95,29 +95,17 @@ If Conventional Commits detected:
   Deployment targets:
   - {selected environments from Step 1}
 
-  If current version is 0.x.x:
-    AskUserQuestion:
-      question: "Ship v{proposed}? Confirming will commit, tag, push, and promote to any environments selected in Step 1. Current: v{last_tag} → Proposed: v{proposed}"
-      header:   "Version"
-      multiSelect: false
-      options:
-        - label: "Confirm v{proposed} (Recommended)"
-          description: "Commit, tag, push, and promote v{proposed} — this is the release go-ahead"
-        - label: "Bump to v1.0.0"
-          description: "This release completes a usable set of features that solves a real problem end-to-end"
-        - label: "Enter custom version"
-          description: "Specify a different version number"
-
-  If current version is 1.0.0 or above:
-    AskUserQuestion:
-      question: "Ship v{proposed}? Confirming will commit, tag, push, and promote to any environments selected in Step 1. Current: v{last_tag} → Proposed: v{proposed}"
-      header:   "Version"
-      multiSelect: false
-      options:
-        - label: "Confirm v{proposed} (Recommended)"
-          description: "Commit, tag, push, and promote v{proposed} — this is the release go-ahead"
-        - label: "Enter custom version"
-          description: "Specify a different version number"
+  AskUserQuestion:
+    question: "Ship v{proposed}? Confirming will commit, tag, push, and promote to any environments selected in Step 1. Current: v{last_tag} → Proposed: v{proposed}"
+    header:   "Version"
+    multiSelect: false
+    options:
+      - label: "Confirm v{proposed} (Recommended)"
+        description: "Commit, tag, push, and promote v{proposed} — this is the release go-ahead"
+      - label: "Bump to v1.0.0"  (only include if current version is 0.x.x)
+        description: "This release completes a usable set of features that solves a real problem end-to-end"
+      - label: "Enter custom version"
+        description: "Specify a different version number"
 
   If "Enter custom version" selected → ask human to type the version before proceeding.
   Wait for response before proceeding.
