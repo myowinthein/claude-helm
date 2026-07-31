@@ -120,6 +120,8 @@ If Conventional Commits not detected:
 
   Wait for human to input version before proceeding.
 
+Whichever path supplied {version} manually (custom version entry, or the no-CC direct-entry path), validate it matches Semantic Versioning format (MAJOR.MINOR.PATCH, optionally with a `-prerelease` or `+build` suffix, e.g. `2.1.0` or `2.1.0-beta.1`) before proceeding to Step 3. If it doesn't match, inform the human and ask again — this value gets written into the version file and baked into a permanent tag (git.md: tags are never rewritten), so it isn't safe to accept unchecked. {proposed} from the auto-calculated path doesn't need this check — it's derived from a known-good base version, always well-formed by construction.
+
 ---
 
 ## Step 3 — Run code quality checks
