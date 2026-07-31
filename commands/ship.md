@@ -156,11 +156,12 @@ Commit, tag, and push:
 
 Before promoting to any selected environment, check CI status for the commit just pushed to main — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting to next environment"):
 - If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check silently — proceed straight to the promotion loop below.
-- Otherwise: `gh run list --branch main --limit 1 --json status,conclusion`.
-  - If conclusion is "success" → proceed to the promotion loop below silently.
-  - Otherwise (queued, in progress, failed, or no run found yet for this commit):
+- Otherwise: capture the pushed commit's SHA (`git rev-parse HEAD`), then run `gh run list --branch main --limit 20 --json headSha,status,conclusion` and filter to runs whose `headSha` matches. A single push can trigger multiple workflow runs, and querying only the single most recent run risks catching a stale run from a previous commit before GitHub has registered this one — matching on `headSha` avoids both problems.
+  - If no matching runs found → treat as "none yet" (CI hasn't registered this commit).
+  - If every matching run has conclusion "success" → proceed to the promotion loop below silently.
+  - Otherwise (any matching run queued, in progress, failed, or none found yet):
       AskUserQuestion:
-        question: "CI for this release hasn't reported success yet (status: {status}, conclusion: {conclusion, or 'none yet' if no run found}). Promote to the selected environments anyway?"
+        question: "CI for this release hasn't reported success yet ({summary of matching run states, or 'no runs found yet' if none}). Promote to the selected environments anyway?"
         header:   "CI status"
         multiSelect: false
         options:
@@ -213,7 +214,7 @@ Determine next environment in promotion chain:
 
 If next environment exists, first check CI status for {current_branch} — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting to next environment"):
 - If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check — proceed to the confirmation below with no CI line in the question.
-- Otherwise: `gh run list --branch {current_branch} --limit 1 --json status,conclusion`. Fold the result into the confirmation question below rather than asking separately.
+- Otherwise: capture the branch tip's SHA (`git rev-parse {current_branch}`), then run `gh run list --branch {current_branch} --limit 20 --json headSha,status,conclusion` and filter to runs whose `headSha` matches — a single commit can trigger multiple workflow runs, so checking only the most recent entry could miss one still failing or in progress. Fold the result (all matching runs succeeded / not yet / none found) into the confirmation question below rather than asking separately.
 
 Confirm before mutating anything (per safety.md: never push without confirmation):
   AskUserQuestion:
