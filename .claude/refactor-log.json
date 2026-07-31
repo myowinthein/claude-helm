@@ -2469,11 +2469,11 @@
       "file": "docs/rules/git.md",
       "line": 161,
       "description": "Claims /helm:ship treats 'fix' as the only non-feat/breaking type triggering a patch bump and 'anything else is ignored for versioning', but commands/ship.md explicitly gives perf the same patch-bump treatment as fix. Verified against actual ship.md content.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b9f9f39ed8a88c333f2d8016a8f16ecb7fac5eeb",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0108",
