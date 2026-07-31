@@ -308,8 +308,7 @@ After tests are written, run, and committed:
 - Set `schema_version` to `2` if not already present — including when converting an old-shaped ledger per Step 2's migration note.
 - **Catch Up run**: set `last_run_commit` to current HEAD. Increment `consecutive_catchup_count` by 1.
 - **Full Scan run**: set `last_run_commit` to current HEAD, set `full_scan_ever_run` to `true`, reset `consecutive_catchup_count` to `0`. Persist all `priority`/`last_judged_commit` changes from Step 5 into `files` (new entries, updated priorities, entries removed for files that no longer exist).
-- For files the user chose to skip in the confirmation step: set `user_status: "skipped-by-user"` (plus `note`, `recorded_commit`, `recorded_date`) on that file's `files` entry — creating one if it doesn't exist, without touching any `priority`/`last_judged_commit` fields already there.
-- For files recorded during the Behavior Clarity Check as ambiguous: set `user_status: "ambiguous"` the same way.
+- For files recorded during the Behavior Clarity Check as ambiguous: set `user_status: "ambiguous"` (plus `note`, `recorded_commit`, `recorded_date`) on that file's `files` entry — creating one if it doesn't exist, without touching any `priority`/`last_judged_commit` fields already there. `skipped-by-user` has no writer in the current flow — Step 4's plan confirmation and Step 5's priority selection are both all-or-nothing/tier-level, not per-file — but Step 4 still checks for and honors any pre-existing `skipped-by-user` entries (e.g. from a schema migration or manual edit).
 - For files resolved this run (test written successfully, or ambiguity clarified): clear `user_status`/`note`/`recorded_commit`/`recorded_date` from that file's entry. Remove the entry entirely only if it has no `priority` left either — otherwise keep it for the scan-cache data.
 
 Commit the ledger:
