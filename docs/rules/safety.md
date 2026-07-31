@@ -24,7 +24,7 @@ These actions always require explicit confirmation, regardless of context or aut
 
 A user-invoked command that confirms these actions within its own flow (e.g. `/helm:ship` confirming the version, deploy targets, and release; `/helm:legal` confirming before committing generated documents) satisfies this boundary — do not add a separate prompt on top.
 
-Projects can extend the list, never shrink it.
+Projects can extend the list, never shrink it. Document any project-specific additions.
 
 ## When to run a safety scan
 
