@@ -2389,11 +2389,11 @@
       "file": "docs/commands/legal.md",
       "line": 86,
       "description": "'Framework and output detection' section and mermaid flow omit the monorepo-detection step entirely \u2014 real commands/legal.md Step 1 asks which package should receive the legal docs when multiple web packages are found, scoping the rest of the scan to that package.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "08cbf74ca3cb6d4d19b55d52b4bf025f3d28eb3b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0103",
@@ -2405,11 +2405,11 @@
       "file": "docs/commands/legal.md",
       "line": 100,
       "description": "'Existing documents' section never mentions the schema_version field the real command reads/writes in .claude/legal-manifest.json, including the 'treat a missing schema_version as 1' migration behavior.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "08cbf74ca3cb6d4d19b55d52b4bf025f3d28eb3b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0104",
