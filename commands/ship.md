@@ -12,9 +12,9 @@ If on main or master:
   Proceed normally — full ship flow including version tagging.
 
 If on environment branch (staging, production, etc):
-  Proceed with promotion only — no version tagging.
+  Proceed with promotion only — Steps 1-4 (version bump, commit, tag, code quality checks, GitHub Release) are all skipped; only Step 5's promotion runs.
   Inform user:
-  "On {branch}. Promoting to next environment only — no version tagging."
+  "On {branch}. Promoting to next environment only — no version bump, commit, tag, code quality checks, or GitHub Release. Those only run from main or master."
 
 If on feature or any other branch:
   Stop and inform user:
@@ -136,6 +136,8 @@ If Conventional Commits not detected:
 ---
 
 ## Step 3 — Run code quality checks
+
+Only reached on the main-branch path — Step 1's redirect sends the environment-branch path straight to Step 5, skipping this step entirely.
 
 Run the git.md Code Quality gate — lint + tests — before releasing. Two release-specific overrides:
 - Run the full test suite, not just changed-file tests — a release warrants it.

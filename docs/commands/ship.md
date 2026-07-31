@@ -47,7 +47,7 @@ flowchart TD
 
 ### Before starting
 
-Refuses to release from a feature branch. On `main` or `master`, runs the full release flow. On an environment branch (`staging`, `production`, or similar), skips version tagging and runs the promotion path instead.
+Refuses to release from a feature branch. On `main` or `master`, runs the full release flow. On an environment branch (`staging`, `production`, or similar), skips the entire release flow — version bump, commit, tag, code quality checks, and GitHub Release all only run from main — and runs the promotion path (Step 5) instead.
 
 ### 1. Select deployment targets
 
@@ -63,7 +63,7 @@ When the current version is in the `0.x.x` range, the confirmation prompt includ
 
 ### 3. Run code quality checks
 
-Runs the git.md Code Quality gate — lint and tests — before releasing, rather than restating the procedure. Two release-specific overrides: it runs the full test suite (not just changed-file tests), and if no test framework is detected it asks for confirmation to release untested instead of skipping silently. Does not proceed until lint passes and tests are green.
+Only reached on the main-branch path — Step 1's redirect sends the environment-branch path straight to Step 5, skipping this entirely. Runs the git.md Code Quality gate — lint and tests — before releasing, rather than restating the procedure. Two release-specific overrides: it runs the full test suite (not just changed-file tests), and if no test framework is detected it asks for confirmation to release untested instead of skipping silently. Does not proceed until lint passes and tests are green.
 
 ### 4. Execute release
 
