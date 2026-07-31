@@ -48,6 +48,10 @@ flowchart TD
 
 ## Steps
 
+### Before starting
+
+No branch requirement — runs from any branch. Writing tests for the code you're currently working on is useful regardless of branch, so this isn't git-strategy-aware the way `/helm:log` or `/helm:manifest` are.
+
 ### 1. Detect test framework
 
 Scans for known config files and dependencies (e.g. `vitest.config`, `jest.config`, `phpunit.xml`). Also detects the project's coverage tool (`coverage.py`, `nyc`, `jest --coverage`, etc.) for use in the Full Scan step. If a framework is found, proceeds to the ledger load. If not found, forms a recommendation from what that scan already found — language, package manager, existing build tooling and module system, monorepo structure if any — rather than a generic default, then proposes the best-fit framework for the detected stack and lets the user pick or skip.
