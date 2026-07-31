@@ -18,6 +18,15 @@ description: Update README.md with a full scan or gap update since last review
 
 ---
 
+## Scope
+
+README.md = human-facing documentation (contributors, GitHub visitors, new users).
+Not a changelog. Not a technical spec. Not a deployment manual.
+Audience is humans, not future Claude sessions — keep it clear and scannable.
+Whenever writing to README.md, in any step: use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
+
+---
+
 ## Step 1 — Assessment
 
 **Determine readme-style:**
@@ -224,12 +233,3 @@ Commit per git.md's Auto-Commit rule — this also governs whether the sequence 
 3. Run Environment promotion above.
 4. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
 5. Return to where you started: `git checkout {original_branch}`.
-
----
-
-## Scope
-
-README.md = human-facing documentation (contributors, GitHub visitors, new users).
-Not a changelog. Not a technical spec. Not a deployment manual.
-Audience is humans, not future Claude sessions — keep it clear and scannable.
-Whenever writing to README.md, in any step: use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.

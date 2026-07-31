@@ -16,6 +16,13 @@ description: Update CLAUDE.md with a full scan or gap update since last review
 - Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b docs/log-{YYYYMMDD}` from it. This happens unconditionally — CLAUDE.md is always scanned from main's own state, never from a feature branch's unmerged work. If a feature branch changes something CLAUDE.md should reflect, re-run `/helm:log` after that branch merges to main.
 - Call this branch `{branch}` for the rest of this command.
 
+## Scope
+
+CLAUDE.md = descriptive project knowledge (orientation layer).
+.claude/rules/ = prescriptive rules (architecture, safety, git, testing).
+Keep them consistent. Project-specific safety rules live in CLAUDE.md's `## Hard Safety Rules` section (written here, loaded with CLAUDE.md) — proposed, not auto-written. Never auto-edit the adopt-managed `.claude/rules` files (`git.md`, `safety.md`); they are overwritten by `/helm:adopt`, so propose any needed change to those instead.
+Whenever writing to CLAUDE.md, in any step: use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
+
 ## CLAUDE.md Schema
 
 CLAUDE.md uses these eight sections, in order. Both a full scan and a gap update work only within them — never add a new heading, and a finding that fits none of them does not belong in CLAUDE.md.
@@ -249,13 +256,4 @@ Commit per git.md's Auto-Commit rule — this also governs whether the sequence 
 3. Run Environment promotion above.
 4. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
 5. Return to where you started: `git checkout {original_branch}`.
-
----
-
-## Scope
-
-CLAUDE.md = descriptive project knowledge (orientation layer).
-.claude/rules/ = prescriptive rules (architecture, safety, git, testing).
-Keep them consistent. Project-specific safety rules live in CLAUDE.md's `## Hard Safety Rules` section (written here, loaded with CLAUDE.md) — proposed, not auto-written. Never auto-edit the adopt-managed `.claude/rules` files (`git.md`, `safety.md`); they are overwritten by `/helm:adopt`, so propose any needed change to those instead.
-Whenever writing to CLAUDE.md, in any step: use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
 
