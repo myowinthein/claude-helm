@@ -412,7 +412,9 @@ Required sections in order:
 
 ## Step 4 — Commit
 
-Before committing, present the list of documents written and ask for confirmation:
+Always confirm before committing, even when `git-auto-commit: true` is set — these are public, legally-binding documents, so this is a deliberate exception to the normal auto-commit flow (same category as the boundaries in safety.md's Agent Execution Boundaries: never skip review just because autonomy is high).
+
+Present the list of documents written and ask for confirmation:
 
   AskUserQuestion:
     question: "The following documents were written to {resolved-path}: {list}. Commit them now?"

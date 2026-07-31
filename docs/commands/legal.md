@@ -122,7 +122,7 @@ Each selected document is written in plain English, GDPR compliant, to the resol
 
 ### 4. Commit
 
-Presents the list of generated files for review and waits for confirmation before committing.
+Presents the list of generated files for review and waits for confirmation before committing — always, even under `git-auto-commit: true`. Generated documents are public, legally-binding text, so this is a deliberate exception to the normal auto-commit flow (see [`safety.md`](../rules/safety.md#agent-execution-boundaries)).
 
 Single commit of the generated documents plus the updated `.claude/legal-manifest.json`: `docs(legal): generate legal documents`. If the output path or format differs from the default (`legal/` Markdown), the commit body notes it for future runs. If the user cancels, the documents stay written but uncommitted — the command still proceeds to the completion report.
 

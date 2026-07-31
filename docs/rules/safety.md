@@ -16,12 +16,13 @@ These actions always require explicit confirmation, regardless of context or aut
 
 - `git push`, force-push, tag creation.
 - Publishing packages or cutting public releases (`npm publish`, registry uploads, `gh release create`).
+- Committing public, legally-binding documents (privacy policy, terms of service, and similar).
 - Any deployment command.
 - Migrations, seeders, database imports, database resets.
 - Infrastructure changes, DNS changes, secret rotation.
 - Destructive operations: resets, drops, clears, environment recreation.
 
-A user-invoked command that confirms these actions within its own flow (e.g. `/helm:ship` confirming the version, deploy targets, and release) satisfies this boundary — do not add a separate prompt on top.
+A user-invoked command that confirms these actions within its own flow (e.g. `/helm:ship` confirming the version, deploy targets, and release; `/helm:legal` confirming before committing generated documents) satisfies this boundary — do not add a separate prompt on top.
 
 Projects can extend the list, never shrink it.
 

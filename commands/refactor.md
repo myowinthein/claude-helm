@@ -166,7 +166,7 @@ If no existing refactor branch was found: create and switch to refactor/{YYYYMMD
    - Group findings that touch the same or directly-related files into a shared `cluster_id`.
    - Where one finding's fix is a precondition for another (e.g. extract-before-dedupe), record it in `depends_on`.
 6. Update `.claude/refactor-log.json`: set `last_scanned_commit` to current HEAD, `last_mode` to `deep`, `last_scan_date` to today, reset `consecutive_quick_count` to 0, and save the merged findings list.
-7. Commit the ledger immediately:
+7. Commit the ledger immediately — per `git-auto-commit` in CLAUDE.md Project Config (see git.md Auto-Commit): if `true`, commit without asking; otherwise ask for confirmation before this commit:
    ```
    git add .claude/refactor-log.json
    git commit -m "chore(refactor): update ledger after deep scan"
@@ -192,7 +192,7 @@ If no existing refactor branch was found: create and switch to refactor/{YYYYMMD
    - File untouched → carry forward unchanged, still `open`.
 5. Scan only the changed files (single thread — the list is small, no sub-agents needed) across all categories for new issues. Before adding any finding, cross-check it against the ledger's existing `open` findings for that same file — if it matches one already there, do not create a duplicate, just leave the existing entry as-is. Only genuinely new issues get added. Assign `risk`, `cluster_id`, and `depends_on` to any new findings the same way Deep Mode does.
 6. Update the ledger: add new findings as `open`, keep carried-forward entries as-is, mark auto-resolved ones. Set `last_scanned_commit` to current HEAD, `last_mode` to `quick`, `last_scan_date` to today, increment `consecutive_quick_count` by 1.
-7. Commit the ledger immediately:
+7. Commit the ledger immediately — per `git-auto-commit` in CLAUDE.md Project Config (see git.md Auto-Commit): if `true`, commit without asking; otherwise ask for confirmation before this commit:
    ```
    git add .claude/refactor-log.json
    git commit -m "chore(refactor): update ledger after quick scan"
@@ -309,7 +309,8 @@ Work through the current wave's clusters one at a time, in order. For each clust
 
   If skipped, this finding's ledger `status` becomes `skipped-by-user` (not `open`), so it stops resurfacing every run. Only re-surface it later if the surrounding code changes enough that the original suggestion may no longer apply.
 
-- Once the cluster's edits are complete: run tests — stop and inform if tests fail, do not move to the next cluster until resolved. Run lint and formatter. Commit with:
+- Once the cluster's edits are complete: run tests — stop and inform if tests fail, do not move to the next cluster until resolved. Run lint and formatter.
+- Commit per `git-auto-commit` in CLAUDE.md Project Config (see git.md Auto-Commit): if `true`, commit without asking; otherwise ask for confirmation before this commit. Message:
   refactor({category}): {brief summary of this cluster's changes}
 - Update the ledger immediately for every finding in this cluster: `status` to `fixed` or `skipped-by-user`, with `resolved_commit` and `resolved_date` set.
 

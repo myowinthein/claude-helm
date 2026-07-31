@@ -7,14 +7,16 @@ Loaded as context so agents respect the same operational guardrails throughout t
 These actions always require explicit confirmation regardless of context:
 - git push, force-push, tag creation
 - publishing packages or cutting public releases (npm publish, registry uploads, gh release create)
+- committing public, legally-binding documents (privacy policy, terms of service, and similar)
 - any deployment command
 - migrations, seeders, database imports, database resets
 - infrastructure changes, DNS changes, secret rotation
 - destructive operations (resets, drops, clears, environment recreation)
 
 A user-invoked command that confirms these actions within its own flow (e.g.
-`/helm:ship` confirming the version, deploy targets, and release) satisfies this
-boundary — do not add a separate prompt on top.
+`/helm:ship` confirming the version, deploy targets, and release; `/helm:legal`
+confirming before committing generated documents) satisfies this boundary — do
+not add a separate prompt on top.
 
 Document any project-specific additions to this list.
 
