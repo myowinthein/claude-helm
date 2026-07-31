@@ -256,7 +256,25 @@ AskUserQuestion:
 
 ## Step 5 — Commit and finalize
 
-**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.md): there is no branch to clean up, since none was created. If Step 4 wrote anything, commit it per git.md's Auto-Commit rule and stop — no merge, promotion, or branch cleanup applies here. If Step 4 made no changes, there is nothing to do at all.
+**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.md): there is no branch to clean up, since none was created. If Step 4 made no changes, there is nothing to do at all — skip straight to Step 6 to report.
+
+If Step 4 wrote anything, commit it per git.md's Auto-Commit rule — no merge or promotion applies here, since there's no branch strategy to run them under. Then check whether a remote named `origin` exists (`git remote get-url origin`):
+- If none exists (the "no repo yet" sub-case, or a repo with no remote configured), stop here — there's nothing to push to.
+- If one exists (a real repo that simply had no CLAUDE.md yet), push always requires its own confirmation regardless of `git-auto-commit`, same as every other command:
+
+  AskUserQuestion:
+    question: "Push main now? This publishes the commit to origin."
+    header:   "Push"
+    multiSelect: false
+    options:
+      - label: "Push (Recommended)"
+        description: "git push origin main"
+      - label: "Cancel"
+        description: "Leave main committed locally but unpushed — push manually when ready"
+
+  If Push selected: `git push origin main`.
+
+Proceed to Step 6 to report the outcome either way.
 
 **Normal flow** (branch-strategy setup ran in Before starting):
 
@@ -333,12 +351,14 @@ ADOPT COMPLETE
 - git.md    {written / updated / skipped} → .claude/rules/git.md (v{current_version})
 - safety.md {written / updated / skipped} → .claude/rules/safety.md (v{current_version})
 - CLAUDE.md {created / updated}: ## Rules section points at the copied files
+- Pushed:   {yes / no — push manually when ready / N/A, no remote}
 ```
 
 For Reference:
 ```
 ADOPT COMPLETE
 - CLAUDE.md {created / updated}: ## Rules section references claude-helm rules at v{current_version}
+- Pushed:   {yes / no — push manually when ready / N/A, no remote}
 ```
 
 For No-change (in sync or project ahead):
