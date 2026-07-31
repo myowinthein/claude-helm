@@ -80,6 +80,8 @@ Then writes `CLAUDE.md` using an eight-section schema:
 7. Hard Safety Rules
 8. Known Traps
 
+Sections 5–7 are **inline** rules. A separate `## Rules` section — the pointer to the adopted rule files (`git.md`, `safety.md`), written by `/helm:adopt` — is not part of this schema; log preserves it untouched and never writes, moves, or removes it.
+
 Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly. Target under 150 lines.
 
 ### 4. Gap update

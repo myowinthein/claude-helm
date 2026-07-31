@@ -17,6 +17,8 @@ CLAUDE.md uses these eight sections, in order. Both a full scan and a gap update
 7. **Hard Safety Rules** — invariants / never-do list; keep brief and instruct the agent to read and follow `.claude/rules/safety.local.md` every session for the full detail.
 8. **Known Traps** — gotchas; initially empty or inferred from README warnings.
 
+A `## Rules` section, if present, is **not** part of this schema — it is written and managed by `/helm:adopt` and points at the adopted rule files (`.claude/rules/git.md`, `safety.md`), distinct from the inline Domain / Behavior / Hard Safety Rules above. Preserve it exactly as-is: a full scan or gap update must never write, move, or remove it.
+
 ## Noise commits
 
 "Noise" means commits that carry no durable knowledge: bug fixes, styling, dependency updates, and routine CRUD. Both the gap assessment and the gap review skip them.
