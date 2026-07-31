@@ -31,7 +31,7 @@ State file format:
 
 After I approve each step:
 - On the first write (after Step 1's approval), create `.archive/` and add `.archive/` to `.gitignore` — it is scratch, never committed to the archive.
-- Write that step's report to `.archive/step{N}-{name}.md`, matching the step file name (e.g. `.archive/step1-explore.md`).
+- Write that step's report — verbatim, exactly as the step produced it — to `.archive/step{N}-{name}.md`, matching the step file name (e.g. `.archive/step1-explore.md`). Do not summarize or reformat it.
 - Set `last_completed_step` to N and `updated_at` to now in `.archive/state.json`.
 
 Later steps read these report files by name rather than relying on conversation memory.
