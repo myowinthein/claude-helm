@@ -32,15 +32,52 @@ If Cancel → exit silently.
 
 ---
 
-## Step 2 — Scan history
+## Step 2 — Load ledger and scan history
+
+### 2.1 Load the ledger
+
+Look for `.claude/normalize-log.json`. This is the command's memory across runs — it lets each run scan only commits added since the last check, instead of the full history every time.
+
+Schema:
+```json
+{
+  "schema_version": 1,
+  "branches": {
+    "main": {
+      "last_checked_commit": "abc1234",
+      "last_checked_date": "2026-08-01"
+    }
+  }
+}
+```
+
+`schema_version` — bumped only if this ledger's structure changes in a future release. Lets a future version of this command detect an older-shaped file and handle it explicitly instead of misreading it. Treat a missing `schema_version` as `1` (every ledger written before this field existed). Always write it going forward.
+
+`branches` — one entry per local branch, keyed by branch name. `last_checked_commit` is that branch's tip SHA as of the end of the most recent run that updated the ledger (see Step 6 for when that is) — note this is the branch's **post-rewrite** SHA whenever that run performed a rewrite, since `git filter-repo`/`filter-branch` change every commit's SHA from the first rewritten commit onward, not just the ones whose message actually changed.
+
+If the file does not exist, this is the first run. Inform the user: "No normalize history found — scanning full history." Proceed with an empty `branches` map — equivalent to no exclusions in 2.3 below.
+
+### 2.2 Collect branches
 
 Run: git branch --list
 Collect every local branch — these are the only branches this rewrite will affect (git filter-repo rewrites all refs it can see, and only local ones are visible to it). List them in the Step 3 plan so the developer can fetch and check out any remote-only branch (e.g. an environment branch) that also needs the same treatment, before confirming.
 
-Run: git log --oneline --no-decorate --all
-Collect every commit SHA and message reachable from any local branch — `--all` matches the rewrite's actual scope (every local branch, not just the current one); a plain `git log` would only see the current branch's history and miss commits unique to other local branches, even though those commits still get new SHAs from the rewrite regardless. Commits reachable from more than one branch are naturally deduplicated by SHA, not double-counted.
+Diff the current branch list against the ledger's `branches` keys:
+- **In both**: scan incrementally in 2.3.
+- **In the current list only** (no ledger entry): a new branch — scan its full reachable history. Shared history with an already-tracked branch is still excluded naturally, since that branch's `last_checked_commit` is one of the exclusions in 2.3.
+- **In the ledger only** (no longer a local branch): dropped. Do not carry its entry forward when the ledger is next written (Step 6).
 
-For each commit, classify as:
+### 2.3 Scan history
+
+For each `branches` entry carried forward from 2.2, validate its `last_checked_commit` still exists in the repo: `git cat-file -e {sha}^{commit}`. If it doesn't (e.g. the repo was reset, or the ledger is stale in some other way), drop it from the exclusion list below and scan that branch's full history instead, same as a new branch — note it in the Step 8 report as re-scanned in full, with the reason.
+
+Run one combined query — the positive refs are every current local branch, the negative refs are every still-valid `last_checked_commit` surviving the checks above:
+```
+git log --oneline --no-decorate {every local branch} --not {every valid last_checked_commit}
+```
+This returns exactly the commits reachable from any current branch but not already covered by a previous run — automatically deduplicated (a commit reachable from two branches only appears once), and correctly scoped for both new branches (nothing excludes their history unless it overlaps an already-tracked branch) and existing branches (only new commits since their own last check). If the ledger is empty (first run, or every entry was dropped above), this is equivalent to `git log --oneline --no-decorate --all` — the full history, matching today's behavior.
+
+For each commit returned, classify as:
 - **Compliant** — message already matches `type(scope): description` format
 - **Non-compliant** — message does not match
 
@@ -79,12 +116,12 @@ Build a rewrite plan: a list of {sha, original_message, proposed_message} for ev
 
 ## Step 3 — Show plan and confirm
 
-If non_compliant_count is 0 → inform user "All commits already follow Conventional Commits. Nothing to do." and exit. Do not present any prompt — there is nothing to confirm.
+If non_compliant_count is 0 → inform user "All commits already follow Conventional Commits. Nothing to do." Do not present any prompt — there is nothing to confirm. The scan itself still found the current state accurately, so proceed to Step 6 to update the ledger (safe to advance the watermark — nothing was left pending), then Step 8 to report.
 
 Otherwise, present the plan using AskUserQuestion:
 
   AskUserQuestion:
-    question: "Scan complete.\n\nTotal commits: {total}\nAlready compliant: {compliant_count}\nTo be rewritten: {non_compliant_count}\n\nSample rewrites:\n{show up to 5 examples in format: '{original}' → '{proposed}'}\n\nLocal branches that will be rewritten: {list from Step 2}\nIf an environment or teammate branch you need rewritten too isn't listed, cancel, fetch and check it out, then re-run.\n\nProceeding will rewrite {non_compliant_count} commits and force-push every listed branch to remote."
+    question: "Scan complete.\n\nCommits scanned this run: {total}\nAlready compliant: {compliant_count}\nTo be rewritten: {non_compliant_count}\n\nSample rewrites:\n{show up to 5 examples in format: '{original}' → '{proposed}'}\n\nLocal branches that will be rewritten: {list from Step 2}\nIf an environment or teammate branch you need rewritten too isn't listed, cancel, fetch and check it out, then re-run.\n\nProceeding will rewrite {non_compliant_count} commits and force-push every listed branch to remote."
     header:   "Confirm rewrite"
     multiSelect: false
     options:
@@ -93,11 +130,16 @@ Otherwise, present the plan using AskUserQuestion:
       - label: "Cancel"
         description: "Exit without making any changes"
 
-If Cancel → exit silently.
+If Cancel → exit silently. The ledger is not updated — these non-compliant commits are found again on the next run rather than silently skipped by an advanced watermark.
 
 ---
 
 ## Step 4 — Rewrite commit messages
+
+Before doing anything else, capture the full history's current commit count for the post-rewrite integrity check below — this is independent of `{total}` from Step 2, which only reflects this run's incrementally-scanned commits, not the whole repo:
+```
+git log --oneline --all | wc -l
+```
 
 Build the rewrite map as a JSON object: `{ "original_message": "conventional_message", ... }`
 Include only non-compliant commits. Messages not in the map pass through unchanged.
@@ -142,7 +184,7 @@ After rewrite completes, verify a representative sample across the full history 
 ```
 git log --oneline --all | head -20
 git log --oneline --all | tail -20
-git log --oneline --all | wc -l  # compare against {total} from Step 2 — must match exactly
+git log --oneline --all | wc -l  # compare against the full-history count captured at the start of this step — must match exactly
 ```
 
 ---
@@ -164,7 +206,28 @@ If every tag resolves correctly: skip silently.
 
 ---
 
-## Step 6 — Force push
+## Step 6 — Update ledger
+
+Only reached when the ledger should actually advance: Step 3's "nothing to do" exit routes here directly (the scan found nothing pending, so it's safe to record), and completing Step 4's rewrite through Step 5 also routes here. Cancelling in Step 1 or Step 3 exits before this step — the ledger is left untouched in both cases (see those steps for why).
+
+For every current local branch (from Step 2.2, including new ones — excluding any dropped in 2.2): capture its current tip SHA:
+```
+git rev-parse {branch}
+```
+If Step 4 ran, this is the post-rewrite tip; if Step 3 exited on "all compliant" without a rewrite, it's simply the branch's unchanged tip.
+
+Write `.claude/normalize-log.json`: set `schema_version` to `1` if not already present, and set `branches` to exactly the current local branch list from 2.2 — this naturally drops entries for branches removed since the last run and adds entries for new ones, each with `last_checked_commit` set to the SHA just captured and `last_checked_date` to today.
+
+Commit the ledger:
+```
+git add .claude/normalize-log.json
+git commit -m "chore(normalize): update ledger after {scan / rewrite}"
+```
+This commit lands on whichever branch is currently checked out — it travels with that branch's force push in Step 7 like any other commit made during this run.
+
+---
+
+## Step 7 — Force push
 
 Every local branch collected in Step 2 was rewritten, not just the one this command was run from — each needs pushing to stay in sync with its remote copy.
 
@@ -187,21 +250,22 @@ Then:
 git push origin --tags --force
 ```
 
-If skip selected: print the manual commands for every branch (matching the loop above) plus the tags push, then proceed to Step 7 for the report.
+If skip selected: print the manual commands for every branch (matching the loop above) plus the tags push, then proceed to Step 8 for the report.
 
 ---
 
-## Step 7 — Report
+## Step 8 — Report
 
 ─────────────────────────────────
 NORMALIZE COMPLETE
 ─────────────────────────────────
-Total commits scanned:   {total}
+Commits scanned this run: {total} (incremental — see ledger below; "full history" if this was the first run)
 Already compliant:       {compliant_count}
 Rewritten:               {non_compliant_count}
 Local branches rewritten: {branch_list from Step 2}
 Tags verified:           {tag_count} correctly moved (or "none" if no tags exist); {N} needing manual attention, if any
 Force pushed:            yes / no (manual) — {branch_list} + tags
+Ledger:                  {N} branches tracked, {N} added, {N} dropped, {N} re-scanned in full (stale or missing last_checked_commit)
 ─────────────────────────────────
 
 Other clones must run, per rewritten branch, before their next pull:
