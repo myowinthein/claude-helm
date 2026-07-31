@@ -27,8 +27,8 @@ If an existing Postman collection is found (from Step 1): use it as the starting
 - Discover endpoints from source code, route definitions, or OpenAPI/Swagger specs. Do not speculate.
 - Avoid deprecated, disabled, or commented-out endpoints.
 - Use demo accounts, local tokens, or placeholder values only. No real credentials, secrets, or production URLs.
-- If the local application is running (from Step 2): use it to verify requests.
-- If the local application is not running: fall back to source-code discovery only and mark all requests as unverified.
+- If Step 2's report states "App running: yes": use it to verify requests.
+- If Step 2's report states "App running: no" (or the field is absent from an older report): fall back to source-code discovery only and mark all requests as unverified.
 - Do not commit or push.
 
 ## Verification

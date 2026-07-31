@@ -183,6 +183,8 @@ Exact commands run in order.
 ## Access Points
 How to access or run the project locally (URLs and ports for web projects, commands for CLI tools, entry points for scripts or notebooks). State "not applicable" if the project type has no access point.
 
+App running: yes/no — Step 3 (Postman collection generation) reads this directly rather than inferring it from prose above; state it explicitly even when "not applicable."
+
 ## Verification Results
 What was tested and what the results were. Any critical errors found.
 
