@@ -14,6 +14,8 @@ project actually does. Only generate documents that apply.
 - On another branch → proceed only if it is up-to-date with main (main is an ancestor of `HEAD`, so no merged work is missing). Check `git merge-base --is-ancestor <main> HEAD` (use `origin/main` when a remote exists).
 - If the branch is behind main → stop: "legal needs the current main state. {branch} is behind main — merge or rebase main in first, then re-run."
 
+Being up-to-date with main only guarantees nothing merged is missing — it says nothing about extra, unmerged work sitting on top. If run from an in-progress feature branch rather than a fresh one, the generated documents could describe data collection or integrations that aren't live yet. If the current branch has commits beyond main (not just behind, but ahead with unrelated work), recommend cutting a fresh branch from main instead — don't scan an in-progress feature branch's unmerged changes into a legal document.
+
 ## Step 1 — Project scan
 
 Scan the codebase to understand the project's legal profile:
