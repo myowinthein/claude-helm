@@ -4,18 +4,7 @@ description: Update CLAUDE.md with a full scan or gap update since last review
 
 # log
 
-## Step 1 — Branch check
-
-Before doing anything, check current branch.
-Only proceed if on `main` or `master`.
-If on any other branch, stop and inform the user:
-
-"log must be run on main or master.
-Current branch is {branch}. Please switch and re-run."
-
----
-
-## Step 2 — Assessment
+## Step 1 — Assessment
 
 Check CLAUDE.md:
 - Does it exist?
@@ -67,7 +56,10 @@ If CLAUDE.md exists with a saved commit hash and schema is broken (any required 
       - label: "Skip"
         description: "No update needed"
 
-If CLAUDE.md exists with a saved commit hash and schema is intact:
+If CLAUDE.md exists with a saved commit hash and schema is intact, and there are no meaningful commits since the hash (`git log {hash}..HEAD` is empty, or only noise — bug fixes, styling, dependency updates, routine CRUD):
+  CLAUDE.md is already current. Inform the user: "CLAUDE.md is up to date — no meaningful commits since last review." Do not present any prompt.
+
+If CLAUDE.md exists with a saved commit hash and schema is intact, with meaningful commits since the hash:
   Form a recommendation (Full or Gap) based on gap significance.
   Put the recommended option first.
 
@@ -99,7 +91,7 @@ If CLAUDE.md exists with a saved commit hash and schema is intact:
 
 ---
 
-## Step 3 — Project Config Check
+## Step 2 — Project Config Check
 
 **Full scan:** always ask all applicable questions below.
 **Gap update:** ask only the question(s) for flags missing from the existing Project Config section.
@@ -155,7 +147,7 @@ If CLAUDE.md exists with a saved commit hash and schema is intact:
 
 ---
 
-## Step 4 — Full Project Scan
+## Step 3 — Full Project Scan
 
 Before writing anything, investigate in this order:
 1. Understand the business purpose of the application
@@ -194,9 +186,9 @@ Write directly — no approval needed.
 
 ---
 
-## Step 5 — Gap Update
+## Step 4 — Gap Update
 
-Before reviewing commits, run Project Config Check (Step 3) — skip silently if all flags are already present.
+Before reviewing commits, run Project Config Check (Step 2) — skip silently if all flags are already present.
 
 Read commit messages first to get the shape of what changed.
 Then read file changes only for significant commits — skip: bug fixes,
@@ -221,7 +213,8 @@ repository structure. No assumptions, preferences, or speculation.
 
 Prefer improving existing content over adding new content.
 Merge overlapping entries, remove outdated ones, improve clarity first.
-Apply the same review to .claude/rules files.
+
+If a `.claude/rules` file looks out of date, **propose** the change — do not edit it directly. `git.md` and `safety.md` are managed by `/helm:adopt` and overwritten on the next update, so edits there would be lost; project-specific safety findings belong in `.claude/rules/safety.local.md` (proposed, not auto-written).
 
 Update the saved commit hash at the end of the file to current HEAD.
 
@@ -241,5 +234,5 @@ Ask for confirmation before writing.
 
 CLAUDE.md = descriptive project knowledge (orientation layer).
 .claude/rules/ = prescriptive rules (architecture, safety, git, testing).
-Keep them consistent. Update rule files when conventions change.
+Keep them consistent. When a convention change leaves a rule file out of date, propose the update — do not auto-edit `.claude/rules` (the helm-managed files are overwritten by `/helm:adopt`; project safety findings go in `.claude/rules/safety.local.md`).
 

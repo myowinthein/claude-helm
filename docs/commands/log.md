@@ -12,9 +12,7 @@ Keep `CLAUDE.md` in sync with the codebase. Acts as the captain's log of the pro
 
 ```mermaid
 flowchart TD
-  Start([User runs /helm:log]) --> Branch{On main or master?}
-  Branch -->|no| Stop[/Stop: switch to main first/]
-  Branch -->|yes| Exists{CLAUDE.md exists<br/>with content?}
+  Start([User runs /helm:log]) --> Exists{CLAUDE.md exists<br/>with content?}
 
   Exists -->|no| Mode1[Ask: full scan or skip?]
   Exists -->|yes, no hash| Mode1
@@ -23,6 +21,7 @@ flowchart TD
   Schema -->|no| Mode4["Ask: full scan (default),<br/>gap update, or skip?<br/>(names missing sections)"]
   Schema -->|yes| Gap{Gap significance<br/>since last review?}
 
+  Gap -->|none — only noise| UpToDate[/Exit: CLAUDE.md up to date/]
   Gap -->|small or moderate| Mode2["Ask: gap update (default),<br/>full scan, or skip?"]
   Gap -->|large or significant| Mode3["Ask: full scan (default),<br/>gap update, or skip?"]
 
@@ -46,26 +45,23 @@ flowchart TD
 
 ## Steps
 
-### 1. Branch check
-
-Only runs from `main` or `master`. Halts on any other branch.
-
-### 2. Assessment
+### 1. Assessment
 
 Reads the current `CLAUDE.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, runs `git log {hash}..HEAD --oneline` to measure the gap. Categorizes the gap as small/moderate or large/significant, ignoring noise commits (bug fixes, styling, dependency updates, routine CRUD).
 
 Also checks whether all seven required sections are present (`## Project Identity`, `## Project Config`, `## Dev Commands`, `## Architecture Pointers`, `## Behavior Rules`, `## Hard Safety Rules`, `## Known Traps`). A missing section means the schema is broken, regardless of gap size.
 
-### 3. Pick mode
+### 2. Pick mode
 
-Four modes, with the default depending on assessment:
+Modes, with the default depending on assessment:
 
 - **No file or no hash**: Full scan or skip.
+- **Schema intact, no meaningful commits since the hash**: exits cleanly ("CLAUDE.md is up to date") with no prompt.
 - **Schema broken** (any required section missing): Full scan recommended regardless of gap size; names the missing sections.
 - **Small to moderate gap, schema intact**: Gap update (recommended), full scan, or skip.
 - **Large gap, schema intact**: Full scan (recommended), gap update, or skip.
 
-### 4. Full scan
+### 3. Full scan
 
 Investigates the project from scratch: business purpose, modules and workflows, stack and versions, architectural patterns (from implementation, not folder names), conventions, domain rules, operational context. Reviews any existing docs and `.claude/rules`. Before writing, runs the Project Config Check — up to three single-select questions:
 
@@ -85,7 +81,7 @@ Then writes `CLAUDE.md` using a seven-section schema:
 
 Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly. Target under 150 lines.
 
-### 5. Gap update
+### 4. Gap update
 
 Before reviewing commits, runs the Project Config Check for any flags missing from the existing Project Config section — skipped silently if both are already present. Each question is asked independently: branching strategy if `git-strategy` is absent, auto-commit if `git-auto-commit` is absent, merge strategy if `git-merge-strategy` is absent and GitHub Flow is active.
 
@@ -99,7 +95,7 @@ Applies a three-question filter to each candidate change:
 
 Only updates if all three answers are yes. Then either reports **Outcome A** (no durable knowledge introduced, just bump the hash) or **Outcome B** (proposes per-section changes and asks for confirmation before writing).
 
-### 6. Confirm completion
+### 5. Confirm completion
 
 Reports what was changed, what the new last-reviewed hash is, and whether any rule files in `.claude/rules` should also be revisited.
 
@@ -109,7 +105,7 @@ CLAUDE.md is descriptive project knowledge (orientation layer). `.claude/rules/`
 
 ## Stop conditions
 
-- **Not on `main` or `master`.** Switch back first.
+- **CLAUDE.md is up to date.** Schema intact and no meaningful commits since the last-reviewed hash — clean exit, no prompt.
 - **User picks Skip.** Clean exit, no changes.
 - **Gap update finds no durable knowledge.** Outcome A: only the hash advances.
 
