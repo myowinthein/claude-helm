@@ -86,7 +86,7 @@ Runs `git branch --list 'refactor/*'` and records any existing branch name. No b
 
 ### 2. Scan boundaries
 
-Reads the project but skips `vendor/`, `node_modules/`, `public/`, `storage/`, migration files, `.env` files, generated or compiled files, and `.claude/helm/` itself — this plugin's own ledgers, never treated as source. Tests are included on purpose because test quality degrades fastest.
+Reads the project but skips `vendor/`, `node_modules/`, `public/`, `storage/`, `__pycache__/`/`.venv/`/`dist/`/`build/` (Python), `tmp/`/`log/` (Ruby), `bin/` (Go), migration files, `.env` files, generated or compiled files, and `.claude/helm/` itself — this plugin's own ledgers, never treated as source. Tests are included on purpose because test quality degrades fastest.
 
 ### 3. Load history and choose mode
 
