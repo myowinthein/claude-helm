@@ -145,7 +145,7 @@ If environment branches exist (same detection [`/helm:ship`](ship.md) uses), ask
 
 ### 6. Confirm completion
 
-Reports what was changed, what the new last-reviewed hash is, which environments were promoted, and whether any rule files in `.claude/rules` should also be revisited. Under GitHub Flow, also reports the temporary branch's fate and which branch you were returned to.
+Reports what was changed, what the new last-reviewed hash is, which environments were promoted, and whether any rule files in `.claude/rules` should also be revisited. Under GitHub Flow, also reports the temporary branch's fate and which branch you were returned to. Runs even when nothing was written, since that's still an outcome worth reporting.
 
 ## Stop conditions
 

@@ -227,7 +227,7 @@ Ask for confirmation before writing.
 
 ## Step 5 — Commit and finalize
 
-If nothing was written (the "CLAUDE.md is already up to date" case in Step 1, or the user selected Skip anywhere): skip commit, merge, and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` (per Before starting's cleanup rule) — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
+If nothing was written (the "CLAUDE.md is already up to date" case in Step 1, or the user selected Skip anywhere): skip commit, merge, and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` (per Before starting's cleanup rule) — do not skip that part. Either way, proceed to Step 6 to report the outcome.
 
 Otherwise, commit per git.md's Auto-Commit rule — this also governs whether the sequence below needs confirmation before proceeding: silent if `git-auto-commit: true`, otherwise one confirmation covers commit, merge, promotion, and cleanup together.
 
@@ -259,4 +259,17 @@ Otherwise, commit per git.md's Auto-Commit rule — this also governs whether th
 3. Run Environment promotion above.
 4. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
 5. Return to where you started: `git checkout {original_branch}`.
+
+---
+
+## Step 6 — Confirm completion
+
+Report:
+
+- Outcome: {up to date / full scan written / gap update written / skipped}
+- Last-reviewed commit: {new hash, or unchanged if nothing written}
+- Sections updated: {list, or none}
+- Environments promoted: {list or none}
+- Rule files worth revisiting: {list any `.claude/rules` files whose content looks stale relative to what this scan found, or none}
+- If GitHub Flow: temporary branch's fate ({merged and deleted / left as-is}) and which branch you were returned to.
 

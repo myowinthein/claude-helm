@@ -143,6 +143,10 @@ If environment branches exist (same detection [`/helm:ship`](ship.md) uses), ask
 
 **Solo Mode** commits directly to main, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
 
+### 6. Confirm completion
+
+Reports the outcome (up to date / full scan written / gap update written / skipped), the style used (standard or custom), which sections were updated, and which environments were promoted. Under GitHub Flow, also reports the temporary branch's fate and which branch you were returned to. Runs even when nothing was written, since that's still an outcome worth reporting.
+
 ## Stop conditions
 
 - **Solo Mode, not on main/master.** Switch to main or master and re-run.
