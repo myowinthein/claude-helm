@@ -2309,11 +2309,11 @@
       "file": "commands/legal.md",
       "line": 280,
       "description": "The three schema_version prose blocks (legal.md, refactor.md, test.md) aren't verbatim-consistent \u2014 legal.md adds a trailing 'Always write it going forward.' not present in refactor.md's block; minor wording drift, no functional bug.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "909d9d843675cea8c99fdc39004b4d7a33e00349",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0098",
