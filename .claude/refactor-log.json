@@ -1877,11 +1877,11 @@
       "file": "docs/rules/git.md",
       "line": 47,
       "description": "GitHub Flow branch-structure list is missing docs/*, test/*, perf/*, ci/*, build/* that are present in rules/git.md, and drops the \"(or feat/*)\" alias note next to feature/* \u2014 understates which branch types are actually sanctioned.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3d684a9af67df2e6f24b888441816c06a1579d37",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0027",
@@ -1893,11 +1893,11 @@
       "file": "rules/git.md",
       "line": 90,
       "description": "\"Push still requires confirmation\" is stated independently in both the Auto-Commit section and the Universal Rules \u2192 Safety subsection with no cross-reference tying the two together, risking one copy drifting from the other (this is the same underlying rule the c-001 command bugs violate).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3d684a9af67df2e6f24b888441816c06a1579d37",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0028",
@@ -1909,11 +1909,11 @@
       "file": "docs/rules/git.md",
       "line": 90,
       "description": "The \"Push still requires confirmation\" bullet is displaced out of the Auto-Commit \"When active\" list \u2014 sits as an orphan bullet after the Exception paragraph instead of in its original list position, unlike rules/git.md's ordering.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3d684a9af67df2e6f24b888441816c06a1579d37",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0029",
@@ -1941,11 +1941,11 @@
       "file": "docs/rules/index.md",
       "line": 14,
       "description": "One-line summary of git.md's contents omits the Auto-Commit and Deployment sections that exist in the actual file.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3d684a9af67df2e6f24b888441816c06a1579d37",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0031",
@@ -1973,11 +1973,11 @@
       "file": "docs/rules/git.md",
       "line": 185,
       "description": "Drops \"or similar\" from the environment-branch name list (rules/git.md keeps it), presenting the six literal names as an exhaustive/closed list rather than the open-ended set the source rule describes.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "2d1ddb4058d1a4fcc2f9cf2279895e38e37778d4",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3d684a9af67df2e6f24b888441816c06a1579d37",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0033",
