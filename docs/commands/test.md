@@ -21,10 +21,10 @@ flowchart TD
 
   Ledger["Load .claude/test-log.json<br/>(empty if not found)"] --> Assess
 
-  Assess{Existing tests<br/>and recent changes?}
+  Assess{Existing tests, recent changes,<br/>or ambiguous findings outstanding?}
   Assess -->|no tests| FullOrSkip["Ask: full scan or skip?"]
-  Assess -->|tests, no changes| FullOrSkip
-  Assess -->|tests + recent changes| Choice["Ask: Catch Up, Full, or Skip?"]
+  Assess -->|tests, no changes, nothing outstanding| FullOrSkip
+  Assess -->|tests + changes or ambiguous outstanding| Choice["Ask: Catch Up, Full, or Skip?"]
 
   FullOrSkip -->|skip| Skip[/Exit: no tests needed/]
   FullOrSkip -->|full| FullScan
@@ -32,14 +32,14 @@ flowchart TD
   Choice -->|Catch Up| CatchUp
   Choice -->|Full| FullScan
 
-  CatchUp["git diff {last_test_run_commit}..HEAD<br/>drop unchanged skipped-by-user files"] --> CatchPlan["Show test plan · ask: write or cancel?"]
+  CatchUp["git diff {last_test_run_commit}..HEAD<br/>union in outstanding ambiguous entries<br/>drop unchanged skipped-by-user files<br/>group into clusters by module/domain"] --> CatchPlan["Show test plan · ask: write or cancel?"]
   CatchPlan -->|cancel| Cancel[/Exit: no tests written/]
-  CatchPlan -->|write| CWrite["Behavior Clarity Check per test<br/>Write · run · commit"]
+  CatchPlan -->|write| CWrite["Behavior Clarity Check per test<br/>Write · run · commit, cluster by cluster"]
   CWrite --> UpdateLedger
 
   FullScan["Run coverage tool<br/>Sub-agents: priority judgment per chunk<br/>Carry forward unchanged file labels"] --> FullPlan["Show coverage report<br/>ask: which priorities?"]
   FullPlan -->|none selected| Skip
-  FullPlan -->|priorities selected| FWrite["Behavior Clarity Check per test<br/>Write priority by priority · run · commit each"]
+  FullPlan -->|priorities selected| FWrite["Behavior Clarity Check per test<br/>Group into clusters within each priority<br/>Write · run · commit, cluster by cluster"]
   FWrite --> UpdateLedger
 
   UpdateLedger["Update .claude/test-log.json<br/>commit ledger"] --> Done([Report: tests added])
@@ -62,16 +62,16 @@ The ledger stores:
 
 ### 3. Assess coverage and recent activity
 
-Uses the same commit-range diff as the Catch Up step to identify recently changed files: `git diff {last_test_run_commit}..HEAD --name-only`, falling back to `HEAD~1..HEAD` or the working tree diff if no ledger commit is stored. Scans for existing test files and estimates gap-in-recent-changes and overall coverage.
+Uses the same commit-range diff as the Catch Up step to identify recently changed files: `git diff {last_test_run_commit}..HEAD --name-only`, falling back to `HEAD~1..HEAD` or the working tree diff if no ledger commit is stored. Also counts ledger `findings` entries with `status: ambiguous`, regardless of whether they appear in that diff — these are outstanding from a previous run, not just files that happen to have changed again. Scans for existing test files and estimates gap-in-recent-changes and overall coverage.
 
 Four scenarios, with the recommendation depending on what it finds:
 
 - **No tests yet**: Full scan or skip.
 - **Tests exist, full scan never run**: Full scan recommended — coverage gaps may exist that catch-up never touched.
-- **Tests exist, full scan done, no changes since last run**: exits cleanly with "tests are up to date." No prompt shown.
-- **Tests exist plus recent changes**: Catch Up, Full, or skip — recommendation based on gap significance.
+- **Tests exist, full scan done, no changes since last run, no ambiguous findings outstanding**: exits cleanly with "tests are up to date." No prompt shown.
+- **Tests exist, and either recent changes are detected or ambiguous findings are outstanding**: Catch Up, Full, or skip — recommendation based on gap significance. Outstanding ambiguous findings alone (no other changes) still route here, since Catch Up picks them up via its ambiguous-entry union and gives the user another pass through the Behavior Clarity Check.
 
-The clean exit in scenario 3 is the key distinction: if nothing has changed and a full scan was already done, there is nothing for the developer to act on.
+The clean exit in scenario 3 is the key distinction: if nothing has changed, a full scan was already done, and no ambiguous findings are waiting for another look, there is nothing for the developer to act on.
 
 ### 4. Catch Up path
 
@@ -80,9 +80,13 @@ Identifies changed files using a commit-range diff:
 - If `last_test_run_commit` is in the ledger: runs `git diff {last_test_run_commit}..HEAD` to capture all committed changes since the last run — not just uncommitted working-tree changes.
 - If the ledger has no stored commit (first run): falls back to `git diff HEAD~1..HEAD`, or the working tree diff if uncommitted changes exist.
 
-Cross-checks the file list against `skipped-by-user` ledger entries and drops those files from the plan, unless they have been modified since they were skipped.
+Unions in any ledger `findings` entries with `status: ambiguous`, even if they don't appear in that diff — they're outstanding from a previous run and get another pass through the Behavior Clarity Check, rather than sitting unresolved indefinitely until the file happens to change again.
 
-Applies the **Behavior Clarity Check** before writing any test (see below). Presents the test plan and waits for confirmation, then writes tests that reflect proven behavior, runs the suite, and commits with `test({scope}): add tests for {feature}`.
+Cross-checks the file list against `skipped-by-user` ledger entries and drops those files from the plan, unless they have been modified since they were skipped. Ambiguous entries are exempt from this drop — they're always re-included regardless of whether they changed.
+
+Groups the remaining files into clusters by module or domain (same folder, or a direct dependency, e.g. a controller and its service) — the same clustering `/helm:refactor` uses. Files in unrelated areas never share a cluster, since git.md requires one commit per logical unit.
+
+Applies the **Behavior Clarity Check** before writing any test (see below). Presents the test plan and waits for confirmation, then writes tests that reflect proven behavior, cluster by cluster — running the suite and committing after each cluster with `test({scope}): add tests for {feature}`, where `{scope}` is the cluster's primary module or domain per git.md's Conventional Commits convention, not a generic label.
 
 ### Behavior Clarity Check
 
@@ -100,7 +104,7 @@ If it is ambiguous (undocumented edge case, unclear intended behavior, behavior 
 
 Builds a coverage report grouped into High / Medium / Low priority with file-level notes, then asks which priorities to cover via multi-select.
 
-Applies the **Behavior Clarity Check** before writing each test. Writes tests priority by priority, single-agent and sequential — no parallel writing. If a single priority tier is too large for one agent's context, it is batched sequentially (write a chunk, commit, continue) without any planning or dependency system. Runs the suite and commits per priority with `test({scope}): add missing tests for {priority} priority areas`.
+Applies the **Behavior Clarity Check** before writing each test. Writes tests priority by priority, single-agent and sequential — no parallel writing. Within each priority, groups files into clusters by module/domain the same way Catch Up does — a priority tier commonly spans multiple unrelated areas, and a single commit must never bundle them together just because they share a priority label. If a single cluster is too large for one agent's context, it is batched sequentially (write a chunk, commit, continue) without any planning or dependency system. Runs the suite and commits per cluster with `test({scope}): add missing {priority}-priority tests for {summary}`, `{scope}` again being the cluster's actual module or domain.
 
 ### 6. Update ledger
 
@@ -117,7 +121,7 @@ Commits the ledger with `test(log): update test ledger after {catch-up / full-sc
 ## Stop conditions
 
 - **No framework, user skips setup.** Configure a framework and re-run.
-- **No changes since last run and full scan already done.** Exits cleanly — tests are up to date.
+- **No changes since last run, full scan already done, and no ambiguous findings outstanding.** Exits cleanly — tests are up to date.
 - **User cancels at the test plan.** No tests written.
 - **No priorities or no scope selected.** Clean exit.
 - **Written tests fail.** The command stops before committing and waits for the user to fix the failure.

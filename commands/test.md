@@ -72,6 +72,7 @@ Check recent git activity and existing test coverage:
 - Identify recently changed files using the same commit-range diff as Step 4:
   - If `last_test_run_commit` is in the ledger: run `git diff {last_test_run_commit}..HEAD --name-only`
   - If absent: fall back to `git diff HEAD~1..HEAD --name-only`, or the working tree diff if uncommitted changes exist
+- Count ledger `findings` entries with `status: ambiguous`, regardless of whether they appear in the diff above — these are outstanding from a previous run, not just files that happen to have changed again.
 - Scan for existing test files
 - Estimate coverage gaps in recently changed code
 - Estimate overall project test coverage
@@ -100,13 +101,13 @@ Based on current state, pick one of four scenarios:
       - label: "Skip"
         description: "No tests needed"
 
-**Scenario 3 — Tests exist, full scan done, no changes since last run:**
+**Scenario 3 — Tests exist, full scan done, no changes since last run, no outstanding ambiguous findings:**
   Exit cleanly. Inform the user:
   "No changes since last run — tests are up to date."
   Do not present any AskUserQuestion.
 
-**Scenario 4 — Tests exist and recent changes detected:**
-  Form recommendation (Catch Up or Full) based on gap significance.
+**Scenario 4 — Tests exist, and either recent changes are detected or ambiguous findings are outstanding:**
+  Form recommendation (Catch Up or Full) based on gap significance. Outstanding ambiguous findings alone (no other changes) still route here — Catch Up will pick them up via Step 4's ambiguous-entry union, giving the user another pass through the Behavior Clarity Check.
   Put recommended option first.
 
   Catch Up is the recommendation:
@@ -145,7 +146,11 @@ Identify changed files using the ledger's `last_test_run_commit`:
 
 Focus only on files that were added or modified.
 
-Cross-check the resulting file list against ledger entries with `status: skipped-by-user`. Drop those files from the plan unless the file has been modified since its `recorded_commit` — if it has changed, re-include it.
+Union in any ledger `findings` entries with `status: ambiguous`, even if they don't appear in the diff above — they're outstanding from a previous run and get another pass through the Behavior Clarity Check below, rather than sitting unresolved indefinitely until the file happens to change again.
+
+Cross-check the resulting file list against ledger entries with `status: skipped-by-user`. Drop those files from the plan unless the file has been modified since its `recorded_commit` — if it has changed, re-include it. This does not apply to `ambiguous` entries, which are always re-included regardless of whether they changed.
+
+Group the remaining files into clusters by module/domain — same folder, or a direct dependency (e.g. a controller and its service) — mirroring `/helm:refactor`'s clustering. Files in unrelated areas never share a cluster: git.md requires one commit per logical unit, and a single commit covering tests for two unrelated features would violate that.
 
 Apply the **Behavior Clarity Check** (see below) before writing any test.
 
@@ -167,8 +172,9 @@ Write tests that reflect actual proven behavior — not speculative edge cases.
 Follow existing test conventions and file structure in the project.
 Place test files according to project's existing test organization.
 
-Run tests after writing — fix if failing before committing.
-Commit:
+Write cluster by cluster. For each cluster:
+- Run tests after writing — fix if failing before committing.
+- Commit, with scope inferred from the cluster's primary module, folder, or domain — per git.md's Conventional Commits convention (the actual code touched, e.g. `orders`, `auth`), not a generic label. If the cluster spans multiple areas, use the dominant one; if truly cross-cutting, use `project` or `core`:
   test({scope}): add tests for {feature}
 
 ---
@@ -259,13 +265,15 @@ Apply the **Behavior Clarity Check** (see above) before writing each test.
 
 Write tests priority by priority, single-agent and sequential. Do not parallelize writing across sub-agents.
 
-For each priority:
+Within each priority, group files into clusters by module/domain — same folder, or a direct dependency — same reasoning as Step 4's Catch Up clustering. A priority tier commonly spans multiple unrelated areas (e.g. "high priority" including both `payment.ts` and `core-engine.ts`); a single commit must never bundle them together just because they share a priority label.
+
+For each priority, cluster by cluster:
 - Write tests reflecting actual proven behavior
-- If a priority tier is large enough to strain one agent's context, batch it sequentially (write a chunk, commit, continue) — no planning or dependency system needed
+- If a cluster is large enough to strain one agent's context, batch it sequentially (write a chunk, commit, continue) — no planning or dependency system needed
 - Run tests — stop and inform if failing
-- Fix before proceeding to next priority
-- Commit:
-  test({scope}): add missing tests for {priority} priority areas
+- Fix before proceeding to the next cluster
+- Commit, with scope inferred from the cluster's primary module, folder, or domain — same convention as Step 4 (not the priority label itself):
+  test({scope}): add missing {priority}-priority tests for {brief summary of this cluster}
 
 ---
 
