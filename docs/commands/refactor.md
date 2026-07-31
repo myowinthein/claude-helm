@@ -34,7 +34,7 @@ flowchart TD
   CreateBranch -->|Fix Backlog| FixBacklog[Load open findings only<br/>no scan performed]
 
   Deep --> Consolidate[Consolidate findings<br/>cross-chunk issues<br/>auto-resolve stale entries]
-  Quick --> Revalidate[Re-validate open ledger entries<br/>auto-resolve deleted or rewritten files]
+  Quick --> Revalidate[Re-validate open ledger entries<br/>auto-resolve deleted/rewritten<br/>refresh line numbers for touched files]
 
   Consolidate --> CommitLedger["Commit ledger<br/>chore(refactor): update ledger after deep scan"]
   Revalidate --> CommitLedger2["Commit ledger<br/>chore(refactor): update ledger after quick scan"]
@@ -107,7 +107,7 @@ The Fix Backlog option only appears when there are open findings. The user picks
 
 **Deep Mode** — splits the project into folder/module chunks (keeping related files together), spawns one sub-agent per chunk, and has each agent read its full chunk in a single pass across all five categories: **Architecture**, **Code Quality**, **Performance**, **Tests**, and **Dependencies**. The main agent then consolidates: merges reports, spots cross-chunk patterns, checks new findings against the ledger to avoid duplicates, auto-resolves stale entries, assigns `risk` (`safe` / `needs-review`), groups related findings into `cluster_id`s, and records `depends_on` order where one fix must precede another.
 
-**Quick Mode** — reuses the changed-file list already computed in Step 3 (size already accounted for in the mode recommendation, so no second size check here). Re-validates all open ledger entries against changed files (auto-resolving deleted or rewritten ones), then scans just the changed files in a single pass.
+**Quick Mode** — reuses the changed-file list already computed in Step 3 (size already accounted for in the mode recommendation, so no second size check here). Re-validates all open ledger entries: a deleted or heavily rewritten file auto-resolves its findings; an untouched file carries its findings forward unchanged; a file touched but not heavily rewritten — the common case — gets each finding's `line` re-verified and refreshed before carrying it forward, since line numbers drift with any unrelated edit above them and `risk: safe` findings apply with no human review to catch a stale one. Then scans just the changed files in a single pass for new issues.
 
 **Fix Backlog** — skips scanning entirely. Loads every finding with `status: open` from the ledger and proceeds directly to presenting findings. Scan metadata (`last_scanned_commit`, `last_mode`, `consecutive_quick_count`) is left untouched since no scan was performed.
 

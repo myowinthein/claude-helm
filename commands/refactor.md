@@ -185,7 +185,8 @@ If no existing refactor branch was found: switch to main or master first if not 
 1. Reuse the changed-file list computed in Step 3.3 (`git diff --name-only {last_scanned_commit}..HEAD`, respecting Step 2 exclusions) — no need to recompute it. The mode decision in 3.3 already accounted for its size, so no further size check happens here.
 2. Re-validate every `open` ledger entry:
    - File deleted or heavily rewritten → mark `auto-resolved`.
-   - File untouched → carry forward unchanged, still `open`.
+   - File untouched (not in the changed-file list) → carry forward unchanged, still `open`.
+   - File touched but not heavily rewritten (the common case — a few unrelated lines added or removed elsewhere in the file): re-verify the finding's pattern still exists near its recorded `line`, and update `line` to its current position before carrying the finding forward as `open`. A stale line number left unchecked here is a real risk, not just noise — `risk: safe` findings get auto-applied with no human review in Step 6.2, so an unverified line pointing at the wrong code could silently apply a fix to unrelated lines.
 3. Scan only the changed files (single thread, no sub-agents needed) across all categories for new issues. Before adding any finding, cross-check it against the ledger's existing `open` findings for that same file — if it matches one already there, do not create a duplicate, just leave the existing entry as-is. Only genuinely new issues get added. Assign `risk`, `cluster_id`, and `depends_on` to any new findings the same way Deep Mode does.
 4. Update the ledger: set `schema_version` to `1` if not already present. Add new findings as `open`, keep carried-forward entries as-is, mark auto-resolved ones. Set `last_scanned_commit` to current HEAD, `last_mode` to `quick`, `last_scan_date` to today, increment `consecutive_quick_count` by 1.
 5. Commit the ledger immediately:
