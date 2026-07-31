@@ -23,7 +23,7 @@ flowchart TD
 
   BranchPlan --> BranchApproval{Developer\napproves?}
   BranchApproval -->|no| StopBranch([Stop])
-  BranchApproval -->|yes| DeleteBranches[Rename archived branch to main\nDelete all other branches]
+  BranchApproval -->|yes| DeleteBranches[Delete all other branches\nRename archived branch to main]
 
   DeleteBranches --> LFS{Files larger\nthan 100 MB?}
   LFS -->|yes| SetupLFS[Set up Git LFS\nTrack in .gitattributes]
@@ -65,6 +65,8 @@ Archiving from:  feature/rewrite  → renamed to main
 Delete:          main (superseded)   (local + remote)
 Delete:          fix/payment-bug     (local + remote)
 ```
+
+Execution order matters here: every other branch is deleted first — including a distinct, superseded `main`/`master` — and only then is the archived branch renamed to `main` and pushed. Renaming first would fail outright, since git refuses to rename a branch onto a name that's already taken.
 
 If local and remote `main` have diverged after the push, the step stops for approval before resolving the divergence.
 

@@ -55,12 +55,12 @@ Delete:          chore/cleanup       (local + remote)
 
 If the archived branch is already named `main` or `master`, state that no rename is needed.
 
-Once approved:
-- If the archived branch is not already named `main`/`master`: rename it to `main` locally (`git branch -m {branch} main`)
-- Delete all other branches locally and remotely, including the old `main`/`master` if it was superseded
-- Verify deletion: run `git ls-remote --heads origin` and confirm the deleted branches no longer appear
-- Verify local `main` is in sync with remote after push
-- If local and remote have diverged: report the divergence and stop for approval before resolving
+Once approved, in this order — deletion must happen before the rename, since git refuses to rename a branch onto a name that's already taken (a distinct old `main`/`master` occupies that name until it's deleted):
+1. Delete every branch except the archived branch, locally and remotely — including the old `main`/`master` if it's a distinct, superseded branch
+2. Verify deletion: run `git ls-remote --heads origin` and confirm only the archived branch remains
+3. If the archived branch is not already named `main`/`master`: rename it locally (`git branch -m {branch} main`), then push it to remote as `main` — the name is now free, so this is a clean push, not a force-push
+4. Verify local `main` is in sync with remote after push
+5. If local and remote have diverged: report the divergence and stop for approval before resolving
 
 ---
 
