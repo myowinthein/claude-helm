@@ -205,7 +205,7 @@ If environment branches detected, these additional rules apply:
 
 **Promotion model**
 
-Governs `/helm:ship`'s release promotion specifically. `/helm:legal`, `/helm:log`, `/helm:manifest`, and `/helm:adopt` always use fan-out for their own promotion of generated content (CLAUDE.md, README.md, legal documents, rule files) regardless of this setting — those are content syncs, not a release pipeline, so there's no meaningful "tier" for a document to pass through.
+Governs `/helm:ship`'s release promotion specifically. `/helm:legal`, `/helm:log`, `/helm:manifest`, `/helm:adopt`, `/helm:env`, and `/helm:test` always use fan-out for their own promotion of generated content or fixes (CLAUDE.md, README.md, legal documents, rule files, env/gitignore fixes, tests) regardless of this setting — those are content syncs, not a release pipeline, so there's no meaningful "tier" for the change to pass through.
 
 Set with `environment-promotion` in CLAUDE.md (Project Config section):
   environment-promotion: fan-out  → main merges directly into every selected environment, independently
