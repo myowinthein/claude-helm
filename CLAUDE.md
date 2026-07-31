@@ -28,7 +28,7 @@ Reload locally: `/reload-plugins` after any change
 - `docs/commands/` — human-readable detail pages per command (not command source); `docs/rules/` covers the two rule files
 - `.claude-plugin/plugin.json` — the version file; bump this on every release
 - `.claude-plugin/marketplace.json` — Claude Code marketplace registration metadata
-- `_config.yml` + `Gemfile` + `_sass/` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
+- `_config.yml` + `Gemfile` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
 
 ## Behavior Rules
 
