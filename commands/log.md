@@ -162,7 +162,7 @@ If CLAUDE.md exists with a saved commit hash and schema is intact, with meaningf
 
 ## Step 3 — Full Project Scan
 
-Before writing anything, investigate in this order:
+Before writing anything, investigate in this order to build the understanding for the eight schema sections:
 1. Understand the business purpose of the application
 2. Identify major modules and workflows
 3. Identify technology stack and important versions
