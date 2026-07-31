@@ -21,7 +21,11 @@ flowchart TD
 
   Scan[Scan project profile:<br/>app type, data, sensitive data, minors,<br/>third parties, email/marketing,<br/>monetization, content, AI features]
 
-  Scan --> Framework[Detect framework and output format:<br/>SSG → .md<br/>SSR/SSG JS → .mdx<br/>SPA/plain HTML → .html<br/>no web project → ask user]
+  Scan --> Monorepo{Multiple web<br/>packages found?}
+  Monorepo -->|yes| MonorepoAsk[Ask: which package<br/>gets the legal docs?] --> Framework
+  Monorepo -->|no| Framework
+
+  Framework[Detect framework and output format:<br/>SSG → .md<br/>SSR/SSG JS → .mdx<br/>SPA/plain HTML → .html<br/>no web project → ask user]
 
   Framework --> CSS{HTML output?}
   CSS -->|yes| CSSDetect[Detect CSS scope:<br/>global → bare HTML<br/>scoped/utility → wrap in site layout container<br/>unknown → wrap in main]
@@ -83,6 +87,8 @@ Reads the codebase to build a legal profile:
 - **Content model**: user-generated content, advice content (financial, health, legal), AI-generated recommendations.
 - **AI features**: AI used to generate recommendations presented as facts, BYOK models.
 
+**Monorepo detection** — if the scan finds multiple independent web packages (a workspace layout with several `package.json` files each defining their own framework, under `apps/`, `packages/`, or similar), asks which package should receive the legal documents before anything else runs, since a monorepo usually has one public-facing surface. The rest of Framework and output detection then applies scoped to that package only.
+
 **Framework and output detection** — determines the file format and output path from the project's structure:
 
 | Scenario | Format | Output path |
@@ -99,7 +105,7 @@ Reads the codebase to build a legal profile:
 
 **Output location confirmation** — for the auto-detected scenarios (SSG, JS framework, SPA/plain HTML), the resolved path and format are shown to the user to confirm or override before anything is written. The no-web case is not asked twice: its "where and in what format?" question already served as the location choice, so the confirmation is skipped there.
 
-**Existing documents** — checks the resolved output path for already-present files and reads `.claude/legal-manifest.json` (the record of what a previous run generated and at which commit). Each present file is classified: **Helm-generated** (in the manifest — safe to overwrite) or **Foreign** (not in the manifest — likely hand-written or lawyer-reviewed). For a Helm-generated file it also checks `git log {generated-commit}..HEAD` for changes that shift the legal profile (new analytics, payments, auth, integrations) and flags it **may be outdated** if so. The selection step labels them `(exists)`, `(exists — may be outdated)` (marked Recommended so the user regenerates), or `(exists — not helm-generated)`, and a Foreign file is confirmed individually before it's overwritten. Regeneration is always a full rewrite — never a surgical clause edit. The published documents carry **no marker of their own** — the manifest is the sole record, so end-user-facing files stay completely clean.
+**Existing documents** — checks the resolved output path for already-present files and reads `.claude/legal-manifest.json` (the record of what a previous run generated and at which commit; carries a `schema_version` field — a missing one is treated as `1`, since every manifest written before that field existed is implicitly version 1). Each present file is classified: **Helm-generated** (in the manifest — safe to overwrite) or **Foreign** (not in the manifest — likely hand-written or lawyer-reviewed). For a Helm-generated file it also checks `git log {generated-commit}..HEAD` for changes that shift the legal profile (new analytics, payments, auth, integrations) and flags it **may be outdated** if so. The selection step labels them `(exists)`, `(exists — may be outdated)` (marked Recommended so the user regenerates), or `(exists — not helm-generated)`, and a Foreign file is confirmed individually before it's overwritten. Regeneration is always a full rewrite — never a surgical clause edit. The published documents carry **no marker of their own** — the manifest is the sole record, so end-user-facing files stay completely clean.
 
 ### 2. Select which documents to generate
 
