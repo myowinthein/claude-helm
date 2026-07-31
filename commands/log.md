@@ -17,6 +17,10 @@ CLAUDE.md uses these eight sections, in order. Both a full scan and a gap update
 7. **Hard Safety Rules** — invariants / never-do list; keep brief and instruct the agent to read and follow `.claude/rules/safety.local.md` every session for the full detail.
 8. **Known Traps** — gotchas; initially empty or inferred from README warnings.
 
+## Noise commits
+
+"Noise" means commits that carry no durable knowledge: bug fixes, styling, dependency updates, and routine CRUD. Both the gap assessment and the gap review skip them.
+
 ---
 
 ## Step 1 — Assessment
@@ -26,7 +30,7 @@ Check CLAUDE.md:
 - Does it have content?
 - Is there a saved commit hash? (look for `<!-- last-reviewed: {hash} -->`)
 - If hash exists, run `git log {hash}..HEAD --oneline` to see the gap
-- How significant is the gap? (ignore: bug fixes, styling, dependency updates, routine CRUD)
+- How significant is the gap? (ignore noise commits — see Noise commits above)
 - If the file exists and has content, check whether all eight sections from the CLAUDE.md Schema (above) are present.
 
 Schema is intact if all eight headings are found. Schema is broken if any are missing.
@@ -69,7 +73,7 @@ If CLAUDE.md exists with a saved commit hash and schema is broken (any required 
       - label: "Skip"
         description: "No update needed"
 
-If CLAUDE.md exists with a saved commit hash and schema is intact, and there are no meaningful commits since the hash (`git log {hash}..HEAD` is empty, or only noise — bug fixes, styling, dependency updates, routine CRUD):
+If CLAUDE.md exists with a saved commit hash and schema is intact, and there are no meaningful commits since the hash (`git log {hash}..HEAD` is empty, or only noise commits):
   CLAUDE.md is already current. Inform the user: "CLAUDE.md is up to date — no meaningful commits since last review." Do not present any prompt.
 
 If CLAUDE.md exists with a saved commit hash and schema is intact, with meaningful commits since the hash:
@@ -197,8 +201,7 @@ Write directly — no approval needed.
 Before reviewing commits, run Project Config Check (Step 2) — skip silently if all flags are already present.
 
 Read commit messages first to get the shape of what changed.
-Then read file changes only for significant commits — skip: bug fixes,
-styling, dependency updates, routine CRUD.
+Then read file changes only for the significant commits — skip noise commits.
 
 Focus on: architectural changes, new modules, new conventions, domain
 rule changes, new operational knowledge, newly discovered traps.
@@ -213,8 +216,8 @@ Before adding anything, apply the three-question filter:
 Only update if all three are yes. Durable knowledge includes:
 architecture decisions, development conventions, domain knowledge
 (business rules, lifecycle rules, permissions), operational knowledge,
-and project traps. Does not include: bug fixes, refactors, styling,
-dependency updates, routine CRUD, completed tasks, temporary workarounds.
+and project traps. Does not include noise commits, plus refactors,
+completed tasks, and temporary workarounds.
 
 Only record what is supported by evidence — code, config, docs, or
 repository structure. No assumptions, preferences, or speculation.
