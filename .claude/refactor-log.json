@@ -2565,11 +2565,11 @@
       "file": "prompts/archive/step5-finalize.md",
       "line": 20,
       "description": "Organizes work as top-level '## Task N' headings interleaved with approval gates, while step2/step3/step4 each use a single '## Tasks' checklist separate from narrative \u2014 plausibly justified by Step 5's per-task approval gates, but worth a consistency pass.",
-      "status": "open",
+      "status": "auto-resolved",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "dc8f8486948603d3b0745a7dbf9fd0296754623a",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0114",
@@ -2645,11 +2645,11 @@
       "file": ".claude-plugin/marketplace.json",
       "line": 12,
       "description": "The files array for the helm plugin package omits LICENSE \u2014 since plugin.json declares \"license\": \"MIT\", the distributed plugin package ships without the actual license text.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1801063cb2aeeac87b25b656872bded7a7378042",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "dc8f8486948603d3b0745a7dbf9fd0296754623a",
+      "resolved_date": "2026-08-01"
     }
   ]
 }
