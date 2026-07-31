@@ -94,7 +94,7 @@ Uses `git filter-repo --force --message-callback` (preferred) with a JSON rewrit
 
 Both callbacks strip the incoming message before looking it up, so the map's keys are built with the same `.strip()`-equivalent normalization when captured in Step 2 — otherwise a mismatched key silently misses the lookup and that commit passes through unrewritten with no error.
 
-Captures the full-history commit count (`git log --all | wc -l`) before touching anything — separate from Step 2's incrementally-scanned `{total}`, since the rewrite itself still operates on the entire history via `--all` regardless of how much of it this run actually scanned. Verifies the result across every local branch afterward (`git log --all`, matching the rewrite's actual scope) by sampling the first 20, last 20, and comparing the count against that captured baseline before continuing.
+Captures the full-history commit count (`git log --all | wc -l`) and the `origin` remote's URL before touching anything — the commit count is separate from Step 2's incrementally-scanned `{total}`, since the rewrite itself still operates on the entire history via `--all` regardless of how much of it this run actually scanned; the `origin` URL is needed because `git filter-repo` removes that remote by default after a rewrite, assuming it's operating on a disposable clone. Restores `origin` afterward if it's missing (idempotent, harmless if a rewrite didn't remove it or none existed). Verifies the result across every local branch afterward (`git log --all`, matching the rewrite's actual scope) by sampling the first 20, last 20, and comparing the count against that captured baseline before continuing.
 
 ### 5. Verify tags
 
