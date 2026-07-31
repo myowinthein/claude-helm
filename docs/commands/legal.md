@@ -64,7 +64,7 @@ Reads the codebase to build a legal profile:
 
 **Output location confirmation** — after detection, the resolved path and format are shown to the user before anything is written. The user can confirm or override with a custom path and format.
 
-**Existing documents** — checks the resolved output path for already-present files. Existing files are labelled `(exists)` in the selection step so the user knows they will be overwritten.
+**Existing documents** — checks the resolved output path for already-present files and reads `.claude/legal-manifest.json` (the record of what a previous run generated). Each present file is classified: **Helm-generated** (in the manifest — safe to overwrite) or **Foreign** (not in the manifest — likely hand-written or lawyer-reviewed). The selection step labels them `(exists)` and `(exists — not helm-generated)` respectively, and a Foreign file is confirmed individually before it's overwritten. The published documents carry **no marker of their own** — the manifest is the sole record, so end-user-facing files stay completely clean.
 
 ### 2. Select which documents to generate
 
@@ -118,7 +118,7 @@ Each selected document is written in plain English, GDPR compliant, to the resol
 
 Presents the list of generated files for review and waits for confirmation before committing.
 
-Single commit: `docs(legal): generate legal documents`. If the output path or format differs from the default (`legal/` Markdown), the commit body notes it for future runs. If the user cancels, the documents stay written but uncommitted — the command still proceeds to the completion report.
+Single commit of the generated documents plus the updated `.claude/legal-manifest.json`: `docs(legal): generate legal documents`. If the output path or format differs from the default (`legal/` Markdown), the commit body notes it for future runs. If the user cancels, the documents stay written but uncommitted — the command still proceeds to the completion report.
 
 ### 5. Confirm completion
 
