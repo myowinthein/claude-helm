@@ -114,7 +114,9 @@ If README.md exists with a saved commit hash:
 
 ## Step 2 — Full Project Scan
 
-Before writing anything, investigate:
+If `readme-style: custom` and README.md is absent or empty: skip investigation entirely — there is nothing to write. Do not write anything — custom mode preserves structure, it does not author it. Report that there is no README.md yet, so there is nothing to be "custom" relative to, and ask the developer to write one in whatever structure they prefer. A future run will then preserve that structure. Stop here — do not proceed to Step 4.
+
+Otherwise, before writing anything, investigate:
 - Business purpose and target audience
 - Technology stack and major dependencies
 - Installation requirements and steps
@@ -149,16 +151,13 @@ If `readme-style: standard`:
   Sections must appear in the order listed by the spec.
   Do not invent sections outside the spec.
 
-If `readme-style: custom`:
-  If README.md already exists with content:
-    Read the existing README structure before writing.
-    Preserve the existing section order and naming.
-    Rewrite content within each section based on the project scan.
-    Do not add, remove, or rename sections without explicit approval.
-  If README.md is absent or empty:
-    Do not write anything — custom mode preserves structure, it does not author it. Report that there is no README.md yet, so there is nothing to be "custom" relative to, and ask the developer to write one in whatever structure they prefer. A future run will then preserve that structure.
+If `readme-style: custom` (README.md already exists with content — the only way to reach this point in custom mode, per the early exit above):
+  Read the existing README structure before writing.
+  Preserve the existing section order and naming.
+  Rewrite content within each section based on the project scan.
+  Do not add, remove, or rename sections without explicit approval.
 
-If a write happened (i.e. not the custom-mode absent-README case above): at the end of the file, append:
+At the end of the file, append:
 `<!-- last-reviewed: {current HEAD commit hash} -->`
 
 Write directly — no approval needed.

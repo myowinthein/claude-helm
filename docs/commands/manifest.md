@@ -97,7 +97,9 @@ Three modes, default depending on assessment:
 
 ### 3. Full scan
 
-Investigates: business purpose and target audience, stack and dependencies, installation steps, core usage patterns and CLI commands, public API surface, license, contributing model, maintainers, and project motivation/limitations worth surfacing.
+**Custom mode with no existing README exits immediately, before investigation runs.** Custom mode preserves structure, it doesn't author it — if there's nothing to preserve, there's nothing worth investigating the project for either. Reports that there's no README.md yet and asks the developer to write one in whatever structure they prefer; a future run then preserves it. No project scan, no write, no proceeding to Step 5.
+
+Otherwise, investigates: business purpose and target audience, stack and dependencies, installation steps, core usage patterns and CLI commands, public API surface, license, contributing model, maintainers, and project motivation/limitations worth surfacing.
 
 If `readme-style: standard`: writes `README.md` following the Standard Readme spec section order.
 
@@ -107,9 +109,9 @@ Optional sections when relevant: badges, long description, background, API, limi
 
 Skipped unless specifically needed: banner, security, thanks, maintainers, extra sections.
 
-If `readme-style: custom` and README.md already has content: reads the existing structure first, rewrites content within each section based on the project scan, and does not add, remove, or rename sections without explicit approval. If README.md is absent or empty, writes nothing — custom mode preserves structure, it doesn't author it. Reports that there's no README.md yet and asks the developer to write one in whatever structure they prefer; a future run then preserves it.
+If `readme-style: custom` (the only way to reach this point is with an existing README, per the early exit above): reads the existing structure first, rewrites content within each section based on the project scan, and does not add, remove, or rename sections without explicit approval.
 
-If a write happened: appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
+Appends the current HEAD hash as `<!-- last-reviewed: ... -->`. Writes directly.
 
 ### 4. Gap update
 
