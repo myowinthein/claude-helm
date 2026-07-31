@@ -57,7 +57,7 @@ Run the selected target's sub-flows, one at a time, each completing fully before
 - **Placeholder cleanup (other env files)** — shows unfilled placeholders grouped by file. Dev fills in values manually, then marks done.
 - **Env sync** — per file. Shows which keys are missing and where they exist in other files. Dev adds them manually per file, marks done before moving to the next.
 - **Missing from env** — all at once. Keys referenced in code but absent from all env files, with file:line locations. Dev adds them manually, marks done.
-- **Hardcoded values** — shows all findings with severity, file:line, redacted value, and suggested env var name. Single-select: Replace all, Skip, or Other. If Replace all and more than 10 findings: processes one source file at a time, committing after each per `git-auto-commit` (silent if `true`, confirmed otherwise).
+- **Hardcoded values** — shows all findings with severity, file:line, redacted value, and suggested env var name. Single-select: Replace all, Skip, or Other. If Replace all and more than 10 findings: processes one source file at a time, committing after each.
 - **Never referenced** — lists keys with no code reference, with a hint on whether each looks infrastructure-only or stale. Dev responds in free text — delete some, keep some, or wire up to code.
 - **Env formatting** — single-select: Proceed or Skip. Fixes formatting, removes duplicate keys (keep last), adds category groupings consistently across all env files. Preserves existing group order.
 
@@ -70,7 +70,7 @@ Run the selected target's sub-flows, one at a time, each completing fully before
 
 ### 4. Commit
 
-After all fixes are applied, commits per `git-auto-commit` in CLAUDE.md Project Config: silently if `true`, otherwise asks first. Stages only the files modified during this command — never `git add -A`. Commit message: `chore(env): audit and fix env configuration`.
+After all fixes are applied, commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit). Stages only the files modified during this command — never `git add -A`. Commit message: `chore(env): audit and fix env configuration`.
 
 ### 5. Completion report
 

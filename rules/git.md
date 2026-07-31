@@ -86,6 +86,11 @@ When active:
 - Push still requires confirmation (covered in safety.md)
 - If the task spans multiple logical units, commit each unit separately before moving to the next
 
+**Exception:** commits covered by safety.md's Agent Execution Boundaries — e.g.
+committing generated legal documents (`/helm:legal`) — always ask for
+confirmation regardless of this setting. Those are public or otherwise
+high-stakes content where autonomy level should never skip review.
+
 ---
 
 ## Universal Rules

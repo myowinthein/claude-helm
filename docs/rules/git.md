@@ -91,6 +91,8 @@ When active:
 - Stage only the files changed for the task. Never use `git add -A` blindly.
 - Derive the commit message from the work done; follow Conventional Commits.
 - If the task spans multiple logical units, commit each unit separately before moving on.
+
+**Exception:** commits covered by [`safety.md`](safety.md#agent-execution-boundaries)'s Agent Execution Boundaries — e.g. committing generated legal documents ([`/helm:legal`](../commands/legal.md)) — always ask for confirmation regardless of this setting. Those are public or otherwise high-stakes content where autonomy level should never skip review.
 - Push still requires confirmation (cross-references `safety.md`).
 
 ## Universal Rules

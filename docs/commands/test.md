@@ -6,7 +6,7 @@ nav_order: 4
 
 # /helm:test
 
-Detect the test framework, load the run ledger, assess existing coverage and recent activity, then write tests scoped to recent changes or the full project. Commits per scope with `test({scope}):` messages, following `git-auto-commit` from CLAUDE.md like every commit this command makes: silent if `true`, confirmed first otherwise.
+Detect the test framework, load the run ledger, assess existing coverage and recent activity, then write tests scoped to recent changes or the full project. Commits per scope with `test({scope}):` messages, per [git.md's Auto-Commit rule](../rules/git.md#auto-commit).
 
 ## Flow
 
