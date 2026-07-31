@@ -348,7 +348,7 @@ Use AskUserQuestion:
       - label: "Merge to main (Recommended)"
         description: "Merge refactor branch into main automatically, promote to environment branches if any exist, and delete the branch"
       - label: "Open PR"
-        description: "Push branch and open a pull request for review"
+        description: "Push branch and attempt to open a pull request via gh — falls back to manual instructions if gh is unavailable"
       - label: "Leave branch"
         description: "Leave the refactor branch as-is for now"
 
@@ -382,8 +382,16 @@ Wait for response before proceeding.
 
 **Option 2 — PR:**
 - Push refactor/{timestamp} to remote (including the updated ledger)
-- Inform user:
+- Check whether this repo is hosted on GitHub: `git remote get-url origin`. If the URL does not contain `github.com`, skip the `gh` attempt below and inform user:
   "Branch pushed. Open a PR to merge into main when ready."
+- If hosted on GitHub, attempt to open the PR:
+  ```
+  gh pr create --title "refactor(project): apply refactoring {timestamp}" --base main --head refactor/{timestamp} --body "Applied categories: {category_list}. See .claude/refactor-log.json for the full ledger of findings, fixes, and skipped items."
+  ```
+  If this fails with an auth error, inform user:
+  "Branch pushed. gh is not authenticated — run `gh auth login`.
+  Then re-run /helm:refactor or create the PR manually."
+  If it succeeds, report the PR URL `gh` prints back to the user.
 
 **Option 3 — Leave as-is:**
 - Inform user:

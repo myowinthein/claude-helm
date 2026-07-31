@@ -66,7 +66,7 @@ flowchart TD
   Verify --> Next[Ask: merge, PR, or leave?]
 
   Next -->|merge| Merge[Switch to main · merge --no-ff · push<br/>ask which environment branches to promote<br/>delete refactor branch]
-  Next -->|PR| PR[Push branch<br/>prompt user to open PR]
+  Next -->|PR| PR[Push branch<br/>attempt gh pr create<br/>fall back to manual if unavailable]
   Next -->|leave| Leave[Leave branch intact locally]
 
   Merge --> Done([Report: ledger summary · verification result])
@@ -142,7 +142,7 @@ For each selected category in turn:
 
 Asks how to land the work:
 - **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, push, then — if environment branches exist (same detection [`/helm:ship`](ship.md) uses) — ask which should also receive the refactor and merge main into each selected one, before deleting the refactor branch
-- **Open PR** — push the branch (with updated ledger) and prompt the user to open a PR
+- **Open PR** — push the branch (with updated ledger), then, if the repo is hosted on GitHub, attempt `gh pr create` directly (same pattern as [`/helm:ship`](ship.md)'s GitHub Release step). Falls back to a manual "open a PR yourself" instruction if the repo isn't on GitHub, `gh` isn't installed, or it isn't authenticated
 - **Leave as-is** — branch stays locally for manual review
 
 ### 8. Confirm completion
