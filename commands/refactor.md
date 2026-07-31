@@ -355,7 +355,7 @@ Use AskUserQuestion:
     multiSelect: false
     options:
       - label: "Merge to main (Recommended)"
-        description: "Merge refactor branch into main automatically and delete the branch"
+        description: "Merge refactor branch into main automatically, promote to environment branches if any exist, and delete the branch"
       - label: "Open PR"
         description: "Push branch and open a pull request for review"
       - label: "Leave branch"
@@ -367,8 +367,27 @@ Wait for response before proceeding.
 - Switch to main
 - Merge refactor/{timestamp} into main --no-ff
   with message: refactor(project): apply refactoring {timestamp}
-- Delete refactor branch locally and remotely
 - Push main
+- **Environment promotion**: if environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this refactor:
+
+    AskUserQuestion:
+      question: "main has been updated. Which environment branches should also receive this refactor?"
+      header:   "Promote to environments"
+      multiSelect: true
+      options: one entry per discovered environment branch, e.g.:
+        - label: "staging"
+          description: "Merge main into staging"
+        - label: "production"
+          description: "Merge main into production"
+
+  For each selected environment:
+  - git checkout {environment}
+  - git merge main --no-ff -m "chore(deploy): promote main to {environment} for refactor {timestamp}"
+  - git push origin {environment}
+  - git checkout main
+
+  If no environment branches exist, or the user selects none, skip silently.
+- Delete refactor branch locally and remotely
 
 **Option 2 — PR:**
 - Push refactor/{timestamp} to remote (including the updated ledger)

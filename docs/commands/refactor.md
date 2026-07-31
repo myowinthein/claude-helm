@@ -70,7 +70,7 @@ flowchart TD
   Verify[Scoped verification pass<br/>re-check touched files only<br/>catch newly introduced issues]
   Verify --> Next[Ask: merge, PR, or leave?]
 
-  Next -->|merge| Merge[Switch to main · merge --no-ff<br/>delete refactor branch · push]
+  Next -->|merge| Merge[Switch to main · merge --no-ff · push<br/>ask which environment branches to promote<br/>delete refactor branch]
   Next -->|PR| PR[Push branch<br/>prompt user to open PR]
   Next -->|leave| Leave[Leave branch intact locally]
 
@@ -146,7 +146,7 @@ For each selected category in turn:
 ### 7. Merge, PR, or leave
 
 Asks how to land the work:
-- **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, delete the refactor branch, push
+- **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, push, then — if environment branches exist (same detection [`/helm:ship`](ship.md) uses) — ask which should also receive the refactor and merge main into each selected one, before deleting the refactor branch
 - **Open PR** — push the branch (with updated ledger) and prompt the user to open a PR
 - **Leave as-is** — branch stays locally for manual review
 
