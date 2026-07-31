@@ -81,6 +81,10 @@ Rewrites `README.md` from the project's state, so it needs the full merged, stab
 
 If the command exits at any point without writing anything — Skip selected at any prompt, README.md already up to date, or custom mode finding nothing to preserve — this cleanup still runs: delete the temporary branch and return to the original branch. This applies everywhere in the command, not just the specific cases called out below, so the user is never left stranded on an empty temporary branch it created.
 
+## Scope
+
+README.md is human-facing documentation for contributors, GitHub visitors, and new users — not a changelog, not a technical spec, not a deployment manual. Audience is humans, not future Claude sessions, so keep it clear and scannable. Whenever writing to README.md, in any step: use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
+
 ### 1. Assessment
 
 First determines the README style by reading `readme-style` from CLAUDE.md Project Config. If the flag is absent, checks whether README.md already exists with content and asks accordingly — the question and the Custom option's description differ depending on whether there's an existing README to be "custom" relative to, since a brand-new project has nothing yet. Saves the choice (`readme-style: standard` or `readme-style: custom`) to CLAUDE.md before continuing.
@@ -138,10 +142,6 @@ Otherwise commits per [git.md's Auto-Commit rule](../rules/git.md#auto-commit) �
 If environment branches exist (same detection [`/helm:ship`](ship.md) uses), asks which should also receive the update, then merges main into each selected branch and pushes.
 
 **Solo Mode** commits directly to main, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from.
-
-## Scope
-
-README.md is human-facing documentation for contributors, GitHub visitors, and new users. It is not a changelog, not a technical spec, and not a deployment manual. Keep it clear and scannable.
 
 ## Stop conditions
 

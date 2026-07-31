@@ -76,6 +76,10 @@ Rewrites `CLAUDE.md` from the project's state, so it needs the full merged, stab
 
 If the command exits at any point without writing anything — Skip selected at any prompt, or CLAUDE.md already up to date — this cleanup still runs: delete the temporary branch and return to the original branch. This applies everywhere in the command, not just the specific case called out below, so the user is never left stranded on an empty temporary branch it created. (Gap Update's Outcome A doesn't count as "nothing written" — it still bumps the last-reviewed hash, so it goes through the normal commit path in Step 5.)
 
+## Scope
+
+`CLAUDE.md` is descriptive project knowledge (orientation layer); `.claude/rules/` is prescriptive (architecture, safety, git, testing). Keep them consistent. Project-specific safety rules live in `CLAUDE.md`'s `## Hard Safety Rules` section (written here, loaded with CLAUDE.md) — proposed, not auto-written. Never auto-edit the adopt-managed `.claude/rules` files (`git.md`, `safety.md`); they're overwritten by `/helm:adopt`, so propose any needed change to those instead. Whenever writing to CLAUDE.md, in any step: use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
+
 ### 1. Assessment
 
 Reads the current `CLAUDE.md`, checks for a saved `<!-- last-reviewed: {hash} -->` marker, and if found, runs `git log {hash}..HEAD --oneline` to measure the gap. Categorizes the gap as small/moderate or large/significant, ignoring noise commits (bug fixes, styling, dependency updates, routine CRUD).
@@ -142,10 +146,6 @@ If environment branches exist (same detection [`/helm:ship`](ship.md) uses), ask
 ### 6. Confirm completion
 
 Reports what was changed, what the new last-reviewed hash is, which environments were promoted, and whether any rule files in `.claude/rules` should also be revisited. Under GitHub Flow, also reports the temporary branch's fate and which branch you were returned to.
-
-## Scope
-
-CLAUDE.md is descriptive project knowledge (orientation layer). `.claude/rules/` are prescriptive (architecture, safety, git, testing). The command may flag rule-file updates but does not write them without explicit request.
 
 ## Stop conditions
 
