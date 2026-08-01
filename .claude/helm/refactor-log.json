@@ -3301,11 +3301,11 @@
       "file": "commands/adopt.md",
       "line": "285-297",
       "description": "Environment-promotion AskUserQuestion (multiSelect: true) offers \"one entry per discovered environment branch\" with no guard for exactly one qualifying branch, producing a 1-option question \u2014 AskUserQuestion actually rejects fewer than 2 options (confirmed live this session via env.md's Fix-scope picker).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0161",
@@ -3317,11 +3317,11 @@
       "file": "commands/env.md",
       "line": "538-550",
       "description": "Same environment-promotion single-option collapse as adopt.md's f-0160.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0162",
@@ -3333,11 +3333,11 @@
       "file": "commands/legal.md",
       "line": "467-479",
       "description": "Same environment-promotion single-option collapse as adopt.md's f-0160.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0163",
@@ -3349,11 +3349,11 @@
       "file": "commands/log.md",
       "line": "234-246",
       "description": "Same environment-promotion single-option collapse as adopt.md's f-0160.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0164",
@@ -3365,11 +3365,11 @@
       "file": "commands/manifest.md",
       "line": "214-226",
       "description": "Same environment-promotion single-option collapse as adopt.md's f-0160.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0165",
@@ -3381,11 +3381,11 @@
       "file": "commands/refactor.md",
       "line": "382-398",
       "description": "Step 7 Option 1's environment-promotion picker has the same single-option collapse as adopt.md's f-0160.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0166",
@@ -3397,11 +3397,11 @@
       "file": "commands/ship.md",
       "line": "41-53",
       "description": "Step 1's \"Deploy targets\" multi-select offers \"one entry per offered environment branch\" with no guard for exactly one qualifying branch (fan-out or chain mode) \u2014 same collapse risk as adopt.md's f-0160.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0167",
@@ -3413,11 +3413,11 @@
       "file": "commands/test.md",
       "line": "383-395",
       "description": "Same environment-promotion single-option collapse as adopt.md's f-0160.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0168",
@@ -3429,11 +3429,11 @@
       "file": "commands/legal.md",
       "line": "252-264",
       "description": "Step 2's \"Additional documents\" question offers cookie-policy.md and refund-policy.md gated independently on analytics/payments applicability \u2014 if exactly one applies (a common case), the question collapses to a single option, which AskUserQuestion rejects.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0169",
@@ -3445,11 +3445,11 @@
       "file": "commands/env.md",
       "line": "189-201",
       "description": "Step 2's Fix-scope picker (\"Env files\" / \".gitignore\", include only if that target has findings) collapses to a single option when only one target has findings \u2014 confirmed live this session during an actual /helm:env run, worked around ad hoc at the time; the source was never fixed.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0170",
@@ -3461,11 +3461,11 @@
       "file": "commands/refactor.md",
       "line": "266-276",
       "description": "Step 5's category-selection picker offers \"one entry per category that has at least one new or still open finding, from all 5\" with no guard for 0 or 1 qualifying categories \u2014 plausible on a mature, already-refactored codebase. normalize.md's Step 3 explicitly handles its own zero-finding case with no prompt at all; refactor.md's Step 5 has no analogous guard.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b1ee1ce",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0171",
@@ -3701,11 +3701,11 @@
       "file": "rules/git.md",
       "line": "186",
       "description": "Deployment section reads \"Tag trigger: CI deploys on SemVer tag via /ship command\" \u2014 a stale, non-namespaced command reference. Every other reference to this command in the same file uses /helm:ship, and docs/rules/git.md's corresponding line already correctly reads /helm:ship. Since rules/git.md is installed verbatim into every adopting project via /helm:adopt, this stale reference propagates to all consumers.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "4440327",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0186",
