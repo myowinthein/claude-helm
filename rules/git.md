@@ -183,7 +183,7 @@ Run before pushing, regardless of mode:
 Independent of strategy. Applies under both Solo mode and GitHub Flow.
 
 - Push trigger: CI auto-deploys on merge to main
-- Tag trigger: CI deploys on SemVer tag via /ship command
+- Tag trigger: CI deploys on SemVer tag via /helm:ship command
 - Both can be active simultaneously (push → staging, tag → production)
 
 ---
