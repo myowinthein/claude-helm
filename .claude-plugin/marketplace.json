@@ -17,7 +17,7 @@
         "README.md",
         "LICENSE"
       ],
-      "description": "A Claude Code plugin pack for solo developers. Slash commands and rules to ship, refactor, test, and document your own work."
+      "description": "A Claude Code plugin pack for solo developers. Slash commands and rules to ship, refactor, test, document, generate legal docs, audit env config, normalize commit history, adopt rule files, and archive your own work."
     }
   ]
 }

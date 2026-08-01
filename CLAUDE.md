@@ -15,7 +15,7 @@ readme-style: custom
 
 ## Dev Commands
 
-No install/build step for the plugin itself — the commands are markdown files. The Jekyll docs site does have a local test step: `bundle install`, then `bundle exec jekyll build && bundle exec htmlproofer _site --disable-external` to catch broken links, missing images, and malformed HTML before shipping. No CI/CD configured (no `.github/workflows/`) — this local check is not wired into `/helm:ship` or run automatically.
+No install/build step for the plugin itself — the commands are markdown files. The Jekyll docs site does have a local test step: `bundle install`, then `bundle exec jekyll build && bundle exec htmlproofer _site --disable-external` to catch broken links, missing images, and malformed HTML before shipping (see Known Traps for why this isn't automated).
 
 Release: `/helm:ship` (handles version bump, tag, push, and GitHub Release creation)
 Reload locally: `/reload-plugins` after any change

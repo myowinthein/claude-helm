@@ -7,4 +7,4 @@ permalink: /docs/commands
 
 # Commands
 
-Slash commands for shipping, refactoring, testing, and documenting your own work.
+Slash commands for shipping, refactoring, testing, documentation, legal docs, env auditing, commit-history normalization, and archiving your own work.
