@@ -147,7 +147,9 @@ All commits must follow this format:
   fix(payment): resolve stripe timeout
   refactor(orders): extract service layer
 
-**Scope inference** (for commands that infer it from a diff or cluster of changed files, e.g. `/helm:refactor`, `/helm:test`): use the primary module, folder, or domain area actually touched — never a command's own internal category/priority taxonomy (e.g. "architecture", "high-priority"), which is a report/selection grouping, not a commit scope. If the change spans multiple areas, use the dominant one; if truly cross-cutting, use `project` or `core`. Keep it lowercase, one word or hyphenated.
+**Multi-scope:** When a change is inseparably about two or more named areas — not just adjacent to them — use a comma-separated scope rather than picking one arbitrarily: `refactor(log,manifest): merge broken-structure and gap-based recommendation blocks`. Prefer a single scope whenever one area is clearly dominant; reach for comma-separated scope only when the areas are genuinely equal parts of the same change. Keep it to a handful of names — if the list is growing long, the change is probably `project`/`core`, not multi-scope.
+
+**Scope inference** (for commands that infer it from a diff or cluster of changed files, e.g. `/helm:refactor`, `/helm:test`): use the primary module, folder, or domain area actually touched — never a command's own internal category/priority taxonomy (e.g. "architecture", "high-priority"), which is a report/selection grouping, not a commit scope. If the change spans multiple areas, use the dominant one, or a comma-separated multi-scope (above) if none is dominant; if truly cross-cutting with no specific areas to name, use `project` or `core`. Keep it lowercase, one word or hyphenated per scope.
 
 **Breaking changes:**
   feat(auth)!: replace session with JWT
