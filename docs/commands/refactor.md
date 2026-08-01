@@ -65,7 +65,7 @@ flowchart TD
   Verify[Scoped verification pass<br/>re-check touched files only<br/>catch newly introduced issues]
   Verify --> Next[Ask: merge, PR, or leave?]
 
-  Next -->|merge| Merge[Switch to main · merge --no-ff · push<br/>check CI status for the pushed commit<br/>ask which environment branches to promote<br/>delete refactor branch]
+  Next -->|merge| Merge[Switch to main · merge --no-ff<br/>confirm: push main now?<br/>if pushed: check CI status<br/>ask which environment branches to promote<br/>delete refactor branch]
   Next -->|PR| PR[Push branch<br/>attempt gh pr create<br/>fall back to manual if unavailable]
   Next -->|leave| Leave[Leave branch intact locally]
 
@@ -79,6 +79,8 @@ flowchart TD
 ### Before starting
 
 Runs from `main`, `master`, or an existing `refactor/*` branch — resuming a session left via Step 7's "Leave as-is" option happens directly from that branch, not via a manual switch back to main first. Halts on any other branch.
+
+Unlike most other commands, this one doesn't branch its flow on `git-strategy` — it always works on a `refactor/*` branch and Step 7 always offers the same Merge/PR/Leave choice, Solo Mode included. This is a documented exception in [`git.md`](../rules/git.html#solo-mode): a refactor session is multi-wave and resumable by design (see The ledger below), and a branch is what makes leaving work between runs possible — the same reasoning as `/helm:ship`'s release-commit exception, applied to a different command.
 
 ### 1. Check for existing refactor branch
 
@@ -141,7 +143,7 @@ For each selected category in turn:
 ### 7. Merge, PR, or leave
 
 Asks how to land the work:
-- **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, push, then — if environment branches exist (same detection [`/helm:ship`](ship.html) uses) — checks CI status for the commit just pushed (same `gh run list`, matched-by-SHA mechanics as [`/helm:ship`](ship.html)'s Step 4; skipped silently if not GitHub-hosted or no workflows exist) and folds the result into the promotion question before asking which environments should also receive the refactor and merging main into each selected one, before deleting the refactor branch
+- **Auto-merge** into `main` with `refactor(project): apply refactoring {timestamp}`, then a dedicated "Push main now?" confirmation — separate from the merge above, never skipped regardless of `git-auto-commit`. Cancelling leaves main merged locally but unpushed, and skips promotion and branch deletion below; the refactor branch stays in place. If pushed: checks CI status for the commit just pushed (if environment branches exist — same detection [`/helm:ship`](ship.html) uses; same `gh run list`, matched-by-SHA mechanics as [`/helm:ship`](ship.html)'s Step 4; skipped silently if not GitHub-hosted or no workflows exist), folds the result into the promotion question, asks which environments should also receive the refactor and merges main into each selected one, then deletes the refactor branch
 - **Open PR** — push the branch (with updated ledger), then, if the repo is hosted on GitHub, attempt `gh pr create` directly (same pattern as [`/helm:ship`](ship.html)'s GitHub Release step). Falls back to a manual "open a PR yourself" instruction if the repo isn't on GitHub, `gh` isn't installed, or it isn't authenticated
 - **Leave as-is** — branch stays locally for manual review
 

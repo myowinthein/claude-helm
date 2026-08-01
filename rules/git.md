@@ -25,6 +25,8 @@ When active:
 
 Use this mode for solo work where peer review and branch protection have no audience. Switch to GitHub Flow the moment you have collaborators.
 
+Exception: /helm:refactor's refactor/* branch and its "Open PR" option in Step 7 are used regardless of git-strategy, including under Solo Mode — this is the sanctioned path for multi-wave, resumable refactor sessions (a session can span multiple runs, and leaving work on a branch between them is the point), not an ad-hoc feature branch. Same reasoning as /helm:ship's exception below, applied to a different command.
+
 ### GitHub Flow (default)
 
 Active when `git-strategy: github-flow` is declared, or when `git-strategy` is absent.
