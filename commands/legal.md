@@ -488,7 +488,7 @@ Otherwise, always confirm before committing, even when `git-auto-commit: true` i
 
 **Solo Mode:**
 
-Present the list of documents written and ask for confirmation:
+Present the list of documents written and ask for confirmation to commit:
 
   AskUserQuestion:
     question: "The following documents were written to {resolved-path}: {list}. Commit them now?"
@@ -505,28 +505,55 @@ If Cancel selected → leave the documents written but uncommitted, then proceed
 If Commit selected:
 - Stage the generated documents and the updated `.claude/helm/legal-manifest.json`; do not use `git add -A`. If this run migrated a legacy `.claude/legal-manifest.json`, also stage its removal (`git rm .claude/legal-manifest.json`).
 - Commit: `docs(legal): generate legal documents` (include the resolved output path and format in the body if they differ from the default).
-- Push: `git push origin main`.
-- Run Environment promotion above.
+- Before pushing, confirm — push is a separate gate from the commit above, per git.md's Auto-Commit exception: never skipped, regardless of settings:
+
+  AskUserQuestion:
+    question: "Push main now? This publishes these legal documents to origin."
+    header:   "Push"
+    multiSelect: false
+    options:
+      - label: "Push (Recommended)"
+        description: "git push origin main"
+      - label: "Cancel"
+        description: "Leave main committed locally but unpushed — push manually when ready"
+
+  If Cancel selected → stop here. Do not push or promote. Proceed to Step 5 to report the outcome, noting main is committed locally but unpushed.
+
+  If Push selected: `git push origin main`, then run Environment promotion above.
 
 **GitHub Flow:**
 
-Present the list of documents written and ask for confirmation, stating plainly what confirming will trigger — this covers the whole sequence, not just the commit:
+Present the list of documents written and ask for confirmation to commit — the push and any environment promotion get their own separate confirmations below, not folded into this one:
 
   AskUserQuestion:
-    question: "The following documents were written to {resolved-path}: {list}. Confirming will commit on {branch}, merge it into main, promote to any environment branches you select next, delete {branch}, and return you to {original_branch}."
+    question: "The following documents were written to {resolved-path}: {list}. Commit them on {branch} now?"
     header:   "Commit"
     multiSelect: false
     options:
-      - label: "Commit and finish (Recommended)"
+      - label: "Commit (Recommended)"
         description: "docs(legal): generate legal documents"
       - label: "Cancel"
         description: "Leave documents written but uncommitted on {branch} — finish manually when ready"
 
 If Cancel selected → leave the documents written but uncommitted on `{branch}`. Do not merge, delete, or switch branches. Proceed to Step 5 (records that nothing was committed and that `{branch}` was left in place).
 
-If Commit and finish selected:
+If Commit selected:
 1. Stage the generated documents and the updated `.claude/helm/legal-manifest.json` on `{branch}`; do not use `git add -A`. If this run migrated a legacy `.claude/legal-manifest.json`, also stage its removal (`git rm .claude/legal-manifest.json`). Commit: `docs(legal): generate legal documents` (include the resolved output path and format in the body if they differ from the default).
-2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "docs(legal): generate legal documents"`, `git push origin main`.
+2. Merge into main: `git checkout main`, `git merge {branch} --no-ff -m "docs(legal): generate legal documents"`. Before pushing, confirm:
+
+   AskUserQuestion:
+     question: "Push main now? This publishes these legal documents to origin."
+     header:   "Push"
+     multiSelect: false
+     options:
+       - label: "Push (Recommended)"
+         description: "git push origin main"
+       - label: "Cancel"
+         description: "Leave main merged locally but unpushed — push manually when ready"
+
+   If Cancel selected → stop here. Do not push, promote, or clean up. Proceed to Step 5 to report the outcome, noting main is merged locally but unpushed.
+
+   If Push selected: `git push origin main`.
 3. Run Environment promotion above.
 4. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
 5. Return to where you started: `git checkout {original_branch}`.
@@ -566,10 +593,11 @@ Format:       {Markdown / MDX / HTML}
 Jurisdiction: GDPR
 Tone:         plain English
 Committed:    yes / no
+Pushed:       yes / no — push manually when ready / N/A (not committed)
 Environments promoted: {list or none}
 
 GitHub Flow only:
-Branch:       {branch} — merged to main and deleted / left in place, uncommitted (if cancelled)
+Branch:       {branch} — merged to main and deleted / merged locally but unpushed / left in place, uncommitted (if cancelled)
 Returned to:  {original_branch}
 
 Note: These documents are AI-generated starting points.
