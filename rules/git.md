@@ -218,6 +218,8 @@ Set with `environment-promotion` in CLAUDE.md (Project Config section):
 
 Absence defaults to fan-out.
 
+Before promoting anything, confirm which model is active — same as the git-strategy self-check above. State it explicitly: "Fan-out promotion" or "Chain promotion."
+
 **Fan-out**: main promotes directly to any combination of environment branches — no ordering, no dependency between them. Simple parallel deploy targets (e.g. staging and production both receive the same release independently).
 
 **Chain**: environments form an ordered pipeline (e.g. main → staging → production). Only the first tier (staging, stage, uat, preprod) is ever merged into directly from main. A later tier (production, prod) is never selected as a direct deploy target — it's only reached by later merging the previous tier's branch forward into it (upstream-first rule, one tier at a time).

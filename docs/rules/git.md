@@ -202,6 +202,8 @@ Environment branches are long-lived branches that are not `main`, `master`, or f
 
 **Promotion model**: governs `/helm:ship`'s release promotion specifically. Set with `environment-promotion` in CLAUDE.md's Project Config (`fan-out` or `chain`; absence defaults to `fan-out`).
 
+Before promoting anything, confirm which model is active — same self-check as `git-strategy` above. State it explicitly: "Fan-out promotion" or "Chain promotion."
+
 - **Fan-out** (default): `main` promotes directly to any combination of environment branches, independently — no ordering between them. Simple parallel deploy targets.
 - **Chain**: environments form an ordered pipeline (e.g. `main → staging → production`). Only the first tier (`staging`, `stage`, `uat`, `preprod`) is ever merged into directly from `main`. A later tier (`production`, `prod`) is never a direct deploy target — it's only reached by merging the previous tier's branch forward into it, one tier at a time.
 
