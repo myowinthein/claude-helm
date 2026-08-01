@@ -3253,11 +3253,11 @@
       "file": "docs/legal/eula.md",
       "line": "n/a",
       "description": "EULA applicability is marginal for this project: claude-helm is MIT-licensed open-source markdown with no compiled/downloadable binary and no install-time license acceptance, so the EULA's restrictions largely just restate what LICENSE and terms.md already cover. Needs a decision: keep as-is, revise scope, or remove.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "c49a79b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0158",
