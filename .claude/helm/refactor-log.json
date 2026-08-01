@@ -2981,11 +2981,11 @@
       "file": "commands/refactor.md",
       "line": "14,348-406",
       "description": "Never checks git-strategy (unlike six sibling commands) and unconditionally creates a refactor/* branch plus offers an \"Open PR via gh\" option in Step 7 regardless of strategy \u2014 appears to contradict Solo Mode's \"no PRs, no feature branches\" rule. Unlike ship.md's release-commit exception, this is not documented anywhere in rules/git.md as a sanctioned exception. Needs a decision: formalize as an explicit git.md exception for exploratory/resumable refactor sessions, or make refactor.md git-strategy-aware like its siblings.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0c8c6e7",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0141",
@@ -2997,11 +2997,11 @@
       "file": "commands/refactor.md",
       "line": "367",
       "description": "Step 7 Option 1 (\"Auto merge\") pushes main with no dedicated \"Push main now?\" confirmation, same gap pattern as legal.md's f-0137/f-0138.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "0c8c6e7",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0142",
