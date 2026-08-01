@@ -3818,6 +3818,22 @@
       "first_found_date": "2026-08-01",
       "resolved_commit": "ddb7808",
       "resolved_date": "2026-08-01"
+    },
+    {
+      "id": "f-0193",
+      "category": "code-quality",
+      "priority": "medium",
+      "risk": "safe",
+      "cluster_id": "c-114",
+      "depends_on": [],
+      "file": "docs/commands/archive/2-restore-and-freeze.md",
+      "line": "30",
+      "description": "NoSourceAsk's mermaid trapezoid node label ([/text/]) contained a literal / inside \"empty/schema-only\", colliding with the shape's own delimiter character. Introduced by this run's own f-0177 fix and caught by the scoped verification pass (Step 6.4).",
+      "status": "fixed",
+      "first_found_commit": "3e60933",
+      "first_found_date": "2026-08-01",
+      "resolved_commit": "6610e83",
+      "resolved_date": "2026-08-01"
     }
   ]
 }
