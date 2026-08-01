@@ -141,7 +141,7 @@ Only relevant under GitHub Flow — Solo Mode made every commit directly on main
 
 Otherwise, merges the temporary branch into main (`test(project): write tests {catch-up / full-scan}`). Push always requires its own confirmation regardless of `git-auto-commit`, per git.md's Auto-Commit exception and rules/safety.md's unconditional push-confirmation rule — Solo Mode confirms directly, GitHub Flow confirms after the merge. If cancelled, the command stops there: no promotion, no branch cleanup, leaving the commit (or merge) in place locally for a manual push later.
 
-If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive these tests, then merges main into each selected branch and pushes. GitHub Flow then deletes the temporary branch (locally and remotely if pushed) and returns to the original branch.
+If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive these tests — capped at 4 options if more branches qualify (recognized tier names first, then alphabetical; the question notes any remainder needs a follow-up run) — then merges main into each selected branch and pushes. GitHub Flow then deletes the temporary branch (locally and remotely if pushed) and returns to the original branch.
 
 ### 8. Confirm completion
 
