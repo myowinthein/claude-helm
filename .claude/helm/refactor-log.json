@@ -3077,11 +3077,11 @@
       "file": "docs/commands/adopt.md, docs/commands/env.md, docs/commands/legal.md, docs/commands/log.md, docs/commands/manifest.md, docs/commands/refactor.md, docs/commands/ship.md, docs/commands/test.md",
       "line": "n/a",
       "description": "None of the 8 docs pages mention the AskUserQuestion 4-option cap added to the environment-branch promotion picker (commit 8757e7b) \u2014 a reader with 5+ environment branches gets no indication only 4 are offered per run.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "9450636",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0147",
