@@ -3272,8 +3272,8 @@
       "status": "skipped-by-user",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "5532bd0",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0159",
