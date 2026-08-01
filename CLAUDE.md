@@ -37,8 +37,10 @@ Reload locally: `/reload-plugins` after any change
 
 - `docs/commands/*.md` are detail pages, not command source — editing them never changes command behavior; the real definitions live in `commands/*.md`.
 - `prompts/archive/*.md` must never move into `commands/` — that would make each step appear as its own standalone slash command, breaking `/helm:archive`'s single-entry orchestration.
-- Ledger files (`.claude/helm/refactor-log.json`, and `.claude/helm/test-log.json` if a project runs `/helm:test`) are append-only audit trails — a scan appends new findings, it never overwrites the array.
+- Ledger files (`.claude/helm/refactor-log.json`, and `.claude/helm/test-log.json` if a project runs `/helm:test`) are append-only audit trails — a scan appends new findings, it never overwrites the array. `normalize-log.json` is a different shape (one entry per branch, replaced/dropped as branches come and go) — not append-only in the same sense.
 - Docs pages (`docs/commands/`, `docs/rules/`) must stay behaviorally consistent with the command/rule files they describe, but nothing enforces this automatically — drift is caught only by manual review or a `/helm:refactor` pass.
+- AskUserQuestion caps at 4 options — any command building a picker from a dynamic list (environment branches, refactor categories, legal documents) must merge or truncate down to 4, never assume the list stays small.
+- `README.md` ships in three real contexts (Jekyll site homepage, GitHub.com's own renderer, the distributed plugin package via `marketplace.json`), only one of which resolves relative links to `docs/`. Its doc-page links and banner image use absolute `https://myowinthein.github.io/claude-helm/...` URLs for this reason — don't "simplify" them back to relative paths.
 
 ## Behavior Rules
 
@@ -58,6 +60,7 @@ Reload locally: `/reload-plugins` after any change
 - **`prompts/` directory is intentional.** Files in `prompts/archive/` are not commands — they are sub-steps for `/helm:archive`. Do not move them to `commands/`.
 - **`docs/commands/` is not the command source.** The slash command definitions live in `commands/`. The `docs/commands/` files are detail pages that serve as Jekyll site content and link from README — editing them does not change command behavior.
 - **No CI to gate on.** `/helm:ship` and `/helm:refactor`'s environment-promotion CI-status checks both no-op silently here — there's no `.github/workflows/`. `bundle exec jekyll build && bundle exec htmlproofer` (see Dev Commands) verifies the site locally, but nothing runs it automatically before or after a release.
+- **`git filter-repo` removes the `origin` remote by default** after rewriting history, since it assumes it's operating on a disposable clone. `/helm:normalize`'s preferred rewrite path captures `origin`'s URL beforehand and restores it after — if that logic is ever touched, this is why it's there.
 
 ## Rules
 
@@ -65,4 +68,4 @@ This project follows the rules shipped in claude-helm:
 - rules/git.md
 - rules/safety.md
 
-<!-- last-reviewed: 43822f6b0c89c180927ca069197f3c7aa119fe15 -->
+<!-- last-reviewed: 69afcb461d5b538710db0e11a1c6d4892b5d96ce -->
