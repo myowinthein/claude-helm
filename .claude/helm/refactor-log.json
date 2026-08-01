@@ -3269,7 +3269,7 @@
       "file": "docs/legal/terms.md, docs/legal/eula.md",
       "line": "50 / 39",
       "description": "Governing-law clause says disputes resolve \"in the courts of that jurisdiction\" (the author's residence) without naming an actual jurisdiction in either document \u2014 functionally unresolved rather than a literal placeholder token. Needs the user to supply a real jurisdiction or accept this phrasing as intentionally generic.",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
       "resolved_commit": null,
