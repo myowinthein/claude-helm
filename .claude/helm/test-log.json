@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "last_run_commit": "d145c426512da11cafcb05271cceca40b20f63bb",
+  "last_run_commit": "67fedcbef76a787a51dd1ccc2f5665bddca24447",
   "full_scan_ever_run": true,
-  "consecutive_catchup_count": 0,
+  "consecutive_catchup_count": 1,
   "files": []
 }
