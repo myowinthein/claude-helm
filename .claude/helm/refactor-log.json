@@ -3605,11 +3605,11 @@
       "file": "docs/commands/archive/3-postman.md",
       "line": "n/a",
       "description": "Unlike docs1 and docs2, which both carry a \"field is read directly by...\" callout for their machine-read fields, docs3 never states that \"Postman collection generated: yes/no\" is an explicit machine-read field consumed by Step 4's docs/archive-metadata.md, even though the step file has the identical pattern for it.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "611ee04",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0180",
@@ -3621,11 +3621,11 @@
       "file": "docs/commands/archive/3-postman.md",
       "line": "n/a",
       "description": "Verification section omits step3's quantitative verification bar: at minimum one GET request per functional area and the primary auth flow, plus explicit disclosure in Known Limitations if fewer than half of all endpoints were verified. The docs page lists which categories get verified but never states the minimum-coverage threshold or the disclosure requirement.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "611ee04",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0181",
