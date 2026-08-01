@@ -263,11 +263,29 @@ DEPENDENCIES          {X issues}
 TOTAL: {N} issues found ({N} new, {N} still open)
 ─────────────────────────────────
 
-Then present multi-select category selection using the AskUserQuestion tool:
+Then present category selection. First determine how many of the 5 categories (Architecture, Code Quality, Performance, Tests, Dependencies) have at least one `new` or `still open` finding:
+
+If zero categories qualify (TOTAL is 0): nothing to apply. Inform the user "No refactoring findings this run." and proceed directly to Step 7 (Merge and cleanup) — there is nothing to select or apply.
+
+If exactly one category qualifies, a multi-select with a single option isn't valid — AskUserQuestion requires at least 2. Ask directly instead:
+
+  AskUserQuestion:
+    question: "Apply the {N} {category} finding(s)?"
+    header:   "Apply category"
+    multiSelect: false
+    options:
+      - label: "Yes (Recommended)"
+        description: "{N} issues: {one-line summary}"
+      - label: "Skip"
+        description: "Leave these findings open, don't change this code"
+
+  "Yes" is equivalent to selecting that category in the multi-select below — proceed the same way.
+
+Otherwise (2 or more categories qualify), present multi-select category selection using the AskUserQuestion tool:
 
   Question:    "Which categories to apply?"
   multiSelect: true
-  Options: one entry per category that has at least one `new` or `still open` finding, from all 5 (Architecture, Code Quality, Performance, Tests, Dependencies) — "{N} issues: {one-line summary}"
+  Options: one entry per qualifying category — "{N} issues: {one-line summary}"
 
   AskUserQuestion caps at 4 options. If more than 4 categories qualify, merge the smallest two into one option (e.g. "Tests & Dependencies") — repeat until at or under 4.
 
@@ -396,6 +414,20 @@ Wait for response before proceeding.
           description: "Merge main into production"
 
   AskUserQuestion caps at 4 options. If more than 4 branches qualify, offer only the first 4 (recognized tier names first — staging/stage/uat/preprod, then production/prod, then any others alphabetically) and note in the question that remaining branches need a follow-up run.
+
+  If exactly one environment branch qualifies, a multi-select with one option isn't valid — AskUserQuestion requires at least 2. Ask a direct yes/no confirmation instead, still folding in the CI line if checked above:
+
+    AskUserQuestion:
+      question: "main has been updated. Promote to {branch} as well? {CI: {conclusion}, if checked above}"
+      header:   "Promote to environment"
+      multiSelect: false
+      options:
+        - label: "Yes — promote to {branch} (Recommended if CI passed)"
+          description: "Merge main into {branch}"
+        - label: "Skip"
+          description: "Leave {branch} as-is for now"
+
+    "Yes" is equivalent to selecting {branch} in the multi-select above — proceed the same way.
 
   For each selected environment:
   - git checkout {environment}

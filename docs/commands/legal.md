@@ -136,7 +136,7 @@ Otherwise, AskUserQuestion has a 4-option limit, so this step uses two questions
 | `cookie-policy.md` | same, gated on analytics applicability |
 | `refund-policy.md` | same, gated on payment-processing applicability |
 
-Question 2 is skipped entirely if the scan found no analytics and no payment processing.
+Question 2 is skipped entirely if the scan found no analytics and no payment processing. If both apply, it's a multi-select as shown above; if only one applies, a multi-select with a single option isn't valid (AskUserQuestion needs at least 2), so it asks a direct yes/no confirmation for that one document instead.
 
 Each existing document's option also carries a status suffix: `(exists — up to date)`, `(exists — may be outdated)`, or `(exists — not helm-generated)` for a Foreign file — so the user can tell an auto-generated file from a hand-edited one, and a current file from a stale one, independent of whether it's Recommended.
 
@@ -175,7 +175,7 @@ Single commit of the generated documents plus the updated `.claude/helm/legal-ma
 
 Push is always its own separate confirmation after the commit — never folded into the commit prompt, and never skipped regardless of `git-auto-commit`, matching every other write-capable command and CLAUDE.md's push rule. Under GitHub Flow this means: commit on the temporary branch, merge into main, *then* a dedicated "Push main now?" gate before anything reaches origin. Cancelling the push gate leaves main committed (Solo Mode) or merged (GitHub Flow) locally but unpushed, skips environment promotion and (under GitHub Flow) branch cleanup, and still proceeds to the completion report.
 
-**Environment promotion** (both modes, after a successful push): if environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the documents — capped at 4 options if more branches qualify (recognized tier names first, then alphabetical; the question notes any remainder needs a follow-up run) — then merges main into each selected branch and pushes — matching ship.md's promotion mechanics exactly, just with a commit message scoped to legal document updates.
+**Environment promotion** (both modes, after a successful push): if environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the documents — capped at 4 options if more branches qualify (recognized tier names first, then alphabetical; the question notes any remainder needs a follow-up run), or a direct yes/no confirmation instead of a multi-select if exactly one branch qualifies (AskUserQuestion needs at least 2 options) — then merges main into each selected branch and pushes — matching ship.md's promotion mechanics exactly, just with a commit message scoped to legal document updates.
 
 **GitHub Flow only** — after the push gate: runs environment promotion, deletes the temporary branch (locally and remotely if it was pushed), and returns to whichever branch the command was originally run from. **Solo Mode** commits directly to main, so none of this branch dance is needed — it goes straight to environment promotion.
 
