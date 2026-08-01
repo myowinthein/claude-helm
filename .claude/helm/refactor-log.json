@@ -2933,11 +2933,11 @@
       "file": "commands/legal.md",
       "line": "494,508",
       "description": "Solo Mode's \"Commit them now?\" prompt never mentions push, then pushes unconditionally on confirm (git push origin main) \u2014 missing the dedicated \"Push main now?\" gate that adopt.md/env.md/log.md/manifest.md/test.md all use, contradicting CLAUDE.md's rule that push always needs its own confirmation.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7aa543c",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0138",
@@ -2949,11 +2949,11 @@
       "file": "commands/legal.md",
       "line": "516,528-529",
       "description": "GitHub Flow's \"Commit and finish\" folds commit+merge+push+promote+delete into one confirmation whose description never says \"push\" \u2014 same gap as f-0137, just for the GitHub Flow path.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "7aa543c",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0139",
