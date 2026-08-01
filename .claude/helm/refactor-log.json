@@ -3109,11 +3109,11 @@
       "file": "docs/commands/archive/2-restore-and-freeze.md",
       "line": "76-85",
       "description": "Image export section omits both verification checkpoints the step file requires: the empty-tarball check and the post-export docker load corruption check.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "c11f24b",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0149",
