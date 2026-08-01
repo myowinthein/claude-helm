@@ -3237,11 +3237,11 @@
       "file": "docs/rules/safety.md",
       "line": "113-119",
       "description": "Minimum Evidence Checklist drops the concrete file-path examples rules/safety.md provides (.github/workflows/, .gitlab-ci.yml, .husky/, .pre-commit-config.yaml) and reorders the surrounding paragraphs, making the human-facing doc strictly less actionable than the rule agents actually execute.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "25d5611",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0157",
