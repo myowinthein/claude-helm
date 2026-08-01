@@ -75,7 +75,9 @@ Run one combined query — the positive refs are every current local branch, the
 ```
 git log --oneline --no-decorate {every local branch} --not {every valid last_checked_commit}
 ```
-This returns exactly the commits reachable from any current branch but not already covered by a previous run — automatically deduplicated (a commit reachable from two branches only appears once), and correctly scoped for both new branches (nothing excludes their history unless it overlaps an already-tracked branch) and existing branches (only new commits since their own last check). If the ledger is empty (first run, or every entry was dropped above), this is equivalent to `git log --oneline --no-decorate --all` — the full history, matching today's behavior.
+This returns exactly the commits reachable from any current branch but not already covered by a previous run — automatically deduplicated (a commit reachable from two branches only appears once), and correctly scoped for both new branches (nothing excludes their history unless it overlaps an already-tracked branch) and existing branches (only new commits since their own last check). If the ledger is empty (first run, or every entry was dropped above), this scans every current local branch's full history — **not** the same as `git log --oneline --no-decorate --all`: `--all` also includes remotes, stashes, notes, and any stray backup refs (e.g. leftover `refs/original/*` from a previous `git filter-branch` run) that were never meant to be part of this scan.
+
+Before a first full scan (empty ledger), check for exactly that kind of debris and resolve it first — `git stash list` and `git for-each-ref | grep -E 'refs/(original|stash)'`. Drop an obsolete stash, delete stale backup refs. Left in place, it doesn't just risk polluting this scan (if the positive-refs list is ever built from `--all` instead of the actual branch list); Step 4's rewrite runs on `--all` regardless and will try to process it, and Step 4's own integrity check is thrown off by the same debris — see the note there.
 
 For each commit returned, classify as:
 - **Compliant** — message already matches `type(scope): description` format
@@ -136,9 +138,9 @@ If Cancel → exit silently. The ledger is not updated — these non-compliant c
 
 ## Step 4 — Rewrite commit messages
 
-Before doing anything else, capture the full history's current commit count for the post-rewrite integrity check below — this is independent of `{total}` from Step 2, which only reflects this run's incrementally-scanned commits, not the whole repo:
+Before doing anything else, capture the current commit count for the post-rewrite integrity check below — this is independent of `{total}` from Step 2, which only reflects this run's incrementally-scanned commits, not the whole repo. Use `--branches --tags`, not `--all`: the rewrite's actual scope is every local branch (Step 2.2), and `--all` also counts remotes, stashes, notes, and any stray backup refs — including the `refs/original/*` backups the `git filter-branch` fallback below is about to create itself, which would inflate the post-rewrite count and make this check fail even on a fully correct rewrite:
 ```
-git log --oneline --all | wc -l
+git log --branches --tags --oneline | wc -l
 ```
 
 Also capture the `origin` remote's URL, if one exists — `git filter-repo` removes it by default after a rewrite (a safety measure that assumes it's operating on a disposable clone), and Step 7's force push needs it back:
@@ -190,11 +192,17 @@ After rewrite completes, restore `origin` if `git filter-repo` removed it — id
 git remote get-url origin >/dev/null 2>&1 || { [ -n "{origin_url}" ] && git remote add origin {origin_url}; }
 ```
 
-Then verify a representative sample across the full history — use `--all` here too, matching the rewrite's actual scope (every local branch), not just whichever branch is currently checked out:
+If the `git filter-branch` fallback ran, it just created fresh `refs/original/*` backup refs — one per rewritten ref — as its own unavoidable safety mechanism. Clean those up now, before verifying, once you've confirmed there's no reason to keep them (Step 5's tag verification and the sample check below still catch a bad rewrite either way):
 ```
-git log --oneline --all | head -20
-git log --oneline --all | tail -20
-git log --oneline --all | wc -l  # compare against the full-history count captured at the start of this step — must match exactly
+git for-each-ref --format='%(refname)' refs/original/ | xargs -n1 git update-ref -d
+```
+`git filter-repo` doesn't create these, so this is a no-op when the preferred path was used.
+
+Then verify a representative sample across the full history — use `--branches --tags` again, matching the rewrite's actual scope (every local branch) without the noise `--all` would include:
+```
+git log --branches --tags --oneline | head -20
+git log --branches --tags --oneline | tail -20
+git log --branches --tags --oneline | wc -l  # compare against the count captured at the start of this step — must match exactly
 ```
 
 ---
