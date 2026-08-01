@@ -3013,11 +3013,11 @@
       "file": "commands/ship.md",
       "line": "193-213",
       "description": "gh release create is only guarded against an auth-failure response; there's no check for whether the gh binary is installed at all, unlike normalize.md's explicit `git filter-repo --version` availability check with a documented fallback.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "6f97a90",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0143",
