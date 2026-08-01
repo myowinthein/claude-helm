@@ -17,7 +17,7 @@ flowchart TD
   Warn -->|cancel| CancelEarly[/Exit: no changes,<br/>ledger untouched/]
   Warn -->|continue| Ledger[Load .claude/helm/normalize-log.json<br/>diff branch list against it:<br/>new · dropped · carried forward]
 
-  Ledger --> Scan[git log {branches} --not {last_checked_commit}s<br/>incremental — full history on first run<br/>or if a stored commit no longer exists]
+  Ledger --> Scan[git log every branch, excluding commits<br/>already covered by their last check<br/>incremental — full history on first run<br/>or if a stored commit no longer exists]
 
   Scan --> Classify[For each commit:<br/>classify compliant vs non-compliant<br/>read diff to infer type + scope]
   Classify --> Count{Non-compliant<br/>count?}
