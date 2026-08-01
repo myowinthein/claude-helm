@@ -3557,11 +3557,11 @@
       "file": "docs/commands/archive/1-explore.md",
       "line": "n/a",
       "description": "\"What it scans\" omits a dedicated \"Existing Documentation\" subsection even though the flow diagram's Gather node lists it and prompts/archive/step1-explore.md devotes a full \"## Existing Documentation\" section to it in the output template \u2014 every other Determine-list category gets its own subsection here except this one.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "639a9bd",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0177",
@@ -3573,11 +3573,11 @@
       "file": "docs/commands/archive/2-restore-and-freeze.md",
       "line": "n/a",
       "description": "Only documents one of step2's two \"stop and ask\" approval gates. prompts/archive/step2-restore-and-freeze.md defines two distinct gates (\"no data source exists\" and \"restoration requires network/cloud database\"), but the docs page and its flowchart only represent the network/cloud gate \u2014 the \"no data source found\" gate is entirely absent, unlike sibling steps 4/5 whose diagrams represent every approval gate explicitly.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3e60933",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0178",
@@ -3637,11 +3637,11 @@
       "file": "docs/commands/archive/5-finalize.md",
       "line": "n/a",
       "description": "Task 2 write-up drops step5's clarification that the post-rename push is \"a clean push, not a force-push\" \u2014 the safety nuance for why the operation is fine to run is present in the source but not in the docs page.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "80a25e7",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0182",
@@ -3765,11 +3765,11 @@
       "file": "_config.yml",
       "line": "32",
       "description": "exclude: list still contains \"- docs/legal/\", but that directory was deleted this session. Harmless to Jekyll (excluding a nonexistent path is a no-op) but stale config now that nothing points there.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "b9f7491",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0190",
