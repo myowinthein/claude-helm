@@ -3093,11 +3093,11 @@
       "file": "docs/commands/archive/5-finalize.md",
       "line": "44-49,98",
       "description": "Task 6 prose and mermaid flowchart present the final seal commit+push as automatic, omitting the explicit AskUserQuestion approval gate (\"Seal the archive?\") that prompts/archive/step5-finalize.md requires before this irreversible push \u2014 every other destructive Step 5 task has its gate shown in both prose and flowchart.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "96a9a0f",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0148",
@@ -3125,11 +3125,11 @@
       "file": "docs/commands/archive/1-explore.md, docs/commands/archive/2-restore-and-freeze.md",
       "line": "n/a",
       "description": "The \"Project name:\" (Step 1) and \"App running: yes/no\" (Step 2) fields are required to be stated explicitly because later steps read them directly, but neither docs page documents this machine-read requirement, unlike the \"Archiving from:\" field which is documented.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "96a9a0f",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0150",
