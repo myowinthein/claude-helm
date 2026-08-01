@@ -27,7 +27,7 @@ flowchart TD
   PinTags --> DataRestore
 
   DataRestore{Data source\navailable?}
-  DataRestore -->|none, project needs one| NoSourceAsk[/Ask: continue empty/schema-only,\nor wait for a dump?/]
+  DataRestore -->|none, project needs one| NoSourceAsk[/Ask: continue with an empty database,\nor wait for a dump?/]
   DataRestore -->|network/cloud DB required| NetworkAsk[/Ask: skip and fall back,\nor wait for access?/]
   DataRestore -->|repo-contained source found| RestoreData[Restore from best\navailable source:\ndumps → seeders → migrations\n→ file data → localhost DB]
   NoSourceAsk --> Build
