@@ -71,7 +71,7 @@ Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaul
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/legal-{date}`) — regardless of what the starting branch was. The generated documents are always scanned from main's own content, never from whatever branch happened to be checked out, so there's nothing to validate about the starting branch itself. The command returns to the original branch at the end (see Step 4).
 
-If the command exits having written nothing at all (Step 1's "No legal need detected" exit, or Step 2's "nothing selected" case), this cleanup still runs: delete the temporary branch and return to the original branch. This does **not** apply once documents have actually been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; real drafted work is never auto-deleted.
+If the command exits having written nothing at all (Step 1's "No legal need detected" exit, Step 2's "all candidates up to date" exit, or Step 2's "nothing selected" case), this cleanup still runs: delete the temporary branch and return to the original branch. This does **not** apply once documents have actually been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; real drafted work is never auto-deleted.
 
 ### 1. Project scan
 
@@ -107,31 +107,37 @@ Reads the codebase to build a legal profile:
 
 **Output location confirmation** — for the auto-detected scenarios (SSG, JS framework, SPA/plain HTML), the resolved path and format are shown to the user to confirm or override before anything is written. The no-web case is not asked twice: its "where and in what format?" question already served as the location choice, so the confirmation is skipped there.
 
-**Existing documents** — checks the resolved output path for already-present files and reads `.claude/helm/legal-manifest.json` (the record of what a previous run generated and at which commit; carries a `schema_version` field — a missing one is treated as `1`, since every manifest written before that field existed is implicitly version 1). Falls back to the legacy flat path `.claude/legal-manifest.json` if the new one isn't found; a legacy file gets migrated to `.claude/helm/` and removed the next time the manifest is written. Each present file is classified: **Helm-generated** (in the manifest — safe to overwrite) or **Foreign** (not in the manifest — likely hand-written or lawyer-reviewed). For a Helm-generated file it also checks `git log {generated-commit}..HEAD` for changes that shift the legal profile (new analytics, payments, auth, integrations) and flags it **may be outdated** if so. The selection step labels them `(exists)`, `(exists — may be outdated)` (marked Recommended so the user regenerates), or `(exists — not helm-generated)`, and a Foreign file is confirmed individually before it's overwritten. Regeneration is always a full rewrite — never a surgical clause edit. The published documents carry **no marker of their own** — the manifest is the sole record, so end-user-facing files stay completely clean.
+**Existing documents** — checks the resolved output path for already-present files and reads `.claude/helm/legal-manifest.json` (the record of what a previous run generated and at which commit; carries a `schema_version` field — a missing one is treated as `1`, since every manifest written before that field existed is implicitly version 1). Falls back to the legacy flat path `.claude/legal-manifest.json` if the new one isn't found; a legacy file gets migrated to `.claude/helm/` and removed the next time the manifest is written. Each present file is classified: **Helm-generated** (in the manifest — safe to overwrite) or **Foreign** (not in the manifest — likely hand-written or lawyer-reviewed). For a Helm-generated file it also checks `git log {generated-commit}..HEAD` for changes that shift the legal profile (new analytics, payments, auth, integrations) and classifies it **up to date** or **may be outdated** accordingly — a real classification the selection step below acts on, not just a label. Regeneration is always a full rewrite — never a surgical clause edit. The published documents carry **no marker of their own** — the manifest is the sole record, so end-user-facing files stay completely clean.
 
 ### 2. Select which documents to generate
 
-AskUserQuestion has a 4-option limit, so this step uses two questions.
+**Applicability** (does the document apply at all) is separate from **Recommended** (should the user be nudged to select it right now). privacy-policy.md and terms.md always apply; cookie-policy.md/refund-policy.md/eula.md/disclaimer.md apply per scan findings. A document is Recommended only if it's missing and applies, or it exists but was classified **may be outdated** above — an applicable document that already exists and is up to date is *not* Recommended, regardless of the applicability rule. This means privacy-policy.md/terms.md aren't unconditionally Recommended on every run the way they used to be: once generated and unchanged, they drop out of the nudge.
 
-**Question 1 — core documents** (always asked):
+**All candidates up to date** — if every applicable document already exists, is Helm-generated, and is up to date (nothing missing, nothing Foreign, nothing stale), the command skips this step's questions entirely: "Legal documents are up to date — no meaningful changes since last generation." Proceeds straight to Step 4's cleanup, same as if nothing had been selected.
+
+Otherwise, AskUserQuestion has a 4-option limit, so this step uses two questions.
+
+**Question 1 — core documents** (always asked when this step is reached):
 
 | Option | Recommended when |
 |---|---|
-| `privacy-policy.md` | always |
-| `terms.md` | always |
-| `eula.md` | installable software, plugins, desktop apps, Chrome extensions |
-| `disclaimer.md` | AI-generated content, financial/health/legal advice |
+| `privacy-policy.md` | missing, or exists and flagged may-be-outdated |
+| `terms.md` | missing, or exists and flagged may-be-outdated |
+| `eula.md` | same, gated on installable-software applicability |
+| `disclaimer.md` | same, gated on AI-content/advice applicability |
 
 **Question 2 — conditional documents** (only asked if relevant signals were detected):
 
 | Option | Recommended when |
 |---|---|
-| `cookie-policy.md` | non-essential cookies or analytics detected |
-| `refund-policy.md` | payment processing detected |
+| `cookie-policy.md` | same, gated on analytics applicability |
+| `refund-policy.md` | same, gated on payment-processing applicability |
 
 Question 2 is skipped entirely if the scan found no analytics and no payment processing.
 
-All documents are opt-in: the user can deselect any recommended document or add ones the scan did not flag. If nothing is selected across both questions, the command exits without writing anything — proceeding to Step 4, which writes nothing but still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created. Selected documents that already exist are overwritten.
+Each existing document's option also carries a status suffix: `(exists — up to date)`, `(exists — may be outdated)`, or `(exists — not helm-generated)` for a Foreign file — so the user can tell an auto-generated file from a hand-edited one, and a current file from a stale one, independent of whether it's Recommended.
+
+All documents are opt-in: the user can deselect any recommended document or add ones the scan did not flag. If nothing is selected across both questions, the command exits without writing anything — proceeding to Step 4, which writes nothing but still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created. Selected documents that already exist are overwritten (Foreign ones confirmed individually first).
 
 ### 3. Generate documents
 
@@ -170,12 +176,13 @@ Single commit of the generated documents plus the updated `.claude/helm/legal-ma
 
 ### 5. Confirm completion
 
-If Step 1's "No legal need detected" check exited early, reports just that — no documents generated, no legal need found — since output location and contact point were never resolved. Otherwise reports which documents were generated, the output path, format, jurisdiction, tone, whether the changes were committed, and which environments were promoted. Under GitHub Flow, also reports the temporary branch's fate (merged and deleted, or left in place if cancelled) and confirms which branch you were returned to. Reminds the user that these are AI-generated starting points: review before publishing and consult a lawyer for high-stakes products.
+If Step 1's "No legal need detected" check exited early, reports just that — no documents generated, no legal need found — since output location and contact point were never resolved. If Step 2's "all candidates up to date" check exited early, reports that instead — output location was resolved, but nothing needed regenerating. Otherwise reports which documents were generated, the output path, format, jurisdiction, tone, whether the changes were committed, and which environments were promoted. Under GitHub Flow, also reports the temporary branch's fate (merged and deleted, or left in place if cancelled) and confirms which branch you were returned to. Reminds the user that these are AI-generated starting points: review before publishing and consult a lawyer for high-stakes products.
 
 ## Stop conditions
 
 - **Solo Mode, not on main/master.** Switch to main or master and re-run.
 - **No legal need detected.** Scan found no data collection, third-party integrations, monetization, user-generated/advice content, or AI features — asks whether to exit (Recommended) or proceed anyway.
+- **All candidates up to date.** Every applicable document already exists, is Helm-generated, and has no legal-relevant changes since it was last generated — informs the user and exits, no picker shown.
 - **User selects nothing.** Nothing written — GitHub Flow cleanup still runs (delete the temporary branch, return to the original branch) if one was created.
 
 ## See also

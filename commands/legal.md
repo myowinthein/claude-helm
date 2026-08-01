@@ -18,7 +18,7 @@ project actually does. Only generate documents that apply.
 - Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
 - Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b docs/legal-{YYYYMMDD}` from it. This happens unconditionally, regardless of what `{original_branch}` was — the generated documents are always scanned from main's own content, never from whatever the starting branch happened to contain, so there is nothing to check or reject about the starting branch itself.
 - Call this branch `{branch}` for the rest of this command.
-- If this command exits without writing anything at all (Step 1's "No legal need detected" exit, or Step 2's "nothing selected" case), delete `{branch}` and return to `{original_branch}` before exiting — never leave the user stranded on an empty temporary branch it created. This does **not** apply once documents have been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; do not delete real drafted work.
+- If this command exits without writing anything at all (Step 1's "No legal need detected" exit, Step 2's "all candidates up to date" exit, or Step 2's "nothing selected" case), delete `{branch}` and return to `{original_branch}` before exiting — never leave the user stranded on an empty temporary branch it created. This does **not** apply once documents have been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; do not delete real drafted work.
 
 ## Step 1 — Project scan
 
@@ -198,7 +198,7 @@ Record the resolved contact and its type (email / issue URL / page / postal) for
 - Check whether the resolved output path exists.
 - List which documents are already present using the resolved file extension.
 - Read `.claude/helm/legal-manifest.json` if it exists. If not, check the legacy path `.claude/legal-manifest.json` (this plugin's ledgers used to live flat in `.claude/`, which risks colliding with another plugin's own files of the same generic name) — if found there, load it and treat this as a one-time path migration: the next time the manifest is written (Step 3), it moves to the new `.claude/helm/` path and the old file is removed as part of the same commit. Either way, it records which documents a previous run generated and the commit each was generated at. Classify each present document:
-  - **Helm-generated** — its path is listed in the manifest. Safe to regenerate. Check whether it is stale: run `git log {generated_at_commit}..HEAD` and look for changes that could shift the legal profile scanned above in this step — new analytics, payment processors, auth providers, third-party integrations, or data collection (dependency manifests, config, integration code). If any are found, mark the document **may be outdated**. Do not edit it in place — regeneration is always a full rewrite.
+  - **Helm-generated** — its path is listed in the manifest. Safe to regenerate. Check whether it is stale: run `git log {generated_at_commit}..HEAD` and look for changes that could shift the legal profile scanned above in this step — new analytics, payment processors, auth providers, third-party integrations, or data collection (dependency manifests, config, integration code). If any are found, mark it **may be outdated**; otherwise mark it **up to date** — this is a real classification used by Step 2's recommendation logic below, not just a label. Do not edit it in place — regeneration is always a full rewrite.
   - **Foreign** — present on disk but not in the manifest. Likely hand-written or lawyer-reviewed; must not be overwritten without explicit confirmation.
 - The published legal documents carry no marker of their own — this manifest is the only record of what helm generated, so end-user-facing files stay clean.
 
@@ -208,20 +208,31 @@ Record all findings, including each document's classification and staleness, bef
 
 ## Step 2 — Determine which documents to generate
 
-Based on scan findings, mark each document as Recommended if it applies:
+First determine the candidate set: privacy-policy.md and terms.md are always candidates once this step is reached (Step 1's "No legal need detected" check already exited before here if neither applied); cookie-policy.md, refund-policy.md, eula.md, and disclaimer.md are candidates only if applicable per the scan findings below.
 
-- privacy-policy.md — always Recommended
-- terms.md — always Recommended
-- cookie-policy.md — Recommended if non-essential cookies or analytics detected
-- refund-policy.md — Recommended if payment processing detected
-- eula.md — Recommended if Chrome extension, desktop app, or downloadable software detected
-- disclaimer.md — Recommended if financial, health, legal advice or AI recommendations detected
+**Applicability** (does this document apply at all, regardless of whether it already exists):
+- privacy-policy.md — always applies
+- terms.md — always applies
+- cookie-policy.md — applies if non-essential cookies or analytics detected
+- refund-policy.md — applies if payment processing detected
+- eula.md — applies if Chrome extension, desktop app, or downloadable software detected
+- disclaimer.md — applies if financial, health, legal advice or AI recommendations detected
+
+**Recommended** (whether to nudge the user toward selecting it) is not the same as applicable — an applicable document that's already generated and current doesn't need touching:
+- Doesn't exist yet, and applies → Recommended (needs generating for the first time).
+- Exists, Helm-generated, and flagged **may be outdated** in Step 1 → Recommended (regenerate to catch up).
+- Exists, Helm-generated, and **up to date** → not Recommended, regardless of applicability — nothing changed since it was last generated.
+- Exists, Foreign → not Recommended either way; the user opts in explicitly if they want it replaced (see Step 3's overwrite confirmation).
+
+**All candidates up to date — skip this step entirely:** if every candidate document exists, is Helm-generated, and was classified up to date in Step 1 (none missing, none Foreign, none flagged may be outdated), there's nothing to regenerate. Inform the user: "Legal documents are up to date — no meaningful changes since last generation." Do not present either AskUserQuestion below. Proceed to Step 4, which writes nothing but still needs to run its GitHub Flow cleanup (delete `{branch}`, return to `{original_branch}`) if a temporary branch was created.
+
+Otherwise, present the two questions below.
 
 AskUserQuestion supports a maximum of 4 options. Split into two questions.
 
 Labeling applies to both questions below:
-- Append `(Recommended)` per each document's recommendation rule (noted inline per option).
-- For an existing document, append its classification suffix from Step 1: `(exists)` for an up-to-date Helm-generated file, `(exists — may be outdated)` for a Helm-generated file flagged stale (also mark it Recommended so the user regenerates it), or `(exists — not helm-generated)` for a Foreign file. This lets the user tell an auto-generated file from a hand-edited one, and a current file from a stale one.
+- Append `(Recommended)` per the Recommended rule above (not the Applicability rule alone — an applicable-but-current document is not Recommended).
+- For an existing document, append its classification suffix from Step 1: `(exists — up to date)` for a current Helm-generated file, `(exists — may be outdated)` for a Helm-generated file flagged stale, or `(exists — not helm-generated)` for a Foreign file. This lets the user tell an auto-generated file from a hand-edited one, and a current file from a stale one.
 
 Question 1 — core documents:
   AskUserQuestion:
@@ -229,13 +240,13 @@ Question 1 — core documents:
     header:   "Core documents"
     multiSelect: true
     options:
-      - label: "privacy-policy.md (Recommended)"
+      - label: "privacy-policy.md"                  ← append "(Recommended)" per the Recommended rule above; append the existing-document suffix if present
         description: "Explains what data is collected and how it is handled"
-      - label: "terms.md (Recommended)"
+      - label: "terms.md"                            ← append "(Recommended)" per the Recommended rule above; append the existing-document suffix if present
         description: "Acceptable use, IP ownership, liability, governing law"
-      - label: "eula.md"                            ← append "(Recommended)" if downloadable software
+      - label: "eula.md"                             ← same treatment, gated on downloadable-software applicability
         description: "License grant, restrictions, and liability for installable software"
-      - label: "disclaimer.md"                      ← append "(Recommended)" if AI content or advice
+      - label: "disclaimer.md"                       ← same treatment, gated on AI-content/advice applicability
         description: "No-professional-advice notice and AI-generated content warning"
 
 Question 2 — conditional documents (only ask if applicable based on scan findings):
@@ -244,9 +255,9 @@ Question 2 — conditional documents (only ask if applicable based on scan findi
     header:   "Additional documents"
     multiSelect: true
     options:
-      - label: "cookie-policy.md"                   ← append "(Recommended)" if analytics detected
+      - label: "cookie-policy.md"                   ← same treatment, gated on analytics applicability
         description: "Required if non-essential cookies or analytics tools are present"
-      - label: "refund-policy.md"                   ← append "(Recommended)" if payments detected
+      - label: "refund-policy.md"                   ← same treatment, gated on payments applicability
         description: "Required if payment processing is present"
 
   Skip Question 2 entirely if neither cookie-policy nor refund-policy is applicable
@@ -449,7 +460,7 @@ Required sections in order:
 
 ## Step 4 — Commit and finalize
 
-If Step 1's "No legal need detected" check exited here, or Step 2 selected nothing (no documents to generate): skip the commit confirmation and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` (per Before starting's cleanup rule) — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
+If Step 1's "No legal need detected" check exited here, Step 2's "all candidates up to date" check exited here, or Step 2 selected nothing (no documents to generate): skip the commit confirmation and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` (per Before starting's cleanup rule) — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
 
 Otherwise, always confirm before committing, even when `git-auto-commit: true` is set — these are public, legally-binding documents, so this is a deliberate exception to the normal auto-commit flow (same category as the boundaries in safety.md's Agent Execution Boundaries: never skip review just because autonomy is high).
 
@@ -528,6 +539,17 @@ If Step 1's "No legal need detected" check exited early: report just that outcom
 
 LEGAL COMPLETE
 Generated: none — scan found no legal need (no data collection, third-party integrations, monetization, user-generated/advice content, or AI features)
+
+GitHub Flow only:
+Branch:       {branch} — deleted
+Returned to:  {original_branch}
+
+If Step 2's "all candidates up to date" check exited early: report that instead — output location and contact point were resolved (this exit happens after them), but nothing needed regenerating.
+
+LEGAL COMPLETE
+Generated: none — legal documents already up to date, no meaningful changes since last generation
+
+Location:     {resolved output path}
 
 GitHub Flow only:
 Branch:       {branch} — deleted
