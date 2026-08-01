@@ -18,7 +18,7 @@ project actually does. Only generate documents that apply.
 - Record the current branch as `{original_branch}` — the workflow returns here at the end, whatever it was.
 - Checkout a fresh branch from main's current tip: update local main (`git pull` if a remote exists), then `git checkout -b docs/legal-{YYYYMMDD}` from it. This happens unconditionally, regardless of what `{original_branch}` was — the generated documents are always scanned from main's own content, never from whatever the starting branch happened to contain, so there is nothing to check or reject about the starting branch itself.
 - Call this branch `{branch}` for the rest of this command.
-- If this command exits without writing anything at all (Step 2's "nothing selected" case), delete `{branch}` and return to `{original_branch}` before exiting — never leave the user stranded on an empty temporary branch it created. This does **not** apply once documents have been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; do not delete real drafted work.
+- If this command exits without writing anything at all (Step 1's "No legal need detected" exit, or Step 2's "nothing selected" case), delete `{branch}` and return to `{original_branch}` before exiting — never leave the user stranded on an empty temporary branch it created. This does **not** apply once documents have been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; do not delete real drafted work.
 
 ## Step 1 — Project scan
 
@@ -67,6 +67,24 @@ Scan the codebase to understand the project's legal profile:
 **AI features**
 - Does the app use AI to generate recommendations presented as facts?
 - Does it use a BYOK model (user provides their own API key)?
+
+**No legal need detected**
+
+If every category above came back empty — no data collection, no sensitive data, not directed at children, no third-party integrations, no email/marketing, no monetization, no user-generated or advice content, no AI features — none of the usual signals that make privacy/terms documents necessary were found. Stop here, before resolving an output location or a contact point (both are pointless if nothing gets generated):
+
+  AskUserQuestion:
+    question: "Scan found no data collection, sensitive data, third-party integrations, monetization, user-generated/advice content, or AI features — none of the signals that typically make privacy or terms documents necessary. This project may not need legal documents."
+    header:   "No legal need"
+    multiSelect: false
+    options:
+      - label: "Exit — no documents needed (Recommended)"
+        description: "Skip document generation entirely; nothing is written"
+      - label: "Proceed anyway"
+        description: "Continue the scan and pick documents manually — use this if the scan missed something"
+
+  If "Exit" selected → treat exactly as Step 2's "nothing selected" outcome: proceed straight to Step 4, which writes nothing but still needs to run its GitHub Flow cleanup (delete `{branch}`, return to `{original_branch}`) if a temporary branch was created. Report per Step 5 with `Generated: none — scan found no legal need` instead of a document list.
+
+  If "Proceed anyway" selected → continue to Framework and output detection below, same as if this check had never triggered.
 
 **Framework and output detection**
 
@@ -431,7 +449,7 @@ Required sections in order:
 
 ## Step 4 — Commit and finalize
 
-If Step 2 selected nothing (no documents to generate): skip the commit confirmation and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` (per Before starting's cleanup rule) — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
+If Step 1's "No legal need detected" check exited here, or Step 2 selected nothing (no documents to generate): skip the commit confirmation and environment promotion below — there is nothing to act on. Under GitHub Flow, still delete `{branch}` and return to `{original_branch}` (per Before starting's cleanup rule) — do not skip that part. Under Solo Mode there is nothing further to do, since no branch was created.
 
 Otherwise, always confirm before committing, even when `git-auto-commit: true` is set — these are public, legally-binding documents, so this is a deliberate exception to the normal auto-commit flow (same category as the boundaries in safety.md's Agent Execution Boundaries: never skip review just because autonomy is high).
 
@@ -506,7 +524,16 @@ If Commit and finish selected:
 
 ## Step 5 — Confirm completion
 
-Report:
+If Step 1's "No legal need detected" check exited early: report just that outcome — output location and contact point were never resolved, so the full report below doesn't apply.
+
+LEGAL COMPLETE
+Generated: none — scan found no legal need (no data collection, third-party integrations, monetization, user-generated/advice content, or AI features)
+
+GitHub Flow only:
+Branch:       {branch} — deleted
+Returned to:  {original_branch}
+
+Otherwise, report:
 
 LEGAL COMPLETE
 Generated:

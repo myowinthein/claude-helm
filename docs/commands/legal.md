@@ -71,7 +71,7 @@ Behavior depends on `git-strategy` in CLAUDE.md's Project Config (absence defaul
 - **Solo Mode**: runs only on `main`/`master`. Halts on any other branch.
 - **GitHub Flow**: records the current branch, then unconditionally checks out a fresh branch from main's current tip (`docs/legal-{date}`) — regardless of what the starting branch was. The generated documents are always scanned from main's own content, never from whatever branch happened to be checked out, so there's nothing to validate about the starting branch itself. The command returns to the original branch at the end (see Step 4).
 
-If the command exits having written nothing at all (Step 2's "nothing selected" case), this cleanup still runs: delete the temporary branch and return to the original branch. This does **not** apply once documents have actually been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; real drafted work is never auto-deleted.
+If the command exits having written nothing at all (Step 1's "No legal need detected" exit, or Step 2's "nothing selected" case), this cleanup still runs: delete the temporary branch and return to the original branch. This does **not** apply once documents have actually been written but left uncommitted (Step 4's Cancel option) — that branch is deliberately preserved so the user can review or finish committing later; real drafted work is never auto-deleted.
 
 ### 1. Project scan
 
@@ -86,6 +86,8 @@ Reads the codebase to build a legal profile:
 - **Monetization**: paid tiers, subscriptions, pricing pages.
 - **Content model**: user-generated content, advice content (financial, health, legal), AI-generated recommendations.
 - **AI features**: AI used to generate recommendations presented as facts, BYOK models.
+
+**No legal need detected** — if every category above comes back empty (no data collection, no sensitive data, not child-directed, no third-party integrations, no email/marketing, no monetization, no user-generated/advice content, no AI features), the command stops here rather than resolving an output location or contact point for nothing. It asks whether to exit (Recommended — nothing is written, same cleanup as Step 2's "nothing selected" case) or proceed anyway, in case the scan missed something. This runs before output-location and contact-point resolution below, since both are pointless if nothing ends up generated.
 
 **Monorepo detection** — if the scan finds multiple independent web packages (a workspace layout with several `package.json` files each defining their own framework, under `apps/`, `packages/`, or similar), asks which package should receive the legal documents before anything else runs, since a monorepo usually has one public-facing surface. The rest of Framework and output detection then applies scoped to that package only.
 
@@ -168,11 +170,12 @@ Single commit of the generated documents plus the updated `.claude/helm/legal-ma
 
 ### 5. Confirm completion
 
-Reports which documents were generated, the output path, format, jurisdiction, tone, whether the changes were committed, and which environments were promoted. Under GitHub Flow, also reports the temporary branch's fate (merged and deleted, or left in place if cancelled) and confirms which branch you were returned to. Reminds the user that these are AI-generated starting points: review before publishing and consult a lawyer for high-stakes products.
+If Step 1's "No legal need detected" check exited early, reports just that — no documents generated, no legal need found — since output location and contact point were never resolved. Otherwise reports which documents were generated, the output path, format, jurisdiction, tone, whether the changes were committed, and which environments were promoted. Under GitHub Flow, also reports the temporary branch's fate (merged and deleted, or left in place if cancelled) and confirms which branch you were returned to. Reminds the user that these are AI-generated starting points: review before publishing and consult a lawyer for high-stakes products.
 
 ## Stop conditions
 
 - **Solo Mode, not on main/master.** Switch to main or master and re-run.
+- **No legal need detected.** Scan found no data collection, third-party integrations, monetization, user-generated/advice content, or AI features — asks whether to exit (Recommended) or proceed anyway.
 - **User selects nothing.** Nothing written — GitHub Flow cleanup still runs (delete the temporary branch, return to the original branch) if one was created.
 
 ## See also
