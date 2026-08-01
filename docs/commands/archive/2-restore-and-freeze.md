@@ -112,3 +112,5 @@ Whichever mechanism applies, the exact recovery step is documented in `docs/setu
 | Cannot Be Restored Without Missing Dependencies | External dependencies unavailable |
 
 If the outcome is anything other than Fully Restored, the step warns the developer and waits for explicit approval before Step 3 begins.
+
+The report also records whether the project ended up running as an explicit "App running: yes/no" field (stated even when "not applicable"), rather than leaving it to be inferred from the Access Points prose — Step 3 (Postman collection generation) reads this field directly.

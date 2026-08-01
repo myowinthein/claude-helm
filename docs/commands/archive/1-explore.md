@@ -31,6 +31,7 @@ flowchart TD
 The step reads source code, configuration files, manifests, env files, and any existing documentation. It does not rely only on README files. It separates confirmed facts from guesses and labels guesses explicitly.
 
 **Project profile**
+- Records the project's name explicitly as "Project name:" in its own field, rather than leaving it to be extracted from the Overview prose — Step 3 (Postman collection filenames) and Step 4 (README content) both read this field directly
 - Purpose and business domain
 - Technology stack: framework, language, runtime versions, package manager, database type
 - Architecture: key modules, layers, and how the pieces fit together

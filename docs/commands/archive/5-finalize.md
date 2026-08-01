@@ -44,7 +44,9 @@ flowchart TD
   Services -->|yes| StopServices[Present list\nStop all services on approval]
   Services -->|no| Commit
 
-  StopServices --> Commit
+  StopServices --> SealApproval{Developer confirms:\nSeal the archive?}
+  SealApproval -->|no| StopSeal([Stop: leave changes\nstaged/uncommitted])
+  SealApproval -->|yes| Commit
 
   Commit["Commit all accumulated changes:\nchore(archive): seal project archive"] --> Push[Push to private origin]
 
@@ -97,7 +99,14 @@ All running services tied to the project are listed (Docker containers, dev serv
 
 ## Task 6 — Final commit and push
 
-All changes accumulated across the full workflow are committed in a single commit, including `.archive/` — it is not gitignored, so the step reports and `state.json` become a permanent audit trail in the archive rather than being lost once the local copy is cleaned up:
+Shows `git status` for everything accumulated across the full workflow, then requires explicit approval before proceeding — this is the final destructive action in the whole `/helm:archive` flow:
+
+```
+Seal the archive? This commits all accumulated changes and pushes to
+{archive_remote_url} (main).
+```
+
+Declining leaves the changes staged/uncommitted for a manual seal later; nothing is committed or pushed. On approval, all changes are committed in a single commit, including `.archive/` — it is not gitignored, so the step reports and `state.json` become a permanent audit trail in the archive rather than being lost once the local copy is cleaned up:
 
 ```
 chore(archive): seal project archive
