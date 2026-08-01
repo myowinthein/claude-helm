@@ -47,7 +47,7 @@ Active when `git-strategy: github-flow` is declared, or when `git-strategy` is a
 - All branches base from main
 - main is always deployable
 - Open a PR before merging to main
-- Merge using the strategy declared as `git-merge-strategy` in CLAUDE.md (default: squash):
+- Merge using the strategy declared as `git-merge-strategy` in CLAUDE.md (default: squash). Before merging, confirm which is active — same self-check as git-strategy above. State it explicitly: "Squash merge", "Rebase merge", or "Merge commit."
   - `squash` — squash all commits into one with a Conventional Commit message
   - `rebase` — replay branch commits onto main without a merge commit
   - `merge` — create a merge commit preserving full branch topology
