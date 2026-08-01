@@ -51,7 +51,6 @@ Active when `git-strategy: github-flow` is declared, or when `git-strategy` is a
   - `squash` — squash all commits into one with a Conventional Commit message
   - `rebase` — replay branch commits onto main without a merge commit
   - `merge` — create a merge commit preserving full branch topology
-- Delete feature branch immediately after merge
 - If CI is configured, it must pass before merge
 
 #### Branch Naming
