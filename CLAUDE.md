@@ -27,8 +27,7 @@ Reload locally: `/reload-plugins` after any change
 - `prompts/archive/step{1-5}-*.md` — sub-step files for `/helm:archive`; `commands/archive.md` is the orchestrator that reads and sequences them
 - `docs/commands/*.md` (+ `docs/commands/archive/`) — human-readable detail pages per command, published as Jekyll site content; not command source
 - `docs/rules/` — detail pages for the two rule files
-- `docs/legal/*.md` — this repo's own generated legal documents (privacy policy, terms, disclaimer — no EULA: removed as a marginal fit for an MIT-licensed markdown repo with no downloadable binary); excluded from the Jekyll build and not yet linked from the site or README
-- `.claude/helm/*.json` — this plugin's own ledgers (`refactor-log.json`, `test-log.json`, `legal-manifest.json`, `normalize-log.json`). Namespaced under `helm/` rather than flat in `.claude/` to avoid colliding with another plugin's own generically-named files. Commands transparently migrate a legacy flat-path file on first run after update.
+- `.claude/helm/*.json` — this plugin's own ledgers (`refactor-log.json`, `test-log.json`, `normalize-log.json`; `legal-manifest.json` only if `/helm:legal` has generated documents for this repo — currently absent, no `docs/legal/` in this repo). Namespaced under `helm/` rather than flat in `.claude/` to avoid colliding with another plugin's own generically-named files. Commands transparently migrate a legacy flat-path file on first run after update.
 - `.claude-plugin/plugin.json` — the version file; bump this on every release
 - `.claude-plugin/marketplace.json` — marketplace registration metadata; `/helm:ship` keeps its `plugins[].version` in sync with `plugin.json` automatically
 - `_config.yml` + `Gemfile` — Jekyll/GitHub Pages site config; `docs/` files serve as site pages
