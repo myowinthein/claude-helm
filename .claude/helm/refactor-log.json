@@ -3525,11 +3525,11 @@
       "file": "docs/commands/legal.md",
       "line": "13-66",
       "description": "The Mermaid flow diagram was never updated for the \"No legal need detected\" (Step 1) and \"All candidates up to date\" (Step 2) early-exit gates added earlier this session \u2014 both are described in prose/Stop Conditions but the diagram still shows an unconditional path through Scan\u2192Monorepo and Existing\u2192Q1. The sibling commit for refactor.md's push-confirmation gate updated its diagram in the same commit, so this is a specific miss, not house style.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "4847a64",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0175",
