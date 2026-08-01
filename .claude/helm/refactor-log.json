@@ -3045,11 +3045,11 @@
       "file": "docs/commands/adopt.md",
       "line": "58-59,131-147",
       "description": "Fresh bootstrap prose, mermaid diagram, and Step 6 report description are stale versus commit 73a657b: still describe committing and stopping with no push, omitting the push-confirmation gate and the new Pushed: report line.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "43ec878",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0145",
