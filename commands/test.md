@@ -380,7 +380,7 @@ If Push selected: `git push origin main`, then run Environment promotion below.
 3. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
 4. Return to where you started: `git checkout {original_branch}`.
 
-**Environment promotion** — shared by both modes. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive these tests:
+**Environment promotion** — shared by both modes. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive these tests. (This block is intentionally duplicated across every content-sync command — see rules/git.md's Environment Branches section for the canonical shape; keep all copies in sync if it changes.)
 
   AskUserQuestion:
     question: "main has been updated. Which environment branches should also receive these tests?"
