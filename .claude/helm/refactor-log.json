@@ -3061,11 +3061,11 @@
       "file": "docs/commands/env.md",
       "line": "89",
       "description": "Step 4 still states the pre-674cb20 behavior (\"nothing staged\" always skips commit/merge/promotion) instead of the current merge-if-ahead behavior that was fixed to stop discarding Hardcoded values commits.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "912b6e9",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0146",
