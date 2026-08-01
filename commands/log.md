@@ -308,6 +308,8 @@ If Push selected: `git push origin main`, then run Environment promotion above.
 
 ## Step 6 — Confirm completion
 
+If a full scan or gap update was written this run, verify it before reporting: read CLAUDE.md back and confirm it contains the `<!-- last-reviewed: {hash} --> ` comment with the hash just written, and that the sections claimed as updated actually reflect the intended content. If verification fails for any section, report the error for that section instead of folding it into a clean Outcome below — CLAUDE.md is the orientation layer every future session relies on, so a silently incomplete write is worse than a loud one.
+
 Report:
 
 - Outcome: {up to date / full scan written / gap update written / skipped}

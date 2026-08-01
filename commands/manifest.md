@@ -288,6 +288,8 @@ If Push selected: `git push origin main`, then run Environment promotion above.
 
 ## Step 5 — Confirm completion
 
+If a full scan or gap update was written this run, verify it before reporting: read README.md back and confirm it contains the `<!-- last-reviewed: {hash} --> ` comment with the hash just written, and that the sections claimed as updated actually reflect the intended content. If verification fails for any section, report the error for that section instead of folding it into a clean Outcome below — README.md is what contributors and new users rely on, so a silently incomplete write is worse than a loud one.
+
 Report:
 
 - Outcome: {up to date / full scan written / gap update written / skipped}

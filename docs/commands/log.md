@@ -146,7 +146,7 @@ If environment branches exist (same detection [`/helm:ship`](ship.html) uses), a
 
 ### 6. Confirm completion
 
-Reports what was changed, what the new last-reviewed hash is, which environments were promoted, and whether any rule files in `.claude/rules` should also be revisited. Under GitHub Flow, also reports the temporary branch's fate and which branch you were returned to. Runs even when nothing was written, since that's still an outcome worth reporting.
+If a scan or gap update wrote anything this run, first verifies it: reads CLAUDE.md back and confirms the `<!-- last-reviewed: {hash} -->` comment and the claimed section changes actually landed, reporting per-section errors instead of a false-clean outcome — mirroring adopt.md's and legal.md's own write-verification pattern. Then reports what was changed, what the new last-reviewed hash is, which environments were promoted, and whether any rule files in `.claude/rules` should also be revisited. Under GitHub Flow, also reports the temporary branch's fate and which branch you were returned to. Runs even when nothing was written, since that's still an outcome worth reporting.
 
 ## Stop conditions
 
