@@ -26,7 +26,13 @@ flowchart TD
   CreateDocker --> DataRestore
   PinTags --> DataRestore
 
-  DataRestore[Restore data from best\navailable source:\ndumps → seeders → migrations\n→ file data → localhost DB] --> Build
+  DataRestore{Data source\navailable?}
+  DataRestore -->|none, project needs one| NoSourceAsk[/Ask: continue empty/schema-only,\nor wait for a dump?/]
+  DataRestore -->|network/cloud DB required| NetworkAsk[/Ask: skip and fall back,\nor wait for access?/]
+  DataRestore -->|repo-contained source found| RestoreData[Restore from best\navailable source:\ndumps → seeders → migrations\n→ file data → localhost DB]
+  NoSourceAsk --> Build
+  NetworkAsk --> Build
+  RestoreData --> Build
 
   Build[Install dependencies\nBuild and start containers] --> Verify{Project\nrunning?}
 
@@ -71,7 +77,7 @@ The best available source is used in this order:
 5. Documented external exports
 6. Existing localhost database — only if no repository source exists
 
-If restoration requires a network or cloud database, the step stops for approval.
+Two distinct approval gates apply here, not one: if no data source exists at all and the project requires one, the step stops to ask whether to continue with an empty/schema-only database or wait for a dump; separately, if restoration requires a network, VPN-accessible, or cloud database, the step stops to ask whether to skip it and fall back to the next-best source or wait for access.
 
 ## Image export
 
@@ -102,6 +108,7 @@ Whichever mechanism applies, the exact recovery step is documented in `docs/setu
 - No production systems, live databases, or external services.
 - No emails, SMS, notifications, webhooks, or payment gateways without explicit approval.
 - No Git state changes — no commit, push, checkout, or history rewrite.
+- Work only within the current repository. If another repository appears required, stop and ask how to proceed — continue without it (noting the gap), or wait for it to be made available.
 
 ## Outcome ratings
 
