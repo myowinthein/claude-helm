@@ -158,6 +158,8 @@ All commits must follow this format:
 
   BREAKING CHANGE: all existing sessions invalidated
 
+The /helm:ship command reads these types to calculate the next version: feat! or BREAKING CHANGE triggers a major bump, feat minor, fix and perf patch (perf is a real improvement to shipped behavior, not a no-op), anything else is ignored for versioning.
+
 ---
 
 ## Code Quality
