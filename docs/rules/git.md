@@ -38,6 +38,8 @@ Activate by declaring `git-strategy: solo` in `CLAUDE.md`. When active:
 
 Use this mode for solo work where peer review and branch protection have no audience. Switch to GitHub Flow the moment you have collaborators.
 
+Exception: [`/helm:refactor`](../commands/refactor.html)'s `refactor/*` branch and its "Open PR" option in Step 7 are used regardless of `git-strategy`, including under Solo Mode — the sanctioned path for multi-wave, resumable refactor sessions (a session can span multiple runs, and leaving work on a branch between them is the point), not an ad-hoc feature branch. Same reasoning as `/helm:ship`'s exception below, applied to a different command.
+
 ### GitHub Flow (default)
 
 Active when `git-strategy: github-flow` is declared, or when `git-strategy` is absent.
@@ -66,7 +68,6 @@ build/*
   - `squash` — squash all commits into one with a Conventional Commit message
   - `rebase` — replay branch commits onto `main` without a merge commit
   - `merge` — create a merge commit preserving full branch topology
-- Delete the feature branch immediately after merge.
 - If CI is configured, it must pass before merge.
 
 #### Branch Naming
@@ -200,6 +201,8 @@ Environment branches are long-lived branches that are not `main`, `master`, or f
 - If CI is configured, it must pass before promoting.
 
 **Promotion model**: governs `/helm:ship`'s release promotion specifically. Set with `environment-promotion` in CLAUDE.md's Project Config (`fan-out` or `chain`; absence defaults to `fan-out`).
+
+Before promoting anything, confirm which model is active — same self-check as `git-strategy` above. State it explicitly: "Fan-out promotion" or "Chain promotion."
 
 - **Fan-out** (default): `main` promotes directly to any combination of environment branches, independently — no ordering between them. Simple parallel deploy targets.
 - **Chain**: environments form an ordered pipeline (e.g. `main → staging → production`). Only the first tier (`staging`, `stage`, `uat`, `preprod`) is ever merged into directly from `main`. A later tier (`production`, `prod`) is never a direct deploy target — it's only reached by merging the previous tier's branch forward into it, one tier at a time.

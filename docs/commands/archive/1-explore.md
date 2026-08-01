@@ -31,6 +31,7 @@ flowchart TD
 The step reads source code, configuration files, manifests, env files, and any existing documentation. It does not rely only on README files. It separates confirmed facts from guesses and labels guesses explicitly.
 
 **Project profile**
+- Records the project's name explicitly as "Project name:" in its own field, rather than leaving it to be extracted from the Overview prose — Step 3 (Postman collection filenames) and Step 4 (README content) both read this field directly
 - Purpose and business domain
 - Technology stack: framework, language, runtime versions, package manager, database type
 - Architecture: key modules, layers, and how the pieces fit together
@@ -40,16 +41,20 @@ The step reads source code, configuration files, manifests, env files, and any e
 - Database type and where credentials live
 - Available restoration sources in priority order: dumps, seeders, migrations, or none
 - Demo accounts or demo data if found
-- Recommended restoration approach (local or Docker)
 
 **External integrations**
 - Third-party services the project depends on
 - Which are required for basic operation vs optional
 
+**Setup and restoration approach**
+- Runtime versions required, package manager, whether Docker is needed
+- Recommended restoration strategy (local or Docker) and why — this is a project-wide setup judgment, not specific to the database
+
 **Credentials risk**
 - Scans all env files: `.env`, `.env.staging`, `.env.production`, config files, Docker files
 - Redacts values — shows only file path, variable name, and a short preview (`API_KEY=abc...xyz`)
 - Flags anything that appears still-active
+- Before completing this section, confirms every file matching those env-file patterns was actually searched, and lists the files searched explicitly
 
 **Git and repository safety**
 - All remotes and their URLs

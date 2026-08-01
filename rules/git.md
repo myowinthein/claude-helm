@@ -25,6 +25,8 @@ When active:
 
 Use this mode for solo work where peer review and branch protection have no audience. Switch to GitHub Flow the moment you have collaborators.
 
+Exception: /helm:refactor's refactor/* branch and its "Open PR" option in Step 7 are used regardless of git-strategy, including under Solo Mode — this is the sanctioned path for multi-wave, resumable refactor sessions (a session can span multiple runs, and leaving work on a branch between them is the point), not an ad-hoc feature branch. Same reasoning as /helm:ship's exception below, applied to a different command.
+
 ### GitHub Flow (default)
 
 Active when `git-strategy: github-flow` is declared, or when `git-strategy` is absent.
@@ -49,7 +51,6 @@ Active when `git-strategy: github-flow` is declared, or when `git-strategy` is a
   - `squash` — squash all commits into one with a Conventional Commit message
   - `rebase` — replay branch commits onto main without a merge commit
   - `merge` — create a merge commit preserving full branch topology
-- Delete feature branch immediately after merge
 - If CI is configured, it must pass before merge
 
 #### Branch Naming
@@ -156,6 +157,8 @@ All commits must follow this format:
 
   BREAKING CHANGE: all existing sessions invalidated
 
+The /helm:ship command reads these types to calculate the next version: feat! or BREAKING CHANGE triggers a major bump, feat minor, fix and perf patch (perf is a real improvement to shipped behavior, not a no-op), anything else is ignored for versioning.
+
 ---
 
 ## Code Quality
@@ -214,6 +217,8 @@ Set with `environment-promotion` in CLAUDE.md (Project Config section):
   environment-promotion: chain    → environments form an ordered pipeline; only the first tier is reached directly from main
 
 Absence defaults to fan-out.
+
+Before promoting anything, confirm which model is active — same as the git-strategy self-check above. State it explicitly: "Fan-out promotion" or "Chain promotion."
 
 **Fan-out**: main promotes directly to any combination of environment branches — no ordering, no dependency between them. Simple parallel deploy targets (e.g. staging and production both receive the same release independently).
 

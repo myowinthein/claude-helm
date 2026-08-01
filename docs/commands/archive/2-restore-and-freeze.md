@@ -77,6 +77,8 @@ If restoration requires a network or cloud database, the step stops for approval
 
 After verification, all Docker images are exported to `recovery/docker/` as gzipped tarballs — one per service. The folder is **not** gitignored here — these tarballs are the freeze mechanism and must travel with the archive for a clean-machine recovery. Step 5 decides how: committed via Git LFS (recommended), or kept local only and gitignored if you decline there.
 
+Each export is validated twice before being trusted: an empty-file check right after export (`docker save` can silently produce an empty tarball if it fails mid-pipe), and a `docker load` test against the exported tarball (confirms it isn't corrupt, not just non-empty). Either failure means re-exporting that service before proceeding. If this step is interrupted and re-run, a pre-existing tarball that already passes both checks is skipped rather than re-exported.
+
 Recovery commands are documented in `docs/setup.md`:
 ```
 docker load < recovery/docker/web.tar.gz
@@ -112,3 +114,5 @@ Whichever mechanism applies, the exact recovery step is documented in `docs/setu
 | Cannot Be Restored Without Missing Dependencies | External dependencies unavailable |
 
 If the outcome is anything other than Fully Restored, the step warns the developer and waits for explicit approval before Step 3 begins.
+
+The report also records whether the project ended up running as an explicit "App running: yes/no" field (stated even when "not applicable"), rather than leaving it to be inferred from the Access Points prose — Step 3 (Postman collection generation) reads this field directly.

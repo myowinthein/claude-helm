@@ -364,7 +364,21 @@ Wait for response before proceeding.
 - Switch to main
 - Merge refactor/{timestamp} into main --no-ff
   with message: refactor(project): apply refactoring {timestamp}
-- Push main
+- Before pushing, confirm — push always needs its own gate, separate from the merge above, regardless of `git-auto-commit`:
+
+  AskUserQuestion:
+    question: "Push main now? This publishes the merged refactor to origin."
+    header:   "Push"
+    multiSelect: false
+    options:
+      - label: "Push (Recommended)"
+        description: "git push origin main"
+      - label: "Cancel"
+        description: "Leave main merged locally but unpushed — push manually when ready"
+
+  If Cancel selected → stop here. Do not push, promote, or delete the refactor branch. Proceed to Step 8 to report the outcome, noting main is merged locally but unpushed and `refactor/{timestamp}` was left in place.
+
+  If Push selected: `git push origin main`, then continue below.
 - **Environment promotion**: if environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), first check CI status for the commit just pushed to main — per git.md's Environment Branches rule ("if CI is configured, it must pass before promoting"), same mechanics as ship.md's Step 5:
     - If this repo isn't hosted on GitHub, or no workflow files exist under `.github/workflows/`, skip this check — proceed to the confirmation below with no CI line in the question.
     - Otherwise: capture the pushed commit's SHA, then run `gh run list --branch main --limit 20 --json headSha,status,conclusion` and filter to runs whose `headSha` matches — a single push can trigger multiple workflow runs, so checking only the most recent entry could miss one still failing or in progress. Fold the result (all matching runs succeeded / not yet / none found) into the confirmation question below rather than asking separately.
@@ -396,7 +410,9 @@ Wait for response before proceeding.
 - Push refactor/{timestamp} to remote (including the updated ledger)
 - Check whether this repo is hosted on GitHub: `git remote get-url origin`. If the URL does not contain `github.com`, skip the `gh` attempt below and inform user:
   "Branch pushed. Open a PR to merge into main when ready."
-- If hosted on GitHub, attempt to open the PR:
+- If hosted on GitHub, check whether `gh` is installed at all before attempting anything: `gh --version`. If it's not found, inform user:
+  "Branch pushed. gh is not installed — install it (https://cli.github.com) or open the PR manually: refactor/{timestamp} → main."
+- If `gh` is installed, attempt to open the PR:
   ```
   gh pr create --title "refactor(project): apply refactoring {timestamp}" --base main --head refactor/{timestamp} --body "Applied categories: {category_list}. See .claude/helm/refactor-log.json for the full ledger of findings, fixes, and skipped items."
   ```
@@ -432,7 +448,7 @@ Ledger:         {N} still open, {N} auto-resolved, {N} newly fixed, {N} skipped 
 Verification:   {N} fixes confirmed resolved, {N} newly introduced issues found
 Commits made:   {N}
 Tests passing:  yes/no
-Outcome:        {merged to main / PR pending / branch left intact}
+Outcome:        {merged and pushed to main / merged locally but unpushed / PR pending / branch left intact}
 ─────────────────────────────────
 
 Sample of fixes applied:

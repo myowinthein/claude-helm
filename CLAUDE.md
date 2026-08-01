@@ -57,8 +57,7 @@ Reload locally: `/reload-plugins` after any change
 ## Known Traps
 
 - **Plugin cache is stale after releases.** `/plugin update` + `/reload-plugins` does not invalidate `~/.claude/plugins/cache/`. After each release, command files must be manually copied from `~/.claude/plugins/marketplaces/claude-helm/commands/` into the active cache version directory, then `/reload-plugins` must be run again. Workaround: `cp ~/.claude/plugins/marketplaces/claude-helm/commands/*.md "$(ls -d ~/.claude/plugins/cache/claude-helm/helm/*/commands/ | tail -1)"` then `/reload-plugins`.
-- **`prompts/` directory is intentional.** Files in `prompts/archive/` are not commands — they are sub-steps for `/helm:archive`. Do not move them to `commands/`.
-- **`docs/commands/` is not the command source.** The slash command definitions live in `commands/`. The `docs/commands/` files are detail pages that serve as Jekyll site content and link from README — editing them does not change command behavior.
+- **Don't "fix" `prompts/` or `docs/commands/` by moving or redefining them.** See Domain Rules above — `prompts/archive/*.md` staying out of `commands/`, and `docs/commands/*.md` not being command source, are both easy mistakes to reach for when something there looks structurally odd.
 - **No CI to gate on.** `/helm:ship` and `/helm:refactor`'s environment-promotion CI-status checks both no-op silently here — there's no `.github/workflows/`. `bundle exec jekyll build && bundle exec htmlproofer` (see Dev Commands) verifies the site locally, but nothing runs it automatically before or after a release.
 - **`git filter-repo` removes the `origin` remote by default** after rewriting history, since it assumes it's operating on a disposable clone. `/helm:normalize`'s preferred rewrite path captures `origin`'s URL beforehand and restores it after — if that logic is ever touched, this is why it's there.
 

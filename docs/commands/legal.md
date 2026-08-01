@@ -6,7 +6,7 @@ nav_order: 8
 
 # /helm:legal
 
-Scan the project's legal profile, detect the output format based on the web framework (or ask if none is found), let the user choose which documents to generate, then write GDPR-compliant legal documents in plain English and commit them.
+Scan the project's legal profile, detect the output format based on the web framework (or ask if none is found), let the user choose which documents to generate, then write GDPR-compliant legal documents in plain English, commit them, and push after a separate confirmation.
 
 ## Flow
 
@@ -47,9 +47,12 @@ flowchart TD
   CommitAsk -->|confirm| CommitDocs["Commit: docs(legal):<br/>generate legal documents"]
 
   CommitDocs --> SoloOrFlow{Which mode?}
-  SoloOrFlow -->|Solo| Promote
-  SoloOrFlow -->|GitHub Flow| MergeMain[Merge branch into main<br/>Push main]
-  MergeMain --> Promote
+  SoloOrFlow -->|Solo| PushAsk["Confirm: Push main now?"]
+  SoloOrFlow -->|GitHub Flow| MergeMain[Merge branch into main]
+  MergeMain --> PushAsk
+  PushAsk -->|cancel| DoneUnpushed([Report: committed, not pushed])
+  PushAsk -->|confirm| Push[Push main]
+  Push --> Promote
 
   Promote{Environment<br/>branches exist?}
   Promote -->|yes| PromoteAsk[Ask: which to promote?<br/>Merge main into each selected]
@@ -166,17 +169,19 @@ Each selected document is written in plain English, GDPR compliant, to the resol
 
 If Step 2 selected nothing: skips the commit confirmation and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
 
-Otherwise presents the list of generated files for review and waits for confirmation before committing — always, even under `git-auto-commit: true`. Generated documents are public, legally-binding text, so this is a deliberate exception to the normal auto-commit flow (see [`safety.md`](../rules/safety.html#agent-execution-boundaries)). Under GitHub Flow, the confirmation prompt states the full consequence up front — commit, merge to main, promote to environments, delete the temporary branch, and return to the original branch — since one confirmation covers the entire sequence, not just the commit.
+Otherwise presents the list of generated files for review and waits for confirmation before committing — always, even under `git-auto-commit: true`. Generated documents are public, legally-binding text, so this is a deliberate exception to the normal auto-commit flow (see [`safety.md`](../rules/safety.html#agent-execution-boundaries)).
 
 Single commit of the generated documents plus the updated `.claude/helm/legal-manifest.json`: `docs(legal): generate legal documents`. If the output path or format differs from the default (`legal/` Markdown), the commit body notes it for future runs. If the user cancels, the documents stay written but uncommitted — under GitHub Flow this also means no merge, no branch deletion, and no return to the original branch; the command still proceeds to the completion report either way.
 
-**Environment promotion** (both modes, after a successful commit): if environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the documents, then merges main into each selected branch and pushes — matching ship.md's promotion mechanics exactly, just with a commit message scoped to legal document updates.
+Push is always its own separate confirmation after the commit — never folded into the commit prompt, and never skipped regardless of `git-auto-commit`, matching every other write-capable command and CLAUDE.md's push rule. Under GitHub Flow this means: commit on the temporary branch, merge into main, *then* a dedicated "Push main now?" gate before anything reaches origin. Cancelling the push gate leaves main committed (Solo Mode) or merged (GitHub Flow) locally but unpushed, skips environment promotion and (under GitHub Flow) branch cleanup, and still proceeds to the completion report.
 
-**GitHub Flow only** — after committing on the temporary branch: merges it into main and pushes, runs environment promotion, deletes the temporary branch (locally and remotely if it was pushed), and returns to whichever branch the command was originally run from. **Solo Mode** commits directly to main, so none of this branch dance is needed — it goes straight to environment promotion.
+**Environment promotion** (both modes, after a successful push): if environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the documents — capped at 4 options if more branches qualify (recognized tier names first, then alphabetical; the question notes any remainder needs a follow-up run) — then merges main into each selected branch and pushes — matching ship.md's promotion mechanics exactly, just with a commit message scoped to legal document updates.
+
+**GitHub Flow only** — after the push gate: runs environment promotion, deletes the temporary branch (locally and remotely if it was pushed), and returns to whichever branch the command was originally run from. **Solo Mode** commits directly to main, so none of this branch dance is needed — it goes straight to environment promotion.
 
 ### 5. Confirm completion
 
-If Step 1's "No legal need detected" check exited early, reports just that — no documents generated, no legal need found — since output location and contact point were never resolved. If Step 2's "all candidates up to date" check exited early, reports that instead — output location was resolved, but nothing needed regenerating. Otherwise reports which documents were generated, the output path, format, jurisdiction, tone, whether the changes were committed, and which environments were promoted. Under GitHub Flow, also reports the temporary branch's fate (merged and deleted, or left in place if cancelled) and confirms which branch you were returned to. Reminds the user that these are AI-generated starting points: review before publishing and consult a lawyer for high-stakes products.
+If Step 1's "No legal need detected" check exited early, reports just that — no documents generated, no legal need found — since output location and contact point were never resolved. If Step 2's "all candidates up to date" check exited early, reports that instead — output location was resolved, but nothing needed regenerating. Otherwise, before reporting success, reads each generated document back and confirms it exists, opens with the `**Last updated:**` line, and closes with a `## Contact` section containing no unfilled placeholder — a failed check is reported per-file instead of folded into a generic success message, since an incomplete legal document is worse silent than loud. Then reports which documents were generated, the output path, format, jurisdiction, tone, whether the changes were committed, whether they were pushed, and which environments were promoted. Under GitHub Flow, also reports the temporary branch's fate (merged and deleted, merged but left unpushed, or left in place if cancelled at the commit stage) and confirms which branch you were returned to. Reminds the user that these are AI-generated starting points: review before publishing and consult a lawyer for high-stakes products.
 
 ## Stop conditions
 

@@ -3,7 +3,6 @@
   "documents": [
     { "file": "docs/legal/privacy-policy.md", "generated_at": "2026-08-01", "generated_at_commit": "27b81e0108b249a9ae727ee661a9dc59b7dffa93" },
     { "file": "docs/legal/terms.md", "generated_at": "2026-08-01", "generated_at_commit": "27b81e0108b249a9ae727ee661a9dc59b7dffa93" },
-    { "file": "docs/legal/eula.md", "generated_at": "2026-08-01", "generated_at_commit": "27b81e0108b249a9ae727ee661a9dc59b7dffa93" },
     { "file": "docs/legal/disclaimer.md", "generated_at": "2026-08-01", "generated_at_commit": "27b81e0108b249a9ae727ee661a9dc59b7dffa93" }
   ]
 }

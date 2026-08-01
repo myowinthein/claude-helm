@@ -56,7 +56,10 @@ flowchart TD
   Reference[Set the Rules section in CLAUDE.md<br/>to absolute plugin paths<br/>or print the snippet for paste] --> CommitWrite
 
   CommitWrite{Fresh bootstrap?}
-  CommitWrite -->|yes| BootstrapCommit["If anything was written,<br/>commit it (per git-auto-commit)<br/>no branch, no cleanup"] --> Done
+  CommitWrite -->|yes| BootstrapCommit["If anything was written,<br/>commit it (per git-auto-commit)<br/>no branch, no merge, no promotion"]
+  BootstrapCommit --> BootstrapRemote{origin remote<br/>exists?}
+  BootstrapRemote -->|no| Done
+  BootstrapRemote -->|yes| BootstrapPushAsk[Ask: push main now?<br/>always confirmed, regardless<br/>of git-auto-commit] --> Done
   CommitWrite -->|no| ChangesCheck{Changes written?}
 
   ChangesCheck -->|no| Cleanup
@@ -130,13 +133,13 @@ Both the Copy or Update and Reference paths update CLAUDE.md's `## Rules` sectio
 
 ### 5. Commit and finalize
 
-**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.md): there's no branch to clean up, since none was created. If Step 4 wrote anything, commits it per [git.md's Auto-Commit rule](../rules/git.html#auto-commit) and stops — no merge, promotion, or branch cleanup applies. If Step 4 made no changes, there's nothing to do at all.
+**Fresh bootstrap** (Before starting's branch-strategy setup was skipped — no repo, or no pre-existing CLAUDE.md): there's no branch to clean up, since none was created, and no merge or promotion applies. If Step 4 made no changes, there's nothing to do at all. If Step 4 wrote anything, commits it per [git.md's Auto-Commit rule](../rules/git.html#auto-commit), then checks whether an `origin` remote exists: if not, there's nothing to push to and the command stops; if one does, push gets its own confirmation ("Push main now?"), same as every other command — the fact that CLAUDE.md didn't exist yet doesn't mean this is a throwaway clone with no remote to push to.
 
 **Normal flow**: if Step 4 made no changes (No-change or Cancel path), skips commit, merge, and environment promotion — nothing to act on. Still runs GitHub Flow cleanup (delete the temporary branch, return to the original branch) if one was created; this step is never skipped wholesale, since the cleanup logic lives here.
 
 Otherwise, commits per that same rule: silent if `git-auto-commit: true`, otherwise confirms before committing, merging, and pushing together. Either way, push always requires its own separate confirmation regardless of `git-auto-commit` — git.md's Auto-Commit rule states this as an explicit exception, and rules/safety.md lists `git push` as always requiring confirmation with no exceptions.
 
-If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the update — that branch-selection prompt is itself the confirmation for those pushes. Under GitHub Flow, the branch is merged into main first, then `git push origin main` gets its own separate "Push main now?" confirmation before proceeding to promotion and cleanup.
+If environment branches exist (same detection [`/helm:ship`](ship.html) uses), asks which should also receive the update — that branch-selection prompt is itself the confirmation for those pushes, capped at 4 options if more branches qualify (recognized tier names first, then alphabetical; the question notes any remainder needs a follow-up run). Under GitHub Flow, the branch is merged into main first, then `git push origin main` gets its own separate "Push main now?" confirmation before proceeding to promotion and cleanup.
 
 **Solo Mode** commits directly to main, confirms the push, then runs environment promotion. **GitHub Flow** commits on the temporary branch, merges it into main, confirms the push, runs environment promotion, deletes the temporary branch (locally and remotely if pushed), and returns to whichever branch the command was originally run from. If push is cancelled at either point, the command stops there — no promotion, no branch cleanup — leaving the commit (or merge) in place locally for a manual push later.
 
@@ -144,7 +147,7 @@ If environment branches exist (same detection [`/helm:ship`](ship.html) uses), a
 
 For Copy or Update installs, verifies the written files before reporting: reads `.claude/rules/git.md` and `.claude/rules/safety.md` and confirms each exists and contains the `<!-- helm-rule: claude-helm@v{X.Y.Z} -->` marker. If a file is missing or the marker is absent, reports the error instead of success.
 
-Final summary line per file describing what was written, updated, skipped, or referenced, and which helm version was recorded in the marker.
+Final summary line per file describing what was written, updated, skipped, or referenced, and which helm version was recorded in the marker, plus a `Pushed:` line (yes / no — push manually when ready / N/A if no remote exists) — present for Copy/Update and Reference outcomes, including the Fresh bootstrap path.
 
 ## Stop conditions
 

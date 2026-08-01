@@ -190,7 +190,11 @@ Then check whether this repo is hosted on GitHub:
 - Run: git remote get-url origin
 - If the URL does not contain `github.com` → skip the rest of this step silently
 
-If hosted on GitHub, use AskUserQuestion:
+If hosted on GitHub, check whether `gh` is installed at all before offering the option: `gh --version`. If it's not found, skip the AskUserQuestion below and inform human:
+  "gh is not installed — skipping GitHub Release. Install it (https://cli.github.com) and create the release manually with:
+  gh release create v{version} --title \"v{version}\" --notes \"...\""
+
+If `gh` is installed, use AskUserQuestion:
   AskUserQuestion:
     question: "Create a GitHub Release for v{version}?"
     header:   "GitHub Release"
