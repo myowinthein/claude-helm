@@ -3205,11 +3205,11 @@
       "file": "docs/rules/git.md",
       "line": "161-163",
       "description": "Adds a normative claim about /helm:ship's version-bump algorithm (feat!/BREAKING->major, feat->minor, fix/perf->patch) with no counterpart in rules/git.md itself \u2014 an orphaned assertion sourced from a third file with no anchor to catch drift if ship.md's actual logic changes. Needs a decision: mirror the claim into rules/git.md, or remove it from the docs page.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "ec6437c",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0155",
