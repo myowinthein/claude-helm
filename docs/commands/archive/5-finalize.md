@@ -71,7 +71,7 @@ Delete:          main (superseded)   (local + remote)
 Delete:          fix/payment-bug     (local + remote)
 ```
 
-Execution order matters here: every other branch is deleted first — including a distinct, superseded `main`/`master` — and only then is the archived branch renamed to `main` and pushed. Renaming first would fail outright, since git refuses to rename a branch onto a name that's already taken.
+Execution order matters here: every other branch is deleted first — including a distinct, superseded `main`/`master` — and only then is the archived branch renamed to `main` and pushed. Renaming first would fail outright, since git refuses to rename a branch onto a name that's already taken. Once renamed, the `main` name is free, so this is a clean push, not a force-push.
 
 After the push, verifies local `main` is actually in sync with remote — not just assumed from a successful push. If local and remote `main` have diverged, the step stops for approval before resolving the divergence.
 
