@@ -49,6 +49,20 @@ If environment branches exist (after filtering), use AskUserQuestion:
       - label: "production"
         description: "Merge and push main to the production branch"  (fan-out mode only)
 
+  If exactly one environment branch qualifies (after fan-out/chain filtering), a multi-select with one option isn't valid — AskUserQuestion requires at least 2. Ask a direct yes/no confirmation instead:
+
+    AskUserQuestion:
+      question: "main/master will always be tagged and pushed. Also promote to {branch}?"
+      header:   "Deploy target"
+      multiSelect: false
+      options:
+        - label: "Yes — promote to {branch} (Recommended)"
+          description: "Merge and push main to {branch}"
+        - label: "Skip"
+          description: "Deploy to main/master only"
+
+    "Yes" is equivalent to selecting {branch} in the multi-select above — proceed the same way.
+
   If user selects none → deploy to main/master only.
   Wait for response before proceeding.
 

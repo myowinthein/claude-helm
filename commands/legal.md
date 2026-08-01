@@ -250,15 +250,30 @@ Question 1 — core documents:
         description: "No-professional-advice notice and AI-generated content warning"
 
 Question 2 — conditional documents (only ask if applicable based on scan findings):
-  AskUserQuestion:
-    question: "Any additional legal documents needed?"
-    header:   "Additional documents"
-    multiSelect: true
-    options:
-      - label: "cookie-policy.md"                   ← same treatment, gated on analytics applicability
-        description: "Required if non-essential cookies or analytics tools are present"
-      - label: "refund-policy.md"                   ← same treatment, gated on payments applicability
-        description: "Required if payment processing is present"
+
+  If both cookie-policy.md and refund-policy.md apply:
+    AskUserQuestion:
+      question: "Any additional legal documents needed?"
+      header:   "Additional documents"
+      multiSelect: true
+      options:
+        - label: "cookie-policy.md"                   ← same treatment, gated on analytics applicability
+          description: "Required if non-essential cookies or analytics tools are present"
+        - label: "refund-policy.md"                   ← same treatment, gated on payments applicability
+          description: "Required if payment processing is present"
+
+  If only one of the two applies, a multi-select with a single option isn't valid — AskUserQuestion requires at least 2. Ask directly instead:
+    AskUserQuestion:
+      question: "{document} appears to be needed based on the scan. Generate it?"
+      header:   "Additional document"
+      multiSelect: false
+      options:
+        - label: "Yes (Recommended)"                  ← same treatment, applying the existing-document suffix if present
+          description: "{same description as the applicable document above}"
+        - label: "Skip"
+          description: "Don't generate {document} this run"
+
+    "Yes" is equivalent to selecting that document in the multi-select above — proceed the same way.
 
   Skip Question 2 entirely if neither cookie-policy nor refund-policy is applicable
   based on scan findings (no analytics, no payments detected).
@@ -464,7 +479,7 @@ If Step 1's "No legal need detected" check exited here, Step 2's "all candidates
 
 Otherwise, always confirm before committing, even when `git-auto-commit: true` is set — these are public, legally-binding documents, so this is a deliberate exception to the normal auto-commit flow (same category as the boundaries in safety.md's Agent Execution Boundaries: never skip review just because autonomy is high).
 
-**Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive these documents:
+**Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive these documents. (This block is intentionally duplicated across every content-sync command — see rules/git.md's Environment Branches section for the canonical shape; keep all copies in sync if it changes.)
 
   AskUserQuestion:
     question: "main will be updated. Which environment branches should also receive these documents?"
@@ -477,6 +492,20 @@ Otherwise, always confirm before committing, even when `git-auto-commit: true` i
         description: "Merge main into production"
 
   AskUserQuestion caps at 4 options. If more than 4 branches qualify, offer only the first 4 (recognized tier names first — staging/stage/uat/preprod, then production/prod, then any others alphabetically) and note in the question that remaining branches need a follow-up run.
+
+  If exactly one environment branch qualifies, a multi-select with one option isn't valid — AskUserQuestion requires at least 2. Ask a direct yes/no confirmation instead:
+
+    AskUserQuestion:
+      question: "main will be updated. Promote to {branch} as well?"
+      header:   "Promote to environment"
+      multiSelect: false
+      options:
+        - label: "Yes — promote to {branch} (Recommended)"
+          description: "Merge main into {branch}"
+        - label: "Skip"
+          description: "Leave {branch} as-is for now"
+
+    "Yes" is equivalent to selecting {branch} in the multi-select above — proceed the same way.
 
   For each selected environment:
   - git checkout {environment}

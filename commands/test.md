@@ -380,7 +380,7 @@ If Push selected: `git push origin main`, then run Environment promotion below.
 3. Delete `{branch}`: `git branch -d {branch}` locally, and `git push origin --delete {branch}` if it was ever pushed.
 4. Return to where you started: `git checkout {original_branch}`.
 
-**Environment promotion** — shared by both modes. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive these tests:
+**Environment promotion** — shared by both modes. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive these tests. (This block is intentionally duplicated across every content-sync command — see rules/git.md's Environment Branches section for the canonical shape; keep all copies in sync if it changes.)
 
   AskUserQuestion:
     question: "main has been updated. Which environment branches should also receive these tests?"
@@ -393,6 +393,20 @@ If Push selected: `git push origin main`, then run Environment promotion below.
         description: "Merge main into production"
 
   AskUserQuestion caps at 4 options. If more than 4 branches qualify, offer only the first 4 (recognized tier names first — staging/stage/uat/preprod, then production/prod, then any others alphabetically) and note in the question that remaining branches need a follow-up run.
+
+  If exactly one environment branch qualifies, a multi-select with one option isn't valid — AskUserQuestion requires at least 2. Ask a direct yes/no confirmation instead:
+
+    AskUserQuestion:
+      question: "main has been updated. Promote to {branch} as well?"
+      header:   "Promote to environment"
+      multiSelect: false
+      options:
+        - label: "Yes — promote to {branch} (Recommended)"
+          description: "Merge main into {branch}"
+        - label: "Skip"
+          description: "Leave {branch} as-is for now"
+
+    "Yes" is equivalent to selecting {branch} in the multi-select above — proceed the same way.
 
   For each selected environment:
   - git checkout {environment}

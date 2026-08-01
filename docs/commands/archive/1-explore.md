@@ -63,6 +63,9 @@ The step reads source code, configuration files, manifests, env files, and any e
 - Compares the current branch against every other local and remote branch; flags it (informational only, never blocking) if another branch looks more recently active or complete — archive candidates are often neglected, so the checked-out branch isn't always the real latest state
 - CI/CD pipelines that could auto-deploy on push
 
+**Existing documentation**
+- Documentation files found in the project, what each one covers, and whether it appears current or outdated
+
 **Archive assets**
 - Existing Postman or API collection files
 - Screenshots, videos, sample exports, demo files

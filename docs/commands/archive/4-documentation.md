@@ -98,4 +98,5 @@ Structured snapshot for quick inventory across archived projects:
 - Do not invent setup procedures, demo workflows, runtime requirements, or API behavior.
 - No secrets, credentials, API keys, or private/production URLs.
 - Every active document must be reachable from README.md.
+- Use em-dashes sparingly — only when no other punctuation works as well.
 - No commit or push.

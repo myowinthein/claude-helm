@@ -64,7 +64,7 @@ build/*
 - All branches base from `main`.
 - `main` is always deployable.
 - Open a PR before merging to `main`.
-- Merge using the strategy declared as `git-merge-strategy` (default: `squash`):
+- Merge using the strategy declared as `git-merge-strategy` (default: `squash`). Before merging, confirm which is active — same self-check as `git-strategy` above. State it explicitly: "Squash merge", "Rebase merge", or "Merge commit."
   - `squash` — squash all commits into one with a Conventional Commit message
   - `rebase` — replay branch commits onto `main` without a merge commit
   - `merge` — create a merge commit preserving full branch topology
@@ -151,7 +151,7 @@ refactor(orders): extract service layer
 
 **Multi-scope**: when a change is inseparably about two or more named areas, not just adjacent to them, use a comma-separated scope instead of picking one arbitrarily — `refactor(log,manifest): merge broken-structure and gap-based recommendation blocks`. Prefer a single scope whenever one area is clearly dominant; keep the list short, or it's really `project`/`core`.
 
-**Scope inference** — for commands that infer scope from a diff or cluster of changed files (e.g. `/helm:refactor`, `/helm:test`): use the primary module, folder, or domain actually touched, never a command's own internal category/priority taxonomy (e.g. "architecture", "high-priority"), which is a report/selection grouping, not a commit scope. Dominant area wins if a change spans multiple, or comma-separated multi-scope if none is dominant; `project` or `core` if truly cross-cutting with no specific areas to name.
+**Scope inference** — for commands that infer scope from a diff or cluster of changed files (e.g. `/helm:refactor`, `/helm:test`): use the primary module, folder, or domain actually touched, never a command's own internal category/priority taxonomy (e.g. "architecture", "high-priority"), which is a report/selection grouping, not a commit scope. Dominant area wins if a change spans multiple, or comma-separated multi-scope if none is dominant; `project` or `core` if truly cross-cutting with no specific areas to name. Keep it lowercase, one word or hyphenated per scope.
 
 **Breaking changes**: append `!` to the type and include a `BREAKING CHANGE:` footer.
 
@@ -219,3 +219,5 @@ The [`/helm:ship`](../commands/ship.html) command detects environment branches a
 - [`/helm:log`](../commands/log.html) - promotes `CLAUDE.md` updates to env branches the same way
 - [`/helm:manifest`](../commands/manifest.html) - promotes `README.md` updates to env branches the same way
 - [`/helm:adopt`](../commands/adopt.html) - promotes installed rule files to env branches the same way
+- [`/helm:env`](../commands/env.html) - promotes env/gitignore fixes to env branches the same way
+- [`/helm:test`](../commands/test.html) - promotes new tests to env branches the same way

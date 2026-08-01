@@ -282,7 +282,7 @@ If Step 4 made no changes (No-change path or Cancel path): skip commit, merge, a
 
 Otherwise, commit per git.md's Auto-Commit rule: silent if `git-auto-commit: true`, otherwise ask for confirmation before committing, merging, and pushing together. Either way, push itself always requires its own confirmation regardless of `git-auto-commit` — git.md's Auto-Commit rule states this as an explicit exception, and rules/safety.md lists `git push` as always requiring confirmation with no exceptions. Environment promotion's branch-selection prompt below already serves as that confirmation for environment-branch pushes; under GitHub Flow, confirm separately before step 2's `git push origin main`, even when the commit above was silent.
 
-**Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this update:
+**Environment promotion** — shared by both modes below. If environment branches exist (discover via `git branch -r`, filter for known environment names, same detection as ship.md), ask which should also receive this update. (This block is intentionally duplicated across every content-sync command — see rules/git.md's Environment Branches section for the canonical shape; keep all copies in sync if it changes.)
 
   AskUserQuestion:
     question: "main will be updated. Which environment branches should also receive these rule files?"
@@ -295,6 +295,20 @@ Otherwise, commit per git.md's Auto-Commit rule: silent if `git-auto-commit: tru
         description: "Merge main into production"
 
   AskUserQuestion caps at 4 options. If more than 4 branches qualify, offer only the first 4 (recognized tier names first — staging/stage/uat/preprod, then production/prod, then any others alphabetically) and note in the question that remaining branches need a follow-up run.
+
+  If exactly one environment branch qualifies, a multi-select with one option isn't valid — AskUserQuestion requires at least 2. Ask a direct yes/no confirmation instead:
+
+    AskUserQuestion:
+      question: "main will be updated. Promote to {branch} as well?"
+      header:   "Promote to environment"
+      multiSelect: false
+      options:
+        - label: "Yes — promote to {branch} (Recommended)"
+          description: "Merge main into {branch}"
+        - label: "Skip"
+          description: "Leave {branch} as-is for now"
+
+    "Yes" is equivalent to selecting {branch} in the multi-select above — proceed the same way.
 
   For each selected environment:
   - git checkout {environment}

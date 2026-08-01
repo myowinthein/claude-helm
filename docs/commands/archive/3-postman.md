@@ -71,9 +71,11 @@ Requests that may cause side effects are not verified automatically and are mark
 
 If the local application is not running (Step 2 did not fully restore), all requests are discovered from source code only and marked as unverified.
 
+Coverage has a floor, not just a best-effort target: at minimum one GET request per functional area and the primary authentication flow must be verified. If fewer than half of all endpoints end up verified, the report's Known Limitations section must say so explicitly.
+
 ## Output files
 
-Saved to `recovery/postman/` using the project name from Step 1:
+Saved to `recovery/postman/` using the project name from Step 1, slugified to lowercase with hyphens (e.g. "My Cool App" → `my-cool-app`):
 
 - `{project-name}.postman_collection.json`
 - `{project-name}.postman_environment.json`
@@ -86,7 +88,7 @@ Written in **Postman Collection Format v2.1** (`schema: "https://schema.getpostm
 
 The step produces a report with the following sections:
 
-- **Applicability** — whether a collection was generated or skipped and why
+- **Applicability** — whether a collection was generated or skipped and why, stated explicitly as "Postman collection generated: yes/no" in its own field — Step 4's structured `docs/archive-metadata.md` snapshot reads this field directly rather than inferring it from prose
 - **Existing Collection** — whether an existing Postman collection was found and how it was used
 - **Endpoints Discovered** — total endpoints found, how they were discovered, and any excluded
 - **Authentication** — auth method used and how it is configured in the collection

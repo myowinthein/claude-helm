@@ -29,4 +29,3 @@ exclude:
   - commands/
   - rules/
   - prompts/
-  - docs/legal/

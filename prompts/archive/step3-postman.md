@@ -41,7 +41,7 @@ Do not verify endpoints that may delete data, send emails or SMS, trigger webhoo
 
 ## Output Files
 
-Use the project name from Step 1 for the filenames:
+Use the project name from Step 1 for the filenames — slugified to lowercase, hyphens instead of spaces or punctuation (e.g. Step 1's "Project name: My Cool App" becomes `{project-name}` = `my-cool-app` here):
 
 - `recovery/postman/{project-name}.postman_collection.json`
 - `recovery/postman/{project-name}.postman_environment.json`
