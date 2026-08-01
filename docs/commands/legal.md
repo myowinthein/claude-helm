@@ -21,7 +21,13 @@ flowchart TD
 
   Scan[Scan project profile:<br/>app type, data, sensitive data, minors,<br/>third parties, email/marketing,<br/>monetization, content, AI features]
 
-  Scan --> Monorepo{Multiple web<br/>packages found?}
+  Scan --> NoNeed{No legal need<br/>detected?}
+  NoNeed -->|yes| NoNeedAsk[Ask: exit, or<br/>proceed anyway?]
+  NoNeedAsk -->|exit| NoNeedDone([Report: no legal need<br/>found, nothing written])
+  NoNeedAsk -->|proceed anyway| Monorepo
+  NoNeed -->|no| Monorepo
+
+  Monorepo{Multiple web<br/>packages found?}
   Monorepo -->|yes| MonorepoAsk[Ask: which package<br/>gets the legal docs?] --> Framework
   Monorepo -->|no| Framework
 
@@ -33,7 +39,11 @@ flowchart TD
   CSSDetect --> Confirm[Confirm output location:<br/>show resolved path + format<br/>user confirms or overrides]
 
   Confirm --> Existing[Check existing docs<br/>in resolved output path]
-  Existing --> Q1["Question 1 — Core documents (multi-select):<br/>privacy-policy, terms, eula, disclaimer"]
+  Existing --> UpToDate{All candidates<br/>up to date?}
+  UpToDate -->|yes| UpToDateDone([Report: already<br/>up to date, nothing written])
+  UpToDate -->|no| Q1
+
+  Q1["Question 1 — Core documents (multi-select):<br/>privacy-policy, terms, eula, disclaimer"]
   Q1 --> Q2{Cookie or refund<br/>applicable?}
   Q2 -->|yes| Q2ask["Question 2 — Conditional documents (multi-select):<br/>cookie-policy, refund-policy"]
   Q2 -->|no| Generate
