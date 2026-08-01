@@ -3493,11 +3493,11 @@
       "file": "commands/log.md",
       "line": "295-304",
       "description": "Step 6 reports completion without reading back CLAUDE.md to confirm the <!-- last-reviewed: {hash} --> marker/content was actually written, unlike adopt.md Step 6 and legal.md Step 5 which both verify their output files before reporting success.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3f8cd1e",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0173",
@@ -3509,11 +3509,11 @@
       "file": "commands/manifest.md",
       "line": "275-283",
       "description": "Step 5 reports completion without reading back README.md to confirm the intended sections/hash were actually written, same gap as log.md relative to adopt.md/legal.md's verification pattern.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "3f8cd1e",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0174",
