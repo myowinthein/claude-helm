@@ -582,7 +582,9 @@ GitHub Flow only:
 Branch:       {branch} — deleted
 Returned to:  {original_branch}
 
-Otherwise, report:
+Otherwise, verify the written files before reporting: for each generated document, read it back and confirm it exists, begins with a `**Last updated:** {date}` line, and ends with a `## Contact` section that does not contain a placeholder (an unfilled `{...}` or `[...]` token) in place of the real contact resolved in Step 1. If any document fails this check, report the error for that specific file instead of folding it into LEGAL COMPLETE below — this is public, legally-binding text, so a silently incomplete document is worse than a loud one.
+
+Report:
 
 LEGAL COMPLETE
 Generated:
