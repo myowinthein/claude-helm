@@ -10,7 +10,7 @@ Take the helm.
 
 <img src="https://myowinthein.github.io/claude-helm/docs/images/banner.jpg" alt="claude-helm" width="600">
 
-A Claude Code plugin pack for solo developers. Ten slash commands and two rule files covering shipping, refactoring, testing, documenting, auditing, and archiving your own work.
+A Claude Code plugin pack for solo developers. Ten slash commands and two rule files covering shipping, refactoring, testing, documentation, legal docs, env auditing, commit-history normalization, and archiving your own work.
 
 [Documentation site](https://myowinthein.github.io/claude-helm)
 
@@ -79,4 +79,4 @@ Issues and pull requests are welcome at [github.com/myowinthein/claude-helm/issu
 
 [MIT](https://github.com/myowinthein/claude-helm/blob/main/LICENSE)
 
-<!-- last-reviewed: 86e08fa76799902ae24310b43c1b13f9b7d08230 -->
+<!-- last-reviewed: 2454819f5d375089e8695a96c22b5ad966d0deef -->
