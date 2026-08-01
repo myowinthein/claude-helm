@@ -3541,11 +3541,11 @@
       "file": "docs/commands/index.md",
       "line": "10",
       "description": "The page's one-line description (\"shipping, refactoring, testing, and documenting\") hasn't been updated since the Jekyll site's initial commit and omits legal docs, env auditing, normalization, and archiving \u2014 CLAUDE.md's and README.md's taglines were both kept in sync as commands were added, this one wasn't.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "ddb7808",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0176",
@@ -3653,11 +3653,11 @@
       "file": "docs/commands/archive/4-documentation.md",
       "line": "n/a",
       "description": "Rules section omits step4's em-dash style rule \u2014 a reader relying on docs4 alone wouldn't know it applies to the README/docs the step produces.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "ddb7808",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0183",
@@ -3781,11 +3781,11 @@
       "file": ".claude-plugin/plugin.json, .claude-plugin/marketplace.json",
       "line": "4 / 20",
       "description": "The shared short description (\"Slash commands and rules to ship, refactor, test, and document your own work.\") wasn't broadened along with CLAUDE.md's Purpose line and README's intro line \u2014 still omits legal-document generation, env auditing, commit-history normalization, rule adoption, and archiving.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "ddb7808",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0191",
@@ -3797,11 +3797,11 @@
       "file": "CLAUDE.md",
       "line": "18,62",
       "description": "The fact that the Jekyll build/htmlproofer check isn't wired into /helm:ship or run automatically is stated twice \u2014 once in Dev Commands, again in Known Traps \u2014 with the second occurrence adding little beyond restating the first.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "ddb7808",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0192",
@@ -3813,11 +3813,11 @@
       "file": "README.md",
       "line": "13",
       "description": "README's broadened intro lists shipping/refactoring/testing/documentation/legal docs/env auditing/commit-history normalization/archiving but omits \"rule adoption\" (/helm:adopt), while CLAUDE.md's Purpose line explicitly includes it. Cosmetic only \u2014 README's command table still links /helm:adopt.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "ddb7808",
+      "resolved_date": "2026-08-01"
     }
   ]
 }
