@@ -3477,11 +3477,11 @@
       "file": "commands/adopt.md, commands/env.md, commands/legal.md, commands/log.md, commands/manifest.md, commands/refactor.md, commands/ship.md, commands/test.md",
       "line": "n/a",
       "description": "The \"Environment promotion\" AskUserQuestion block is duplicated near-verbatim across 8 files rather than centralized. Unlike prompts/archive/step{1-5}, which are read by commands/archive.md within a single invocation, each of these 8 files is an independent slash-command invocation and must stay self-contained \u2014 true extraction into a shared file isn't supported by this plugin's architecture. Needs a decision: accept the duplication as structural (documented, not fixed), or find another way to reduce drift risk (e.g. a canonical comment pointing all 8 at git.md's Environment Branches section as the source of truth for what the block should say).",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "8ec46e1",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0172",
