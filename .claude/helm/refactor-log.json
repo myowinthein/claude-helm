@@ -2965,11 +2965,11 @@
       "file": "commands/legal.md",
       "line": "536-576",
       "description": "Step 5 prints LEGAL COMPLETE with no read-back verification of the written documents (required sections present, contact section resolved), unlike adopt.md's Step 6 which explicitly re-reads and validates written files before declaring success.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "1a83f3878146b0e23684d0f66459eaaf60724398",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "462b0bd",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0140",
