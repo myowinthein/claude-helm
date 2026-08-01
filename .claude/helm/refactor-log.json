@@ -3669,11 +3669,11 @@
       "file": "prompts/archive/step1-explore.md, prompts/archive/step3-postman.md",
       "line": "45 / 46-47",
       "description": "step1's output template uses {name} (\"Project name: {name}\") while step3's filename templates use kebab-case {project-name} for the same underlying value. No step documents the freeform-name-to-filename-slug transformation. Needs a decision: standardize the placeholder name, or explicitly document the slugification step.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "376beb3",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0184",
@@ -3685,7 +3685,7 @@
       "file": "prompts/archive/step3-postman.md, docs/commands/archive/3-postman.md",
       "line": "51 / 83",
       "description": "The Postman Collection Format v2.1 schema URL and \"why not v2.0\" rationale are duplicated near-verbatim between the step file and its docs page \u2014 a literal string/version value, not paraphrased prose, so a future schema-version bump requires remembering to touch both. Needs a decision: which copy is authoritative (or accept as structural duplication, same as the env-promotion blocks in c-095).",
-      "status": "open",
+      "status": "skipped-by-user",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
       "resolved_commit": null,
