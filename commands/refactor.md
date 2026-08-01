@@ -410,7 +410,9 @@ Wait for response before proceeding.
 - Push refactor/{timestamp} to remote (including the updated ledger)
 - Check whether this repo is hosted on GitHub: `git remote get-url origin`. If the URL does not contain `github.com`, skip the `gh` attempt below and inform user:
   "Branch pushed. Open a PR to merge into main when ready."
-- If hosted on GitHub, attempt to open the PR:
+- If hosted on GitHub, check whether `gh` is installed at all before attempting anything: `gh --version`. If it's not found, inform user:
+  "Branch pushed. gh is not installed — install it (https://cli.github.com) or open the PR manually: refactor/{timestamp} → main."
+- If `gh` is installed, attempt to open the PR:
   ```
   gh pr create --title "refactor(project): apply refactoring {timestamp}" --base main --head refactor/{timestamp} --body "Applied categories: {category_list}. See .claude/helm/refactor-log.json for the full ledger of findings, fixes, and skipped items."
   ```
