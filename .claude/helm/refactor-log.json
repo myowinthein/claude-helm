@@ -3717,11 +3717,11 @@
       "file": "rules/git.md, docs/rules/git.md",
       "line": "n/a",
       "description": "git-strategy and environment-promotion both gained explicit self-check instructions this session (\"state it explicitly\") for their mode-like settings. git-merge-strategy (squash/rebase/merge) is a comparable three-way, irreversible-once-acted-on choice with no equivalent self-check \u2014 it's just described inline. Looks like a gap in an otherwise-established pattern.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "ea67165",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0187",
@@ -3733,11 +3733,11 @@
       "file": "docs/rules/git.md",
       "line": "154",
       "description": "Scope inference paragraph drops the trailing formatting requirement present in rules/git.md (\"Keep it lowercase, one word or hyphenated per scope\") \u2014 a concrete, checkable rule, not just prose padding; its absence means a docs reader wouldn't learn scopes must be lowercase/hyphenated.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "ea67165",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0188",
@@ -3749,11 +3749,11 @@
       "file": "docs/rules/git.md",
       "line": "214-221",
       "description": "Environment Branches body names and links all fan-out-only commands including /helm:env and /helm:test, but the \"See also\" list at the bottom omits both \u2014 minor incompleteness since the information is still present in-body.",
-      "status": "open",
+      "status": "fixed",
       "first_found_commit": "142c313f9babe7f6b1e94987e6474d1b7b45ee36",
       "first_found_date": "2026-08-01",
-      "resolved_commit": null,
-      "resolved_date": null
+      "resolved_commit": "ea67165",
+      "resolved_date": "2026-08-01"
     },
     {
       "id": "f-0189",
