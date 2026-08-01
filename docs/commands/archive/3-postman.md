@@ -75,7 +75,7 @@ Coverage has a floor, not just a best-effort target: at minimum one GET request 
 
 ## Output files
 
-Saved to `recovery/postman/` using the project name from Step 1:
+Saved to `recovery/postman/` using the project name from Step 1, slugified to lowercase with hyphens (e.g. "My Cool App" → `my-cool-app`):
 
 - `{project-name}.postman_collection.json`
 - `{project-name}.postman_environment.json`
