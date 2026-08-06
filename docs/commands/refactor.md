@@ -29,11 +29,12 @@ flowchart TD
   ModeAsk -->|Quick| CreateBranch
   ModeAsk -->|Fix Backlog| CreateBranch
 
-  CreateBranch -->|Deep or first run| Deep[Spawn sub-agents per folder chunk<br/>each reads full chunk, all categories]
+  CreateBranch -->|Deep or first run| Deep[Spawn sub-agents per folder chunk<br/>each reads full chunk, 5 per-file categories]
   CreateBranch -->|Quick| Quick[Single-thread scan of<br/>changed files only]
   CreateBranch -->|Fix Backlog| FixBacklog[Load open findings only<br/>no scan performed]
 
-  Deep --> Consolidate[Consolidate findings<br/>cross-chunk issues<br/>auto-resolve stale entries]
+  Deep --> ConsistencyPass["Consistency pass (separate, whole-codebase)<br/>state changes vs. expected reactions<br/>asymmetric treatment of related data"]
+  ConsistencyPass --> Consolidate[Consolidate findings<br/>cross-chunk issues<br/>auto-resolve stale entries]
   Quick --> Revalidate[Re-validate open ledger entries<br/>auto-resolve deleted/rewritten<br/>refresh line numbers for touched files]
 
   Consolidate --> CommitLedger["Commit ledger<br/>chore(refactor): update ledger after deep scan"]
@@ -107,9 +108,9 @@ The Fix Backlog option only appears when there are open findings. The user picks
 
 ### 4. Scan
 
-**Deep Mode** — splits the project into folder/module chunks (keeping related files together), spawns one sub-agent per chunk, and has each agent read its full chunk in a single pass across all five categories: **Architecture**, **Code Quality**, **Performance**, **Tests**, and **Dependencies**. The main agent then consolidates: merges reports, spots cross-chunk patterns, checks new findings against the ledger to avoid duplicates, auto-resolves stale entries, assigns `risk` (`safe` / `needs-review`), groups related findings into `cluster_id`s, and records `depends_on` order where one fix must precede another.
+**Deep Mode** — splits the project into folder/module chunks (keeping related files together), spawns one sub-agent per chunk, and has each agent read its full chunk in a single pass across five per-file categories: **Architecture**, **Code Quality**, **Performance**, **Tests**, and **Dependencies**. A chunk-scoped sub-agent can't see the sixth category, **Consistency**, by design — it only has visibility into its own folder — so Consistency runs as a separate, dedicated pass: it maps the codebase's key persisted/synced state and the features that should react to each (sync, cache invalidation, notifications, audit logging), traces every site that writes that state to check the expected reactions are wired up consistently everywhere, and separately looks for related data handled with mismatched rigor in the same flow (e.g. one gets conflict review before being overwritten, a related one is silently replaced). This pass is scoped by feature or data flow rather than by folder, and every finding it produces is always `needs-review` — never auto-applied, since deciding whether a missing connection is intentional needs product judgment. The main agent then consolidates everything: merges reports (including the consistency pass), spots cross-chunk patterns, checks new findings against the ledger to avoid duplicates, auto-resolves stale entries, assigns `risk` (`safe` / `needs-review`), groups related findings into `cluster_id`s, and records `depends_on` order where one fix must precede another.
 
-**Quick Mode** — reuses the changed-file list already computed in Step 3 (size already accounted for in the mode recommendation, so no second size check here). Re-validates all open ledger entries: a deleted or heavily rewritten file auto-resolves its findings; an untouched file carries its findings forward unchanged; a file touched but not heavily rewritten — the common case — gets each finding's `line` re-verified and refreshed before carrying it forward, since line numbers drift with any unrelated edit above them and `risk: safe` findings apply with no human review to catch a stale one. Then scans just the changed files in a single pass for new issues.
+**Quick Mode** — reuses the changed-file list already computed in Step 3 (size already accounted for in the mode recommendation, so no second size check here). Re-validates all open ledger entries, Consistency findings included: a deleted or heavily rewritten file auto-resolves its findings; an untouched file carries its findings forward unchanged; a file touched but not heavily rewritten — the common case — gets each finding's `line` re-verified and refreshed before carrying it forward, since line numbers drift with any unrelated edit above them and `risk: safe` findings apply with no human review to catch a stale one. Then scans just the changed files in a single pass for new issues in the five per-file categories only — it does not look for new Consistency findings, since that needs the whole-codebase, cross-feature visibility only Deep Mode's dedicated pass provides.
 
 **Fix Backlog** — skips scanning entirely. Loads every finding with `status: open` from the ledger and proceeds directly to presenting findings. Scan metadata (`last_scanned_commit`, `last_mode`, `consecutive_quick_count`) is left untouched since no scan was performed.
 
@@ -127,7 +128,7 @@ For Fix Backlog mode, only **Still Open** is shown — no New or Auto-Resolved s
 
 Each finding is tagged `[New]`/`[Still Open]`, priority (`High`/`Medium`/`Low`), and risk (`Safe`/`Needs Review`). Total count at the bottom shows new vs still-open separately.
 
-Then presents a category-selection prompt scaled to how many of the five categories actually have at least one `new` or `still open` finding: none qualifying means nothing to apply — informs the user and skips straight to Merge and cleanup; exactly one qualifying means a direct yes/no confirmation, since a multi-select needs at least 2 options; two or more qualifying is the normal multi-select (max 4 options — smallest two merge if more than four qualify). Categories with only auto-resolved findings are excluded. Selecting nothing (or Skip, in the single-category case) is a clean skip with no harm done.
+Then presents a category-selection prompt scaled to how many of the six categories (Architecture, Consistency, Code Quality, Performance, Tests, Dependencies) actually have at least one `new` or `still open` finding: none qualifying means nothing to apply — informs the user and skips straight to Merge and cleanup; exactly one qualifying means a direct yes/no confirmation, since a multi-select needs at least 2 options; two or more qualifying is the normal multi-select (max 4 options — smallest two merge if more than four qualify). Categories with only auto-resolved findings are excluded. Selecting nothing (or Skip, in the single-category case) is a clean skip with no harm done.
 
 ### 6. Apply category by category
 
