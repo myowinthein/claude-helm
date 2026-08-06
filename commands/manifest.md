@@ -98,7 +98,7 @@ If README.md exists but has no saved commit hash:
     multiSelect: false
     options:
       - label: "Full scan (Recommended)"
-        description: "Rewrite README.md from a complete project scan"
+        description: "Replace README.md's full contents from a complete project scan — anything existing content held that the scan doesn't recapture will not carry over"
       - label: "Skip"
         description: "No update needed"
 
@@ -117,9 +117,9 @@ If README.md exists with a saved commit hash, and either structure is broken or 
     multiSelect: false
     options:
       - label: "Gap update"
-        description: "Update only sections affected by commits since last review{ — missing sections will not be added, if structure is broken}"
+        description: "Edit only sections affected by commits since last review, leaving the rest of the file untouched{ — missing sections will not be added, if structure is broken}"
       - label: "Full scan"
-        description: "Rewrite README.md from a complete project scan{ to restore missing sections, if structure is broken}"
+        description: "Replace the entire file's contents from a complete project scan{ to restore missing sections, if structure is broken} — existing content the scan doesn't recapture will not carry over"
       - label: "Skip"
         description: "No update needed"
 
@@ -167,11 +167,13 @@ If `readme-style: standard`:
 If `readme-style: custom` (README.md already exists with content — the only way to reach this point in custom mode, per the early exit above):
   Read the existing README structure before writing.
   Preserve the existing section order and naming.
-  Rewrite content within each section based on the project scan.
-  Do not add, remove, or rename sections without explicit approval.
+  For each existing section, investigate its specific topic — not just the generic checklist above, which is standard-mode-shaped and won't cover a project-specific section (Sponsors, Roadmap, Screenshots, Acknowledgments, etc.). Use the section's current content as a source for what it's about, then rewrite it based on what the investigation finds.
+  Do not add, remove, or rename sections without explicit approval — and do not blank out or invent content for a section just because it fell outside the generic checklist; investigate its actual topic instead, per above.
 
 At the end of the file, append:
 `<!-- last-reviewed: {current HEAD commit hash} -->`
+
+This is a full replace, not an incremental patch, in both `readme-style` modes: use the Write tool to overwrite the entire file in one operation rather than leaving sections as targeted `Edit` calls would. In `standard` mode, this means regenerating every included section's content from the scan, even sections whose content turns out unchanged — spec sections are generic, so the checklist above is expected to cover all of them. In `custom` mode, structure is preserved per above, and every section's content is still fully regenerated (not carried over verbatim) — but grounded in that section's own investigated topic, not just what the generic checklist happens to surface, so a project-specific section is rewritten with fresh findings rather than silently emptied or fabricated.
 
 Write directly — no approval needed.
 
@@ -187,7 +189,7 @@ Focus on: new features, API changes, new install steps, changed usage,
 changed CLI commands, new env vars, removed functionality.
 
 For each significant change, identify which README section is affected.
-Update only those sections. Do not rewrite unaffected sections.
+Update only those sections. Do not rewrite unaffected sections. Unlike Full scan, this is a targeted patch: use `Edit`, not `Write` — touch only the affected sections and leave everything else exactly as it is.
 
 If no significant changes are found despite the initial gap estimate: report that no update is needed — the equivalent of log.md's Outcome A. Skip the proposal and confirmation below; only the hash advances.
 

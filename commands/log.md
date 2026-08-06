@@ -66,7 +66,7 @@ If CLAUDE.md is absent, empty, or has no saved commit hash:
     multiSelect: false
     options:
       - label: "Full scan (Recommended)"
-        description: "Rewrite CLAUDE.md from a complete project scan"
+        description: "Replace CLAUDE.md's full contents from a complete project scan — anything existing content held that the scan doesn't recapture will not carry over"
       - label: "Skip"
         description: "No update needed"
 
@@ -85,9 +85,9 @@ If CLAUDE.md exists with a saved commit hash, and either schema is broken or the
     multiSelect: false
     options:
       - label: "Gap update"
-        description: "Update only sections affected by commits since last review{ — missing sections will not be added, if schema is broken}"
+        description: "Edit only sections affected by commits since last review, leaving the rest of the file untouched{ — missing sections will not be added, if schema is broken}"
       - label: "Full scan"
-        description: "Rewrite CLAUDE.md from a complete project scan{ to restore missing sections, if schema is broken}"
+        description: "Replace the entire file's contents from a complete project scan{ to restore missing sections, if schema is broken} — existing content the scan doesn't recapture will not carry over"
       - label: "Skip"
         description: "No update needed"
 
@@ -161,7 +161,7 @@ Before writing anything, investigate in this order to build the understanding fo
 7. Identify operational context and common development workflows
 8. Review existing docs, README, .claude/rules
 
-Then write CLAUDE.md using the CLAUDE.md Schema above — all eight sections, in order.
+Then write CLAUDE.md using the CLAUDE.md Schema above — all eight sections, in order. This is a full replace, not an incremental patch: use the Write tool to overwrite the entire file in one operation, regenerating every section's content from this scan — including sections whose content turns out unchanged — rather than leaving untouched sections as targeted `Edit` calls would. Do not preserve any existing content this scan doesn't rederive; that is the tradeoff a full scan makes in exchange for reliably restoring a broken or incomplete schema (Step 1).
 
 Before writing the Project Config section, run Project Config Check.
 
@@ -191,6 +191,8 @@ Focus on: architectural changes, new modules, new conventions, domain
 rule changes, new operational knowledge, newly discovered traps.
 
 **Stay within the CLAUDE.md Schema (above).** Every change must land in one of the eight existing sections — the schema says what each holds. Never add a new heading or section; if a finding fits none of the eight, it does not belong in CLAUDE.md — leave it out.
+
+Unlike Full scan, this is a targeted patch: use `Edit`, not `Write` — touch only the sections a significant commit actually affects, and leave every other section's existing content exactly as it is.
 
 Before adding anything, apply the three-question filter:
 1. Will a future session struggle to find this from the codebase?
