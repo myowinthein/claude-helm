@@ -290,7 +290,7 @@ Wait for both responses before proceeding.
 
 Generate each selected document in plain English, GDPR compliant.
 Use em-dashes sparingly — only when no other punctuation (comma, semicolon, colon, or a new sentence) works as well. When in doubt, restructure the sentence instead.
-Write to the resolved output path using the resolved format.
+Write to the resolved output path using the resolved format. When a document already exists, this is a full replace, not an incremental patch: use the Write tool to overwrite the entire file in one operation with the freshly generated content — never targeted `Edit` calls that leave old wording in place alongside new. This matches Step 1's "Do not edit it in place — regeneration is always a full rewrite."
 
 **Before writing a document that already exists:**
 - If it is **Helm-generated** (in the manifest) → overwrite silently.
