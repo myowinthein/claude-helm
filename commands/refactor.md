@@ -454,7 +454,7 @@ Wait for response before proceeding.
   - git checkout main
 
   If no environment branches exist, or the user selects none, skip silently.
-- Delete refactor branch locally and remotely
+- Delete refactor branch: `git branch -d refactor/{timestamp}` locally always, and `git push origin --delete refactor/{timestamp}` only if it was ever pushed — Auto Merge never pushes the refactor branch itself (only `main`, after the merge), so the common case has nothing remote to delete; attempting it unconditionally errors for no reason and risks the local delete right next to it getting skipped too.
 
 **Option 2 — PR:**
 - Push refactor/{timestamp} to remote (including the updated ledger)
