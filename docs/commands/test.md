@@ -147,7 +147,7 @@ If environment branches exist (same detection [`/helm:ship`](ship.html) uses), a
 
 ### 8. Confirm completion
 
-Reports the outcome (up to date / catch up written / full scan written / skipped), the mode used, how many tests were written and where, commits made, whether tests are passing, the ledger's skipped-by-user/ambiguous/resolved counts, whether the commit was pushed, which environments were promoted, and — under GitHub Flow — the temporary branch's fate and which branch the command returned to. Runs even when nothing was written — Scenario 3's clean exit and any Skip choice both still reach this step to report the outcome, rather than exiting silently. When a Full Scan's scan ran but no priorities were selected for writing, the scan itself is still recorded in the ledger and reported here.
+Reports the outcome (up to date / catch up written / full scan written / skipped), the mode used, how many test cases were written (individual `it`/`test` blocks, not just files or clusters — so real volume is visible without grepping for it) and where, commits made, whether tests are passing, the ledger's skipped-by-user/ambiguous/resolved counts, whether the commit was pushed, which environments were promoted, and — under GitHub Flow — the temporary branch's fate and which branch the command returned to. Runs even when nothing was written — Scenario 3's clean exit and any Skip choice both still reach this step to report the outcome, rather than exiting silently. When a Full Scan's scan ran but no priorities were selected for writing, the scan itself is still recorded in the ledger and reported here.
 
 ## Stop conditions
 

@@ -425,7 +425,7 @@ Report:
 
 - Outcome: {up to date / catch up written / full scan written / skipped}
 - Mode: {Catch Up / Full Scan / N/A}
-- Tests written: {N}, covering {list of files or clusters}
+- Tests written: {N} test cases ({M} files), covering {list of files or clusters} — {N} counts individual test blocks (`it`/`test`, or the framework's equivalent), not files or clusters, so real volume is visible without needing to grep for it
 - Commits made: {N}
 - Tests passing: {yes/no, or N/A if nothing was run}
 - Ledger: {N} skipped-by-user, {N} ambiguous, {N} resolved this run
