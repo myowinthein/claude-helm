@@ -250,13 +250,13 @@ This commit lands on whichever branch is currently checked out — it travels wi
 Every local branch collected in Step 2 was rewritten, not just the one this command was run from — each needs pushing to stay in sync with its remote copy.
 
   AskUserQuestion:
-    question: "Rewrite complete. Force push {branch_count} rewritten branch(es) ({branch_list}) and tags to remote now?\n\nThis overwrites remote history and can't be undone. Waiting doesn't make it safer — the local rewrite is already permanent, so delay only adds risk."
+    question: "Rewrite complete. Force push {branch_count} rewritten branch(es) ({branch_list}) and tags to remote now?\n\nThis overwrites remote history and can't be undone. Waiting doesn't make it safer: the local rewrite is already permanent, so delay only adds risk."
     header:   "Force push"
     multiSelect: false
     options:
       - label: "Force push to origin (Recommended)"
         description: "Sync every rewritten branch and tag to remote"
-      - label: "Skip — push manually"
+      - label: "Skip (push manually)"
         description: "Risky to leave: don't fetch/pull this repo, and don't reset any branch to origin, until you've run the push commands below yourself."
 
 If force push selected, for each local branch collected in Step 2:
