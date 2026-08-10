@@ -22,6 +22,7 @@ Check `git-strategy` in CLAUDE.md's Project Config (absence defaults to GitHub F
 
 Tests must reflect actual proven behavior — not speculative edge cases.
 Follow existing test conventions, naming, and file structure.
+When 3+ cases share the same input → assertion shape (e.g. a dictionary or lookup table with one expected output per entry), write one parametrized test (`it.each`/table-driven, per the framework's convention) instead of one test block per case — same coverage, less bulk.
 Never push with failing tests.
 
 ---

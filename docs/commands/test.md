@@ -113,6 +113,8 @@ If the expected behavior is clear from the code, docs, or existing tests: write 
 
 If it is ambiguous (undocumented edge case, unclear intended behavior, behavior contradicts docs): stop and ask the user to clarify or skip. If the user clarifies, proceed. If they skip, set `user_status: "ambiguous"` and a short note on that file's `files` entry (without touching any `priority` fields already there) — never guess and encode a guess as a test.
 
+When 3+ cases share the same input → assertion shape (e.g. one expected output per entry in a dictionary or lookup table), writes one parametrized test (`it.each`/table-driven, per the framework's convention) instead of a separate test block per case — same coverage, less bulk.
+
 ### 5. Full Scan path
 
 **Coverage check**: runs the project's coverage tool across the full project on every run — never partial, never skipped.
