@@ -9,7 +9,25 @@ description: Bump version, run tests, tag release, and promote to deployment env
 Check current branch.
 
 If on main or master:
-  Proceed normally — full ship flow including version tagging.
+  Check for a clean working tree: `git status --porcelain`.
+
+  If clean → proceed normally, full ship flow including version tagging.
+
+  If not clean: Step 4 stages specific files by path (`git add README.md`, `git add {version_file}`, etc.), and `git add` picks up a file's entire current state — so any unrelated pending edits already sitting in one of those exact files would silently ride into the `chore(release):` commit and get tagged and pushed as part of it. Never offer to proceed as-is; that's the failure mode this check exists to close. Ask:
+
+    AskUserQuestion:
+      question: "Uncommitted changes are present ({short file list or count}) — if they touch README.md or the version file, they'd otherwise get folded into the release commit. Commit them separately first?"
+      header:   "Uncommitted changes"
+      multiSelect: false
+      options:
+        - label: "Commit now (Recommended)"
+          description: "Commit these changes as their own commit, then continue the release"
+        - label: "Stop here"
+          description: "Exit so you can commit, stash, or discard manually, then re-run /ship"
+
+    If "Stop here" selected → exit immediately. Nothing else is touched.
+
+    If "Commit now" selected → stage everything `git status --porcelain` reported (this is the one place staging everything is safe — it's exactly what was just shown to and confirmed by the human, not a blind `-A`), derive a Conventional Commits message the same way every other command in this plugin does (scope inferred from the touched files, per git.md's Scope inference convention), commit, then proceed normally into Step 1.
 
 If on environment branch (staging, production, etc):
   Proceed with promotion only — Steps 1-4 (version bump, commit, tag, code quality checks, GitHub Release) are all skipped; only Step 5's promotion runs.

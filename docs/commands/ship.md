@@ -61,7 +61,7 @@ flowchart TD
 
 ### Before starting
 
-Refuses to release from a feature branch. On `main` or `master`, runs the full release flow. On an environment branch (`staging`, `production`, or similar), skips the entire release flow — version bump, commit, tag, code quality checks, and GitHub Release all only run from main — and runs the promotion path (Step 5) instead.
+Refuses to release from a feature branch. On `main` or `master`, first checks for a clean working tree (`git status --porcelain`) before doing anything else: Step 4 stages specific files by path (`git add README.md`, the version file, etc.), and staging a file picks up its entire current state — so unrelated pending edits already sitting in one of those exact files would otherwise ride silently into the release commit and get tagged and pushed along with it. If the tree isn't clean, asks whether to commit the pending changes separately first (Conventional Commits message, scope inferred from the touched files, same convention every other command in this plugin uses) or stop so it can be handled manually — proceeding as-is without committing is never offered, since that's exactly the silent-bundling failure mode this check exists to close. Once clean, runs the full release flow. On an environment branch (`staging`, `production`, or similar), skips the entire release flow — version bump, commit, tag, code quality checks, and GitHub Release all only run from main — and runs the promotion path (Step 5) instead.
 
 ### 1. Select deployment targets
 
