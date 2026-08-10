@@ -110,7 +110,7 @@ Captures each current local branch's tip SHA (`git rev-parse {branch}`) — the 
 
 ### 7. Force push
 
-Separate third confirmation before touching the remote. Every local branch collected in Step 2 was rewritten, not just the one the command was run from, so each gets its own force push — not only the current branch. If the user skips, prints the exact manual commands to run later, one per branch, plus tags, then still proceeds to Step 8 for the report:
+Separate third confirmation before touching the remote. Every local branch collected in Step 2 was rewritten, not just the one the command was run from, so each gets its own force push — not only the current branch. Waiting doesn't lower the risk — the local rewrite is already done and can't be undone either, so every commit that lands before the push only raises the odds of a messy divergence. If the user skips, the prompt spells this out: any `git fetch`/`pull` on the repo before pushing will diverge against the still-unrewritten remote (or reject a plain tag push, since local tags already moved), and running the other-clones recovery command (`git fetch --all && git reset --hard origin/{branch}`) on this same copy would silently discard the rewrite with nothing left to recover it from. It then prints the exact manual commands to run later, one per branch, plus tags, then still proceeds to Step 8 for the report:
 
 ```
 git push origin {branch} --force   # repeated for every local branch collected in Step 2

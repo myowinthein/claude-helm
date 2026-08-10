@@ -250,14 +250,14 @@ This commit lands on whichever branch is currently checked out — it travels wi
 Every local branch collected in Step 2 was rewritten, not just the one this command was run from — each needs pushing to stay in sync with its remote copy.
 
   AskUserQuestion:
-    question: "Rewrite complete. Ready to force push {branch_count} rewritten branches ({branch_list}) and tags to remote?\n\nThis will overwrite their remote history. This cannot be undone on the remote."
+    question: "Rewrite complete. Ready to force push {branch_count} rewritten branches ({branch_list}) and tags to remote?\n\nThis will overwrite their remote history. This cannot be undone on the remote. Waiting does not make this safer — the local rewrite already happened and cannot be undone either; every commit landed since then only raises the risk of a messy divergence."
     header:   "Force push"
     multiSelect: false
     options:
       - label: "Force push to origin (Recommended)"
         description: "Sync every rewritten branch and tag to remote"
       - label: "Skip — push manually"
-        description: "Leave remote as-is. Run the commands below yourself"
+        description: "Not a safe default: until pushed, any git fetch or pull on this repo will diverge against the old remote history (or fail a plain tag push, since local tags already moved). Never run 'git fetch --all && git reset --hard origin/{branch}' on this same copy in the meantime — that's the recovery command for other clones, and here it would silently discard this rewrite with no backup to recover it. Run the printed commands before doing anything else in this repo."
 
 If force push selected, for each local branch collected in Step 2:
 ```
